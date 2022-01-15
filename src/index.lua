@@ -13,7 +13,6 @@ function System.currentDirectory(dir)
     end
 end
 
-
 Network.init()
 
 local onlineCoverPathSystem = {
@@ -49,6 +48,7 @@ local imgWifi = Graphics.loadImage("app0:/DATA/wifi.png")
 local imgBattery = Graphics.loadImage("app0:/DATA/bat.png")
 local imgBack = Graphics.loadImage("app0:/DATA/back_01.jpg")
 local imgFloor = Graphics.loadImage("app0:/DATA/floor.png")
+local imgFavorite = Graphics.loadImage("app0:/DATA/favorite.png")
 Graphics.setImageFilters(imgFloor, FILTER_LINEAR, FILTER_LINEAR)
 
 
@@ -72,13 +72,14 @@ local localCoverPath = {
     "ux0:/data/RetroFlow/COVERS/Commodore - Amiga/",
     "ux0:/data/RetroFlow/COVERS/NEC - TurboGrafx 16/",
     "ux0:/data/RetroFlow/COVERS/NEC - PC Engine/",
+    "ux0:/data/RetroFlow/COVERS/Neo Geo Pocket Color/"
 }
 
 System.createDirectory("ux0:/data/RetroFlow/")
 System.createDirectory("ux0:/data/RetroFlow/COVERS/")
 
 -- Create directories - Covers
-for directories = 1, 17 do
+for directories = 1, 18 do
    System.createDirectory(localCoverPath[directories])
 end
 
@@ -95,6 +96,7 @@ if System.doesDirExist(cur_dir .. "COVERS/GB")      then System.rename(cur_dir .
 if System.doesDirExist(cur_dir .. "COVERS/MD")      then System.rename(cur_dir .. "COVERS/MD",      cur_dir .. "COVERS/Sega - Mega Drive - Genesis") end
 if System.doesDirExist(cur_dir .. "COVERS/SMS")     then System.rename(cur_dir .. "COVERS/SMS",     cur_dir .. "COVERS/Sega - Master System - Mark III") end
 if System.doesDirExist(cur_dir .. "COVERS/GG")      then System.rename(cur_dir .. "COVERS/GG",      cur_dir .. "COVERS/Sega - Game Gear") end
+if System.doesDirExist(cur_dir .. "COVERS/NGPC")     then System.rename(cur_dir .. "COVERS/NGPC",     cur_dir .. "COVERS/Neo Geo Pocket Color") end
 
 
 -- ROM Folders
@@ -114,6 +116,7 @@ local romFolder_MAME_2000 = romFolder .. "MAME 2000"
 local romFolder_AMIGA = romFolder .. "Commodore - Amiga"
 local romFolder_TG16 = romFolder .. "NEC - TurboGrafx 16"
 local romFolder_PCE = romFolder .. "NEC - PC Engine"
+local romFolder_NGPC = romFolder .. "Neo Geo Pocket Color"
 
 
 -- Tidy up legacy ROM folder structure to a more standard naming convention
@@ -126,6 +129,7 @@ if System.doesDirExist(romFolder .. "GB")   then System.rename(romFolder .. "GB"
 if System.doesDirExist(romFolder .. "MD")   then System.rename(romFolder .. "MD",    romFolder .. "Sega - Mega Drive - Genesis") end
 if System.doesDirExist(romFolder .. "SMS")  then System.rename(romFolder .. "SMS",   romFolder .. "Sega - Master System - Mark III") end
 if System.doesDirExist(romFolder .. "GG")   then System.rename(romFolder .. "GG",    romFolder .. "Sega - Game Gear") end
+if System.doesDirExist(romFolder .. "NGPC")  then System.rename(romFolder .. "NGPC",   romFolder .. "Neo Geo Pocket Color") end
 
 -- Create directories - Rom Folders
 System.createDirectory(romFolder)
@@ -142,6 +146,7 @@ System.createDirectory(romFolder_MAME_2000)
 System.createDirectory(romFolder_AMIGA)
 System.createDirectory(romFolder_TG16)
 System.createDirectory(romFolder_PCE)
+System.createDirectory(romFolder_NGPC)
 
 -- Create directories - User Database
 local user_DB_Folder = "ux0:/data/RetroFlow/TITLES/"
@@ -164,6 +169,7 @@ local core_MAME = "app0:/mame2000_libretro.self"
 local core_AMIGA = "app0:/puae_libretro.self"
 local core_PCE = "app0:/mednafen_pce_fast_libretro.self"
 local core_TG16 = "app0:/mednafen_pce_fast_libretro.self"
+local core_NGPC = "app0:/race_libretro.self"
 
 -- Launcher App Directory
 local launch_dir = "ux0:/rePatch/RETROFLOW/"
@@ -175,6 +181,13 @@ if not System.doesFileExist(cur_dir .. "/overrides.dat") then
     local file_over = System.openFile(cur_dir .. "/overrides.dat", FCREATE)
     System.writeFile(file_over, " ", 1)
     System.closeFile(file_over)
+end
+
+-- Create Favorites file
+if not System.doesFileExist(cur_dir .. "/favorites.dat") then
+    local file_favorites = System.openFile(cur_dir .. "/favorites.dat", FCREATE)
+    System.writeFile(file_favorites, " ", 1)
+    System.closeFile(file_favorites)
 end
 
 -- load textures
@@ -219,8 +232,16 @@ local modCoverMD = Render.loadObject("app0:/DATA/covermd.obj", imgCoverTmp)
 local modBoxMDNoref = Render.loadObject("app0:/DATA/boxmd_noreflx.obj", imgBoxBLANK)
 local modCoverMDNoref = Render.loadObject("app0:/DATA/covermd_noreflx.obj", imgCoverTmp)
 
+local modBoxNGPC = Render.loadObject("app0:/DATA/boxgb.obj", imgBoxBLANK)
+local modCoverNGPC = Render.loadObject("app0:/DATA/covergb.obj", imgCoverTmp)
+local modBoxNGPCNoref = Render.loadObject("app0:/DATA/boxgb_noreflx.obj", imgBoxBLANK)
+local modCoverNGPCNoref = Render.loadObject("app0:/DATA/covergb_noreflx.obj", imgCoverTmp)
+
 local modCoverHbr = Render.loadObject("app0:/DATA/cover_square.obj", imgCoverTmp)
 local modCoverHbrNoref = Render.loadObject("app0:/DATA/cover_square_noreflx.obj", imgCoverTmp)
+
+local quad = Render.loadObject("app0:/DATA/quad.obj", imgCoverTmp)
+local quadNoref = Render.loadObject("app0:/DATA/quad_noRef.obj", imgCoverTmp)
 
 local modBackground = Render.loadObject("app0:/DATA/planebg.obj", imgBack)
 local modDefaultBackground = Render.loadObject("app0:/DATA/planebg.obj", imgBack)
@@ -239,11 +260,11 @@ Font.setPixelSizes(fnt22, 22)
 Font.setPixelSizes(fnt25, 25)
 Font.setPixelSizes(fnt35, 35)
 
-local cache_file_count_expected = 20
+local cache_file_count_expected = 22
 
 function count_cache_and_reload()
     cache_file_count = System.listDirectory(db_Cache_Folder)
-    if #cache_file_count < cache_file_count_expected then -- 20 tables expected
+    if #cache_file_count < cache_file_count_expected then -- 21 tables expected
         -- Files missing - rescan
         cache_all_tables()
         files_table = import_cached_DB(System.currentDirectory())
@@ -319,6 +340,11 @@ function update_cached_table_gb()
     print_table_gb()
 end
 
+function update_cached_table_ngpc()
+    dofile("app0:addons/printTable.lua")
+    print_table_ngpc()
+end
+
 function update_cached_table_md()
     dofile("app0:addons/printTable.lua")
     print_table_md()
@@ -359,11 +385,28 @@ function update_cached_table_all_games()
     print_table_all_games()
 end
 
+function debugLog(msg)
+    if System.doesFileExist(cur_dir .. "/debug.dat") then
+        local inf = assert(io.open(cur_dir .. "/debug.dat", "rw"), "Failed to open debug.dat")
+        local lines = ""
+        while(true) do
+            local line = inf:read("*line")
+            if not line then break end
+            lines = lines .. line .. "\n"
+        end
+        lines = lines .. msg .. "\n"
+        inf:close()
+        file_override = io.open(cur_dir .. "/debug.dat", "w")
+        file_override:write(lines)
+        file_override:close()
+    end
+end
+
 
 local menuX = 0
 local menuY = 0
 local showMenu = 0
-local showCat = 1 -- Category: 0 = all, 1 = games, 2 = homebrews, 3 = psp, 4 = psx, 5 = N64, 6 = SNES, 7 = NES, 8 = GBA, 9 = GBC, 10 = GB, 11 = MD, 12 = SMS, 13 = GG, 14 = MAME, 15 = AMIGA, 16 = TG16, 17 = PCE
+local showCat = 1 -- Category: 0 = all, 1 = games, 2 = homebrews, 3 = psp, 4 = psx, 5 = N64, 6 = SNES, 7 = NES, 8 = GBA, 9 = GBC, 10 = GB, 11 = MD, 12 = SMS, 13 = GG, 14 = MAME, 15 = AMIGA, 16 = TG16, 17 = PCE, 18 = NGPC
 local showView = 0
 
 local info = System.extractSfo("app0:/sce_sys/param.sfo")
@@ -418,6 +461,7 @@ local prevRot = 0
 local total_all = 0
 local total_games = 0
 local total_homebrews = 0
+local total_favorites = 0
 local curTotal = 1
 
 -- Settings
@@ -525,7 +569,7 @@ function OneshotPrint(my_func)
 end
 
 local lang_lines = {}
-local lang_default = "PS Vita\nHomebrews\nPSP\nPlayStation\nAll\nSettings\nLaunch\nDetails\nCategory\nView\nClose\nVersion:\nAbout\nStartup Category:\nReflection Effect:\nSounds:\nTheme Color:\nCustom Background:\nDownload Covers:\nReload Covers Database\nLanguage:\nOn\nOff\nRed\nYellow\nGreen\nGrey\nBlack\nPurple\nOrange\nBlue\nSelect\nNintendo 64\nSuper Nintendo\nNintendo Entertainment System\nGame Boy Advance\nGame Boy Color\nGame Boy\nSega Mega Drive\nSega Master System\nSega Game Gear\nMAME\nAmiga\nTurboGrafx-16\nPC Engine\nHomebrews Category:\nStartup scan:\nPlease install RetroFlow Adrenaline Launcher.\nThe VPK is saved here\nInternet Connection Required\nDefault\nApp ID:\nSize:\nDownload Cover\nOverride Category:\nPress X to apply Category\nCover\nFound\nfound!\nCover not found\nof\nDownloading covers\nDownloading all covers\nDownloading PS Vita covers\nDownloading PSP covers\nDownloading PS1 covers\nDownloading N64 covers\nDownloading SNES covers\nDownloading NES covers\nDownloading GBA covers\nDownloading GBC covers\nDownloading GB covers\nDownloading MD covers\nDownloading SMS covers\nDownloading GG covers\nDownloading MAME covers\nDownloading AMIGA covers\nDownloading TG16 covers\nDownloading PCE covers\nPS Vita Game\nPSP Game\nPS1 Game\nN64 Game\nSNES Game\nNES Game\nGBA Game\nGBC Game\nGB Game\nMD Game\nSMS Game\nGG Game\nMAME Game\nAmiga Game\nTurboGrafx-16 Game\nPC Engine Game\nHomebrew\nCover"
+local lang_default = "PS Vita\nHomebrews\nPSP\nPlayStation\nAll\nSettings\nLaunch\nDetails\nCategory\nView\nClose\nVersion:\nAbout\nStartup Category:\nReflection Effect:\nSounds:\nTheme Color:\nCustom Background:\nDownload Covers:\nReload Covers Database\nLanguage:\nOn\nOff\nRed\nYellow\nGreen\nGrey\nBlack\nPurple\nOrange\nBlue\nSelect\nNintendo 64\nSuper Nintendo\nNintendo Entertainment System\nGame Boy Advance\nGame Boy Color\nGame Boy\nSega Mega Drive\nSega Master System\nSega Game Gear\nMAME\nAmiga\nTurboGrafx-16\nPC Engine\nHomebrews Category:\nStartup scan:\nPlease install RetroFlow Adrenaline Launcher.\nThe VPK is saved here\nInternet Connection Required\nDefault\nApp ID:\nSize:\nDownload Cover\nOverride Category:\nPress X to apply Category\nCover\nFound\nfound!\nCover not found\nof\nDownloading covers\nDownloading all covers\nDownloading PS Vita covers\nDownloading PSP covers\nDownloading PS1 covers\nDownloading N64 covers\nDownloading SNES covers\nDownloading NES covers\nDownloading GBA covers\nDownloading GBC covers\nDownloading GB covers\nDownloading MD covers\nDownloading SMS covers\nDownloading GG covers\nDownloading MAME covers\nDownloading AMIGA covers\nDownloading TG16 covers\nDownloading PCE covers\nPS Vita Game\nPSP Game\nPS1 Game\nN64 Game\nSNES Game\nNES Game\nGBA Game\nGBC Game\nGB Game\nMD Game\nSMS Game\nGG Game\nMAME Game\nAmiga Game\nTurboGrafx-16 Game\nPC Engine Game\nHomebrew\nCover\nNGPC Game"
 function ChangeLanguage()
 if #lang_lines>0 then
     for k in pairs (lang_lines) do
@@ -655,11 +699,14 @@ function cleanRomNamesPSP()
     romname_noExtension = {}
     romname_noExtension = romname_withExtension:match("(.+)%..+$")
 
+    romname_noExtension_notitleid = {}
+    romname_noExtension_notitleid = romname_noExtension:gsub(' %b[]', '')
+
     -- remove space before parenthesis " (" then letters and numbers "(.*)"
     romname_noRegion_noExtension = {}
     romname_noRegion_noExtension = romname_noExtension:gsub(" %(", "%("):gsub('%b()', '')
 
-    romname_noRegion_noExtension_noTitleID = {}
+    romname_noRegion_noExtension_notitleid = {}
     romname_noRegion_noExtension_notitleid = romname_noRegion_noExtension:gsub(" %[", "%["):gsub('%b[]', '') -- game without [ULUS-0000]
 
     titleID_withHyphen = {}
@@ -891,6 +938,8 @@ function listDirectory(dir)
     amiga_table = {}
     tg16_table = {}
     pce_table = {}
+    ngpc_table = {}
+    favorites_table = {}
     homebrews_table = {}
     all_games_table = {}
 
@@ -898,13 +947,19 @@ function listDirectory(dir)
     pspdbfull = {}
     mamedbfull = {}
 
-    -- app_type = 0 -- 0 homebrew, 1 psvita, 2 psp, 3 psx, 5 n64, 6 snes, 7 nes, 8 gba, 9 gbc, 10 gb, 11 md, 12 sms, 13 gg, 14 mame, 15 amiga, 16 tg16, 17 pce
+    -- app_type = 0 -- 0 homebrew, 1 psvita, 2 psp, 3 psx, 5 n64, 6 snes, 7 nes, 8 gba, 9 gbc, 10 gb, 11 md, 12 sms, 13 gg, 14 mame, 15 amiga, 16 tg16, 17 pce, 18 ngpc
     local customCategory = 0
     
     local file_over = System.openFile(cur_dir .. "/overrides.dat", FREAD)
     local filesize = System.sizeFile(file_over)
     local str = System.readFile(file_over, filesize)
     System.closeFile(file_over)
+
+    local fileFav_over = System.openFile(cur_dir .. "/favorites.dat", FREAD)
+    local fileFavsize = System.sizeFile(fileFav_over)
+
+    local strFav = System.readFile(fileFav_over, fileFavsize)
+    System.closeFile(fileFav_over)
 
     for i, file in pairs(dir) do
     local custom_path, custom_path_id, app_type = nil, nil, nil
@@ -1291,17 +1346,24 @@ function listDirectory(dir)
         
     
         
-        table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+       table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
         
         --add blank icon to all
         file.icon = imgCoverTmp
         file.icon_path = img_path
         
-        table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+       table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
         
-        file.apptitle = app_title
-        table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
-        
+    file.apptitle = app_title
+       table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+        if System.doesFileExist(cur_dir .. "/favorites.dat") then
+            if string.find(strFav, file.name,1,true) ~= nil then
+                debugLog("PSVITA " .. file.name);
+                table.insert(favorites_table,file)
+            end
+        end
+       
     end
 
 
@@ -1346,7 +1408,7 @@ function listDirectory(dir)
                         file.title = romname_noRegion_noExtension_notitleid
                         file.name_online = titleID_noHyphen
                         file.version = romname_region
-                        file.name_title_search = titleID_noHyphen
+                        file.name_title_search = romname_noExtension_notitleid
                         file.apptitle = romname_noRegion_noExtension_notitleid
 
                         custom_path = localCoverPath[2] .. romname_noRegion_noExtension_notitleid .. ".png"
@@ -1414,7 +1476,7 @@ function listDirectory(dir)
                         file.title = romname_noRegion_noExtension
                         file.name_online = file.name
                         file.version = romname_region
-                        file.name_title_search = romname_noRegion_noExtension
+                        file.name_title_search = title
                         file.apptitle = romname_noRegion_noExtension
 
                     end
@@ -1568,6 +1630,7 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+
                         end
                     -- OVERRIDES END
 
@@ -1598,22 +1661,23 @@ function listDirectory(dir)
                         end
                     end
 
-                    table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-                    table.insert(files_table, 17, file.name)
-                    table.insert(files_table, 17, file.title)
-                    table.insert(files_table, 17, file.name_online)
-                    table.insert(files_table, 17, file.version)
-                    table.insert(files_table, 17, file.name_title_search)
+                   table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+                   table.insert(files_table, 18, file.name)
+                   table.insert(files_table, 18, file.title)
+                   table.insert(files_table, 18, file.name_online)
+                   table.insert(files_table, 18, file.version)
+                   table.insert(files_table, 18, file.name_title_search)
 
                     --add blank icon to all
                     file.icon = imgCoverTmp
                     file.icon_path = img_path
                     
-                    table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
-                    table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
-                else
-                
+                   table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
+                   table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+                   
             end
+          
         end
 
         -- LOOKUP TITLE ID: Delete old file and save new list of matches
@@ -1642,7 +1706,7 @@ function listDirectory(dir)
         end
 
         for i, file in pairs(files_PSP) do
-        local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
+            local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
             if file.directory and System.doesFileExist(romFolder_PSP_GAME .. "/" .. file.name .. "/EBOOT.PBP") then
 
                 if string.match(file.name, "NPEG")
@@ -1667,37 +1731,37 @@ function listDirectory(dir)
                     romname_noExtension = {}
                     romname_noExtension = file.name
 
-                        -- LOOKUP TITLE ID: Get game name based on titleID, search saved table of data, or full table of data if titleID not found
+                    -- LOOKUP TITLE ID: Get game name based on titleID, search saved table of data, or full table of data if titleID not found
 
-                        -- Load previous matches
-                        pspdb = dofile(database_rename_PSP)
+                    -- Load previous matches
+                    pspdb = dofile(database_rename_PSP)
 
-                        -- Check if scanned titleID is a saved match
-                        psp_search = pspdb[romname_noExtension]
+                    -- Check if scanned titleID is a saved match
+                    psp_search = pspdb[romname_noExtension]
 
-                        -- If no
-                        if psp_search == nil then
+                    -- If no
+                    if psp_search == nil then
 
-                            -- Load the full database to find the new titleID
-                            if next(pspdbfull) == nil then
-                                pspdbfull = dofile("app0:addons/psp.lua")
-                            else
-                            end
-                            psp_search_full = pspdbfull[romname_noExtension]
-
-                            -- If not found; use the folder name without adding a game name
-                            if psp_search_full == nil then
-                                title = romname_noExtension
-
-                            -- If found; use the game name from the full database 
-                            else
-                                title = pspdbfull[romname_noExtension].name
-                            end
-
-                        -- If found; use the game name from the saved match
+                        -- Load the full database to find the new titleID
+                        if next(pspdbfull) == nil then
+                            pspdbfull = dofile("app0:addons/psp.lua")
                         else
-                            title = pspdb[romname_noExtension].name
                         end
+                        psp_search_full = pspdbfull[romname_noExtension]
+
+                        -- If not found; use the folder name without adding a game name
+                        if psp_search_full == nil then
+                            title = romname_noExtension
+
+                        -- If found; use the game name from the full database 
+                        else
+                            title = pspdbfull[romname_noExtension].name
+                        end
+
+                    -- If found; use the game name from the saved match
+                    else
+                        title = pspdb[romname_noExtension].name
+                    end
 
                     romname_noRegion_noExtension = {}
                     romname_noRegion_noExtension = title:gsub(" %(", "%("):gsub('%b()', '')
@@ -1726,7 +1790,6 @@ function listDirectory(dir)
                     file.version = romname_region
                     file.name_title_search = title
                     file.apptitle = romname_noRegion_noExtension
-                    
 
                     -- OVERRIDES START
 
@@ -1785,7 +1848,7 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
-                        
+
                         -- PSX
                         elseif string.match(str, file.name .. "=3") then
                             table.insert(psx_table, file)
@@ -1863,6 +1926,9 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+
+                                            
+
                         end
                     -- OVERRIDES END
 
@@ -1891,24 +1957,30 @@ function listDirectory(dir)
                                 img_path = "app0:/DATA/noimg.png" --blank grey
                             end
                         end
+
                     end
 
-                    table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-                    table.insert(files_table, 17, file.name)
-                    table.insert(files_table, 17, file.title)
-                    table.insert(files_table, 17, file.name_online)
-                    table.insert(files_table, 17, file.version)
-                    table.insert(files_table, 17, file.name_title_search)
+                   table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+                   table.insert(files_table, 18, file.name)
+                   table.insert(files_table, 18, file.title)
+                   table.insert(files_table, 18, file.name_online)
+                   table.insert(files_table, 18, file.version)
+                   table.insert(files_table, 18, file.name_title_search)
 
                     --add blank icon to all
                     file.icon = imgCoverTmp
                     file.icon_path = img_path
                     
-                    table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
-                    table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
-                else
+                    table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
+                    table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+                    -- if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                    --     if string.find(strFav, file.name,1,true) ~= nil then
+                    --         debugLog("PSP " .. file.name);
+                    --         table.insert(favorites_table,file)
+                    --     end
+                    -- end
                 end
-                
             end
         end
 
@@ -1939,7 +2011,7 @@ function listDirectory(dir)
         end
 
         for i, file in pairs(files_PSX) do
-        local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
+            local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
             if file.directory and System.doesFileExist(romFolder_PSP_GAME .. "/" .. file.name .. "/EBOOT.PBP") then
 
                 if not string.match(file.name, "NPEG")
@@ -2055,6 +2127,7 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+                          
 
                         -- PSP
                         elseif string.match(str, file.name .. "=2") then
@@ -2081,6 +2154,8 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+
+                         
                         
                         -- PSX
                         elseif string.match(str, file.name .. "=3") then
@@ -2107,6 +2182,8 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+                          
+                         
 
                         -- HOMEBREW
                         elseif string.match(str, file.name .. "=4") then
@@ -2134,6 +2211,8 @@ function listDirectory(dir)
                                 end
                             end
 
+                         
+
                         -- DEFAULT - PSX
                         else
                             table.insert(psx_table, file)
@@ -2159,7 +2238,11 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+
+                          
                         end
+
+
                     -- OVERRIDES END
 
                     -- NO OVERRIDE
@@ -2189,23 +2272,26 @@ function listDirectory(dir)
                         end
                     end
 
-                    table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-                    table.insert(files_table, 17, file.name)
-                    table.insert(files_table, 17, file.title)
-                    table.insert(files_table, 17, file.name_online)
-                    table.insert(files_table, 17, file.version)
-                    table.insert(files_table, 17, file.name_title_search)
+                   table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+                   table.insert(files_table, 18, file.name)
+                   table.insert(files_table, 18, file.title)
+                   table.insert(files_table, 18, file.name_online)
+                   table.insert(files_table, 18, file.version)
+                   table.insert(files_table, 18, file.name_title_search)
 
                     --add blank icon to all
                     file.icon = imgCoverTmp
                     file.icon_path = img_path
                     
-                    table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
-                    table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
-                else
+                   table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)                    
+                   table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+                  
                 end
-
-                
+                if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                    if string.find(strFav, file.name,1,true) ~= nil then
+                        table.insert(favorites_table,file)
+                    end
+                end
             end
         end
 
@@ -2260,11 +2346,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 4, file)
@@ -2276,10 +2362,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+           if System.doesFileExist(cur_dir .. "/favorites.dat") then
+            if string.find(strFav, file.name,1,true) ~= nil then
+                table.insert(favorites_table,file)
+            end
+        end
 
         end
     end
@@ -2326,11 +2418,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 5, file)
@@ -2342,14 +2434,19 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+         
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
-
 
     -- SCAN NES
     files_NES = System.listDirectory(romFolder_NES)
@@ -2391,11 +2488,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 6, file)
@@ -2407,10 +2504,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2456,11 +2559,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 7, file)
@@ -2472,10 +2575,17 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2521,11 +2631,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 8, file)
@@ -2537,10 +2647,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2586,11 +2702,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 9, file)
@@ -2602,10 +2718,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2659,11 +2781,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 10, file)
@@ -2675,10 +2797,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+           if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2724,11 +2852,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 11, file)
@@ -2740,10 +2868,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+           if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2789,11 +2923,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 12, file)
@@ -2805,10 +2939,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+           if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -2919,12 +3059,12 @@ function listDirectory(dir)
                     end
                 end
 
-                table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-                table.insert(files_table, 17, file.name)
-                table.insert(files_table, 17, file.title)
-                table.insert(files_table, 17, file.name_online)
-                table.insert(files_table, 17, file.version)
-                table.insert(files_table, 17, file.name_title_search)
+               table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+               table.insert(files_table, 18, file.name)
+               table.insert(files_table, 18, file.title)
+               table.insert(files_table, 18, file.name_online)
+               table.insert(files_table, 18, file.version)
+               table.insert(files_table, 18, file.name_title_search)
 
                 -- all games table
                 table.insert(all_games_table, 13, file)
@@ -2939,11 +3079,16 @@ function listDirectory(dir)
                 file.icon = imgCoverTmp
                 file.icon_path = img_path
                 
-                table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+               table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
                 
                 file.apptitle = romname_noRegion_noExtension
-                table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+               table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
 
+                if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                    if string.find(strFav, file.name,1,true) ~= nil then
+                        table.insert(favorites_table,file)
+                    end
+                end
                 
             end
         end
@@ -2999,11 +3144,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 14, file)
@@ -3015,10 +3160,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -3063,11 +3214,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 15, file)
@@ -3079,10 +3230,16 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
 
         end
     end
@@ -3127,11 +3284,11 @@ function listDirectory(dir)
                 end
             end
 
-            table.insert(files_table, 17, file.app_type) -- Increased for Retro (All systems + 1 for all view)
-            table.insert(files_table, 17, file.name)
-            table.insert(files_table, 17, file.title)
-            table.insert(files_table, 17, file.name_online)
-            table.insert(files_table, 17, file.version)
+           table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.name)
+           table.insert(files_table, 18, file.title)
+           table.insert(files_table, 18, file.name_online)
+           table.insert(files_table, 18, file.version)
 
             -- all games table
             table.insert(all_games_table, 16, file)
@@ -3143,15 +3300,88 @@ function listDirectory(dir)
             file.icon = imgCoverTmp
             file.icon_path = img_path
             
-            table.insert(files_table, 17, file.icon) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
             
             file.apptitle = romname_noRegion_noExtension
-            table.insert(files_table, 17, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
+           table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
 
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
         end
     end
 
+     -- SCAN NGPC
+     files_NGPC = System.listDirectory(romFolder_NGPC)
+     for i, file in pairs(files_NGPC) do
+     local custom_path, custom_path_id, app_type, name, title, name_online, version = nil, nil, nil, nil, nil, nil, nil
+         -- Scan files only, ignore temporary files, Windows = "Thumbs.db", Mac = "DS_Store", and "._name" 
+         if not file.directory and not string.match(file.name, "Thumbs%.db") and not string.match(file.name, "DS_Store") and not string.match(file.name, "%._") then
+ 
+             file.game_path = (romFolder_NGPC .. "/" .. file.name)
+ 
+             romname_withExtension = file.name
+             cleanRomNames()
+             info = romname_noRegion_noExtension
+             app_title = romname_noExtension
+             
+             table.insert(folders_table, file)
+             --table.insert(games_table, file)
+             custom_path = localCoverPath[18] .. romname_noExtension .. ".png"
+             custom_path_id = localCoverPath[18] .. romname_noExtension .. ".png"
+             file.app_type=18
+ 
+             file.filename = file.name
+             file.name = romname_noExtension
+             file.title = romname_noRegion_noExtension
+             file.name_online = romname_url_encoded
+             file.version = romname_region
+ 
+             table.insert(ngpc_table, file)
+ 
+             if custom_path and System.doesFileExist(custom_path) then
+                 img_path = localCoverPath[18] .. romname_noExtension .. ".png" --custom cover by app name
+             elseif custom_path_id and System.doesFileExist(custom_path_id) then
+                 img_path = localCoverPath[18] .. romname_noExtension .. ".png" --custom cover by app id
+             else
+                 if System.doesFileExist("ux0:/app/RETROFLOW/DATA/missing_cover_ngpc.png") then
+                     img_path = "ux0:/app/RETROFLOW/DATA/missing_cover_ngpc.png"  --app icon
+                 else
+                     img_path = "app0:/DATA/noimg.png" --blank grey
+                 end
+             end
+ 
+             table.insert(files_table, 18, file.app_type) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, file.name)
+            table.insert(files_table, 18, file.title)
+            table.insert(files_table, 18, file.name_online)
+            table.insert(files_table, 18, file.version)
+ 
+             -- all games table
+             table.insert(all_games_table, 17, file)
+             file.app_type=18
+             file.cover_path_online = onlineCoverPathSystem[18]
+             file.cover_path_local = localCoverPath[18]
+ 
+             --add blank icon to all
+             file.icon = imgCoverTmp
+             file.icon_path = img_path
+             
+            table.insert(files_table, 18, file.icon) -- Increased for Retro (All systems + 1 for all view)
+             
+             file.apptitle = romname_noRegion_noExtension
+            table.insert(files_table, 18, file.apptitle) -- Increased for Retro (All systems + 1 for all view)
 
+            if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                if string.find(strFav, file.name,1,true) ~= nil then
+                    table.insert(favorites_table,file)
+                end
+            end
+ 
+         end
+     end
 
     table.sort(files_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(folders_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
@@ -3174,7 +3404,8 @@ function listDirectory(dir)
     table.sort(amiga_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(tg16_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(pce_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
-
+    table.sort(ngpc_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    --table.sort(favorites_table, function(a, b) return (a.app_type < b.app_type) end)
     table.sort(all_games_table, function(a, b) return (a.app_type < b.app_type) end)
     
     return_table = TableConcat(folders_table, files_table)
@@ -3182,6 +3413,7 @@ function listDirectory(dir)
     total_all = #files_table
     total_games = #games_table
     total_homebrews = #homebrews_table
+    total_favorites = #favorites_table
     
     -- CACHE ALL TABLES - PRINT AND SAVE
     cache_all_tables()
@@ -3209,6 +3441,8 @@ function import_cached_DB(dir)
     amiga_table = {}
     tg16_table = {}
     pce_table = {}
+    ngpc_table = {}
+    favorites_table = {}
     homebrews_table = {}
     all_games_table = {}
     
@@ -3229,7 +3463,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
 
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3249,7 +3483,7 @@ function import_cached_DB(dir)
     --         v.icon_path = v.icon_path
 
     --         v.apptitle = v.apptitle
-    --         table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+    --         table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
     --     end
     -- end
 
@@ -3271,7 +3505,7 @@ function import_cached_DB(dir)
                 v.icon_path = v.icon_path
 
                 v.apptitle = v.apptitle
-                table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+                table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
             end
         end
     else
@@ -3293,7 +3527,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3313,7 +3547,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3333,7 +3567,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3353,7 +3587,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3373,7 +3607,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3393,7 +3627,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3413,7 +3647,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3433,7 +3667,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3453,7 +3687,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3473,7 +3707,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3493,7 +3727,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3513,7 +3747,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3533,7 +3767,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3553,7 +3787,7 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
 
@@ -3573,9 +3807,29 @@ function import_cached_DB(dir)
             v.icon_path = v.icon_path
                         
             v.apptitle = v.apptitle
-            table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
         end
     end
+
+-- Import cached DB: ngpc
+if System.doesFileExist(db_Cache_Folder .. "db_ngpc.lua") then
+    db_Cache_ngpc = db_Cache_Folder .. "db_ngpc.lua"
+
+    db_ngpc = dofile(db_Cache_ngpc)
+
+    for k, v in ipairs(db_ngpc) do
+        table.insert(folders_table, v)
+        table.insert(ngpc_table, v)
+        table.insert(all_games_table, v)
+
+        --add blank icon to all
+        v.icon = imgCoverTmp
+        v.icon_path = v.icon_path
+                    
+        v.apptitle = v.apptitle
+        table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+    end
+end
 
     -- -- Import cached DB: all_games
     -- if System.doesFileExist(db_Cache_Folder .. "db_all_games.lua") then
@@ -3592,18 +3846,16 @@ function import_cached_DB(dir)
     --         v.icon_path = v.icon_path
 
     --         v.apptitle = v.apptitle
-    --         table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+    --         table.insert(files_table, 18, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
     --     end
     -- end
 
     table.sort(files_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(folders_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
-    
     table.sort(games_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(homebrews_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psp_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psx_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
-
     table.sort(n64_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(snes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(nes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
@@ -3617,7 +3869,8 @@ function import_cached_DB(dir)
     table.sort(amiga_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(tg16_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(pce_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
-
+    table.sort(ngpc_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    --table.sort(favorites_table, function(a, b) return (a.app_type < b.app_type) end)
     table.sort(all_games_table, function(a, b) return (a.app_type < b.app_type) end)
 
     return_table = TableConcat(folders_table, files_table)
@@ -3625,6 +3878,7 @@ function import_cached_DB(dir)
     total_all = #files_table
     total_games = #games_table
     total_homebrews = #homebrews_table
+    total_favorites = #favorites_table
     
     return return_table
 end
@@ -3974,6 +4228,88 @@ function GetInfoSelected()
         else
             app_title = "-"
         end
+    elseif showCat == 18 then
+        if #ngpc_table > 0 then
+            info = ngpc_table[p].name            
+            icon_path = "ux0:/app/RETROFLOW/DATA/icon_ngpc.png"
+            pic_path = "-"
+            app_title = ngpc_table[p].title
+            apptype = ngpc_table[p].app_type
+            appdir = ngpc_table[p].game_path
+            folder = ngpc_table[p].directory
+
+            app_titleid = ngpc_table[p].name
+            app_version = ngpc_table[p].version
+        else
+            app_title = "-"
+        end
+    elseif showCat == 19 then
+        if #favorites_table > 0 then
+            info = favorites_table[p].name
+            app_title = favorites_table[p].title
+            apptype = favorites_table[p].app_type
+            appdir = favorites_table[p].game_path
+            folder = favorites_table[p].directory
+
+            app_titleid = favorites_table[p].name
+            app_version = favorites_table[p].version
+
+            -- Vita
+            if System.doesFileExist(working_dir .. "/" .. favorites_table[p].name .. "/sce_sys/param.sfo") and apptype==1 then
+                icon_path = "ur0:/appmeta/" .. favorites_table[p].name .. "/icon0.png"
+                pic_path = "ur0:/appmeta/" .. favorites_table[p].name .. "/pic0.png"
+
+            -- Homebrew 
+            elseif System.doesFileExist(working_dir .. "/" .. favorites_table[p].name .. "/sce_sys/param.sfo") and apptype==0 then
+                icon_path = favorites_table[p].icon_path
+                pic_path = ""
+            else
+                pic_path = "-"
+                icon_path = favorites_table[p].icon_path
+
+                if apptype==1 then
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_psv.png"
+                elseif apptype==2 then
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_psp.png"
+                elseif apptype==3 then
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_psx.png"
+                elseif apptype==5 then -- N64
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_n64.png"
+                elseif apptype==6 then -- SNES
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_snes.png"
+                elseif apptype==7 then -- NES
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_nes.png"
+                elseif apptype==8 then -- GBA
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_gba.png"
+                elseif apptype==9 then -- GBC
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_gbc.png"
+                elseif apptype==10 then -- GB
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_gb.png"
+                elseif apptype==11 then -- MD
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_md.png"
+                elseif apptype==12 then -- SMS
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_sms.png"
+                elseif apptype==13 then -- GG
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_gg.png"
+                elseif apptype==14 then -- MAME
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_mame.png"
+                elseif apptype==15 then -- AMIGA
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_amiga.png"
+                elseif apptype==16 then -- TG16
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_tg16.png"
+                elseif apptype==17 then -- PCE
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_pce.png"
+                elseif apptype==18 then -- NGPC
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_ngpc.png"
+                else
+                    icon_path = favorites_table[p].icon_path
+                end
+
+            end
+        else
+            -- app_title = "-"
+        end
+    
     else
         if #files_table > 0 then
             info = files_table[p].name
@@ -4030,6 +4366,8 @@ function GetInfoSelected()
                     icon_path = "ux0:/app/RETROFLOW/DATA/icon_tg16.png"
                 elseif apptype==17 then -- PCE
                     icon_path = "ux0:/app/RETROFLOW/DATA/icon_pce.png"
+                elseif apptype==18 then -- NGPC
+                    icon_path = "ux0:/app/RETROFLOW/DATA/icon_ngpc.png"
                 else
                     icon_path = files_table[p].icon_path
                 end
@@ -4038,6 +4376,49 @@ function GetInfoSelected()
         else
             -- app_title = "-"
         end
+    end
+end
+
+function AddOrRemoveFavorite()
+
+    if System.doesFileExist(cur_dir .. "/favorites.dat") then
+        local inf = assert(io.open(cur_dir .. "/favorites.dat", "rw"), "Failed to open favorites.dat")
+        local lines = ""
+        local favoriteExists = false;
+
+        --check table instead of file?
+        -- for k, v in pairs(favorites_table) do
+        --     if v.apptitle == app_titleid then
+        --         foundFav = true
+        --         break
+        --     end
+        -- end
+        -- if not foundFav then
+         
+        -- end
+
+        while(true) do
+            local line = inf:read("*line")
+            if not line then break end
+            if string.find(line, app_titleid .. "", 1,true) == nil then
+                lines = lines .. line .. "\n"
+            else
+                favoriteExists = true;
+            end
+        end
+        if not favoriteExists then
+            lines = lines .. app_titleid .. "\n"
+        end
+        inf:close()
+        file_override = io.open(cur_dir .. "/favorites.dat", "w")
+        file_override:write(lines)
+        file_override:close()
+        
+            --Reload
+            FreeIcons()
+            FreeMemory()
+            Network.term()
+            dofile("app0:index.lua")
     end
 end
 
@@ -4102,7 +4483,7 @@ function DownloadCovers()
 
     if Network.isWifiEnabled() then
 
-        -- getCovers - 0 All, 1 PSV, 2 PSP, 3 PS1, 4 N64, 5 SNES, 6 NES, 7 GBA, 8 GBC, 9 GB, 10 MD, 11 SMS, 12 GG, 13 MAME, 14 AMIGA, 15 TG16, 16 PCE
+        -- getCovers - 0 All, 1 PSV, 2 PSP, 3 PS1, 4 N64, 5 SNES, 6 NES, 7 GBA, 8 GBC, 9 GB, 10 MD, 11 SMS, 12 GG, 13 MAME, 14 AMIGA, 15 TG16, 16 PCE, 17 NGPC
         
         -- scan ALL
         if  getCovers==0 and #all_games_table > 0 then -- Check getcover number against sytem
@@ -5507,6 +5888,89 @@ function DownloadCovers()
         end
         -- END PCE
 
+        --START NGPC
+        -- scan NGPC
+        if  getCovers==17 and #ngpc_table > 0 then -- Check getcover number against sytem
+
+            if status ~= RUNNING then
+                if scanComplete == false then
+                    System.setMessage("Downloading covers...", true)
+                    System.setMessageProgMsg(txt)
+
+                    while app_idx <= #ngpc_table do
+
+                        if System.getAsyncState() ~= 0 then
+                            Network.downloadFileAsync(onlineCoverPathSystem[9] .. ngpc_table[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png")
+                            running = true
+                        end
+                        if System.getAsyncState() == 1 then
+                            Graphics.initBlend()
+                            Graphics.termBlend()
+                            Screen.flip()
+                            running = false
+                        end
+                        if running == false then
+                            if System.doesFileExist("ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png") then
+                                tmpfile = System.openFile("ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png", FREAD)
+                                size = System.sizeFile(tmpfile)
+                                if size < 1024 then
+                                    System.deleteFile("ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png")
+
+                                -- delete if already exists
+                                elseif System.doesFileExist(localCoverPath[9] .. ngpc_table[app_idx].name .. ".png") then
+                                    System.deleteFile("ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png")
+                                    cvrfound = cvrfound + 1
+
+                                else
+                                    System.rename("ux0:/data/RetroFlow/" .. ngpc_table[app_idx].name .. ".png", localCoverPath[9] .. ngpc_table[app_idx].name .. ".png")
+                                    cvrfound = cvrfound + 1
+                                end
+                                System.closeFile(tmpfile)
+                                
+                                percent = (app_idx / #ngpc_table) * 100
+                                txt = lang_lines[99] .. "...\n" .. lang_lines[97] .. " " .. ngpc_table[app_idx].name .. "\n" .. lang_lines[58] .. " " .. cvrfound .. " " .. lang_lines_61_fix .. #ngpc_table
+                                --    Downloading ngpc covers       Cover                                                             Found                                       of
+                                
+                                Graphics.initBlend()
+                                Graphics.termBlend()
+                                Screen.flip()
+                                app_idx = app_idx + 1
+                            end
+                        end
+                        
+                        if txt ~= old_txt then
+                            System.setMessageProgMsg(txt)
+                            old_txt = txt
+                        end
+                        if percent ~= old_percent then
+                            System.setMessageProgress(percent)
+                            old_percent = percent
+                        end
+                    end
+                    if app_idx >= #ngpc_table then
+                        System.closeMessage()
+                        scanComplete = true
+                    end
+                else
+
+                    if startupScan == 0 then -- 0 Off, 1 On
+                        -- Startup scan is OFF
+                        -- Scan folders and games
+                        files_table = listDirectory(System.currentDirectory())
+                        -- Import Cached Database
+                        files_table = import_cached_DB(System.currentDirectory())
+                    else
+                    end
+
+                    FreeIcons()
+                    FreeMemory()
+                    Network.term()
+                    dofile("app0:index.lua")
+                end
+            end
+        end
+        -- END GBC
+
     else
         if status ~= RUNNING then
             System.setMessage(lang_lines[50], false, BUTTON_OK) -- Internet Connection Required
@@ -5524,7 +5988,10 @@ function DownloadCovers()
 
 end
 
-local function DrawCover(x, y, text, icon, sel, apptype)
+local function DrawCover(x, y, text, icon, sel, apptype, isFav)
+    if isFav == nil then
+        isFav = false
+    end
     rot = 0
     extraz = 0
     extrax = 0
@@ -5607,11 +6074,20 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.useTexture(modCover, icon)
                 Render.drawModel(modCover, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBox, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+                if isFav then
+                    Render.useTexture(quad, imgFavorite)
+                    Render.drawModel(quad, x + extrax + 0.5, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+                end
             else
                 Render.useTexture(modCoverNoref, icon)
                 Render.drawModel(modCoverNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+                if isFav then
+                    Render.useTexture(quad_noRef, imgFavorite)
+                    Render.drawModel(quad_noRef, x + extrax + 0.5, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+                end
             end
+           
         elseif apptype==2 then
             -- PSP Boxes
             if setReflections == 1 then
@@ -5622,6 +6098,10 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.useTexture(modCoverPSPNoref, icon)
                 Render.drawModel(modCoverPSPNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxPSPNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+            end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.3, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
             end
         elseif apptype==3 then
             -- PSX Boxes
@@ -5634,16 +6114,25 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.drawModel(modCoverPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.5, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+            end
         elseif apptype==5 or apptype==6 then
             -- 5 N64 Boxes -- 6 SNES Boxes
             if setReflections == 1 then
                 Render.useTexture(modCoverN64, icon)
                 Render.drawModel(modCoverN64, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxN64, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+
             else
                 Render.useTexture(modCoverN64Noref, icon)
                 Render.drawModel(modCoverN64Noref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxN64Noref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+            end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.9, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
             end
         elseif apptype==7 or apptype==14 or apptype==15 or apptype==16 or apptype==17 then
             -- 7 NES Boxes -- 14 MAME Boxes -- 15 AMIGA Boxes -- 16 TG16 Boxes -- 17 PCE Boxes
@@ -5656,8 +6145,12 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.drawModel(modCoverNESNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxNESNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==8 or apptype==9 or apptype==10 then
-            -- 8 GBA Boxes -- 9 GBC Boxes -- 10 GB Boxes
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.7, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+            end
+        elseif apptype==8 or apptype==9 or apptype==10 or apptype == 18 then
+            -- 8 GBA Boxes -- 9 GBC Boxes -- 10 GB Boxes -- 18 NGPC Boxes
             if setReflections == 1 then
                 Render.useTexture(modCoverGB, icon)
                 Render.drawModel(modCoverGB, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
@@ -5666,6 +6159,10 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.useTexture(modCoverGBNoref, icon)
                 Render.drawModel(modCoverGBNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxGBNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
+            end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.55, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
             end
         elseif apptype==11 or apptype==12 or apptype==13 then
             -- 11 MD Boxes -- 12 SMS Boxes -- 13 GG Boxes
@@ -5678,6 +6175,10 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.drawModel(modCoverMDNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxMDNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.55, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+            end
         else
             -- Homebrew Icon
             if setReflections == 1 then
@@ -5687,7 +6188,12 @@ local function DrawCover(x, y, text, icon, sel, apptype)
                 Render.useTexture(modCoverHbrNoref, icon)
                 Render.drawModel(modCoverHbrNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
+            if isFav then
+                Render.useTexture(quad, imgFavorite)
+                Render.drawModel(quad, x + extrax + 0.55, y + extray, -4.9 - extraz - zoom, 0, math.deg(rot), 0)
+            end
         end
+      
     else
         hideBoxes = hideBoxes - 0.1
     end
@@ -5845,6 +6351,24 @@ function FreeIcons()
             v.ricon = nil
         end
     end
+     -- NGPC
+     for k, v in pairs(ngpc_table) do
+        FileLoad[v] = nil
+        Threads.remove(v)
+        if v.ricon then
+            Graphics.freeImage(v.ricon)
+            v.ricon = nil
+        end
+    end
+    -- Favorites
+    for k, v in pairs(favorites_table) do
+        FileLoad[v] = nil
+        Threads.remove(v)
+        if v.ricon then
+            Graphics.freeImage(v.ricon)
+            v.ricon = nil
+        end
+    end
     -- Homebrew
     for k, v in pairs(homebrews_table) do
         FileLoad[v] = nil
@@ -5927,6 +6451,10 @@ function DownloadSingleCover()
         elseif apptype == 17 then
             coverspath = localCoverPath[17]
             onlineCoverspath = onlineCoverPathSystem[17]
+        --NGPC
+        elseif apptype == 18 then
+            coverspath = localCoverPath[18]
+            onlineCoverspath = onlineCoverPathSystem[18]
         else
             coverspath = localCoverPath[1]
             onlineCoverspath = onlineCoverPathSystem[1]
@@ -6140,7 +6668,30 @@ function DownloadSingleCover()
                 if pce_table[app_idx].ricon then
                     pce_table[app_idx].ricon = nil
                 end
-
+                --NGPC
+            elseif showCat == 18 then
+                --"ngpc_table"
+                ngpc_table[app_idx].icon_path=coverspath .. app_titleid .. ".png"
+                if FileLoad[ngpc_table[app_idx]] == true then
+                    FileLoad[ngpc_table[app_idx]] = nil
+                    Threads.remove(ngpc_table[app_idx])
+                    update_cached_table_ngpc()
+                end
+                if ngpc_table[app_idx].ricon then
+                    ngpc_table[app_idx].ricon = nil
+                end
+                --Favorites
+            elseif showCat == 19 then
+                --"favorites_table"
+                favorites_table[app_idx].icon_path=coverspath .. app_titleid .. ".png"
+                if FileLoad[favorites_table[app_idx]] == true then
+                    FileLoad[favorites_table[app_idx]] = nil
+                    Threads.remove(favorites_table[app_idx])
+                    update_cached_table_favorites()
+                end
+                if favorites_table[app_idx].ricon then
+                    favorites_table[app_idx].ricon = nil
+                end
             else
                 --"files_table"
                 files_table[app_idx].icon_path=coverspath .. app_titleid .. ".png"
@@ -6206,6 +6757,8 @@ while true do
     end
     
     Graphics.fillRect(0, 960, 496, 544, themeCol)-- footer bottom
+
+  
     
     if showMenu == 0 then
         -- MAIN VIEW
@@ -6217,6 +6770,10 @@ while true do
         Graphics.drawImage(888, 41, imgBattery)
         Graphics.fillRect(891, 891 + (life / 5.2), 45, 53, white)
         -- Footer buttons and icons
+
+      
+
+
         if setLanguage==8 or setLanguage==9 or setLanguage==10 then
         --Russian, Japanese and Chinese language fix positions
             Graphics.drawImage(824, 510, btnX)
@@ -6225,8 +6782,23 @@ while true do
             Font.print(fnt20, 710+28, 508, lang_lines[8], white)--Details
             Graphics.drawImage(570, 510, btnS)
             Font.print(fnt20, 570+28, 508, lang_lines[9], white)--Category
-            Graphics.drawImage(480, 510, btnO)
-            Font.print(fnt20, 480+28, 508, lang_lines[10], white)--View
+            Graphics.drawImage(340, 510, btnO)
+            if showCat == 19 then
+                Font.print(fnt20, 340+28, 508, lang_lines[103], white)--Remove from favorites
+            else
+                local foundFav = false
+                for k, v in pairs(favorites_table) do
+                    if v.apptitle == app_title then
+                        Font.print(fnt20, 340+28, 508, lang_lines[103], white)--Remove from favorites
+                        foundFav = true
+                        break
+                    end
+                end
+                if not foundFav then
+                    Font.print(fnt20, 340+28, 508, lang_lines[102], white)--Add to favorites
+                end
+               
+            end
         else
             Graphics.drawImage(904-(string.len(lang_lines[7])*10), 510, btnX)
             Font.print(fnt20, 904+28-(string.len(lang_lines[7])*10), 508, lang_lines[7], white)--Launch
@@ -6234,8 +6806,27 @@ while true do
             Font.print(fnt20, 790+28-(string.len(lang_lines[8])*10), 508, lang_lines[8], white)--Details
             Graphics.drawImage(670-(string.len(lang_lines[9])*10), 510, btnS)
             Font.print(fnt20, 670+28-(string.len(lang_lines[9])*10), 508, lang_lines[9], white)--Category
-            Graphics.drawImage(520-(string.len(lang_lines[10])*10), 510, btnO)
-            Font.print(fnt20, 520+28-(string.len(lang_lines[10])*10), 508, lang_lines[10], white)--View
+            Graphics.drawImage(380-(string.len(lang_lines[10])*10), 510, btnO)
+            if showCat == 19 then
+                Font.print(fnt20, 380+28-(string.len(lang_lines[10])*10), 508, lang_lines[103], white)--Remove from favorites
+            else
+                for k, v in pairs(favorites_table) do
+                    if v.apptitle == app_title then
+                        Font.print(fnt20, 380+28-(string.len(lang_lines[10])*10), 508, lang_lines[103], white)--Remove from favorites
+                        foundFav = true
+                        break
+                    end
+                end
+                if not foundFav then
+                    Font.print(fnt20, 380+28-(string.len(lang_lines[10])*10), 508, lang_lines[102], white)--Add to favorites
+                end
+               
+            end
+        end
+        
+
+        if total_favorites == 0 and showCat == 19 then
+            showCat = 1
         end
         
         if showCat == 1 then
@@ -6272,6 +6863,10 @@ while true do
             Font.print(fnt22, 32, 34, lang_lines[44], white)--TG16
         elseif showCat == 17 then
             Font.print(fnt22, 32, 34, lang_lines[45], white)--PCE
+        elseif showCat == 18 then
+            Font.print(fnt22, 32, 34, lang_lines[98], white)--NGPC
+        elseif showCat == 19 then
+            Font.print(fnt22, 32, 34, lang_lines[101], white)--Favorites
         else
             Font.print(fnt22, 32, 34, lang_lines[5], white)--ALL
         end
@@ -6306,9 +6901,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#games_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#games_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#games_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#games_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6343,9 +6938,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#homebrews_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#homebrews_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#homebrews_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#homebrews_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6380,9 +6975,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#psp_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#psp_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#psp_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#psp_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6417,9 +7012,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#psx_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#psx_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#psx_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#psx_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6456,9 +7051,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#n64_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#n64_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#n64_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#n64_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6492,10 +7087,17 @@ while true do
                             Index = "ricon"
                         })
                     end
+                    local isFavorite = false
+                    for k, v in pairs(favorites_table) do
+                        if v.apptitle == file.title then
+                            isFavorite = true
+                            break
+                        end
+                    end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#snes_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#snes_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type, isFavorite)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#snes_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#snes_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type, isFavorite)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6530,9 +7132,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#nes_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#nes_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#nes_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#nes_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6567,9 +7169,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#gba_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gba_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#gba_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gba_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6604,9 +7206,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#gbc_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gbc_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#gbc_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gbc_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6641,9 +7243,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#gb_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gb_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#gb_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gb_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6678,9 +7280,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#md_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#md_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#md_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#md_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6715,9 +7317,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#sms_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#sms_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#sms_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#sms_table * space + space), -0.6, file.name, file.icon, base_x, file.app_typ,foundFave)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6752,9 +7354,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#gg_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gg_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#gg_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#gg_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6789,9 +7391,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#mame_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#mame_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#mame_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#mame_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6826,9 +7428,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#amiga_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#amiga_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#amiga_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#amiga_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6863,9 +7465,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#tg16_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#tg16_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#tg16_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#tg16_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6900,9 +7502,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#pce_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#pce_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#pce_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#pce_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6919,7 +7521,79 @@ while true do
                 PrintCentered(fnt20, 480, 462, p .. " " .. lang_lines[61] .. #pce_table, white, 20)-- Draw total items
                 --                                         of
             end
+        --NGPC
+        elseif showCat == 18 then
+            for l, file in pairs(ngpc_table) do
+                if (l >= master_index) then
+                    base_x = base_x + space
+                end
+                if l > p-8 and base_x < 10 then
+                    if FileLoad[file] == nil then
+                        FileLoad[file] = true
+                        Threads.addTask(file, {
+                            Type = "ImageLoad",
+                            Path = file.icon_path,
+                            Table = file,
+                            Index = "ricon"
+                        })
+                    end
+                    if file.ricon ~= nil then
+                        DrawCover((targetX + l * space) - (#ngpc_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
+                    else
+                        DrawCover((targetX + l * space) - (#ngpc_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
+                    end
+                else
+                    if FileLoad[file] == true then
+                        FileLoad[file] = nil
+                        Threads.remove(file)
+                    end
+                    if file.ricon then
+                        Graphics.freeImage(file.ricon)
+                        file.ricon = nil
+                    end
+                end
+            end
+            if showView ~= 2 then
+                PrintCentered(fnt20, 480, 462, p .. " " .. lang_lines[61] .. #ngpc_table, white, 20)-- Draw total items
+                --                                         of
+            end
+        --Favorites
+        elseif showCat == 19 then
 
+            for l, file in pairs(favorites_table) do
+                if (l >= master_index) then
+                    base_x = base_x + space
+                end
+                if l > p-8 and base_x < 10 then
+                    if FileLoad[file] == nil then
+                        FileLoad[file] = true
+                        Threads.addTask(file, {
+                            Type = "ImageLoad",
+                            Path = file.icon_path,
+                            Table = file,
+                            Index = "ricon"
+                        })
+                    end
+                    if file.ricon ~= nil then
+                        DrawCover((targetX + l * space) - (#favorites_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
+                    else
+                        DrawCover((targetX + l * space) - (#favorites_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
+                    end
+                    else
+                    if FileLoad[file] == true then
+                        FileLoad[file] = nil
+                        Threads.remove(file)
+                    end
+                    if file.ricon then
+                        Graphics.freeImage(file.ricon)
+                        file.ricon = nil
+                    end
+                end
+            end
+            if showView ~= 2 then
+                PrintCentered(fnt20, 480, 462, p .. " " .. lang_lines[101] .. #favorites_table, white, 20)-- Draw total items
+                --                                         of
+            end
 
         else
 
@@ -6940,9 +7614,9 @@ while true do
                         })
                     end
                     if file.ricon ~= nil then
-                        DrawCover((targetX + l * space) - (#files_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#files_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type,foundFav)--draw visible covers only
                     else
-                        DrawCover((targetX + l * space) - (#files_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                        DrawCover((targetX + l * space) - (#files_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type,foundFav)--draw visible covers only
                     end
                 else
                     if FileLoad[file] == true then
@@ -6998,6 +7672,7 @@ while true do
         
         -- PREVIEW
         -- Footer buttons and icons
+    
         Graphics.drawImage(900-(string.len(lang_lines[11])*10), 510, btnO)
         Font.print(fnt20, 900+28-(string.len(lang_lines[11])*10), 508, lang_lines[11], white)--Close
         Graphics.drawImage(750-(string.len(lang_lines[32])*10), 510, btnX)
@@ -7739,7 +8414,46 @@ while true do
                 Render.useTexture(modCoverMDNoref, pce_table[p].icon)
                 Render.useTexture(modCoverMDNoref, pce_table[p].icon)
             end
-
+        --NGPC
+        elseif showCat == 18 then
+            --Graphics.setImageFilters(gbc_table[p].icon, FILTER_LINEAR, FILTER_LINEAR)
+            if ngpc_table[p].ricon ~= nil then
+                Render.useTexture(modCoverNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverHbrNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverPSPNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverPSXNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverN64Noref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverN64Noref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverNESNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].ricon)
+            else 
+                Render.useTexture(modCoverNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverHbrNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverPSPNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverPSXNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverN64Noref, ngpc_table[p].icon)
+                Render.useTexture(modCoverN64Noref, ngpc_table[p].icon)
+                Render.useTexture(modCoverNESNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ngpc_table[p].icon)
+            end
         else
             --Graphics.setImageFilters(files_table[p].icon, FILTER_LINEAR, FILTER_LINEAR)
             if files_table[p].ricon ~= nil then
@@ -7848,6 +8562,10 @@ while true do
             Render.drawModel(modCoverMDNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             Render.drawModel(modBoxMDNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines[95] -- "PC Engine Game"
+        elseif apptype==18 then
+            Render.drawModel(modCoverGBNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            Render.drawModel(modBoxGBNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            tmpapptype = lang_lines[100] -- "NGPC Game"
         else
             Render.drawModel(modCoverHbrNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines[96] -- "Homebrew"
@@ -7976,183 +8694,202 @@ while true do
         Font.print(fnt22, 84, 32, lang_lines[6], white)--SETTINGS
         Graphics.drawLine(60, 900, 66, 66, white)
 
-        Graphics.fillRect(60, 900, 66 + (menuY * 40), 106 + (menuY * 40), themeCol)-- selection
+        Graphics.fillRect(60, 900, 66 + (menuY * 36), 106 + (menuY * 36), themeCol)-- selection
 
-        menuItems = 9
+        menuItems = 10
         
         -- Chinese language fix
         if setLanguage == 10 then
-            Font.print(fnt22, 77, 72, lang_lines[14], white)--Startup Category
+            Font.print(fnt20, 77, 72, lang_lines[14], white)--Startup Category
         else
-            Font.print(fnt22, 84, 72, lang_lines[14], white)--Startup Category
+            Font.print(fnt20, 84, 72, lang_lines[14], white)--Startup Category
         end
         if startCategory == 0 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[5], white)--ALL
+            Font.print(fnt20, 125 + 260, 72, lang_lines[5], white)--ALL
         elseif startCategory == 1 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[1], white)--GAMES
+            Font.print(fnt20, 125 + 260, 72, lang_lines[1], white)--GAMES
         elseif startCategory == 2 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[2], white)--HOMEBREWS
+            Font.print(fnt20, 125 + 260, 72, lang_lines[2], white)--HOMEBREWS
         elseif startCategory == 3 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[3], white)--PSP
+            Font.print(fnt20, 125 + 260, 72, lang_lines[3], white)--PSP
         elseif startCategory == 4 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[4], white)--PSX
+            Font.print(fnt20, 125 + 260, 72, lang_lines[4], white)--PSX
         elseif startCategory == 5 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[33], white)--N64
+            Font.print(fnt20, 125 + 260, 72, lang_lines[33], white)--N64
         elseif startCategory == 6 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[34], white)--SNES
+            Font.print(fnt20, 125 + 260, 72, lang_lines[34], white)--SNES
         elseif startCategory == 7 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[35], white)--NES
+            Font.print(fnt20, 125 + 260, 72, lang_lines[35], white)--NES
         elseif startCategory == 8 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[36], white)--GBA
+            Font.print(fnt20, 125 + 260, 72, lang_lines[36], white)--GBA
         elseif startCategory == 9 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[37], white)--GBC
+            Font.print(fnt20, 125 + 260, 72, lang_lines[37], white)--GBC
         elseif startCategory == 10 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[38], white)--GB
+            Font.print(fnt20, 125 + 260, 72, lang_lines[38], white)--GB
         elseif startCategory == 11 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[39], white)--MD
+            Font.print(fnt20, 125 + 260, 72, lang_lines[39], white)--MD
         elseif startCategory == 12 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[40], white)--SMS
+            Font.print(fnt20, 125 + 260, 72, lang_lines[40], white)--SMS
         elseif startCategory == 13 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[41], white)--GG
+            Font.print(fnt20, 125 + 260, 72, lang_lines[41], white)--GG
         elseif startCategory == 14 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[42], white)--MAME
+            Font.print(fnt20, 125 + 260, 72, lang_lines[42], white)--MAME
         elseif startCategory == 15 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[43], white)--AMIGA
+            Font.print(fnt20, 125 + 260, 72, lang_lines[43], white)--AMIGA
         elseif startCategory == 16 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[44], white)--TG16
+            Font.print(fnt20, 125 + 260, 72, lang_lines[44], white)--TG16
         elseif startCategory == 17 then
-            Font.print(fnt22, 125 + 260, 72, lang_lines[45], white)--PCE
+            Font.print(fnt20, 125 + 260, 72, lang_lines[45], white)--PCE
+        elseif startCategory == 18 then
+            Font.print(fnt20, 125 + 260, 72, lang_lines[100], white)--NGPC
+        elseif startCategory == 19 then
+            Font.print(fnt20, 125 + 260, 72, lang_lines[101], white)--Favorites
         end
         
-        Font.print(fnt22, 84, 72 + 40, lang_lines[15], white) -- REFLECTION
+        Font.print(fnt20, 84, 72 + 36, lang_lines[15], white) -- REFLECTION
         if setReflections == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 40, lang_lines[22], white)--ON
+            Font.print(fnt20, 125 + 260, 72 + 36, lang_lines[22], white)--ON
         else
-            Font.print(fnt22, 125 + 260, 72 + 40, lang_lines[23], white)--OFF
+            Font.print(fnt20, 125 + 260, 72 + 36, lang_lines[23], white)--OFF
         end
         
-        Font.print(fnt22, 84, 72 + 80, lang_lines[16], white)--SOUNDS
+        Font.print(fnt20, 84, 72 + 72, lang_lines[16], white)--SOUNDS
         if setSounds == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 80, lang_lines[22], white)--ON
+            Font.print(fnt20, 125 + 260, 72 + 72, lang_lines[22], white)--ON
         else
-            Font.print(fnt22, 125 + 260, 72 + 80, lang_lines[23], white)--OFF
+            Font.print(fnt20, 125 + 260, 72 + 72, lang_lines[23], white)--OFF
         end
         
-        Font.print(fnt22, 84, 72 + 120,  lang_lines[17], white)
+        Font.print(fnt20, 84, 72 + 108,  lang_lines[17], white)
         if themeColor == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[24], white)--Red
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[24], white)--Red
         elseif themeColor == 2 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[25], white)--Yellow
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[25], white)--Yellow
         elseif themeColor == 3 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[26], white)--Green
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[26], white)--Green
         elseif themeColor == 4 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[27], white)--Grey
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[27], white)--Grey
         elseif themeColor == 5 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[28], white)--Black
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[28], white)--Black
         elseif themeColor == 6 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[29], white)--Purple
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[29], white)--Purple
         elseif themeColor == 7 then
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[30], white)--Orange
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[30], white)--Orange
         else
-            Font.print(fnt22, 125 + 260, 72 + 120, lang_lines[31], white)--Blue
+            Font.print(fnt20, 125 + 260, 72 + 108, lang_lines[31], white)--Blue
+        end
+
+        Font.print(fnt20, 84, 72 + 144,  "Default view", white)
+        if showView == 0 then
+            Font.print(fnt20, 125 + 260, 72 + 144, "1", white)--1
+        elseif showView == 1 then
+            Font.print(fnt20, 125 + 260, 72 + 144, "2", white)--2
+        elseif showView == 2 then
+            Font.print(fnt20, 125 + 260, 72 + 144, "3", white)--3
+        elseif showView == 3 then
+            Font.print(fnt20, 125 + 260, 72 + 144, "4", white)--4
+        else
+            Font.print(fnt20, 125 + 260, 72 + 144, "5", white)--5
         end
         
-        Font.print(fnt22, 84, 72 + 160,  lang_lines[18], white)
+        Font.print(fnt20, 84, 72 + 180,  lang_lines[18], white)
         if setBackground == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 160, lang_lines[22], white)--ON
+            Font.print(fnt20, 125 + 260, 72 + 180, lang_lines[22], white)--ON
         else
-            Font.print(fnt22, 120 + 260, 72 + 160, lang_lines[23], white)--OFF
+            Font.print(fnt20, 120 + 260, 72 + 180, lang_lines[23], white)--OFF
         end
         
         if scanComplete == false then
             if getCovers == 1 then
-            Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[1] .. "  >", white)--Download Covers PS VITA
+            Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[1] .. "  >", white)--Download Covers PS VITA
             elseif getCovers == 2 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[3] .. "  >", white)--Download Covers PSP
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[3] .. "  >", white)--Download Covers PSP
             elseif getCovers == 3 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[4] .."  >", white)--Download Covers PSX
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[4] .."  >", white)--Download Covers PSX
             elseif getCovers == 4 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[33] .. "  >", white)--Download Covers N64
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[33] .. "  >", white)--Download Covers N64
             elseif getCovers == 5 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[34] .. "  >", white)--Download Covers SNES
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[34] .. "  >", white)--Download Covers SNES
             elseif getCovers == 6 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[35] .. "  >", white)--Download Covers NES
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[35] .. "  >", white)--Download Covers NES
             elseif getCovers == 7 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[36] .. "  >", white)--Download Covers GBA
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[36] .. "  >", white)--Download Covers GBA
             elseif getCovers == 8 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[37] .. "  >", white)--Download Covers GBC
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[37] .. "  >", white)--Download Covers GBC
             elseif getCovers == 9 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[38] .. "  >", white)--Download Covers GB
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[38] .. "  >", white)--Download Covers GB
             elseif getCovers == 10 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[39] .. "  >", white)--Download Covers MD
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[39] .. "  >", white)--Download Covers MD
             elseif getCovers == 11 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[40] .. "  >", white)--Download Covers SMS
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[40] .. "  >", white)--Download Covers SMS
             elseif getCovers == 12 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[41] .. "  >", white)--Download Covers GG
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[41] .. "  >", white)--Download Covers GG
             elseif getCovers == 13 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[42] .. "  >", white)--Download Covers MAME
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[42] .. "  >", white)--Download Covers MAME
             elseif getCovers == 14 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[43] .. "  >", white)--Download Covers AMIGA
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[43] .. "  >", white)--Download Covers AMIGA
             elseif getCovers == 15 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[44] .. "  >", white)--Download Covers TG16
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[44] .. "  >", white)--Download Covers TG16
             elseif getCovers == 16 then
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[45] .. "  >", white)--Download Covers PCE       
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[45] .. "  >", white)--Download Covers PCE       
+            elseif getCovers == 18 then
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[100] .. "  >", white)--Download Covers NGPC
             else
-                Font.print(fnt22, 84, 72 + 200, lang_lines[19] .. "  <   " .. lang_lines[5] .. "  >", white)--Download Covers All
+                Font.print(fnt20, 84, 72 + 216, lang_lines[19] .. "  <   " .. lang_lines[5] .. "  >", white)--Download Covers All
             end
         else
-            Font.print(fnt22, 84, 72 + 200,  lang_lines[20], white)--Reload Covers Database
+            Font.print(fnt20, 84, 72 + 216,  lang_lines[20], white)--Reload Covers Database
         end
         
-        Font.print(fnt22, 84, 72 + 240, lang_lines[21], white)--Language
+        Font.print(fnt20, 84, 72 + 252, lang_lines[21], white)--Language
         if setLanguage == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "English - American", white) -- English - American
+            Font.print(fnt20, 125 + 260, 72 + 252, "English - American", white) -- English - American
         elseif setLanguage == 2 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Deutsch", white) -- German
+            Font.print(fnt20, 125 + 260, 72 + 252, "Deutsch", white) -- German
         elseif setLanguage == 3 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Français", white) -- French
+            Font.print(fnt20, 125 + 260, 72 + 252, "Français", white) -- French
         elseif setLanguage == 4 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Italiano", white) -- Italian
+            Font.print(fnt20, 125 + 260, 72 + 252, "Italiano", white) -- Italian
         elseif setLanguage == 5 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Español", white) -- Spanish
+            Font.print(fnt20, 125 + 260, 72 + 252, "Español", white) -- Spanish
         elseif setLanguage == 6 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Português", white) -- Portuguese
+            Font.print(fnt20, 125 + 260, 72 + 252, "Português", white) -- Portuguese
         elseif setLanguage == 7 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Svenska", white) -- Swedish
+            Font.print(fnt20, 125 + 260, 72 + 252, "Svenska", white) -- Swedish
         elseif setLanguage == 8 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "Pусский", white) -- Russian
+            Font.print(fnt20, 125 + 260, 72 + 252, "Pусский", white) -- Russian
         elseif setLanguage == 9 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "日本語", white) -- Japanese
+            Font.print(fnt20, 125 + 260, 72 + 252, "日本語", white) -- Japanese
         elseif setLanguage == 10 then
-            Font.print(fnt22, 125 + 260, 72 + 240, "繁體中文", white) -- Japanese
+            Font.print(fnt20, 125 + 260, 72 + 252, "繁體中文", white) -- Japanese
         else
-            Font.print(fnt22, 125 + 260, 72 + 240, "English", white) -- English
+            Font.print(fnt20, 125 + 260, 72 + 252, "English", white) -- English
         end
         
-        Font.print(fnt22, 84, 72 + 280, lang_lines[46], white)--Show Homebrews
+        Font.print(fnt20, 84, 72 + 286, lang_lines[46], white)--Show Homebrews
         if showHomebrews == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 280, lang_lines[22], white)--ON
+            Font.print(fnt20, 125 + 260, 72 + 288, lang_lines[22], white)--ON
         else
-            Font.print(fnt22, 125 + 260, 72 + 280, lang_lines[23], white)--OFF
+            Font.print(fnt20, 125 + 260, 72 + 288, lang_lines[23], white)--OFF
         end
         
         -- Chinese language fix
         if setLanguage == 10 then
-            Font.print(fnt22, 77, 72 + 320, lang_lines[47], white)--Scan on startup
+            Font.print(fnt20, 77, 72 + 324, lang_lines[47], white)--Scan on startup
         else
-            Font.print(fnt22, 84, 72 + 320, lang_lines[47], white)--Scan on startup
+            Font.print(fnt20, 84, 72 + 324, lang_lines[47], white)--Scan on startup
         end
         if startupScan == 1 then
-            Font.print(fnt22, 125 + 260, 72 + 320, lang_lines[22], white)--ON
+            Font.print(fnt20, 125 + 260, 72 + 324, lang_lines[22], white)--ON
         else
-            Font.print(fnt22, 125 + 260, 72 + 320, lang_lines[23], white)--OFF
+            Font.print(fnt20, 125 + 260, 72 + 324, lang_lines[23], white)--OFF
         end
 
         -- Chinese language fix
         if setLanguage == 10 then
-            Font.print(fnt22, 77, 72 + 360, lang_lines[13], white)--About
+            Font.print(fnt20, 77, 72 + 360, lang_lines[13], white)--About
         else
-            Font.print(fnt22, 84, 72 + 360, lang_lines[13], white)--About
+            Font.print(fnt20, 84, 72 + 360, lang_lines[13], white)--About
         end
         
         status = System.getMessageState()
@@ -8160,7 +8897,7 @@ while true do
             
             if (Controls.check(pad, SCE_CTRL_CROSS) and not Controls.check(oldpad, SCE_CTRL_CROSS)) then
                 if menuY == 0 then
-                    if startCategory < 17 then -- Increase to total count of systems
+                    if startCategory < 19 then -- Increase to total count of systems
                         startCategory = startCategory + 1
                     else
                         startCategory = 0
@@ -8195,24 +8932,37 @@ while true do
                     end
                     SetThemeColor()
                 elseif menuY == 4 then
+                    if showView < 4 then
+                        showView = showView + 1
+                    else
+                        showView = 0
+                    end
+                    startCovers = false
+                    local file_config = System.openFile(cur_dir .. "/config.dat", FCREATE)
+                    settings = {}
+                    local settings = "Reflections=" .. setReflections .. " " .. "\nSounds=" .. setSounds .. " " .. "\nColor=" .. themeColor .. " " .. "\nBackground=" .. setBackground .. " " .. "\nLanguage=" .. setLanguage .. " " .. "\nView=" .. showView .. " " .. "\nHomebrews=" .. showHomebrews .. " " .. "\nScan=" .. startupScan .. " " .. "\nCategory=" .. startCategory
+                    file_settings = io.open(cur_dir .. "/config.dat", "w")
+                    file_settings:write(settings)
+                    file_settings:close()
+                elseif menuY == 5 then
                     if setBackground == 1 then
                         setBackground = 0
                     else
                         setBackground = 1
                     end
-                elseif menuY == 5 then
+                elseif menuY == 6 then
                     if gettingCovers == false then
                         gettingCovers = true
                         DownloadCovers()
                     end
-                elseif menuY == 6 then
+                elseif menuY == 7 then
                     if setLanguage < 10 then
                         setLanguage = setLanguage + 1
                     else
                         setLanguage = 0
                     end
                     ChangeLanguage()
-                elseif menuY == 7 then
+                elseif menuY == 8 then
                     if showHomebrews == 1 then
                         showHomebrews = 0
                         -- Import cache to update All games category
@@ -8229,7 +8979,7 @@ while true do
                         count_cache_and_reload()
 
                     end
-                elseif menuY == 8 then
+                elseif menuY == 9 then
                     if startupScan == 1 then -- 0 Off, 1 On
                         startupScan = 0
                         -- Print to Cache folder
@@ -8239,7 +8989,7 @@ while true do
                         count_cache_and_reload()
 
                     end
-                elseif menuY == 9 then
+                elseif menuY == 10 then
                     showMenu = 3
                     menuY = 0
                 end
@@ -8268,7 +9018,7 @@ while true do
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
                 --covers download selection
-                if menuY==5 then
+                if menuY==6 then
                     if getCovers > 0 then
                         getCovers = getCovers - 1
                     else
@@ -8277,7 +9027,7 @@ while true do
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
                 --covers download selection
-                if menuY==5 then
+                if menuY==6 then
                     if getCovers < 16 then -- Check getcover number against sytem
                         getCovers = getCovers + 1
                     else
@@ -8472,7 +9222,12 @@ while true do
                     core_name = core_PCE
                     clean_launch_dir()
                     launch_retroarch()
-
+                elseif showCat == 18 then
+                    rom_location = (ngpc_table[p].game_path)
+                    core_name = core_NGPC
+                    clean_launch_dir()
+                    launch_retroarch()
+                    
                 -- End Retro 
                 else
 
@@ -8561,6 +9316,11 @@ while true do
                         core_name = core_PCE
                         clean_launch_dir()
                         launch_retroarch()
+                    elseif apptype == 18 then
+                        rom_location = (files_table[p].game_path)
+                        core_name = core_NGPC
+                        clean_launch_dir()
+                        launch_retroarch()
 
                     else
                         -- Homebrew
@@ -8587,14 +9347,18 @@ while true do
             end
         elseif (Controls.check(pad, SCE_CTRL_SQUARE) and not Controls.check(oldpad, SCE_CTRL_SQUARE)) then
             -- CATEGORY
-            if showCat < 17 then -- Increase to match category count
+            if showCat < 19 then -- Increase to match category count
                 if showCat==1 and showHomebrews==0 then
                     showCat = 3
                 else
                     showCat = showCat + 1
                 end
             else
-                showCat = 0
+                if startCategory == 19 then
+                    showCat = 1
+                else
+                    showCat = 0
+                end
             end
 
             -- Start skip empty categories
@@ -8685,10 +9449,25 @@ while true do
             if showCat == 17 then
                 curTotal = #pce_table
                 if #pce_table == 0 then
-                    showCat = 0
+                    showCat = 18
                 end
             end
-
+            if showCat == 18 then
+                curTotal = #ngpc_table
+                if #ngpc_table == 0 then
+                    showCat = 19
+                end
+            end
+            if showCat == 19 then
+                curTotal = #favorites_table
+                if #favorites_table == 0 then
+                   if startCategory == 19 then
+                       showCat = 1
+                   else
+                       showCat = 0
+                   end
+                end
+            end
             hideBoxes = 8
             p = 1
             master_index = p
@@ -8696,20 +9475,24 @@ while true do
             GetInfoSelected()
             FreeIcons()
         elseif (Controls.check(pad, SCE_CTRL_CIRCLE) and not Controls.check(oldpad, SCE_CTRL_CIRCLE)) then
-            -- VIEW
-            if showView < 4 then
-                showView = showView + 1
-            else
-                showView = 0
-            end
-            menuY = 0
-            startCovers = false
-            local file_config = System.openFile(cur_dir .. "/config.dat", FCREATE)
-            settings = {}
-            local settings = "Reflections=" .. setReflections .. " " .. "\nSounds=" .. setSounds .. " " .. "\nColor=" .. themeColor .. " " .. "\nBackground=" .. setBackground .. " " .. "\nLanguage=" .. setLanguage .. " " .. "\nView=" .. showView .. " " .. "\nHomebrews=" .. showHomebrews .. " " .. "\nScan=" .. startupScan .. " " .. "\nCategory=" .. startCategory
-            file_settings = io.open(cur_dir .. "/config.dat", "w")
-            file_settings:write(settings)
-            file_settings:close()
+        -- Favourites
+        AddOrRemoveFavorite();
+
+
+        --     -- VIEW
+        --     if showView < 4 then
+        --         showView = showView + 1
+        --     else
+        --         showView = 0
+        --     end
+        --     menuY = 0
+        --     startCovers = false
+        --     local file_config = System.openFile(cur_dir .. "/config.dat", FCREATE)
+        --     settings = {}
+        --     local settings = "Reflections=" .. setReflections .. " " .. "\nSounds=" .. setSounds .. " " .. "\nColor=" .. themeColor .. " " .. "\nBackground=" .. setBackground .. " " .. "\nLanguage=" .. setLanguage .. " " .. "\nView=" .. showView .. " " .. "\nHomebrews=" .. showHomebrews .. " " .. "\nScan=" .. startupScan .. " " .. "\nCategory=" .. startCategory
+        --     file_settings = io.open(cur_dir .. "/config.dat", "w")
+        --     file_settings:write(settings)
+        --     file_settings:close()
 
         elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
             if setSounds == 1 then
@@ -8918,6 +9701,18 @@ while true do
     elseif showCat == 17 then
         curTotal = #pce_table
         if #pce_table == 0 then
+            p = 0
+            master_index = p
+        end
+    elseif showCat == 18 then
+        curTotal = #ngpc_table
+        if #ngpc_table == 0 then
+            p = 0
+            master_index = p
+        end
+    elseif showCat == 19 then
+        curTotal = #favorites_table
+        if #favorites_table == 0 then
             p = 0
             master_index = p
         end
