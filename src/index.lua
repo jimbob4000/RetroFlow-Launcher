@@ -555,6 +555,8 @@ local lang = "EN.ini"
         lang = "JA.ini"
     elseif setLanguage == 10 then
         lang = "CN.ini"
+    elseif setLanguage == 11 then
+        lang = "PL.ini"
     else
         lang = "EN.ini"
     end
@@ -6227,6 +6229,16 @@ while true do
             Font.print(fnt20, 570+28, 508, lang_lines[9], white)--Category
             Graphics.drawImage(480, 510, btnO)
             Font.print(fnt20, 480+28, 508, lang_lines[10], white)--View
+        elseif setLanguage==11 then
+        --Polish fix positions
+            Graphics.drawImage(824, 510, btnX)
+            Font.print(fnt20, 824+28, 508, lang_lines[7], white)--Launch
+            Graphics.drawImage(680, 510, btnT)
+            Font.print(fnt20, 680+28, 508, lang_lines[8], white)--Details
+            Graphics.drawImage(540, 510, btnS)
+            Font.print(fnt20, 540+28, 508, lang_lines[9], white)--Category
+            Graphics.drawImage(435, 510, btnO)
+            Font.print(fnt20, 435+28, 508, lang_lines[10], white)--View
         else
             Graphics.drawImage(904-(string.len(lang_lines[7])*10), 510, btnX)
             Font.print(fnt20, 904+28-(string.len(lang_lines[7])*10), 508, lang_lines[7], white)--Launch
@@ -8125,6 +8137,8 @@ while true do
             Font.print(fnt22, 125 + 260, 72 + 240, "日本語", white) -- Japanese
         elseif setLanguage == 10 then
             Font.print(fnt22, 125 + 260, 72 + 240, "繁體中文", white) -- Japanese
+        elseif setLanguage == 11 then
+            Font.print(fnt22, 125 + 260, 72 + 240, "Polski", white) -- Polish
         else
             Font.print(fnt22, 125 + 260, 72 + 240, "English", white) -- English
         end
@@ -8206,7 +8220,7 @@ while true do
                         DownloadCovers()
                     end
                 elseif menuY == 6 then
-                    if setLanguage < 10 then
+                    if setLanguage < 11 then
                         setLanguage = setLanguage + 1
                     else
                         setLanguage = 0
