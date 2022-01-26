@@ -4,6 +4,7 @@ local db_Cached_File_files = (db_Cache_Folder .. "db_files.lua")
 local db_Cached_File_folders = (db_Cache_Folder .. "db_folders.lua")
 local db_Cached_File_games = (db_Cache_Folder .. "db_games.lua")
 local db_Cached_File_homebrews = (db_Cache_Folder .. "db_homebrews.lua")
+local db_Cached_File_ports = (db_Cache_Folder .. "db_ports.lua")
 local db_Cached_File_psp = (db_Cache_Folder .. "db_psp.lua")
 local db_Cached_File_psx = (db_Cache_Folder .. "db_psx.lua")
 local db_Cached_File_n64 = (db_Cache_Folder .. "db_n64.lua")
@@ -33,6 +34,7 @@ function print_tables()
     if System.doesFileExist(db_Cache_Folder .. "db_folders.lua") then   System.deleteFile(db_Cache_Folder .. "db_folders.lua") else end
     if System.doesFileExist(db_Cache_Folder .. "db_games.lua") then     System.deleteFile(db_Cache_Folder .. "db_games.lua") else end
     if System.doesFileExist(db_Cache_Folder .. "db_homebrews.lua") then System.deleteFile(db_Cache_Folder .. "db_homebrews.lua") else end
+	if System.doesFileExist(db_Cache_Folder .. "db_ports.lua") then     System.deleteFile(db_Cache_Folder .. "db_ports.lua") else end
     if System.doesFileExist(db_Cache_Folder .. "db_psp.lua") then       System.deleteFile(db_Cache_Folder .. "db_psp.lua") else end
     if System.doesFileExist(db_Cache_Folder .. "db_psx.lua") then       System.deleteFile(db_Cache_Folder .. "db_psx.lua") else end
     if System.doesFileExist(db_Cache_Folder .. "db_snes.lua") then      System.deleteFile(db_Cache_Folder .. "db_snes.lua") else end
@@ -66,6 +68,10 @@ function print_tables()
     local db_homebrews = assert(io.open(db_Cached_File_homebrews, "w"))
     printTable(homebrews_table, db_homebrews)
     db_homebrews:close()
+	
+    local db_ports = assert(io.open(db_Cached_File_ports, "w"))
+    printTable(ports_table, db_ports)
+    db_ports:close()
 
     local db_psp = assert(io.open(db_Cached_File_psp, "w"))
     printTable(psp_table, db_psp)
@@ -172,6 +178,15 @@ function print_table_homebrews()
     local db_homebrews = assert(io.open(db_Cached_File_homebrews, "w"))
     printTable(homebrews_table, db_homebrews)
     db_homebrews:close()
+end
+
+function print_table_ports()
+    -- Create directories - Database Cache
+    if System.doesFileExist(db_Cache_Folder .. "db_ports.lua") then System.deleteFile(db_Cache_Folder .. "db_ports.lua") else end    
+    local db_Cached_File_ports = (db_Cache_Folder .. "db_ports.lua")
+    local db_ports = assert(io.open(db_Cached_File_ports, "w"))
+    printTable(ports_table, db_ports)
+    db_ports:close()
 end
 
 function print_table_psp()

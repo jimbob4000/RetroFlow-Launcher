@@ -1,10 +1,10 @@
--- RetroFlow Launcher - HexFlow Mod version by jimbob4000
--- Based on HexFlow Launcher  version 0.5 by VitaHEX
+-- RetroFlow Launcher Custo version by nicodanyan
+-- Based on RetroFlow Launcher - HexFlow Mod version by jimbob4000
 -- https://www.patreon.com/vitahex
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "3.3"
+local appversion = "3.4"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -363,7 +363,7 @@ end
 local menuX = 0
 local menuY = 0
 local showMenu = 0
-local showCat = 1 -- Category: 0 = all, 1 = games, 2 = homebrews, 3 = psp, 4 = psx, 5 = N64, 6 = SNES, 7 = NES, 8 = GBA, 9 = GBC, 10 = GB, 11 = MD, 12 = SMS, 13 = GG, 14 = MAME, 15 = AMIGA, 16 = TG16, 17 = PCE
+local showCat = 1 -- Category: 0 = all, 1 = games, 2 = homebrews, 3 = psp, 4 = psx, 5 = N64, 6 = SNES, 7 = NES, 8 = GBA, 9 = GBC, 10 = GB, 11 = MD, 12 = SMS, 13 = GG, 14 = MAME, 15 = AMIGA, 16 = TG16, 17 = PCE, 18 = Ports
 local showView = 0
 
 local info = System.extractSfo("app0:/sce_sys/param.sfo")
@@ -418,6 +418,7 @@ local prevRot = 0
 local total_all = 0
 local total_games = 0
 local total_homebrews = 0
+local total_ports = 0
 local curTotal = 1
 
 -- Settings
@@ -892,6 +893,7 @@ function listDirectory(dir)
     tg16_table = {}
     pce_table = {}
     homebrews_table = {}
+	ports_table = {}
     all_games_table = {}
 
     psxdbfull = {}
@@ -953,7 +955,7 @@ function listDirectory(dir)
                 --CHECK FOR OVERRIDDEN CATEGORY of VITA game
                 if System.doesFileExist(cur_dir .. "/overrides.dat") then
                     
-                    --0 default, 1 vita, 2 psp, 3 psx, 4 homebrew
+                    --0 default, 1 vita, 2 psp, 3 psx, 4 homebrew, 5 port
 
                     -- VITA
                     if string.match(str, file.name .. "=1") then
@@ -1028,6 +1030,30 @@ function listDirectory(dir)
                     elseif string.match(str, file.name .. "=4") then
                         -- Homebrew
                         table.insert(homebrews_table, file)
+
+                        table.insert(folders_table, file)
+                        table.insert(all_games_table, 1, file)
+                        file.app_type=0
+
+                        file.cover_path_online = onlineCoverPathSystem[4]
+                        file.cover_path_local = localCoverPath[4]
+
+                        if custom_path[4] and System.doesFileExist(custom_path[4]) then
+                            img_path = custom_path[4] --custom cover by app name
+                        elseif custom_path_id[4] and System.doesFileExist(custom_path_id[4]) then
+                            img_path = custom_path_id[4] --custom cover by app id
+                        else
+                            if System.doesFileExist("ur0:/appmeta/" .. file.name .. "/icon0.png") then
+                                img_path = "ur0:/appmeta/" .. file.name .. "/icon0.png"  --app icon
+                            else
+                                img_path = "app0:/DATA/noimg.png" --blank grey
+                            end
+                        end
+						
+                    -- PORTS
+                    elseif string.match(str, file.name .. "=5") then
+                        -- Port
+                        table.insert(ports_table, file)
 
                         table.insert(folders_table, file)
                         table.insert(all_games_table, 1, file)
@@ -1235,6 +1261,29 @@ function listDirectory(dir)
                                 img_path = "app0:/DATA/noimg.png" --blank grey
                             end
                         end
+						
+					-- PORTS
+	                elseif string.match(str, file.name .. "=5") then
+	                    table.insert(ports_table, file)
+
+	                    table.insert(folders_table, file)
+	                    table.insert(all_games_table, 1, file)
+	                    file.app_type=0
+
+	                    file.cover_path_online = onlineCoverPathSystem[4]
+	                    file.cover_path_local = localCoverPath[4]
+
+	                    if custom_path[4] and System.doesFileExist(custom_path[4]) then
+	                        img_path = custom_path[4] --custom cover by app name
+	                    elseif custom_path_id[4] and System.doesFileExist(custom_path_id[4]) then
+	                        img_path = custom_path_id[4] --custom cover by app id
+	                    else
+	                        if System.doesFileExist("ur0:/appmeta/" .. file.name .. "/icon0.png") then
+	                            img_path = "ur0:/appmeta/" .. file.name .. "/icon0.png"  --app icon
+	                        else
+	                            img_path = "app0:/DATA/noimg.png" --blank grey
+	                        end
+	                    end
 
                     -- DEFAULT - HOMEBREW
                     else
@@ -1520,6 +1569,32 @@ function listDirectory(dir)
                         -- HOMEBREW
                         elseif string.match(str, file.name .. "=4") then
                             table.insert(homebrews_table, file)
+
+                            table.insert(folders_table, file)
+                            table.insert(all_games_table, 2, file)
+                            file.app_type=0
+
+                            custom_path = "ux0:/data/RetroFlow/COVERS/Homebrew/" .. app_title .. ".png"
+                            custom_path_id = localCoverPath[4] .. file.name .. ".png"
+
+                            file.cover_path_online = onlineCoverPathSystem[4]
+                            file.cover_path_local = localCoverPath[4]
+
+                            if custom_path and System.doesFileExist(custom_path) then
+                                img_path = custom_path --custom cover by app name
+                            elseif custom_path_id and System.doesFileExist(custom_path_id) then
+                                img_path = custom_path_id --custom cover by app id
+                            else
+                                if System.doesFileExist("ux0:/app/RETROFLOW/DATA/icon_homebrew.png") then
+                                    img_path = "ux0:/app/RETROFLOW/DATA/icon_homebrew.png"  --app icon
+                                else
+                                    img_path = "app0:/DATA/noimg.png" --blank grey
+                                end
+                            end
+							
+                        -- PORTS
+                        elseif string.match(str, file.name .. "=5") then
+                            table.insert(ports_table, file)
 
                             table.insert(folders_table, file)
                             table.insert(all_games_table, 2, file)
@@ -1837,6 +1912,32 @@ function listDirectory(dir)
                                     img_path = "app0:/DATA/noimg.png" --blank grey
                                 end
                             end
+							
+                        -- PORTS
+                        elseif string.match(str, file.name .. "=5") then
+                            table.insert(ports_table, file)
+
+                            table.insert(folders_table, file)
+                            table.insert(all_games_table, 2, file)
+                            file.app_type=0
+
+                            custom_path = localCoverPath[4] .. app_title .. ".png"
+                            custom_path_id = localCoverPath[4] .. file.name .. ".png"
+
+                            file.cover_path_online = onlineCoverPathSystem[4]
+                            file.cover_path_local = localCoverPath[4]
+
+                            if custom_path and System.doesFileExist(custom_path) then
+                                img_path = custom_path --custom cover by app name
+                            elseif custom_path_id and System.doesFileExist(custom_path_id) then
+                                img_path = custom_path_id --custom cover by app id
+                            else
+                                if System.doesFileExist("ux0:/app/RETROFLOW/DATA/icon_homebrew.png") then
+                                    img_path = "ux0:/app/RETROFLOW/DATA/icon_homebrew.png"  --app icon
+                                else
+                                    img_path = "app0:/DATA/noimg.png" --blank grey
+                                end
+                            end
 
                         -- DEFAULT - PSP
                         else
@@ -2111,6 +2212,32 @@ function listDirectory(dir)
                         -- HOMEBREW
                         elseif string.match(str, file.name .. "=4") then
                             table.insert(homebrews_table, file)
+
+                            table.insert(folders_table, file)
+                            table.insert(all_games_table, 3, file)
+                            file.app_type=0
+
+                            custom_path = localCoverPath[4] .. app_title .. ".png"
+                            custom_path_id = localCoverPath[4] .. file.name .. ".png"
+
+                            file.cover_path_online = onlineCoverPathSystem[4]
+                            file.cover_path_local = localCoverPath[4]
+
+                            if custom_path and System.doesFileExist(custom_path) then
+                                img_path = custom_path --custom cover by app name
+                            elseif custom_path_id and System.doesFileExist(custom_path_id) then
+                                img_path = custom_path_id --custom cover by app id
+                            else
+                                if System.doesFileExist("ux0:/app/RETROFLOW/DATA/icon_homebrew.png") then
+                                    img_path = "ux0:/app/RETROFLOW/DATA/icon_homebrew.png"  --app icon
+                                else
+                                    img_path = "app0:/DATA/noimg.png" --blank grey
+                                end
+                            end
+							
+                        -- PORTS
+                        elseif string.match(str, file.name .. "=5") then
+                            table.insert(ports_table, file)
 
                             table.insert(folders_table, file)
                             table.insert(all_games_table, 3, file)
@@ -3158,6 +3285,7 @@ function listDirectory(dir)
     
     table.sort(games_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(homebrews_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+	table.sort(ports_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psp_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psx_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
@@ -3182,6 +3310,7 @@ function listDirectory(dir)
     total_all = #files_table
     total_games = #games_table
     total_homebrews = #homebrews_table
+	total_ports = #ports_table
     
     -- CACHE ALL TABLES - PRINT AND SAVE
     cache_all_tables()
@@ -3210,6 +3339,7 @@ function import_cached_DB(dir)
     tg16_table = {}
     pce_table = {}
     homebrews_table = {}
+	ports_table = {}
     all_games_table = {}
     
     -- Import cached DB: games
@@ -3264,6 +3394,29 @@ function import_cached_DB(dir)
             for k, v in ipairs(db_homebrews) do
                 table.insert(folders_table, v)
                 table.insert(homebrews_table, v)
+                table.insert(all_games_table, v)
+
+                --add blank icon to all
+                v.icon = imgCoverTmp
+                v.icon_path = v.icon_path
+
+                v.apptitle = v.apptitle
+                table.insert(files_table, 17, v.apptitle) -- Increased for Retro (All systems + 1 for all view)
+            end
+        end
+    else
+    end
+	
+    -- Import cached DB: ports
+    if showHomebrews == 1 then
+        if System.doesFileExist(db_Cache_Folder .. "db_ports.lua") then
+            db_Cache_ports = db_Cache_Folder .. "db_ports.lua"
+
+            db_ports = dofile(db_Cache_ports)
+
+            for k, v in ipairs(db_ports) do
+                table.insert(folders_table, v)
+                table.insert(ports_table, v)
                 table.insert(all_games_table, v)
 
                 --add blank icon to all
@@ -3601,6 +3754,7 @@ function import_cached_DB(dir)
     
     table.sort(games_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(homebrews_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+	table.sort(ports_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psp_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(psx_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
@@ -3625,6 +3779,7 @@ function import_cached_DB(dir)
     total_all = #files_table
     total_games = #games_table
     total_homebrews = #homebrews_table
+	total_ports = #ports_table
     
     return return_table
 end
@@ -3974,6 +4129,21 @@ function GetInfoSelected()
         else
             app_title = "-"
         end
+    elseif showCat == 18 then
+        if #ports_table > 0 then
+            info = ports_table[p].name
+            icon_path = ports_table[p].icon_path
+            pic_path = "ur0:/appmeta/" .. ports_table[p].name .. "/pic0.png"
+            app_title = ports_table[p].title
+            apptype = ports_table[p].app_type
+            appdir = ports_table[p].game_path
+            folder = ports_table[p].directory
+
+            app_titleid = ports_table[p].name
+            app_version = ports_table[p].version
+        else
+            app_title = "-"
+        end
     else
         if #files_table > 0 then
             info = files_table[p].name
@@ -3992,6 +4162,11 @@ function GetInfoSelected()
 
             -- Homebrew 
             elseif System.doesFileExist(working_dir .. "/" .. files_table[p].name .. "/sce_sys/param.sfo") and apptype==0 then
+                icon_path = files_table[p].icon_path
+                pic_path = ""
+
+			-- Ports
+            elseif System.doesFileExist(working_dir .. "/" .. files_table[p].name .. "/sce_sys/param.sfo") and apptype==4 then
                 icon_path = files_table[p].icon_path
                 pic_path = ""
             else
@@ -5854,6 +6029,15 @@ function FreeIcons()
             v.ricon = nil
         end
     end
+    -- Ports
+    for k, v in pairs(ports_table) do
+        FileLoad[v] = nil
+        Threads.remove(v)
+        if v.ricon then
+            Graphics.freeImage(v.ricon)
+            v.ricon = nil
+        end
+    end
 end
 
 function DownloadSingleCover()
@@ -6140,7 +6324,9 @@ function DownloadSingleCover()
                 if pce_table[app_idx].ricon then
                     pce_table[app_idx].ricon = nil
                 end
-
+            -- Ports
+            elseif showCat == 18 then
+                --"ports_table"
             else
                 --"files_table"
                 files_table[app_idx].icon_path=coverspath .. app_titleid .. ".png"
@@ -6272,6 +6458,8 @@ while true do
             Font.print(fnt22, 32, 34, lang_lines[44], white)--TG16
         elseif showCat == 17 then
             Font.print(fnt22, 32, 34, lang_lines[45], white)--PCE
+        elseif showCat == 18 then
+            Font.print(fnt22, 32, 34, lang_lines[98], white)--PORTS
         else
             Font.print(fnt22, 32, 34, lang_lines[5], white)--ALL
         end
@@ -6920,7 +7108,42 @@ while true do
                 --                                         of
             end
 
-
+        --PORTS
+        elseif showCat == 18 then
+            for l, file in pairs(ports_table) do
+                if (l >= master_index) then
+                    base_x = base_x + space
+                end
+                if l > p-8 and base_x < 10 then
+                    if FileLoad[file] == nil then
+                        FileLoad[file] = true
+                        Threads.addTask(file, {
+                            Type = "ImageLoad",
+                            Path = file.icon_path,
+                            Table = file,
+                            Index = "ricon"
+                        })
+                    end
+                    if file.ricon ~= nil then
+                        DrawCover((targetX + l * space) - (#ports_table * space + space), -0.6, file.name, file.ricon, base_x, file.app_type)--draw visible covers only
+                    else
+                        DrawCover((targetX + l * space) - (#ports_table * space + space), -0.6, file.name, file.icon, base_x, file.app_type)--draw visible covers only
+                    end
+                else
+                    if FileLoad[file] == true then
+                        FileLoad[file] = nil
+                        Threads.remove(file)
+                    end
+                    if file.ricon then
+                        Graphics.freeImage(file.ricon)
+                        file.ricon = nil
+                    end
+                end
+            end
+            if showView ~= 2 then
+                PrintCentered(fnt20, 480, 462, p .. " " .. lang_lines[61] .. #ports_table, white, 20)-- Draw total items
+                --                                         of
+            end
         else
 
             --ALL
@@ -7739,8 +7962,47 @@ while true do
                 Render.useTexture(modCoverMDNoref, pce_table[p].icon)
                 Render.useTexture(modCoverMDNoref, pce_table[p].icon)
             end
-
-        else
+        --Ports
+        elseif showCat == 18 then
+            --Graphics.setImageFilters(ports_table[p].icon, FILTER_LINEAR, FILTER_LINEAR)
+            if ports_table[p].ricon ~= nil then
+                Render.useTexture(modCoverNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverHbrNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverPSPNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverPSXNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverN64Noref, ports_table[p].ricon)
+                Render.useTexture(modCoverN64Noref, ports_table[p].ricon)
+                Render.useTexture(modCoverNESNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].ricon)
+            else 
+                Render.useTexture(modCoverNoref, ports_table[p].icon)
+                Render.useTexture(modCoverHbrNoref, ports_table[p].icon)
+                Render.useTexture(modCoverPSPNoref, ports_table[p].icon)
+                Render.useTexture(modCoverPSXNoref, ports_table[p].icon)
+                Render.useTexture(modCoverN64Noref, ports_table[p].icon)
+                Render.useTexture(modCoverN64Noref, ports_table[p].icon)
+                Render.useTexture(modCoverNESNoref, ports_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].icon)
+                Render.useTexture(modCoverGBNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+                Render.useTexture(modCoverMDNoref, ports_table[p].icon)
+            end
+		else
             --Graphics.setImageFilters(files_table[p].icon, FILTER_LINEAR, FILTER_LINEAR)
             if files_table[p].ricon ~= nil then
                 Render.useTexture(modCoverNoref, files_table[p].ricon)
@@ -7796,6 +8058,9 @@ while true do
             Render.drawModel(modCoverPSXNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             Render.drawModel(modBoxPSXNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines[82] -- "PS1 Game"
+        elseif apptype==4 then
+            Render.drawModel(modCoverHbrNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            tmpapptype = lang_lines[98] -- "Ports"
         elseif apptype==5 then
             Render.drawModel(modCoverN64Noref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             Render.drawModel(modBoxN64Noref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
@@ -7856,9 +8121,9 @@ while true do
         Font.print(fnt22, 50, 190, txtname, white)-- app name
 
 
-        -- 0 Homebrew, 1 vita, 2 psp, 3 psx, 5+ Retro
+        -- 0 Homebrew, 1 vita, 2 psp, 3 psx, 4 Ports, 5+ Retro
 
-        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 then
+        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 or apptype == 4 then
             Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines[52] .. app_titleid .. "\n" .. lang_lines[12] .. app_version .. "\n" .. lang_lines[53] .. game_size, white)-- Draw info
             --                                               App ID                                   Version                                  Size
         else
@@ -7875,6 +8140,8 @@ while true do
             tmpcatText = "PS1"
         elseif tmpappcat==4 then
             tmpcatText = lang_lines[96] -- "Homebrew"
+        elseif tmpappcat==5 then
+            tmpcatText = lang_lines[98] -- "Ports"
         else
             tmpcatText = lang_lines[51] -- Default
         end
@@ -7882,11 +8149,11 @@ while true do
         menuItems = 1
 
 
-        -- 0 Homebrew, 1 Vita, 2 PSP, 3 PSX, 5+ Retro
+        -- 0 Homebrew, 1 Vita, 2 PSP, 3 PSX, 5 Ports, 6+ Retro
 
         -- Vita and Homebrew
         -- if folder == true then -- start Disable category override for retro
-        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 then -- start Disable category override for retro
+        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 or apptype == 4 then -- start Disable category override for retro
             if menuY==1 then
                 Graphics.fillRect(24, 470, 350 + (menuY * 40), 430 + (menuY * 40), themeCol)-- selection two lines
             else
@@ -7943,17 +8210,17 @@ while true do
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
                 if menuY==1 then
-                    -- Vita and Homebrew override
+                    -- Vita, Homebrew and Ports override
                     if tmpappcat > 0 then
                         tmpappcat = tmpappcat - 1
                     else
-                        tmpappcat=4 -- Limited to 4
+                        tmpappcat=5 -- Limited to 5
                     end
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
                 if menuY==1 then
-                    -- Vita and Homebrew override
-                    if tmpappcat < 4 then  -- Limited to 4
+                    -- Vita, Homebrew and Ports override
+                    if tmpappcat < 5 then  -- Limited to 5
                         tmpappcat = tmpappcat + 1
                     else
                         tmpappcat=0
@@ -8022,6 +8289,8 @@ while true do
             Font.print(fnt22, 125 + 260, 72, lang_lines[44], white)--TG16
         elseif startCategory == 17 then
             Font.print(fnt22, 125 + 260, 72, lang_lines[45], white)--PCE
+        elseif startCategory == 18 then
+            Font.print(fnt22, 125 + 260, 72, lang_lines[98], white)--Ports
         end
         
         Font.print(fnt22, 84, 72 + 40, lang_lines[15], white) -- REFLECTION
@@ -8160,7 +8429,7 @@ while true do
             
             if (Controls.check(pad, SCE_CTRL_CROSS) and not Controls.check(oldpad, SCE_CTRL_CROSS)) then
                 if menuY == 0 then
-                    if startCategory < 17 then -- Increase to total count of systems
+                    if startCategory < 18 then -- Increase to total count of systems
                         startCategory = startCategory + 1
                     else
                         startCategory = 0
@@ -8474,9 +8743,18 @@ while true do
                     launch_retroarch()
 
                 -- End Retro 
+				-- Ports
+	            elseif showCat == 18 then
+	                if string.match (ports_table[p].game_path, "ux0:/pspemu") then
+	                    rom_location = tostring(ports_table[p].launch_argument)
+	                    launch_Adrenaline()
+	                else
+	                    System.launchApp(ports_table[p].name)
+	                end
+					
                 else
 
-                    if apptype == 1 or apptype == 2 or apptype == 3 or apptype == 4 then
+                    if apptype == 1 or apptype == 2 or apptype == 3 then
                         if string.match (files_table[p].game_path, "ux0:/pspemu") then
                             rom_location = tostring(files_table[p].launch_argument)
                             launch_Adrenaline()
@@ -8587,7 +8865,8 @@ while true do
             end
         elseif (Controls.check(pad, SCE_CTRL_SQUARE) and not Controls.check(oldpad, SCE_CTRL_SQUARE)) then
             -- CATEGORY
-            if showCat < 17 then -- Increase to match category count
+            if showCat < 18 then -- Increase to match category count
+				-- TODO: something to manage about showCat = 18 here ?
                 if showCat==1 and showHomebrews==0 then
                     showCat = 3
                 else
@@ -8918,6 +9197,12 @@ while true do
     elseif showCat == 17 then
         curTotal = #pce_table
         if #pce_table == 0 then
+            p = 0
+            master_index = p
+        end
+    elseif showCat == 18 then
+        curTotal = #ports_table
+        if #ports_table == 0 then
             p = 0
             master_index = p
         end
