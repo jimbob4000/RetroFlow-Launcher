@@ -4,7 +4,7 @@
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "3.4"
+local appversion = "3.4.1"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -8865,8 +8865,8 @@ while true do
             end
         elseif (Controls.check(pad, SCE_CTRL_SQUARE) and not Controls.check(oldpad, SCE_CTRL_SQUARE)) then
             -- CATEGORY
-            if showCat < 18 then -- Increase to match category count
-				-- TODO: something to manage about showCat = 18 here ?
+            if showCat < 19 then -- Increase to match category count
+				-- TODO: something to manage about showCat = 19 here ?
                 if showCat==1 and showHomebrews==0 then
                     showCat = 3
                 else
@@ -8964,6 +8964,12 @@ while true do
             if showCat == 17 then
                 curTotal = #pce_table
                 if #pce_table == 0 then
+                    showCat = 18
+                end
+            end
+            if showCat == 18 then
+                curTotal = #psp_table
+                if #ports_table == 0 then
                     showCat = 0
                 end
             end
