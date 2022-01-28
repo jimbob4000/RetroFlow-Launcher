@@ -8865,8 +8865,8 @@ while true do
             end
         elseif (Controls.check(pad, SCE_CTRL_SQUARE) and not Controls.check(oldpad, SCE_CTRL_SQUARE)) then
             -- CATEGORY
-            if showCat < 19 then -- Increase to match category count
-				-- TODO: something to manage about showCat = 19 here ?
+            if showCat < 18 then -- Increase to match category count
+				-- TODO: something to manage about showCat = 18 here ?
                 if showCat==1 and showHomebrews==0 then
                     showCat = 3
                 else
