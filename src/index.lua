@@ -4,7 +4,7 @@
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "3.4.1"
+local appversion = "3.4.2"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -8566,8 +8566,8 @@ while true do
         
         Font.print(fnt20, 54, 42, "RetroFlow Launcher - ver." .. appversion 
             .. "\n"
-            .. "\nRetroFlow (Hexflow mod) by jimbob4000. Original HexFlow app by VitaHex."
-            .. "\nSupport his projects on patreon.com/vitahex", white)-- Draw info
+            .. "\nRetroFlow (Hexflow mod) by jimbob4000 modded by nicodanyan. Original HexFlow app "
+            .. "\nby VitaHex. Support his projects on patreon.com/vitahex", white)-- Draw info
 
         Font.print(fnt20, 54, 132, "Adding Retro Games:"
             .. "\nPlace your game roms in the pre-made folders here 'ux0:/data/RetroFlow/ROMS'"
@@ -8577,10 +8577,12 @@ while true do
             .. "\nTool Parameters: %NAME% (%REGION%) [%ID%]."
             .. "\nSample: Cars 2 (US) [UCUS-98766].iso"
             .. "\n"
+            .. "\nAdding ports category:"
+            .. "\nFrom any homebrew, select Override Category: <Ports> from 'Details menu'"			
+            .. "\n"
             .. "\nFor updates & more info visit: https://github.com/jimbob4000/RetroFlow-Launcher"
             .. "\n"
-            .. "\nCREDITS"
-            .. "\n"
+            .. "\nCREDITS:"
             .. "\nOriginal app by VitHex. Programming/UI by Sakis RG. Developed with Lua Player"
             .. "\nPlus by Rinnegatamante. Special Thanks: VitaHex, Creckeryop, Rinnegatamante,"
             .. "\nAndreas Stürmer, Roc6d, Badmanwazzy37, Leecherman. Translations: TheheroGAC,"
