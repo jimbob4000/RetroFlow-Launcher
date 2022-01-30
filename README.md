@@ -118,6 +118,11 @@ The game names will be missing the region code, but it's not required for the Re
 ### Can I use HexFlow too?
 Yes; RetroFlow is seperate, it uses different folders and a different title ID.
 
+### How to activate Ports category
+This category is created by overriding games from Homebrew category.
+Select the homebrew game to override, go to "Details" menu and select Override Category: <Ports>.
+The homebrew is added to a new "Ports" category.
+
 ### Do I need to create bubbles for games?
 No; RetroFlow doesn't need bubbles for games.
 
