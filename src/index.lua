@@ -14841,305 +14841,303 @@ while true do
                 end
             else
             end
-        elseif (Controls.check(pad, SCE_CTRL_SQUARE) and not Controls.check(oldpad, SCE_CTRL_SQUARE)) then
+        elseif (Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP)) then
             state = Keyboard.getState()
             if state ~= RUNNING then
-                
-                
-                if (Controls.check(pad, SCE_CTRL_DOWN)) then
 
-                   -- CATEGORY - Move Backwards
+               -- CATEGORY - Move Backwards
 
-                    -- filterGames = 1
+                -- filterGames = 1
 
-                    if filterGames == 1 then
+                if filterGames == 1 then
 
-                        -- Only Collections
-                        if collection_count ~= 0 then   
-                            -- if showCat < collection_syscount and showCat >= 42 then
-                            if showCat >= 46 then
-                                showCat = showCat - 1
-                            else
-                                showCat = collection_syscount
-                            end
-                        end
-
-                    else
-
-                        -- All categories including collections
-                        if showCat > 1 then
+                    -- Only Collections
+                    if collection_count ~= 0 then   
+                        -- if showCat < collection_syscount and showCat >= 42 then
+                        if showCat >= 46 then
                             showCat = showCat - 1
-                        elseif showCat == 1 then
-                            if showAll==0 then -- All is off
-                                if showCollections == 0 then
-                                    showCat = count_of_categories
-                                else
-                                    showCat = collection_syscount
-                                end
-                            else
-                                showCat = 0
-                            end
-                        elseif showCat == 0 then
+                        else
+                            showCat = collection_syscount
+                        end
+                    end
+
+                else
+
+                    -- All categories including collections
+                    if showCat > 1 then
+                        showCat = showCat - 1
+                    elseif showCat == 1 then
+                        if showAll==0 then -- All is off
                             if showCollections == 0 then
                                 showCat = count_of_categories
                             else
                                 showCat = collection_syscount
                             end
-                        end
-
-                    end
-
-
-
-                    if showCat == 44 then
-                        curTotal = #search_results_table   
-                        if #search_results_table == 0 then 
-                            showCat = 43
-                        end
-                    end
-
-                    if showCat == 43 then 
-                        curTotal = #recently_played_table
-                        if #recently_played_table == 0 then 
-                            showCat = 42
-                        end
-                    end
-
-                    if showCat == 42 then
-                        -- count favorites
-                        create_fav_count_table(files_table)
-
-                        curTotal = #fav_count
-                        if #fav_count == 0 then showCat = 40
-                        end
-                    end
-
-                    
-                    if showCat >= 3 and showCat <= 40 then
-                        showCatTemp = showCat - 1
-                        curTotal = #xCatLookup(showCat)
-
-                        if #xCatLookup(showCat) == 0 then         
-                            showCat = showCatTemp
-                        end
-                    end
-
-                    if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 40 end end
-                    if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 39 end end
-                    if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 38 end end
-                    if showCat == 38 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 37 end end
-                    if showCat == 37 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 36 end end
-                    if showCat == 36 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 35 end end
-                    if showCat == 35 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 34 end end
-                    if showCat == 34 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 33 end end
-                    if showCat == 33 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 32 end end
-                    if showCat == 32 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 31 end end
-                    if showCat == 31 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 30 end end
-                    if showCat == 30 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 29 end end
-                    if showCat == 29 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 28 end end
-                    if showCat == 28 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 27 end end
-                    if showCat == 27 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 26 end end
-                    if showCat == 26 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 25 end end
-                    if showCat == 25 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 24 end end
-                    if showCat == 24 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 23 end end
-                    if showCat == 23 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 22 end end
-                    if showCat == 22 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 21 end end
-                    if showCat == 21 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 20 end end
-                    if showCat == 20 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 19 end end
-                    if showCat == 19 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 18 end end
-                    if showCat == 18 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 17 end end
-                    if showCat == 17 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 16 end end
-                    if showCat == 16 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 15 end end
-                    if showCat == 15 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 14 end end
-                    if showCat == 14 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 13 end end
-                    if showCat == 13 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 12 end end
-                    if showCat == 12 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 11 end end
-                    if showCat == 11 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 10 end end
-                    if showCat == 10 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 9 end end
-                    if showCat == 9 then curTotal =     #gba_table              if      #gba_table == 0 then            showCat = 8 end end
-                    if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 7 end end
-                    if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 6 end end
-                    if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 5 end end
-                    if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 4 end end
-                    if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 3 end end
-                    if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 2 end end
-                    
-                    -- Skip Homebrew category if disabled
-                    if showCat == 2 and showHomebrews==0 then -- HB is off
-                        showCat = 1
-                    end
-                    
-
-                    hideBoxes = 0.8 -- used to be 8
-                    p = 1
-                    master_index = p
-                    startCovers = false
-                    GetInfoSelected()
-                    FreeIcons()
-
-
-                else
-
-                    -- CATEGORY - Move Forwards
-
-                    if showCat == 42 then
-                        -- count favorites
-                        create_fav_count_table(files_table)
-                    end
-
-                    -- filterGames = 1
-
-                    if filterGames == 1 then
-
-                        -- Only Collections
-                        if collection_count ~= 0 then   
-                            if showCat < collection_syscount and showCat >= 42 then
-
-                                if showCat == 42 or showCat == 43 then -- Recent and Fav
-                                    showCat = 45
-                                else
-                                    showCat = showCat + 1
-                                end
-                            
-                            else
-                                showCat = 45
-                            end
-                        end
-
-                    else
-
-                        -- All categories including collections
-                        if showCat < collection_syscount then
-                            -- Skip All category if disabled
-                            if showCat==0 and showAll==0 then 
-                                showCat = 1
-                            -- Skip Homebrews category if disabled
-                            elseif showCat==1 and showHomebrews==0 then
-                                showCat = 3
-                            else
-                                showCat = showCat + 1
-                            end
-                        elseif showCat == collection_syscount then
-                            if showAll==0 then
-                                showCat = 1
-                            else
-                                showCat = 0
-                            end
                         else
                             showCat = 0
                         end
-
-
-                    end
-
-                    
-                    -- Start skip empty categories
-                    if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 4 end end
-                    if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 5 end end
-                    if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 6 end end
-                    if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 7 end end
-                    if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 8 end end
-                    if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 9 end end
-                    if showCat == 9 then curTotal =     #gba_table              if      #gba_table == 0 then            showCat = 10 end end
-                    if showCat == 10 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 11 end end
-                    if showCat == 11 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 12 end end
-                    if showCat == 12 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 13 end end
-                    if showCat == 13 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 14 end end
-                    if showCat == 14 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 15 end end
-                    if showCat == 15 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 16 end end
-                    if showCat == 16 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 17 end end
-                    if showCat == 17 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 18 end end
-                    if showCat == 18 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 19 end end
-                    if showCat == 19 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 20 end end
-                    if showCat == 20 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 21 end end
-                    if showCat == 21 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 22 end end
-                    if showCat == 22 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 23 end end
-                    if showCat == 23 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 24 end end
-                    if showCat == 24 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 25 end end
-                    if showCat == 25 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 26 end end
-                    if showCat == 26 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 27 end end
-                    if showCat == 27 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 28 end end
-                    if showCat == 28 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 29 end end
-                    if showCat == 29 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 30 end end
-                    if showCat == 30 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 31 end end
-                    if showCat == 31 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 32 end end
-                    if showCat == 32 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 33 end end
-                    if showCat == 33 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 34 end end
-                    if showCat == 34 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 35 end end
-                    if showCat == 35 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 36 end end
-                    if showCat == 36 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 37 end end
-                    if showCat == 37 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 38 end end
-                    if showCat == 38 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 39 end end
-                    if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 40 end end
-                    if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 41 end end
-                    if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 42 end end
-                    if showCat == 42 then
-                        -- count favorites
-                        create_fav_count_table(files_table)
-
-                        curTotal = #fav_count
-                        if #fav_count == 0 then showCat = 43
+                    elseif showCat == 0 then
+                        if showCollections == 0 then
+                            showCat = count_of_categories
+                        else
+                            showCat = collection_syscount
                         end
                     end
-                    if showCat == 43 then 
-                        curTotal = #recently_played_table
-                        if #recently_played_table == 0 then showCat = 44
-                        end
+
+                end
+
+
+
+                if showCat == 44 then
+                    curTotal = #search_results_table   
+                    if #search_results_table == 0 then 
+                        showCat = 43
                     end
-                    
-                    if showCat == 44 then
-                        curTotal = #search_results_table
-                        if #search_results_table == 0 then
-                            if collection_count ~= 0 then
-                                if showCollections == 0 then
-                                    if showAll==0 then
-                                        showCat = 1
-                                    else
-                                        showCat = 0
-                                    end
-                                else
-                                    showCat = 45
-                                end
+                end
+
+                if showCat == 43 then 
+                    curTotal = #recently_played_table
+                    if #recently_played_table == 0 then 
+                        showCat = 42
+                    end
+                end
+
+                if showCat == 42 then
+                    -- count favorites
+                    create_fav_count_table(files_table)
+
+                    curTotal = #fav_count
+                    if #fav_count == 0 then showCat = 40
+                    end
+                end
+
+                
+                if showCat >= 3 and showCat <= 40 then
+                    showCatTemp = showCat - 1
+                    curTotal = #xCatLookup(showCat)
+
+                    if #xCatLookup(showCat) == 0 then         
+                        showCat = showCatTemp
+                    end
+                end
+
+                if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 40 end end
+                if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 39 end end
+                if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 38 end end
+                if showCat == 38 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 37 end end
+                if showCat == 37 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 36 end end
+                if showCat == 36 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 35 end end
+                if showCat == 35 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 34 end end
+                if showCat == 34 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 33 end end
+                if showCat == 33 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 32 end end
+                if showCat == 32 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 31 end end
+                if showCat == 31 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 30 end end
+                if showCat == 30 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 29 end end
+                if showCat == 29 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 28 end end
+                if showCat == 28 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 27 end end
+                if showCat == 27 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 26 end end
+                if showCat == 26 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 25 end end
+                if showCat == 25 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 24 end end
+                if showCat == 24 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 23 end end
+                if showCat == 23 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 22 end end
+                if showCat == 22 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 21 end end
+                if showCat == 21 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 20 end end
+                if showCat == 20 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 19 end end
+                if showCat == 19 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 18 end end
+                if showCat == 18 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 17 end end
+                if showCat == 17 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 16 end end
+                if showCat == 16 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 15 end end
+                if showCat == 15 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 14 end end
+                if showCat == 14 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 13 end end
+                if showCat == 13 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 12 end end
+                if showCat == 12 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 11 end end
+                if showCat == 11 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 10 end end
+                if showCat == 10 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 9 end end
+                if showCat == 9 then curTotal =     #gba_table              if      #gba_table == 0 then            showCat = 8 end end
+                if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 7 end end
+                if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 6 end end
+                if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 5 end end
+                if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 4 end end
+                if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 3 end end
+                if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 2 end end
+                
+                -- Skip Homebrew category if disabled
+                if showCat == 2 and showHomebrews==0 then -- HB is off
+                    showCat = 1
+                end
+                
+
+                hideBoxes = 0.8 -- used to be 8
+                p = 1
+                master_index = p
+                startCovers = false
+                GetInfoSelected()
+                FreeIcons()
+
+            else
+            end
+        elseif (Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN)) then
+            state = Keyboard.getState()
+            if state ~= RUNNING then
+                
+                -- CATEGORY - Move Forwards
+
+                if showCat == 42 then
+                    -- count favorites
+                    create_fav_count_table(files_table)
+                end
+
+                -- filterGames = 1
+
+                if filterGames == 1 then
+
+                    -- Only Collections
+                    if collection_count ~= 0 then   
+                        if showCat < collection_syscount and showCat >= 42 then
+
+                            if showCat == 42 or showCat == 43 then -- Recent and Fav
+                                showCat = 45
                             else
+                                showCat = showCat + 1
+                            end
+                        
+                        else
+                            showCat = 45
+                        end
+                    end
+
+                else
+
+                    -- All categories including collections
+                    if showCat < collection_syscount then
+                        -- Skip All category if disabled
+                        if showCat==0 and showAll==0 then 
+                            showCat = 1
+                        -- Skip Homebrews category if disabled
+                        elseif showCat==1 and showHomebrews==0 then
+                            showCat = 3
+                        else
+                            showCat = showCat + 1
+                        end
+                    elseif showCat == collection_syscount then
+                        if showAll==0 then
+                            showCat = 1
+                        else
+                            showCat = 0
+                        end
+                    else
+                        showCat = 0
+                    end
+
+
+                end
+
+                
+                -- Start skip empty categories
+                if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 4 end end
+                if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 5 end end
+                if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 6 end end
+                if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 7 end end
+                if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 8 end end
+                if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 9 end end
+                if showCat == 9 then curTotal =     #gba_table              if      #gba_table == 0 then            showCat = 10 end end
+                if showCat == 10 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 11 end end
+                if showCat == 11 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 12 end end
+                if showCat == 12 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 13 end end
+                if showCat == 13 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 14 end end
+                if showCat == 14 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 15 end end
+                if showCat == 15 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 16 end end
+                if showCat == 16 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 17 end end
+                if showCat == 17 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 18 end end
+                if showCat == 18 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 19 end end
+                if showCat == 19 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 20 end end
+                if showCat == 20 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 21 end end
+                if showCat == 21 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 22 end end
+                if showCat == 22 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 23 end end
+                if showCat == 23 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 24 end end
+                if showCat == 24 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 25 end end
+                if showCat == 25 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 26 end end
+                if showCat == 26 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 27 end end
+                if showCat == 27 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 28 end end
+                if showCat == 28 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 29 end end
+                if showCat == 29 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 30 end end
+                if showCat == 30 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 31 end end
+                if showCat == 31 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 32 end end
+                if showCat == 32 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 33 end end
+                if showCat == 33 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 34 end end
+                if showCat == 34 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 35 end end
+                if showCat == 35 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 36 end end
+                if showCat == 36 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 37 end end
+                if showCat == 37 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 38 end end
+                if showCat == 38 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 39 end end
+                if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 40 end end
+                if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 41 end end
+                if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 42 end end
+                if showCat == 42 then
+                    -- count favorites
+                    create_fav_count_table(files_table)
+
+                    curTotal = #fav_count
+                    if #fav_count == 0 then showCat = 43
+                    end
+                end
+                if showCat == 43 then 
+                    curTotal = #recently_played_table
+                    if #recently_played_table == 0 then showCat = 44
+                    end
+                end
+                
+                if showCat == 44 then
+                    curTotal = #search_results_table
+                    if #search_results_table == 0 then
+                        if collection_count ~= 0 then
+                            if showCollections == 0 then
                                 if showAll==0 then
                                     showCat = 1
                                 else
                                     showCat = 0
                                 end
+                            else
+                                showCat = 45
+                            end
+                        else
+                            if showAll==0 then
+                                showCat = 1
+                            else
+                                showCat = 0
                             end
                         end
                     end
-
-                    if showCat > 45 and showCat < collection_syscount then
-                        if next(xCatLookup(showCat)) ~= nil then
-                        else
-                            -- empty
-                            showCat = showCat + 1
-                        end
-
-                    -- elseif showCat > 45 and showCat == collection_syscount then
-                    elseif showCat > 45 and showCat == collection_syscount then
-                        
-                        -- -- empty
-                        -- if showAll==0 then
-                        --     showCat = 1
-                        -- else
-                        --     showCat = 0
-                        -- end
-
-                    else
-
-                    end
-
-
-                    hideBoxes = 0.8 -- used to be 8
-                    p = 1
-                    master_index = p
-                    startCovers = false
-                    GetInfoSelected()
-                    FreeIcons()
                 end
 
+                if showCat > 45 and showCat < collection_syscount then
+                    if next(xCatLookup(showCat)) ~= nil then
+                    else
+                        -- empty
+                        showCat = showCat + 1
+                    end
+
+                -- elseif showCat > 45 and showCat == collection_syscount then
+                elseif showCat > 45 and showCat == collection_syscount then
+                    
+                    -- -- empty
+                    -- if showAll==0 then
+                    --     showCat = 1
+                    -- else
+                    --     showCat = 0
+                    -- end
+
+                else
+
+                end
+
+
+                hideBoxes = 0.8 -- used to be 8
+                p = 1
+                master_index = p
+                startCovers = false
+                GetInfoSelected()
+                FreeIcons()
 
             else
             end
@@ -15309,7 +15307,7 @@ while true do
                 end
             else
             end
-        elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+        elseif (Controls.check(pad, SCE_CTRL_SQUARE)) and not (Controls.check(oldpad, SCE_CTRL_SQUARE)) then
             state = Keyboard.getState()
             if state ~= RUNNING then
 
