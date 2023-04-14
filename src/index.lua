@@ -1223,53 +1223,57 @@ local filterGames = 0 -- All
 local showMissingCovers = 1 -- On
 
 function SaveSettings()
-    local file_config = System.openFile(cur_dir .. "/config.dat", FCREATE)
-    settings = {}    
-    
-    if startCategory >= 45 then
-        Collection_CatNum = startCategory - 44
-        if startCategory_collection_renamed ~= nil then
-            startCategory_collection = startCategory_collection_renamed
-        else
-            if collection_files[Collection_CatNum].table_name ~= nil then
-                startCategory_collection = collection_files[Collection_CatNum].table_name
+
+    local file_config = assert(io.open(cur_dir .. "/config.dat", "w"), "Failed to open config.dat")
+
+    if file_config ~= nil then
+        settings = {} 
+
+        if startCategory >= 45 then
+            Collection_CatNum = startCategory - 44
+            if startCategory_collection_renamed ~= nil then
+                startCategory_collection = startCategory_collection_renamed
             else
-                startCategory_collection = "not_set"
+                if collection_files[Collection_CatNum].table_name ~= nil then
+                    startCategory_collection = collection_files[Collection_CatNum].table_name
+                else
+                    startCategory_collection = "not_set"
+                end
+
             end
-
+        else
+            startCategory_collection = "not_set"
         end
+
+        local settings = 
+        "Reflections=" .. setReflections .. " " .. 
+        "\nSounds=" .. setSounds .. " " .. 
+        "\nColor=" .. themeColor .. " " .. 
+        "\nBackground=" .. setBackground .. " " .. 
+        "\nLanguage=" .. setLanguage .. " " .. 
+        "\nView=" .. showView .. " " .. 
+        "\nHomebrews=" .. showHomebrews .. " " .. 
+        "\nScan=" .. startupScan .. " " .. 
+        "\nCategory=" .. startCategory .. " " .. 
+        "\nRecent=" .. showRecentlyPlayed .. " " .. 
+        "\nAll=" .. showAll .. " " .. 
+        "\nAdrenaline_rom_location=" .. Adrenaline_roms .. " " .. 
+        "\nGame_Backgrounds=" .. Game_Backgrounds .. " " .. 
+        "\nMusic=" .. setMusic .. " " .. 
+        "\nMusic_Shuffle=" .. setMusicShuffle .. " " .. 
+        "\nSwap_X_O_buttons=" .. setSwap_X_O_buttons .. " " .. 
+        "\nAdrenaline_PS_Button=" .. setAdrPSButton .. " " .. 
+        "\nShow_hidden_games=" .. showHidden .. " " .. 
+        "\nShow_collections=" .. showCollections .. " " .. 
+        "\nStartup_Collection=" .. startCategory_collection .. " " .. 
+        "\nFilter_Games=" .. filterGames .. " " .. 
+        "\nShow_missing_covers=" .. showMissingCovers
+
+        file_config:write(settings)
+        file_config:close()
+
     else
-        startCategory_collection = "not_set"
     end
-
-    local settings = 
-    "Reflections=" .. setReflections .. " " .. 
-    "\nSounds=" .. setSounds .. " " .. 
-    "\nColor=" .. themeColor .. " " .. 
-    "\nBackground=" .. setBackground .. " " .. 
-    "\nLanguage=" .. setLanguage .. " " .. 
-    "\nView=" .. showView .. " " .. 
-    "\nHomebrews=" .. showHomebrews .. " " .. 
-    "\nScan=" .. startupScan .. " " .. 
-    "\nCategory=" .. startCategory .. " " .. 
-    "\nRecent=" .. showRecentlyPlayed .. " " .. 
-    "\nAll=" .. showAll .. " " .. 
-    "\nAdrenaline_rom_location=" .. Adrenaline_roms .. " " .. 
-    "\nGame_Backgrounds=" .. Game_Backgrounds .. " " .. 
-    "\nMusic=" .. setMusic .. " " .. 
-    "\nMusic_Shuffle=" .. setMusicShuffle .. " " .. 
-    "\nSwap_X_O_buttons=" .. setSwap_X_O_buttons .. " " .. 
-    "\nAdrenaline_PS_Button=" .. setAdrPSButton .. " " .. 
-    "\nShow_hidden_games=" .. showHidden .. " " .. 
-    "\nShow_collections=" .. showCollections .. " " .. 
-    "\nStartup_Collection=" .. startCategory_collection .. " " .. 
-    "\nFilter_Games=" .. filterGames .. " " .. 
-    "\nShow_missing_covers=" .. showMissingCovers
-
-
-    file_settings = io.open(cur_dir .. "/config.dat", "w")
-    file_settings:write(settings)
-    file_settings:close()
 end
 
 if System.doesFileExist(cur_dir .. "/config.dat") then
