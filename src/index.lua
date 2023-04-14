@@ -8548,20 +8548,26 @@ local function DrawCover(x, y, text, icon, sel, apptype)
     camX = 0
     Graphics.setImageFilters(icon, FILTER_LINEAR, FILTER_LINEAR)
     
-    middle_zone = 1 -- How much around 0 is considered as the middle (where the selected cover is displayed)
-    side_factor = x / middle_zone -- This is 0 when x is in the exact center, and 1 or -1 when x is at a side of the middle zone
+    -- How much around 0 is considered as the middle (where the selected cover is displayed)
+    if     showView == 1 then space = 1.6
+    elseif showView == 2 then space = 1.6
+    elseif showView == 3 then space = 1.5
+    elseif showView == 4 then space = 1
+    else                      space = 1
+    end
+
+    side_factor = x / space -- This is 0 when x is in the exact center, and 1 or -1 when x is at a side of the middle zone
     abs_side_factor = math.abs(side_factor)
 
     dezoom_factor = math.max(abs_side_factor, quick_scrolling_factor)
 
     if showView == 1 then
         -- flat zoom out view
-        space = 1.6
         zoom = 0
-        if x > middle_zone then
+        if x > space then
             extraz = 6
             extrax = 1
-        elseif x < -middle_zone then
+        elseif x < -space then
             extraz = 6
             extrax = -1
         else
@@ -8571,14 +8577,13 @@ local function DrawCover(x, y, text, icon, sel, apptype)
         extray = -0.05 -- Nudge down as vita cover white line sits very close to UI element
     elseif showView == 2 then
         -- zoomin view
-        space = 1.6
         zoom = -1
         extray = -0.6
-        if x > middle_zone then
+        if x > space then
             rot = -1
             extraz = 0
             extrax = 1
-        elseif x < -middle_zone then
+        elseif x < -space then
             rot = 1
             extraz = 0
             extrax = -1
@@ -8588,35 +8593,33 @@ local function DrawCover(x, y, text, icon, sel, apptype)
         end
     elseif showView == 3 then
         -- left side view
-        space = 1.5
         zoom = -0.6
         extray = -0.3
         camX = 1
-        if x > middle_zone then
+        if x > space then
             rot = -0.5
             extraz = 2 + (x / 2)
             extrax = 0.6
-        elseif x <= middle_zone and x > 0 then
+        elseif x <= space and x > 0 then
             rot = -0.5 * abs_side_factor
             extraz = (2 + (x / 2)) * dezoom_factor
             extrax = 0.6 * abs_side_factor
-        elseif x < -middle_zone then
+        elseif x < -space then
             rot = 0.5
             extraz = 2
             extrax = -10
-        elseif x >= -middle_zone and x < 0 then
+        elseif x >= -space and x < 0 then
             rot = 0.5 * abs_side_factor
             extraz = 2 * dezoom_factor
             extrax = -10 * abs_side_factor
         end
     elseif showView == 4 then
         -- scroll around
-        space = 1
         zoom = 0
-        if x > middle_zone then
+        if x > space then
             extraz = 2 + (x / 1.5)
             extrax = 1
-        elseif x < -middle_zone then
+        elseif x < -space then
             extraz = 2 - (x / 1.5)
             extrax = -1
         else
@@ -8625,13 +8628,12 @@ local function DrawCover(x, y, text, icon, sel, apptype)
         end
     else
         -- default view
-        space = 1
         zoom = 0
-        if x > middle_zone then
+        if x > space then
             rot = -1
             extraz = 3
             extrax = 1
-        elseif x < -middle_zone then
+        elseif x < -space then
             rot = 1
             extraz = 3
             extrax = -1
