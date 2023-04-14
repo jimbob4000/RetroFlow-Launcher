@@ -1176,6 +1176,8 @@ local getCovers = 0
 local getRomDir = 1
 local getSnaps = 0
 local tmpappcat = 0
+quick_scrolling_factor = 0
+quick_scrolling_factor_goal = 0
 
 local game_adr_bin_driver = 0
 local game_adr_exec_bin = 0
