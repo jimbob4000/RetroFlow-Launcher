@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Scansione all'avvio: ",
 ["On"] = "On",
 ["Off"] = "Off",
+["Category_button_colon"] = "Pulsante categoria:",
+["Square"] = "□ / ↓+□ / Menù: ↑",
+["Arrows"] = "↓ / ↑ / Menù: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Sfondo Personalizzato: ",

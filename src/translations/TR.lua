@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Başlangıç taraması: ",
 ["On"] = "Aç",
 ["Off"] = "Kapat",
+["Category_button_colon"] = "Kategori düğmesi:",
+["Square"] = "□ / ↓+□ / Menü: ↑",
+["Arrows"] = "↓ / ↑ / Menü: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Özel Arka Plan: ",

@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "开始时扫描 : ",
 ["On"] = "开启",
 ["Off"] = "关闭",
+["Category_button_colon"] = "类别按钮:",
+["Square"] = "□ / ↓+□ / 菜单: ↑",
+["Arrows"] = "↓ / ↑ / 菜单: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "自定义背景 : ",

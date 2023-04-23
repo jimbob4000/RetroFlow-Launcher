@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Käynnistysskannaus: ",
 ["On"] = "Päällä",
 ["Off"] = "Pois",
+["Category_button_colon"] = "Luokka-painike:",
+["Square"] = "□ / ↓+□ / Vakio: ↑",
+["Arrows"] = "↓ / ↑ / Vakio: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Mukautettu tausta: ",

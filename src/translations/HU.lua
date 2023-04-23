@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Indítási keresés: ",
 ["On"] = "Be",
 ["Off"] = "Ki",
+["Category_button_colon"] = "Kategória gomb:",
+["Square"] = "□ / ↓+□ / Menü: ↑",
+["Arrows"] = "↓ / ↑ / Menü: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Egyéni Háttér: ",

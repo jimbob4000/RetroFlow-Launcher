@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Сканирование при запуске: ",
 ["On"] = "Вкл",
 ["Off"] = "Выкл",
+["Category_button_colon"] = "Кнопка категории:",
+["Square"] = "□ / ↓+□ / Меню: ↑",
+["Arrows"] = "↓ / ↑ / Меню: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Собственный Фон: ",

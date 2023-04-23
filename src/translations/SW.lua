@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Startskanning: ",
 ["On"] = "På",
 ["Off"] = "Av",
+["Category_button_colon"] = "Kategori-knapp:",
+["Square"] = "□ / ↓+□ / Meny: ↑",
+["Arrows"] = "↓ / ↑ / Meny: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Egna bakgrunder: ",

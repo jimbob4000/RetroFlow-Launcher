@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Escaneo de inicio: ",
 ["On"] = "Encendido",
 ["Off"] = "Apagado",
+["Category_button_colon"] = "Botón de categoría:",
+["Square"] = "□ / ↓+□ / Menú: ↑",
+["Arrows"] = "↓ / ↑ / Menú: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Fondos personalizados: ",

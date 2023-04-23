@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Escanear Jogos ao Iniciar: ",
 ["On"] = "Ligado",
 ["Off"] = "Desligado",
+["Category_button_colon"] = "Botão de categoria:",
+["Square"] = "□ / ↓+□ / Cardápio: ↑",
+["Arrows"] = "↓ / ↑ / Cardápio: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Plano de Fundo Personalizado: ",

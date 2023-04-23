@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "시동 검사: ",
 ["On"] = "켜짐",
 ["Off"] = "꺼짐",
+["Category_button_colon"] = "카테고리 버튼:",
+["Square"] = "□ / ↓+□ / 메뉴: ↑",
+["Arrows"] = "↓ / ↑ / 메뉴: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "사용자 정의 배경: ",

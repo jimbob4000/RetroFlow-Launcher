@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "スタートアップスキャン：",
 ["On"] = "オン",
 ["Off"] = "オフ",
+["Category_button_colon"] = "カテゴリーボタン:",
+["Square"] = "□ / ↓+□ / メニュー: ↑",
+["Arrows"] = "↓ / ↑ / メニュー: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "バックグラウンドぬ画像：",

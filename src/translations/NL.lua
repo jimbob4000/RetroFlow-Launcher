@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Opstartscan: ",
 ["On"] = "Op",
 ["Off"] = "Uit",
+["Category_button_colon"] = "Categorie knop:",
+["Square"] = "□ / ↓+□ / Menu: ↑",
+["Arrows"] = "↓ / ↑ / Menu: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Eigen achtergrond: ",

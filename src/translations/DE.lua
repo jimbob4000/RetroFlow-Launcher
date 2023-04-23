@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Startscan: ",
 ["On"] = "Ein",
 ["Off"] = "Aus",
+["Category_button_colon"] = "Kategorie-Taste:",
+["Square"] = "□ / ↓+□ / Menü: ↑",
+["Arrows"] = "↓ / ↑ / Menü: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Eigener Hintergrund: ",

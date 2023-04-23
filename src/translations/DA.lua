@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Opstartsscanning: ",
 ["On"] = "På",
 ["Off"] = "Af",
+["Category_button_colon"] = "Kategori-knap:",
+["Square"] = "□ / ↓+□ / Menu: ↑",
+["Arrows"] = "↓ / ↑ / Menu: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Özel Arka Plan: ",

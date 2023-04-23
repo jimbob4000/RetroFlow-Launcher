@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Analyse au démarrage :",
 ["On"] = "Oui",
 ["Off"] = "Non",
+["Category_button_colon"] = "Bouton de catégorie :",
+["Square"] = "□ / ↓+□ / Menu: ↑",
+["Arrows"] = "↓ / ↑ / Menu: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Fond personnalisé :",

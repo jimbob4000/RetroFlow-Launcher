@@ -17,6 +17,9 @@ return {
 ["Startup_scan_colon"] = "Startup scan: ",
 ["On"] = "On",
 ["Off"] = "Off",
+["Category_button_colon"] = "Category button:",
+["Square"] = "□ / ↓+□ / Menu: ↑",
+["Arrows"] = "↓ / ↑ / Menu: □",
 
 -- Appearance
 ["Custom_Background_colon"] = "Custom Background: ",
