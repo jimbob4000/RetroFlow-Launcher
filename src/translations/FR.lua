@@ -27,14 +27,11 @@ return {
 ["Yellow"] = "Jaune",
 ["Green"] = "Vert",
 ["Grey"] = "Gris",
-["Dark_Grey"] = "Gris foncé",
 ["Black"] = "Noir",
 ["Purple"] = "Violet",
 ["Dark_Purple"] = "Violet foncé",
 ["Orange"] = "Orange",
 ["Blue"] = "Bleu",
-["Views_2D_colon"] = "Affichages 2D :",
-["Change_Views_colon"] = "Changer d'affichage :",
 
 -- Audio
 ["Audio"] = "Audio",
@@ -199,9 +196,9 @@ return {
 ["Version_colon"] = "Version : ",
 ["Download_Cover"] = "Télécharger la jaquette",
 ["Download_Background"] = "Télécharger l'arrière-plan",
-["Override_Category_colon"] = "Remplacer la catégorie :",
-["Press_X_to_apply_Category"] = "X : appliquer la catégorie",
-["Press_O_to_apply_Category"] = "O : appliquer la catégorie",
+["Override_Category_colon"] = "Changer Catégorie du jeu :",
+["Press_X_to_apply_Category"] = "X : valider le choix",
+["Press_O_to_apply_Category"] = "O : valider le choix",
 ["Default"] = "Par défaut",
 ["Favorite"] = "Favori",
 ["Rename"] = "Renommer",
@@ -261,11 +258,11 @@ return {
 ["Sounds"] = "Sons",
 ["Artwork"] = "Illustrations",
 ["Scan_Settings"] = "Paramètres d'analyse",
-["Adrenaline_roms"] = "Jeux Adrenaline : ",
-["All_Category"] = "Catégorie Tous : ",
+["Adrenaline_roms"] = "Répertoire jeux Adrenaline : ",
+["All_Category"] = "Catégorie 'Tout afficher' : ",
 ["Back_Chevron"] = "<  Retour",
-["Theme"] = "Thème",
-["Game_backgounds_colon"] = "Arrière-plans de jeu : ",
+["Theme"] = "Thèmes",
+["Game_backgounds_colon"] = "Arrière-plans du jeu : ",
 
 -- Game directories
 ["Home"] = "Accueil",
@@ -305,11 +302,11 @@ return {
 
 -- Other Settings
 ["Other_Settings"] = "Autres réglages",
-["Swap_X_and_O_buttons_colon"] = "Échanger les boutons X et O : ",
-["Adrenaline_PS_button_colon"] = "Bouton PS Adrenaline : ",
+["Swap_X_and_O_buttons_colon"] = "Bouton de validation X ou O : ",
+["Adrenaline_PS_button_colon"] = "Fonction Bouton PS sur Adrenaline : ",
 ["Menu"] = "Menu",
 ["LiveArea"] = "LiveArea",
-["Standard"] = "Standard",
+["Standard"] = "Standard (appuis long)",
 ["Show_missing_covers_colon"] = "Afficher les jaquettes manquantes :",
 
 -- Game options
