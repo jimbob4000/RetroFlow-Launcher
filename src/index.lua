@@ -1203,7 +1203,8 @@ function print_onelua_title_files()
         file = io.open(pathini, "w+")
         file:write("return" .. "\n" .. "{" .. "\n")
         for k, v in pairs((tbl)) do
-            file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", description = "' .. v.description .. '", path = "' .. v.path .. '"},' .. "\n")
+            -- file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", description = "' .. v.description .. '", path = "' .. v.path .. '"},' .. "\n")
+            file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", path = "' .. v.path .. '"},' .. "\n")
 
         end
         file:write('}')
