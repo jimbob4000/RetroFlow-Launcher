@@ -6790,18 +6790,18 @@ function listDirectory(dir)
 
 
                 -- Check if name contains parenthesis, if yes strip out to show as version
-                if string.find(file.description, "%(") and string.find(file.description, "%)") then
-                    -- Remove all text except for within "()"
-                    scummvm_version_initial = {}
-                    scummvm_version_initial = file.description:match("%((.+)%)")
+                -- if string.find(file.description, "%(") and string.find(file.description, "%)") then
+                --     -- Remove all text except for within "()"
+                --     scummvm_version_initial = {}
+                --     scummvm_version_initial = file.description:match("%((.+)%)")
 
-                    -- Tidy up remainder when more than one set of parenthesis used, replace  ") (" with ", "
-                    scummvm_version = {}
-                    scummvm_version = scummvm_version_initial:gsub("%) %(", ', ')
-                -- If no parenthesis, then add blank to prevent nil error
-                else
-                    scummvm_version = " "
-                end
+                --     -- Tidy up remainder when more than one set of parenthesis used, replace  ") (" with ", "
+                --     scummvm_version = {}
+                --     scummvm_version = scummvm_version_initial:gsub("%) %(", ', ')
+                -- -- If no parenthesis, then add blank to prevent nil error
+                -- else
+                --     scummvm_version = " "
+                -- end
 
                 
                 table.insert(folders_table, file)
@@ -6813,7 +6813,8 @@ function listDirectory(dir)
                 file.name = file.gameid
                 file.title = title
                 file.name_online = file.gameid
-                file.version = scummvm_version
+                -- file.version = scummvm_version
+                file.version = ""
                 file.name_title_search = file.gameid
                 file.apptitle = title
                 file.date_played = 0

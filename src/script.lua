@@ -845,7 +845,7 @@
 				for k, v in pairs (scummvm_ini_section) do
 					file = {}
 					file.gameid = ini.read("ux0:/data/scummvm/scummvm.ini",tostring(v),"gameid","exclude_game")
-					file.description = ini.read("ux0:/data/scummvm/scummvm.ini",tostring(v),"description","exclude_game")
+					-- file.description = ini.read("ux0:/data/scummvm/scummvm.ini",tostring(v),"description","exclude_game")
 					file.path = ini.read("ux0:/data/scummvm/scummvm.ini",tostring(v),"path","exclude_game")
 					if not string.match(file.gameid, "exclude_game") then
 						table.insert(scummvm_info, file)
@@ -859,7 +859,8 @@
 		    file = io.open(pathini, "w+")
 			file:write("return" .. "\n" .. "{" .. "\n")
 		    for k, v in pairs((tbl)) do
-				file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", description = "' .. v.description .. '", path = "' .. v.path .. '"},' .. "\n")
+				-- file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", description = "' .. v.description .. '", path = "' .. v.path .. '"},' .. "\n")
+				file:write('[' .. k .. '] = {gameid = "' .. v.gameid .. '", path = "' .. v.path .. '"},' .. "\n")
 
 		    end
 		    file:write('}')
@@ -1138,7 +1139,8 @@
 
 		update_debug_message("Sorting table: ScummVM")
 		if #scummvm_info > 0 then
-			table.sort(scummvm_info, function(a, b) return (a.description:lower() < b.description:lower()) end)
+			-- table.sort(scummvm_info, function(a, b) return (a.description:lower() < b.description:lower()) end)
+			table.sort(scummvm_info, function(a, b) return (a.gameid:lower() < b.gameid:lower()) end)
 		end
 
 		update_debug_message("Saving table: ScummVM")
