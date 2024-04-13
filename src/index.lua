@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "6.2.0"
+local appversion = "7.0.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -890,6 +890,9 @@ end
 if not System.doesFileExist(db_Folder .. "/scummvm.db") then
     System.copyFile("app0:/addons/scummvm.db", db_Folder .. "/scummvm.db")
 end
+if not System.doesFileExist(db_Folder .. "/amiga.db") then
+    System.copyFile("app0:/addons/amiga.db", db_Folder .. "/amiga.db")
+end
 
 
 -- Table Cache
@@ -1138,6 +1141,13 @@ function delete_cache()
     end
 end
 
+-- Used for crc scan, can keep title files
+function delete_cache_keep_titles()
+    dofile("app0:addons/printTable.lua")
+    delete_tables()
+end
+
+
 
 -- PRINT TABLE FUNCTIONS
 function cache_all_tables()
@@ -1167,6 +1177,14 @@ end
 function update_cached_table_launch_overrides()
     dofile("app0:addons/printTable.lua")
     print_table_launch_overrides()
+end
+function print_table_missing_covers()
+    dofile("app0:addons/printTable.lua")
+    print_missing_covers()
+end
+function print_table_missing_snaps()
+    dofile("app0:addons/printTable.lua")
+    print_missing_snaps()
 end
 
 function print_onelua_title_files()
@@ -1335,7 +1353,10 @@ local showMissingCovers = 1 -- On
 local smoothScrolling = 1 -- On
 
 local set2DViews = 1 -- On
-local setChangeViews = 1 -- On
+setChangeViews = 1 -- On
+
+setCRCScan = 1 -- On
+download_artwork_type = 0 -- Covers
 
 function SaveSettings()
 
@@ -1386,6 +1407,7 @@ function SaveSettings()
         "\nTwo_D_views=" .. set2DViews .. " " .. 
         "\nChange_views=" .. setChangeViews .. " " .. 
         "\nTime=" .. setTime .. " " .. 
+        "\nCRC=" .. setCRCScan .. " " .. 
         "\nStartup_Collection=" .. startCategory_collection -- MUST ALWAYS BE LAST -- the config is split into a table using number values which this setting does not have. Need to add proper ini file reading
 
         file_config:write(settings)
@@ -1435,6 +1457,7 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
     local get2DViews = settingValue[23]; if get2DViews ~= nil then set2DViews = get2DViews end
     local getChangeViews = settingValue[24]; if getChangeViews ~= nil then setChangeViews = getChangeViews end
     local getTime = settingValue[25]; if getTime ~= nil then setTime = getTime end
+    local getCRCScan = settingValue[26]; if getCRCScan ~= nil then setCRCScan = getCRCScan end
     -- settingValue[26] is startup collection 
 
     selectedwall = setBackground
@@ -1808,108 +1831,33 @@ local lang_default =
 ["PICO8"] = "PICO-8",
 
 -- Download
-["Download_Covers_colon"] = "Download Covers: ",
-["Download_Covers"] = "Download Covers",
-["Download_Backgrounds_colon"] = "Download Backgrounds: ",
+["Download_colon"] = "Download:",
+["Covers"] = "Covers",
+["Backgrounds"] = "Backgrounds",
+["Download_using_CRC_colon"] = "Download using CRC:",
 ["Extract_PS_Vita_backgrounds"] = "Extract PS Vita backgrounds",
 ["Extract_PSP_backgrounds"] = "Extract PSP backgrounds",
 ["Extract_PICO8_backgrounds"] = "Extract PICO-8 backgrounds",
 
 ["All"] = "All",
-["Reload_Covers_Database"] = "Reload Covers Database",
-["Reload_Backgound_Database"] = "Reload Background Database",
 ["Internet_Connection_Required"] = "Internet Connection Required",
 ["Cover"] = "Cover",
 ["Background"] = "Background",
+
 ["Found"] = "Found",
 ["found_exclamation"] = "found!",
 ["Cover_not_found"] = "Cover not found",
 ["Background_not_found"] = "Background not found",
 ["of"] = " of ",
 
-["Downloading_covers"] = "Downloading covers",
-["Downloading_all_covers"] = "Downloading all covers",
-["Downloading_PS_Vita_covers"] = "Downloading PS Vita covers",
-["Downloading_PSP_covers"] = "Downloading PSP covers",
-["Downloading_PS1_covers"] = "Downloading PS1 covers",
-["Downloading_N64_covers"] = "Downloading N64 covers",
-["Downloading_SNES_covers"] = "Downloading SNES covers",
-["Downloading_NES_covers"] = "Downloading NES covers",
-["Downloading_GBA_covers"] = "Downloading GBA covers",
-["Downloading_GBC_covers"] = "Downloading GBC covers",
-["Downloading_GB_covers"] = "Downloading GB covers",
-["Downloading_DC_covers"] = "Downloading DC covers",
-["Downloading_MD_covers"] = "Downloading MD covers",
-["Downloading_SMS_covers"] = "Downloading SMS covers",
-["Downloading_GG_covers"] = "Downloading GG covers",
-["Downloading_MAME_2000_covers"] = "Downloading MAME 2000 covers",
-["Downloading_AMIGA_covers"] = "Downloading AMIGA covers",
-["Downloading_TG_16_covers"] = "Downloading TG-16 covers",
-["Downloading_TG_CD_covers"] = "Downloading TG-CD covers",
-["Downloading_PCE_covers"] = "Downloading PCE covers",
-["Downloading_PCE_CD_covers"] = "Downloading PCE-CD covers",
-["Downloading_NG_PC_covers"] = "Downloading NG-PC covers",
-["Downloading_SCD_covers"] = "Downloading SCD covers",
-["Downloading_32X_covers"] = "Downloading 32X covers",
-["Downloading_C64_covers"] = "Downloading C64 covers",
-["Downloading_WSWANCOL_covers"] = "Downloading WSWANCOL covers",
-["Downloading_WSWAN_covers"] = "Downloading WSWAN covers",
-["Downloading_MSX2_covers"] = "Downloading MSX2 covers",
-["Downloading_MSX_covers"] = "Downloading MSX covers",
-["Downloading_ZXS_covers"] = "Downloading ZXS covers",
-["Downloading_A7800_covers"] = "Downloading A7800 covers",
-["Downloading_A5200_covers"] = "Downloading A5200 covers",
-["Downloading_A600_covers"] = "Downloading A600 covers",
-["Downloading_LYNX_covers"] = "Downloading LYNX covers",
-["Downloading_COLECO_covers"] = "Downloading COLECO covers",
-["Downloading_VECTREX_covers"] = "Downloading VECTREX covers",
-["Downloading_FBA2012_covers"] = "Downloading FBA2012 covers",
-["Downloading_MAME_2003_covers"] = "Downloading MAME 2003 covers",
-["Downloading_NG_covers"] = "Downloading NG covers",
-["Downloading_SCUMMVM_covers"] = "Downloading SCUMMVM covers",
-["Downloading_PICO8_covers"] = "Downloading PICO-8 covers",
+["Download_colon"] = "Download:",
+["Backgrounds"] = "Backgrounds",
+["Covers"] = "Covers",
 
+["Downloading_covers"] = "Downloading covers",
 ["Downloading_backgrounds"] = "Downloading backgrounds",
-["Downloading_all_backgrounds"] = "Downloading all backgrounds",
-["Downloading_PS_Vita_backgrounds"] = "Downloading PS Vita backgrounds",
-["Downloading_PSP_backgrounds"] = "Downloading PSP backgrounds",
-["Downloading_PS1_backgrounds"] = "Downloading PS1 backgrounds",
-["Downloading_N64_backgrounds"] = "Downloading N64 backgrounds",
-["Downloading_SNES_backgrounds"] = "Downloading SNES backgrounds",
-["Downloading_NES_backgrounds"] = "Downloading NES backgrounds",
-["Downloading_GBA_backgrounds"] = "Downloading GBA backgrounds",
-["Downloading_GBC_backgrounds"] = "Downloading GBC backgrounds",
-["Downloading_GB_backgrounds"] = "Downloading GB backgrounds",
-["Downloading_DC_backgrounds"] = "Downloading DC backgrounds",
-["Downloading_MD_backgrounds"] = "Downloading MD backgrounds",
-["Downloading_SMS_backgrounds"] = "Downloading SMS backgrounds",
-["Downloading_GG_backgrounds"] = "Downloading GG backgrounds",
-["Downloading_MAME_2000_backgrounds"] = "Downloading MAME 2000 backgrounds",
-["Downloading_AMIGA_backgrounds"] = "Downloading AMIGA backgrounds",
-["Downloading_TG_16_backgrounds"] = "Downloading TG-16 backgrounds",
-["Downloading_TG_CD_backgrounds"] = "Downloading TG-CD backgrounds",
-["Downloading_PCE_backgrounds"] = "Downloading PCE backgrounds",
-["Downloading_PCE_CD_backgrounds"] = "Downloading PCE-CD backgrounds",
-["Downloading_NG_PC_backgrounds"] = "Downloading NG-PC backgrounds",
-["Downloading_SCD_backgrounds"] = "Downloading SCD backgrounds",
-["Downloading_32X_backgrounds"] = "Downloading 32X backgrounds",
-["Downloading_C64_backgrounds"] = "Downloading C64 backgrounds",
-["Downloading_WSWANCOL_backgrounds"] = "Downloading WSWANCOL backgrounds",
-["Downloading_WSWAN_backgrounds"] = "Downloading WSWAN backgrounds",
-["Downloading_MSX2_backgrounds"] = "Downloading MSX2 backgrounds",
-["Downloading_MSX_backgrounds"] = "Downloading MSX backgrounds",
-["Downloading_ZXS_backgrounds"] = "Downloading ZXS backgrounds",
-["Downloading_A7800_backgrounds"] = "Downloading A7800 backgrounds",
-["Downloading_A5200_backgrounds"] = "Downloading A5200 backgrounds",
-["Downloading_A600_backgrounds"] = "Downloading A600 backgrounds",
-["Downloading_LYNX_backgrounds"] = "Downloading LYNX backgrounds",
-["Downloading_COLECO_backgrounds"] = "Downloading COLECO backgrounds",
-["Downloading_VECTREX_backgrounds"] = "Downloading VECTREX backgrounds",
-["Downloading_FBA2012_backgrounds"] = "Downloading FBA2012 backgrounds",
-["Downloading_MAME_2003_backgrounds"] = "Downloading MAME 2003 backgrounds",
-["Downloading_NG_backgrounds"] = "Downloading NG backgrounds",
-["Downloading_SCUMMVM_backgrounds"] = "Downloading SCUMMVM backgrounds",
-["Downloading_PICO8_backgrounds"] = "Downloading PICO-8 backgrounds",
+
+["No_missing_artwork"] = "No missing artwork",
 
 -- Info Screen
 ["App_ID_colon"] = "App ID: ",
@@ -2069,6 +2017,15 @@ local lang_default =
 ["Delete"] = "Delete",
 ["Edit_collections"] = "Edit collections",
 ["Show_collections_colon"] = "Show collections:",
+
+-- Adrenaline install assets
+["RETROLNCR_Install"] = "Installing RetroFlow Adrenaline Launcher vpk...",
+["RETROLNCR_Installed"] = "RetroFlow Adrenaline Launcher has been installed.",
+["ABB_Install"] = "Installing AdrBubbleBooter plugin...",
+["ABB_Installed"] = "AdrBubbleBooter plugin has been installed...",
+["ABB_Restart"] = "We need to restart your PS Vita.",
+["Restart_Now"] = "Restart Now",
+["Restart_Later"] = "Restart Later",
 
 }
 
@@ -2746,6 +2703,16 @@ function find_game_table_pos_key(tbl, search)
     end
 end
 
+-- encode url
+function urlencode (str)
+   str = string.gsub (str, "([^0-9a-zA-Z !'()*._~-])", -- locale independent
+      function (c) return string.format ("%%%%%02X", string.byte(c)) end)
+   str = string.gsub (str, " ", "%%%%20")
+   str = string.gsub (str, "%(", "%%%%28")
+   str = string.gsub (str, "%)", "%%%%29")
+   return str
+end
+
 -- Manipulate Rom Name - remove region code and url encode spaces for image download
 function cleanRomNames()
     -- file.name = {}
@@ -2758,15 +2725,6 @@ function cleanRomNames()
     romname_noRegion_noExtension = romname_noExtension:gsub(" %(", "("):gsub('%b()', '')
 
     -- encode url
-    local function urlencode (str)
-       str = string.gsub (str, "([^0-9a-zA-Z !'()*._~-])", -- locale independent
-          function (c) return string.format ("%%%%%02X", string.byte(c)) end)
-       str = string.gsub (str, " ", "%%%%20")
-       str = string.gsub (str, "%(", "%%%%28")
-       str = string.gsub (str, "%)", "%%%%29")
-       return str
-    end
-
     romname_url_encoded = {}
     romname_url_encoded = urlencode (romname_noExtension)
 
@@ -5318,7 +5276,7 @@ function listDirectory(dir)
                             file.snap_path_local = SystemsToScan[4].localSnapPath
                             
                             if custom_path and System.doesFileExist(custom_path) then
-                                img_path = SystemsToScan[4].localCoverPath .. file.name .. ".png" --custom cover by app name
+                                img_path = SystemsToScan[4].localCoverPath .. app_title .. ".png" --custom cover by app name
                                 file.cover = true
                             elseif custom_path_id and System.doesFileExist(custom_path_id) then
                                 img_path = SystemsToScan[4].localCoverPath .. file.name .. ".png" --custom cover by app id
@@ -6404,6 +6362,7 @@ function listDirectory(dir)
                     romname_withExtension = file.name
                     romname_noExtension = {}
                     romname_noExtension = romname_withExtension:match("(.+)%..+$")
+                    untouched_romname_noExtension = romname_noExtension
 
                     -- LOOKUP TITLE ID: Get game name based on titleID, search saved table of data, or sql table of data if titleID not found
 
@@ -6413,6 +6372,17 @@ function listDirectory(dir)
                         pspdb = dofile(database_rename_PSP)
                     else
                         pspdb = {}
+                    end
+
+                    -- Special lookup string for Amiga WHDLoad
+                    -- Change format from 'GameName_v1.0<whatevercomesafter>' to 'GameName_vX.X<whatevercomesafter>'
+                    if (def) == 21 then
+                        if file.name:match(".lha") and file.name:match("(_v[%d]+[%p][%d])")
+                        then
+                            romname_noExtension = string.gsub(romname_noExtension, "(_v[%d]+[%p][%d])", "_vX.X", 1)
+                        else
+                        end
+                    else
                     end
 
                     -- Check if scanned titleID is a saved match
@@ -6449,6 +6419,7 @@ function listDirectory(dir)
 
                     romname_noRegion_noExtension = {}
                     romname_noRegion_noExtension = title:gsub('%b()', '')
+                    romname_noRegion_noExtension = string.gsub(romname_noRegion_noExtension, '[ \t]+%f[\r\n%z]', '') -- Removes trailing space
 
                     -- Check if name contains parenthesis, if yes strip out to show as version
                     if string.find(title, "%(") and string.find(title, "%)") then
@@ -6477,9 +6448,21 @@ function listDirectory(dir)
 
                     -- file.filename = file.name
                     file.filename = file.name
-                    file.name = romname_noExtension
+
+                    if (def) == 21 then
+                        if file.name:match(".lha") and file.name:match("(_v[%d]+[%p][%d])")
+                        then
+                            file.name = title
+                            file.name_online = name_title_search
+                        end
+                    else
+                        file.name = romname_noExtension
+                        file.name_online = romname_noExtension
+                    end
+                    --
+                    -- file.name = romname_noExtension
                     file.title = romname_noRegion_noExtension
-                    file.name_online = romname_noExtension
+                    
                     file.version = romname_region
                     file.name_title_search = title
                     file.apptitle = romname_noRegion_noExtension
@@ -6490,7 +6473,8 @@ function listDirectory(dir)
                     file.app_type_default=((def))
 
                     custom_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png"
-                    custom_path_id = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png"
+                    -- custom_path_id = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png"
+                    custom_path_id = (SystemsToScan[(def)].localCoverPath) .. untouched_romname_noExtension .. ".png"
 
                     -- Check for renamed game names
                     if #renamed_games_table ~= nil then
@@ -6521,7 +6505,8 @@ function listDirectory(dir)
                         img_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png" --custom cover by app name
                         file.cover = true
                     elseif custom_path_id and System.doesFileExist(custom_path_id) then
-                        img_path = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png" --custom cover by app id
+                        -- img_path = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png" --custom cover by app id
+                        img_path = (SystemsToScan[(def)].localCoverPath) .. untouched_romname_noExtension .. ".png" --custom cover by app id
                         file.cover = true
                     else
                         if System.doesFileExist("app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)) then
@@ -6548,7 +6533,7 @@ function listDirectory(dir)
 
                     -- file.filename = file.name
                     file.filename = romname_withExtension
-                    file.name = romname_noExtension
+                    file.name = untouched_romname_noExtension
                     file.cover_path_online = (SystemsToScan[(def)].onlineCoverPathSystem)
                     file.cover_path_local = (SystemsToScan[(def)].localCoverPath)
                     file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
@@ -6905,7 +6890,7 @@ function listDirectory(dir)
     -- SCAN ROMS
     -- Scan_Type        (def,  def_table_name)
     scan_Rom_PS1_Eboot  (SystemsToScan[4].romFolder, "psx.lua") 
-    Scan_Rom_PS1            (4, psx_table) -- Retroarch rom folder
+    Scan_Rom_PS1            (4, psx_table) -- Retroarch rom folder exluding pbp formats
     Scan_Rom_Simple         (5, n64_table)
     Scan_Rom_Simple         (6, snes_table)
     Scan_Rom_Simple         (7, nes_table)
@@ -6926,7 +6911,7 @@ function listDirectory(dir)
     Scan_Rom_Simple         (19, pce_table)
     Scan_Rom_Filter         (20, pcecd_table, "%.cue")
     Scan_Rom_Filter         (20, pcecd_table, "%.chd")
-    Scan_Rom_Simple         (21, amiga_table)
+    Scan_Rom_DB_Lookup      (21, amiga_table, "amiga.lua", "amiga.db")
     Scan_Rom_Simple         (22, c64_table)
     Scan_Rom_Simple         (23, wswan_col_table)
     Scan_Rom_Simple         (24, wswan_table)
@@ -8453,9 +8438,9 @@ function DownloadCovers()
 
         function DownloadCovers_System(def_getCovers, def_table_name, def_lang_lines_Downloading_SysName_covers)
                     
-            if getCovers == 0 then -- sort all games by system
-                table.sort(return_table, function(a, b) return (a.app_type < b.app_type) end)
-            end
+            -- if getCovers == 0 then -- sort all games by system
+            --     table.sort(return_table, function(a, b) return (a.app_type < b.app_type) end)
+            -- end
 
             if getCovers==(def_getCovers) and #(def_table_name) > 0 then -- Check getcover number against system
                 
@@ -8474,7 +8459,13 @@ function DownloadCovers()
                                     -- Found - do nothing
                                 else
                                     -- Not found - download
-                                    Network.downloadFileAsync((def_table_name)[app_idx].cover_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+
+                                    if (def_table_name)[app_idx].app_type == 21 then
+                                        -- Amiga fix
+                                        Network.downloadFileAsync((def_table_name)[app_idx].cover_path_online .. urlencode((def_table_name)[app_idx].name_title_search) .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                    else
+                                        Network.downloadFileAsync((def_table_name)[app_idx].cover_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                    end
                                     running = true
                                 end
                             end
@@ -8572,6 +8563,9 @@ function DownloadCovers()
                     else
                     end
                 end
+
+            else
+                System.setMessage(lang_lines.No_missing_artwork, false, BUTTON_OK)
             end
 
             if getCovers == 0 then -- sort all games by app title
@@ -8590,47 +8584,7 @@ function DownloadCovers()
             showMissingCovers = 0
         end
 
-        -- def_getCovers, def_table_name, def_lang_lines_Downloading_SysName_covers)
-        DownloadCovers_System(0,    return_table,           lang_lines.Downloading_all_covers)
-        DownloadCovers_System(1,    games_table,            lang_lines.Downloading_PS_Vita_covers)
-        DownloadCovers_System(2,    psp_table,              lang_lines.Downloading_PSP_covers)
-        DownloadCovers_System(3,    psx_table,              lang_lines.Downloading_PS1_covers)
-                                                   -- Homebrew is number 4 kicking out numbers      
-        DownloadCovers_System(4,    n64_table,              lang_lines.Downloading_N64_covers)
-        DownloadCovers_System(5,    snes_table,             lang_lines.Downloading_SNES_covers)
-        DownloadCovers_System(6,    nes_table,              lang_lines.Downloading_NES_covers)
-        DownloadCovers_System(7,    gba_table,              lang_lines.Downloading_GBA_covers)
-        DownloadCovers_System(8,    gbc_table,              lang_lines.Downloading_GBC_covers)
-        DownloadCovers_System(9,    gb_table,               lang_lines.Downloading_GB_covers)
-        DownloadCovers_System(10,   dreamcast_table,        lang_lines.Downloading_DC_covers)
-        DownloadCovers_System(11,   sega_cd_table,          lang_lines.Downloading_SCD_covers)
-        DownloadCovers_System(12,   s32x_table,             lang_lines.Downloading_32X_covers)
-        DownloadCovers_System(13,   md_table,               lang_lines.Downloading_MD_covers)
-        DownloadCovers_System(14,   sms_table,              lang_lines.Downloading_SMS_covers)
-        DownloadCovers_System(15,   gg_table,               lang_lines.Downloading_GG_covers)
-        DownloadCovers_System(16,   tg16_table,             lang_lines.Downloading_TG_16_covers)
-        DownloadCovers_System(17,   tgcd_table,             lang_lines.Downloading_TG_CD_covers)
-        DownloadCovers_System(18,   pce_table,              lang_lines.Downloading_PCE_covers)
-        DownloadCovers_System(19,   pcecd_table,            lang_lines.Downloading_PCE_CD_covers)
-        DownloadCovers_System(20,   amiga_table,            lang_lines.Downloading_AMIGA_covers)
-        DownloadCovers_System(21,   scummvm_table,          lang_lines.Downloading_SCUMMVM_covers)
-        DownloadCovers_System(22,   c64_table,              lang_lines.Downloading_C64_covers)
-        DownloadCovers_System(23,   wswan_col_table,        lang_lines.Downloading_WSWANCOL_covers)
-        DownloadCovers_System(24,   wswan_table,            lang_lines.Downloading_WSWAN_covers)
-        DownloadCovers_System(25,   msx2_table,             lang_lines.Downloading_MSX2_covers)
-        DownloadCovers_System(26,   msx1_table,             lang_lines.Downloading_MSX_covers)
-        DownloadCovers_System(27,   zxs_table,              lang_lines.Downloading_ZXS_covers)
-        DownloadCovers_System(28,   atari_7800_table,       lang_lines.Downloading_A7800_covers)
-        DownloadCovers_System(29,   atari_5200_table,       lang_lines.Downloading_A5200_covers)
-        DownloadCovers_System(30,   atari_2600_table,       lang_lines.Downloading_A600_covers)
-        DownloadCovers_System(31,   atari_lynx_table,       lang_lines.Downloading_LYNX_covers)
-        DownloadCovers_System(32,   colecovision_table,     lang_lines.Downloading_COLECO_covers)
-        DownloadCovers_System(33,   vectrex_table,          lang_lines.Downloading_VECTREX_covers)
-        DownloadCovers_System(34,   fba_table,              lang_lines.Downloading_FBA2012_covers)
-        DownloadCovers_System(35,   mame_2003_plus_table,   lang_lines.Downloading_MAME_2003_covers)
-        DownloadCovers_System(36,   mame_2000_table,        lang_lines.Downloading_MAME_2000_covers)
-        DownloadCovers_System(37,   neogeo_table,           lang_lines.Downloading_NG_covers)
-        DownloadCovers_System(38,   ngpc_table,             lang_lines.Downloading_NG_PC_covers)
+        DownloadCovers_System(0, missing_artwork_table_covers, lang_lines.Downloading_covers)
         
 
     else
@@ -8677,7 +8631,14 @@ function DownloadSnaps()
                                     -- Found - do nothing
                                 else
                                     -- Not found - download
-                                    Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+
+                                    if (def_table_name)[app_idx].app_type == 21 then
+                                        -- Amiga fix
+                                        Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. urlencode((def_table_name)[app_idx].name_title_search) .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                    else
+                                        Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                    end
+                                    
                                     running = true
                                 end
 
@@ -8746,51 +8707,13 @@ function DownloadSnaps()
                     else
                     end
                 end
+            
+            else
+                System.setMessage(lang_lines.No_missing_artwork, false, BUTTON_OK)
             end
         end
 
-        -- def_getSnaps, def_table_name, def_lang_lines_Downloading_SysName_backgrounds)
-        DownloadSnaps_System(0,    bg_table,               lang_lines.Downloading_all_backgrounds)
-        -- DownloadSnaps_System(1,    games_table,            lang_lines.Downloading_PSP_backgrounds)
-        DownloadSnaps_System(1,    psp_table,              lang_lines.Downloading_PSP_backgrounds)
-        DownloadSnaps_System(2,    psx_table,              lang_lines.Downloading_PS1_backgrounds)
-                                                   -- Homebrew is number 4 kicking out numbers
-        DownloadSnaps_System(3,    n64_table,              lang_lines.Downloading_N64_backgrounds)
-        DownloadSnaps_System(4,    snes_table,             lang_lines.Downloading_SNES_backgrounds)
-        DownloadSnaps_System(5,    nes_table,              lang_lines.Downloading_NES_backgrounds)
-        DownloadSnaps_System(6,    gba_table,              lang_lines.Downloading_GBA_backgrounds)
-        DownloadSnaps_System(7,    gbc_table,              lang_lines.Downloading_GBC_backgrounds)
-        DownloadSnaps_System(8,    gb_table,               lang_lines.Downloading_GB_backgrounds)
-        DownloadSnaps_System(9,    dreamcast_table,        lang_lines.Downloading_DC_backgrounds)
-        DownloadSnaps_System(10,   sega_cd_table,          lang_lines.Downloading_SCD_backgrounds)
-        DownloadSnaps_System(11,   s32x_table,             lang_lines.Downloading_32X_backgrounds)
-        DownloadSnaps_System(12,   md_table,               lang_lines.Downloading_MD_backgrounds)
-        DownloadSnaps_System(13,   sms_table,              lang_lines.Downloading_SMS_backgrounds)
-        DownloadSnaps_System(14,   gg_table,               lang_lines.Downloading_GG_backgrounds)
-        DownloadSnaps_System(15,   tg16_table,             lang_lines.Downloading_TG_16_backgrounds)
-        DownloadSnaps_System(16,   tgcd_table,             lang_lines.Downloading_TG_CD_backgrounds)
-        DownloadSnaps_System(17,   pce_table,              lang_lines.Downloading_PCE_backgrounds)
-        DownloadSnaps_System(18,   pcecd_table,            lang_lines.Downloading_PCE_CD_backgrounds)
-        DownloadSnaps_System(19,   amiga_table,            lang_lines.Downloading_AMIGA_backgrounds)
-        DownloadSnaps_System(20,   scummvm_table,          lang_lines.Downloading_SCUMMVM_backgrounds)
-        DownloadSnaps_System(21,   c64_table,              lang_lines.Downloading_C64_backgrounds)
-        DownloadSnaps_System(22,   wswan_col_table,        lang_lines.Downloading_WSWANCOL_backgrounds)
-        DownloadSnaps_System(23,   wswan_table,            lang_lines.Downloading_WSWAN_backgrounds)
-        DownloadSnaps_System(24,   msx2_table,             lang_lines.Downloading_MSX2_backgrounds)
-        DownloadSnaps_System(25,   msx1_table,             lang_lines.Downloading_MSX_backgrounds)
-        DownloadSnaps_System(26,   zxs_table,              lang_lines.Downloading_ZXS_backgrounds)
-        DownloadSnaps_System(27,   atari_7800_table,       lang_lines.Downloading_A7800_backgrounds)
-        DownloadSnaps_System(28,   atari_5200_table,       lang_lines.Downloading_A5200_backgrounds)
-        DownloadSnaps_System(29,   atari_2600_table,       lang_lines.Downloading_A600_backgrounds)
-        DownloadSnaps_System(30,   atari_lynx_table,       lang_lines.Downloading_LYNX_backgrounds)
-        DownloadSnaps_System(31,   colecovision_table,     lang_lines.Downloading_COLECO_backgrounds)
-        DownloadSnaps_System(32,   vectrex_table,          lang_lines.Downloading_VECTREX_backgrounds)
-        DownloadSnaps_System(33,   fba_table,              lang_lines.Downloading_FBA2012_backgrounds)
-        DownloadSnaps_System(34,   mame_2003_plus_table,   lang_lines.Downloading_MAME_2003_backgrounds)
-        DownloadSnaps_System(35,   mame_2000_table,        lang_lines.Downloading_MAME_2000_backgrounds)
-        DownloadSnaps_System(36,   neogeo_table,           lang_lines.Downloading_NG_backgrounds)
-        DownloadSnaps_System(37,   ngpc_table,             lang_lines.Downloading_NG_PC_backgrounds)
-        
+        DownloadSnaps_System(0, missing_artwork_table_backgrounds, lang_lines.Downloading_backgrounds)
         
     else
         if status ~= RUNNING then
@@ -9108,7 +9031,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddle      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGB          -- Average approx 50.00
         else
-            if apptype==5 or apptype==6 then
+            if apptype==5 or apptype==6 or apptype==7 then
                 return  modCoverN64 -- Average approx 42.31
             else
                 return modCoverGB
@@ -9132,7 +9055,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddleNoref      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGBNoref          -- Average approx 50.00
         else
-            if apptype==5 or apptype==6 then
+            if apptype==5 or apptype==6 or apptype==7 then
                 return  modCoverN64Noref -- Average approx 42.31
             else
                 return modCoverGBNoref
@@ -9175,8 +9098,8 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
                 Render.drawModel(modCoverPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==5 or apptype==6 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 then
-            -- Get closest cover: N64, Snes, Sega CD, TG16, TG CD, PCE, PCE CD, Amiga, FBA, Mame 2003, Mame 2000, ScummVM
+        elseif apptype==5 or apptype==6 or apptype==7 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 then
+            -- Get closest cover: N64, Snes, Nes, Sega CD, TG16, TG CD, PCE, PCE CD, Amiga, FBA, Mame 2003, Mame 2000, ScummVM
             if setReflections == 1 then
                 Render.useTexture(closestBox(), icon)
                 Render.drawModel(closestBox(), x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
@@ -9184,7 +9107,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
                 Render.useTexture(closestBoxNoref(), icon)
                 Render.drawModel(closestBoxNoref(), x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==7 or apptype==23 or apptype==24 or apptype==37 or apptype==40 then
+        elseif  apptype==23 or apptype==24 or apptype==37 or apptype==40 then
             if setReflections == 1 then
                 Render.useTexture(modCoverNES, icon)
                 Render.drawModel(modCoverNES, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
@@ -9338,7 +9261,12 @@ function DownloadSingleCover()
 
         app_titleid = app_titleid:gsub("\n","")
 
-        Network.downloadFile(onlineCoverspath .. app_titleid:gsub("%%", '%%25'):gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+        if apptype == 21 then
+            -- Amiga fix
+            Network.downloadFile(onlineCoverspath .. xCatLookup(showCat)[p].name_title_search:gsub("%%", '%%25'):gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+        else
+            Network.downloadFile(onlineCoverspath .. app_titleid:gsub("%%", '%%25'):gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+        end  
         
         if System.doesFileExist("ux0:/data/RetroFlow/" .. app_titleid .. ".png") then
             tmpfile = System.openFile("ux0:/data/RetroFlow/" .. app_titleid .. ".png", FREAD)
@@ -9548,8 +9476,14 @@ function DownloadSingleSnap()
 
         app_titleid = app_titleid:gsub("\n","")
 
-        Network.downloadFile(onlineSnapPath .. app_titleid:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
-        
+        if apptype == 21 then
+            -- Amiga fix
+            Network.downloadFile(onlineSnapPath .. xCatLookup(showCat)[p].name_title_search:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+        else
+            Network.downloadFile(onlineSnapPath .. app_titleid:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+        end
+
+
         if System.doesFileExist("ux0:/data/RetroFlow/" .. app_titleid .. ".png") then
             tmpfile = System.openFile("ux0:/data/RetroFlow/" .. app_titleid .. ".png", FREAD)
             size = System.sizeFile(tmpfile)
@@ -11053,9 +10987,10 @@ while true do
         end
 
 
-        -- 0 Homebrew, 1 vita, 2 psp, 3 psx, 5+ Retro, 39 ps mobile
+        -- 0 Homebrew, 1 vita, 2 psp, 3 psx, 5+ Retro, 34 FBA, 35 Mame 2003+, 36 Mame 2000, 37 NeoGeo, 39 ps mobile
 
-        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 or apptype == 39 then
+        -- if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 or apptype == 39 then
+        if apptype == 0 or apptype == 1 or apptype == 39 then
             if string.match (game_path, "pspemu") or string.match (game_path, "ux0:/app/") or string.match (game_path, "ux0:/psm/") then
                 Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid .. "\n" .. lang_lines.Version_colon .. app_version .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                               App ID:                                           Version:                                           Size:
@@ -11063,10 +10998,13 @@ while true do
                 Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.Version_colon .. app_version .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                               Version:                                           Size:
             end
+        elseif apptype == 2 or apptype == 3 then -- Version removed for psp and psx - bug with onelua getting region
+            Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
+
         elseif apptype == 40 then
             Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                               App ID:                                       Size:
-        elseif apptype == 41 then -- Pico8
+        elseif apptype == 34 or apptype == 35 or apptype == 36 or apptype == 37 or apptype == 41 then 
             Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                           Size:
         else
@@ -11183,12 +11121,47 @@ while true do
                     if tmpimagecat==0 then
                         if gettingCovers == false then
                             gettingCovers = true
-                            DownloadSingleCover()
+
+                            if setCRCScan == 1 then
+    
+                                -- Create temporary file for Onelua to recognise as an instruction (OneLua will delete it after finding)
+                                -- Covers
+                                if not System.doesFileExist(cur_dir .. "/TITLES/missing_covers.lua") then
+                                    local file_over = System.openFile(cur_dir .. "/TITLES/missing_covers.lua", FCREATE)
+                                    System.writeFile(file_over, " ", 1)
+                                    System.closeFile(file_over)
+                                end
+
+                                -- Relaunch so OneLua eboot can check file CRC's and download artwork
+                                FreeIcons()
+                                FreeMemory()
+                                System.launchEboot("app0:/launch_scan.bin")
+                            else
+                                DownloadSingleCover()
+                            end
+
                         end
                     else
                         if gettingBackgrounds == false then
                             gettingBackgrounds = true
-                            DownloadSingleSnap()
+
+                            if setCRCScan == 1 then
+                                -- Create temporary file for Onelua to recognise as an instruction (OneLua will delete it after finding)
+                                -- Backgrounds
+                                if not System.doesFileExist(cur_dir .. "/TITLES/missing_snaps.lua") then
+                                    local file_over = System.openFile(cur_dir .. "/TITLES/missing_snaps.lua", FCREATE)
+                                    System.writeFile(file_over, " ", 1)
+                                    System.closeFile(file_over)
+                                end
+
+                                -- Relaunch so OneLua eboot can check file CRC's and download artwork
+                                FreeIcons()
+                                FreeMemory()
+                                System.launchEboot("app0:/launch_scan.bin")
+                            else
+                                DownloadSingleSnap()
+                            end
+                            
                         end
                     end
                 elseif menuY == 1 then
@@ -12003,172 +11976,25 @@ while true do
         menuItems = 6
 
         -- MENU 5 / #0 Back
-        Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
+        Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)-- Back
 
 
-        -- MENU 5 / #1 Download Covers
-        Font.print(fnt22, setting_x, setting_y1, lang_lines.Download_Covers_colon, white)
+        -- MENU 5 / #1 Download artwork
 
-        if getCovers == 1 then
-        Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.PS_Vita .. "  >", white)
-        elseif getCovers == 2 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.PSP .. "  >", white)
-        elseif getCovers == 3 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.PlayStation .."  >", white)
-        elseif getCovers == 4 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Nintendo_64 .. "  >", white)
-        elseif getCovers == 5 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Super_Nintendo .. "  >", white)
-        elseif getCovers == 6 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Nintendo_Entertainment_System .. "  >", white)
-        elseif getCovers == 7 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Game_Boy_Advance .. "  >", white)
-        elseif getCovers == 8 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Game_Boy_Color .. "  >", white)
-        elseif getCovers == 9 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Game_Boy .. "  >", white)
-        elseif getCovers == 10 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_Dreamcast .. "  >", white)
-        elseif getCovers == 11 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_CD .. "  >", white)
-        elseif getCovers == 12 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_32X .. "  >", white)
-        elseif getCovers == 13 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_Mega_Drive .. "  >", white)
-        elseif getCovers == 14 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_Master_System .. "  >", white)
-        elseif getCovers == 15 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Sega_Game_Gear .. "  >", white)
-        elseif getCovers == 16 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.TurboGrafx_16 .. "  >", white)
-        elseif getCovers == 17 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.TurboGrafx_CD .. "  >", white)
-        elseif getCovers == 18 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.PC_Engine .. "  >", white)
-        elseif getCovers == 19 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.PC_Engine_CD .. "  >", white)
-        elseif getCovers == 20 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Amiga .. "  >", white)
-        elseif getCovers == 21 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.ScummVM .. "  >", white)
-        elseif getCovers == 22 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Commodore_64 .. "  >", white)
-        elseif getCovers == 23 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.WonderSwan_Color .. "  >", white)
-        elseif getCovers == 24 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.WonderSwan .. "  >", white)
-        elseif getCovers == 25 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.MSX2 .. "  >", white)
-        elseif getCovers == 26 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.MSX .. "  >", white)
-        elseif getCovers == 27 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.ZX_Spectrum .. "  >", white)
-        elseif getCovers == 28 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Atari_7800 .. "  >", white)
-        elseif getCovers == 29 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Atari_5200 .. "  >", white)
-        elseif getCovers == 30 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Atari_2600 .. "  >", white)
-        elseif getCovers == 31 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Atari_Lynx .. "  >", white)
-        elseif getCovers == 32 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.ColecoVision .. "  >", white)
-        elseif getCovers == 33 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Vectrex .. "  >", white)
-        elseif getCovers == 34 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.FBA_2012 .. "  >", white)
-        elseif getCovers == 35 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.MAME_2003Plus .. "  >", white)
-        elseif getCovers == 36 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.MAME_2000 .. "  >", white)
-        elseif getCovers == 37 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Neo_Geo .. "  >", white)
-        elseif getCovers == 38 then
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Neo_Geo_Pocket_Color .. "  >", white)
+        Font.print(fnt22, setting_x, setting_y1, lang_lines.Download_colon, white)
+        if download_artwork_type == 0 then
+            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Covers .."  >", white)
         else
-            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.All .. "  >", white)
+            Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.Backgrounds .."  >", white)
         end
 
 
-        -- MENU 5 / #2 Download Backgrounds
-        Font.print(fnt22, setting_x, setting_y2, lang_lines.Download_Backgrounds_colon, white)
-
-        if getSnaps == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.PSP .. "  >", white)
-        elseif getSnaps == 2 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.PlayStation .."  >", white)
-        elseif getSnaps == 3 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Nintendo_64 .. "  >", white)
-        elseif getSnaps == 4 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Super_Nintendo .. "  >", white)
-        elseif getSnaps == 5 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Nintendo_Entertainment_System .. "  >", white)
-        elseif getSnaps == 6 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Game_Boy_Advance .. "  >", white)
-        elseif getSnaps == 7 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Game_Boy_Color .. "  >", white)
-        elseif getSnaps == 8 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Game_Boy .. "  >", white)
-        elseif getSnaps == 9 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_Dreamcast .. "  >", white)
-        elseif getSnaps == 10 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_CD .. "  >", white)
-        elseif getSnaps == 11 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_32X .. "  >", white)
-        elseif getSnaps == 12 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_Mega_Drive .. "  >", white)
-        elseif getSnaps == 13 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_Master_System .. "  >", white)
-        elseif getSnaps == 14 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Sega_Game_Gear .. "  >", white)
-        elseif getSnaps == 15 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.TurboGrafx_16 .. "  >", white)
-        elseif getSnaps == 16 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.TurboGrafx_CD .. "  >", white)
-        elseif getSnaps == 17 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.PC_Engine .. "  >", white)
-        elseif getSnaps == 18 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.PC_Engine_CD .. "  >", white)
-        elseif getSnaps == 19 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Amiga .. "  >", white)
-        elseif getSnaps == 20 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.ScummVM .. "  >", white)
-        elseif getSnaps == 21 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Commodore_64 .. "  >", white)
-        elseif getSnaps == 22 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.WonderSwan_Color .. "  >", white)
-        elseif getSnaps == 23 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.WonderSwan .. "  >", white)
-        elseif getSnaps == 24 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.MSX2 .. "  >", white)
-        elseif getSnaps == 25 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.MSX .. "  >", white)
-        elseif getSnaps == 26 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.ZX_Spectrum .. "  >", white)
-        elseif getSnaps == 27 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Atari_7800 .. "  >", white)
-        elseif getSnaps == 28 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Atari_5200 .. "  >", white)
-        elseif getSnaps == 29 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Atari_2600 .. "  >", white)
-        elseif getSnaps == 30 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Atari_Lynx .. "  >", white)
-        elseif getSnaps == 31 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.ColecoVision .. "  >", white)
-        elseif getSnaps == 32 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Vectrex .. "  >", white)
-        elseif getSnaps == 33 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.FBA_2012 .. "  >", white)
-        elseif getSnaps == 34 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.MAME_2003Plus .. "  >", white)
-        elseif getSnaps == 35 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.MAME_2000 .. "  >", white)
-        elseif getSnaps == 36 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Neo_Geo .. "  >", white)
-        elseif getSnaps == 37 then
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.Neo_Geo_Pocket_Color .. "  >", white)
+        -- MENU 5 / #2 CRC Download
+        Font.print(fnt22, setting_x, setting_y2, lang_lines.Download_using_CRC_colon, white)--Download using CRC
+        if setCRCScan == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.On, white)--ON
         else
-            Font.print(fnt22, setting_x_offset, setting_y2, "<  " .. lang_lines.All .. "  >", white)
+            Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.Off, white)--OFF
         end
 
         -- MENU 5 / #3 Game Backgrounds
@@ -12188,7 +12014,6 @@ while true do
         -- MENU 5 / #6 Extract PICO-8 backgounds
         Font.print(fnt22, setting_x, setting_y6, lang_lines.Extract_PICO8_backgrounds, white) -- Extract PICO-8 backgounds
 
-        
 
         -- MENU 5 - FUNCTIONS
         status = System.getMessageState()
@@ -12200,32 +12025,104 @@ while true do
                 if menuY == 0 then -- #0 Back
                     showMenu = 2
                     menuY = 4 -- Artwork
-                elseif menuY == 1 then -- #1 Download Covers
-                    if gettingCovers == false then
-                        gettingCovers = true
-                        DownloadCovers()
-                    end
-                elseif menuY == 2 then -- #2 Download Backgrounds
-                    if gettingBackgrounds == false then
-                        gettingBackgrounds = true
 
-                        if getSnaps == 0 then
-                            if bg_table == nil then
-                                bg_table = {}
-                                for k, v in pairs(return_table) do
-                                    if v.app_type == 0 then
-                                            -- ignore homebrew
-                                        elseif v.app_type == 1 then
-                                            -- ignore vita
-                                        else
-                                        table.insert(bg_table, v)
-                                    end
+                elseif menuY == 1 then -- #1 Download artwork
+
+                    if Network.isWifiEnabled() then
+
+                        if setCRCScan == 1 then
+
+                            -- Create temporary file for Onelua to recognise as an instruction (OneLua will delete it after finding)
+                            if download_artwork_type == 0 then
+                                -- Covers
+                                if not System.doesFileExist(cur_dir .. "/TITLES/missing_covers.lua") then
+                                    local file_over = System.openFile(cur_dir .. "/TITLES/missing_covers.lua", FCREATE)
+                                    System.writeFile(file_over, " ", 1)
+                                    System.closeFile(file_over)
                                 end
-                                table.sort(bg_table, function(a, b) return (a.app_type < b.app_type) end)
+                            else
+                                -- Backgrounds
+                                if not System.doesFileExist(cur_dir .. "/TITLES/missing_snaps.lua") then
+                                    local file_over = System.openFile(cur_dir .. "/TITLES/missing_snaps.lua", FCREATE)
+                                    System.writeFile(file_over, " ", 1)
+                                    System.closeFile(file_over)
+                                end
+                            end
+
+                            -- Relaunch so OneLua eboot can check file CRC's and download artwork
+                            FreeIcons()
+                            FreeMemory()
+                            System.launchEboot("app0:/launch_scan.bin")
+                        else
+                            if download_artwork_type == 0 then
+                                -- Covers
+
+                                if gettingCovers == false then
+                                    gettingCovers = true
+
+                                    missing_artwork_table_covers = {}
+                                    
+                                    for l, file in pairs(return_table) do
+                                        if file.app_type == 0 or file.app_type == 39 or file.app_type == 41 then
+                                            -- Do nothing - Homebrew, PSM, Pico
+                                        else
+                                            if file.cover == false or string.match(file.icon_path, "%icon0.png") then
+                                                table.insert(missing_artwork_table_covers, file)
+                                            end
+                                        end
+                                    end
+
+                                    table.sort(missing_artwork_table_covers, function(a, b) return (a.app_type < b.app_type) end)
+                                    DownloadCovers()                                    
+
+                                end
+
+
+                            else
+                                -- Backgrounds
+
+                                if gettingBackgrounds == false then
+                                    gettingBackgrounds = true
+
+                                    missing_artwork_table_backgrounds = {}
+
+                                    for l, file in pairs(return_table) do
+                                        local missing_snap = false
+                                        if file.app_type == 0 or file.app_type == 1 or file.app_type == 39 or file.app_type == 41 then
+                                            -- Do nothing -- Homebrew, Vita, PSM, Pico
+                                        else
+                                            if System.doesFileExist(file.snap_path_local .. file.name .. ".png") then
+                                                missing_snap = false
+                                            elseif System.doesFileExist(file.snap_path_local .. file.title .. ".png") then
+                                                missing_snap = false
+                                            else
+                                                missing_snap = true
+                                            end
+                                            if missing_snap == true then
+                                                table.insert(missing_artwork_table_backgrounds, file)
+                                            end
+                                        end
+                                    end
+
+                                    table.sort(missing_artwork_table_backgrounds, function(a, b) return (a.app_type < b.app_type) end)
+                                    DownloadSnaps()
+                                end
+
                             end
                         end
 
-                        DownloadSnaps()
+                    else
+                        if status ~= RUNNING then
+                            System.setMessage(lang_lines.Internet_Connection_Required, false, BUTTON_OK)
+                        end
+                    end
+
+
+                elseif menuY == 2 then -- #2 CRC
+                    if setCRCScan == 1 then
+                        setCRCScan = 0
+                    else
+                        setCRCScan = 1
                     end
 
                 elseif menuY == 3 then -- #3 Game Backgrounds
@@ -12302,7 +12199,11 @@ while true do
                         
                     end
 
+
                 end
+
+                --Save settings
+                SaveSettings()
                 
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
                 if menuY > 0 then
@@ -12317,203 +12218,23 @@ while true do
                     menuY=0
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                --covers download selection
-                
-                if menuY==1 then -- #1 Download Covers
-                    if getCovers > 0 then
-                        getCovers = getCovers - 1
+
+                if menuY==1 then -- #1 Download artwork
+                    if download_artwork_type == 1 then
+                        download_artwork_type = 0
                     else
-                        getCovers = count_of_get_covers -- Check getcover number against sytem
+                        download_artwork_type = 1
                     end
-
-                    -- Skip empty categories
-                    
-                    if getCovers == 38 then if #ngpc_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 37 then if #neogeo_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 36 then if #mame_2000_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 35 then if #mame_2003_plus_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 34 then if #fba_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 33 then if #vectrex_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 32 then if #colecovision_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 31 then if #atari_lynx_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 30 then if #atari_2600_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 29 then if #atari_5200_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 28 then if #atari_7800_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 27 then if #zxs_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 26 then if #msx1_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 25 then if #msx2_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 24 then if #wswan_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 23 then if #wswan_col_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 22 then if #c64_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 21 then if #scummvm_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 20 then if #amiga_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 19 then if #pcecd_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 18 then if #pce_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 17 then if #tgcd_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 16 then if #tg16_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 15 then if #gg_table == 0 then getCovers = getCovers - 1 end end                
-                    if getCovers == 14 then if #sms_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 13 then if #md_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 12 then if #s32x_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 11 then if #sega_cd_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 10 then if #dreamcast_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 9 then if #gb_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 8 then if #gbc_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 7 then if #gba_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 6 then if #nes_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 5 then if #snes_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 4 then if #n64_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 3 then if #psx_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 2 then if #psp_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 1 then if #games_table == 0 then getCovers = getCovers - 1 end end
-                    if getCovers == 0 then if #return_table == 0 then getCovers = 38 end end
-
-                elseif menuY==2 then -- #1 Download Backgrounds
-                    if getSnaps > 0 then
-                        getSnaps = getSnaps - 1
-                    else
-                        getSnaps = count_of_get_snaps -- Check getcover number against sytem
-                    end
-
-                    -- Skip empty categories
-                    if getSnaps == 37 then if #ngpc_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 36 then if #neogeo_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 35 then if #mame_2000_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 34 then if #mame_2003_plus_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 33 then if #fba_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 32 then if #vectrex_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 31 then if #colecovision_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 30 then if #atari_lynx_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 29 then if #atari_2600_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 28 then if #atari_5200_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 27 then if #atari_7800_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 26 then if #zxs_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 25 then if #msx1_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 24 then if #msx2_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 23 then if #wswan_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 22 then if #wswan_col_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 21 then if #c64_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 20 then if #scummvm_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 19 then if #amiga_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 18 then if #pcecd_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 17 then if #pce_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 16 then if #tgcd_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 15 then if #tg16_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 14 then if #gg_table == 0 then getSnaps = getSnaps - 1 end end                
-                    if getSnaps == 13 then if #sms_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 12 then if #md_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 11 then if #s32x_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 10 then if #sega_cd_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 9 then if #dreamcast_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 8 then if #gb_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 7 then if #gbc_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 6 then if #gba_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 5 then if #nes_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 4 then if #snes_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 3 then if #n64_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 2 then if #psx_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 1 then if #psp_table == 0 then getSnaps = getSnaps - 1 end end
-                    if getSnaps == 0 then if #return_table == 0 then getSnaps = 37 end end
-
                 end
+
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                --covers download selection
+
                 if menuY==1 then -- #1 Download Covers
-                    if getCovers < count_of_get_covers then -- Check getcover number against sytem
-                        getCovers = getCovers + 1
+                    if download_artwork_type == 1 then
+                        download_artwork_type = 0
                     else
-                        getCovers=0
+                        download_artwork_type = 1
                     end
-
-                    -- Skip empty categories
-                    if getCovers == 0 then if #return_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 1 then if #games_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 2 then if #psp_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 3 then if #psx_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 4 then if #n64_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 5 then if #snes_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 6 then if #nes_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 7 then if #gba_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 8 then if #gbc_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 9 then if #gb_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 10 then if #dreamcast_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 11 then if #sega_cd_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 12 then if #s32x_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 13 then if #md_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 14 then if #sms_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 15 then if #gg_table == 0 then getCovers = getCovers + 1 end end                
-                    if getCovers == 16 then if #tg16_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 17 then if #tgcd_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 18 then if #pce_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 19 then if #pcecd_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 20 then if #amiga_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 21 then if #scummvm_table == 0 then getCovers = 0 end end
-                    if getCovers == 22 then if #c64_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 23 then if #wswan_col_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 24 then if #wswan_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 25 then if #msx2_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 26 then if #msx1_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 27 then if #zxs_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 28 then if #atari_7800_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 29 then if #atari_5200_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 30 then if #atari_2600_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 31 then if #atari_lynx_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 32 then if #colecovision_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 33 then if #vectrex_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 34 then if #fba_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 35 then if #mame_2003_plus_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 36 then if #mame_2000_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 37 then if #neogeo_table == 0 then getCovers = getCovers + 1 end end
-                    if getCovers == 38 then if #ngpc_table == 0 then getCovers = getCovers + 1 end end
-                    
-
-                elseif menuY==2 then -- #1 Download Backgrounds
-                    if getSnaps < count_of_get_snaps then -- Check getcover number against sytem
-                        getSnaps = getSnaps + 1
-                    else
-                        getSnaps=0
-                    end
-
-                    -- Skip empty categories
-                    if getSnaps == 0 then if #return_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 1 then if #psp_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 2 then if #psx_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 3 then if #n64_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 4 then if #snes_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 5 then if #nes_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 6 then if #gba_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 7 then if #gbc_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 8 then if #gb_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 9 then if #dreamcast_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 10 then if #sega_cd_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 11 then if #s32x_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 12 then if #md_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 13 then if #sms_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 14 then if #gg_table == 0 then getSnaps = getSnaps + 1 end end                
-                    if getSnaps == 15 then if #tg16_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 16 then if #tgcd_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 17 then if #pce_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 18 then if #pcecd_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 19 then if #amiga_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 20 then if #scummvm_table == 0 then getSnaps = 0 end end
-                    if getSnaps == 21 then if #c64_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 22 then if #wswan_col_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 23 then if #wswan_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 24 then if #msx2_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 25 then if #msx1_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 26 then if #zxs_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 27 then if #atari_7800_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 28 then if #atari_5200_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 29 then if #atari_2600_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 30 then if #atari_lynx_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 31 then if #colecovision_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 32 then if #vectrex_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 33 then if #fba_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 34 then if #mame_2003_plus_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 35 then if #mame_2000_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 36 then if #neogeo_table == 0 then getSnaps = getSnaps + 1 end end
-                    if getSnaps == 37 then if #ngpc_table == 0 then getSnaps = getSnaps + 1 end end
-                    
                 end
             end
         end

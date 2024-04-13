@@ -26,6 +26,7 @@
 		local sfo_scan_isos_lua = "sfo_scan_isos.lua"
 		local sfo_scan_games_lua = "sfo_scan_games.lua"
 		local sfo_scan_retroarch_lua = "sfo_scan_retroarch.lua"
+		local user_crc_lua = "user_crc.lua"
 
 	-- Setup font
 		-- custom_font = font.load("DATA/font.ttf")
@@ -50,6 +51,14 @@
 		["Scanning_games_ellipsis"] = "Scanning games...",
 		["Scan_complete"] = "Scan complete",
 		["Reloading_ellipsis"] = "Reloading...",
+		-- Adrenaline install assets
+		["RETROLNCR_Install"] = "Installing RetroFlow Adrenaline Launcher vpk...",
+		["RETROLNCR_Installed"] = "RetroFlow Adrenaline Launcher has been installed.",
+		["ABB_Install"] = "Installing AdrBubbleBooter plugin...",
+		["ABB_Installed"] = "AdrBubbleBooter plugin has been installed...",
+		["ABB_Restart"] = "We need to restart your PS Vita.",
+		["Restart_Now"] = "Restart Now",
+		["Restart_Later"] = "Restart Later",
 		}
 
 		
@@ -113,6 +122,20 @@
 	    end
 
 
+    -- Set colors for progress bar
+
+		local green = color.new(0, 255, 0)
+		local gradient_start = color.new(0, 0, 0, 150)
+		local gradient_end = color.new(0, 0, 0, 0)	
+
+
+-- COMMAND - Download missing artwork using CRC
+
+	if files.exists(titles_dir .. "/" .. "missing_covers.lua") or files.exists(titles_dir .. "/" .. "missing_snaps.lua") then
+		dofile("addons/download_artwork.lua")
+	end
+
+
 -- COMMAND - EXTRACT IMAGES: PSP ISO Backgrounds 
 
 	-- Check for temporary file from vita lua, if it exists then extract images
@@ -128,12 +151,6 @@
 
 			local backgrounds_psp_dir = "ux0:/data/RetroFlow/BACKGROUNDS/Sony - PlayStation Portable/"
 			files.mkdir (backgrounds_psp_dir)
-
-		-- Set colors for extraction
-			-- local green = color.new(79, 152, 37)
-			local green = color.new(0, 255, 0)
-			local gradient_start = color.new(0, 0, 0, 150)
-			local gradient_end = color.new(0, 0, 0, 0)	
 
 		-- Import PSP iso table
 
@@ -168,62 +185,81 @@
 			for k, v in pairs(image_extraction_table) do
 
 
-				-- Extract image
-				local pic1 = {}
+				
 
-				-- If image already exists, display it
+				-- If image already exists, dont display it
 				if files.exists (backgrounds_psp_dir .. v.titleid .. ".png") then
 
-					-- local pic1 = image.load(backgrounds_psp_dir .. v.titleid .. ".png")
+					-- Extract image
+					-- local pic1 = nil
+
+					-- pic1 = image.load(backgrounds_psp_dir .. v.titleid .. ".png")
 
 					-- -- Draw image
 					-- image.resize(pic1, 960, 544)
 					-- image.blit(pic1, 0, 0)
 
-					-- Add dark overlay
+					-- -- Add dark overlay
 					-- draw.fillrect (0,0,960,544,color.new(0,0,0, 150))
 					-- draw.gradrect (0, 0, 960, 150, gradient_start, gradient_end, 0)
 
 					-- Update progress and reset screen
 					extracted = extracted + 1
-					screen.print(10,30,tostring(v.title))
-					screen.print(10,50,math.floor((extracted/image_total)*100).."%")
+					screen.print(10,10,tostring(v.title))
+					screen.print(10,30,math.floor((extracted/image_total)*100).."%")
 					draw.fillrect(0,534,((extracted/image_total)*960),10,green)
 					screen.flip()
 
+					-- Prevent vita from suspending - the screen can dim and turn off
+					power.tick(__POWER_TICK_SUSPEND)
+
 				else
 
+					-- Extract image
+					
 					-- Image not found, try and extract
 					local pic1 = game.getpic1(v.path)
 
-					if pic1 ~= nil then
+					if pic1 then
 
 						-- Draw image
-						-- image.resize(pic1, 960, 544)
-						-- image.blit(pic1, 0, 0)
+						image.resize(pic1, 960, 544)
+						image.blit(pic1, 0, 0)
 
 						-- Add dark overlay
-						-- draw.fillrect (0,0,960,544,color.new(0,0,0, 150))
-						-- draw.gradrect (0, 0, 960, 150, gradient_start, gradient_end, 0)
+						draw.fillrect (0,0,960,544,color.new(0,0,0, 150))
+						draw.gradrect (0, 0, 960, 150, gradient_start, gradient_end, 0)
 
 						-- Save
 						image.save(pic1, backgrounds_psp_dir .. v.titleid .. ".png", 1)
 
 						-- Update progress and reset screen
 						extracted = extracted + 1
-						screen.print(10,30,tostring(v.title))
-						screen.print(10,50,math.floor((extracted/image_total)*100).."%")
+						screen.print(10,10,tostring(v.title))
+						screen.print(10,30,math.floor((extracted/image_total)*100).."%")
 						draw.fillrect(0,534,((extracted/image_total)*960),10,green)
 						screen.flip()
+
+						-- Unload image
+						pic1 = nil
+						collectgarbage("collect")
+						barblit=false
+
+						-- Prevent vita from suspending - the screen can dim and turn off
+						power.tick(__POWER_TICK_SUSPEND)
 
 					else
 						-- No image
 						-- Update progress and reset screen
 						extracted = extracted + 1
-						screen.print(10,30,tostring(v.title))
-						screen.print(10,50,math.floor((extracted/image_total)*100).."%")
+						screen.print(10,10,tostring(v.title))
+						screen.print(10,30,math.floor((extracted/image_total)*100).."%")
 						draw.fillrect(0,534,((extracted/image_total)*960),10,green)
 						screen.flip()
+
+						-- Prevent vita from suspending - the screen can dim and turn off
+						power.tick(__POWER_TICK_SUSPEND)
+
 					end
 
 				end
@@ -231,6 +267,9 @@
 				
 
 		    end
+
+		    -- Turn on the vita display once the scan is complete
+			power.display(1)
 
 		    -- Launch the main app
 			os.execute("app0:eboot.bin")
@@ -828,7 +867,6 @@
 		end
 
 
-
 -- FUNCTION IMPORT
 
 	-- Import cached tables into live tables when new game is found
@@ -848,6 +886,165 @@
 		end
 	end
 	
+
+-- FUNCTION READ
+
+	function files.read(path,mode)
+		local fp = io.open(path, mode or "r")
+		if not fp then return nil end
+
+		local data = fp:read("*a")
+		fp:close()
+		return data
+	end
+
+
+-- INSTALL MESSAGE
+	function install_message(str)
+		if loading_screen then loading_screen:blit(0, 0) end
+		screen.print(custom_font, 480, 450, str, font_size, white, black, __ACENTER)
+		screen.flip()
+	end
+
+-- INSTALL RETROFLOW ADRENALINE LAUNCHER IF NOT INSTALLED
+
+	RETROLNCR_VPK = "ux0:app/RETROFLOW/payloads/RetroFlow Adrenaline Launcher.vpk"
+
+	if game.exists("PSPEMUCFW") then
+		if not game.exists("RETROLNCR") and files.exists(RETROLNCR_VPK) then
+			
+			install_message(lang_lines.RETROLNCR_Install) -- Installing RetroFlow Adrenaline Launcher...
+
+			game.install(RETROLNCR_VPK, false)
+
+			install_message(lang_lines.RETROLNCR_Installed) -- RetroFlow Adrenaline Launcher has been installed...
+			os.delay(2500) -- Wait for 2.5 seconds
+		end
+	end
+
+
+-- CHECK ADRENALINE BUBBLE BOOTER ASSETS ARE INSTALLED, RESTART IF NOT
+
+	-- CRC Checksums and assets
+
+		-- default values modules AdrenalineBooter v1.3 for adrenaline v7.0
+		__CRCADRBOOTER  = 0x039095FD
+		__CRCKERNEL     = 0xC9F84053
+		__CRCUSER       = 0xF5116106
+		__CRCVSH        = 0x485293A1
+		__CRCBOOTCONV   = 0xD072FE17
+
+		ADRENALINE = "ux0:app/PSPEMUCFW"
+		MODULES = {
+		  { fullpath = ADRENALINE.."/sce_module/adrbubblebooter.suprx",   path = "payloads/abm/sce_module/adrbubblebooter.suprx",   crc = __CRCADRBOOTER },
+		  { fullpath = ADRENALINE.."/sce_module/adrenaline_kernel.skprx", path = "payloads/abm/sce_module/adrenaline_kernel.skprx", crc = __CRCKERNEL  },
+		  { fullpath = ADRENALINE.."/sce_module/adrenaline_user.suprx",   path = "payloads/abm/sce_module/adrenaline_user.suprx",   crc = __CRCUSER  },
+		  { fullpath = ADRENALINE.."/sce_module/adrenaline_vsh.suprx",    path = "payloads/abm/sce_module/adrenaline_vsh.suprx",    crc = __CRCVSH  },
+		  { fullpath = ADRENALINE.."/sce_module/bootconv.suprx",          path = "payloads/abm/sce_module/bootconv.suprx",          crc = __CRCBOOTCONV }
+		}
+	
+	-- Copy assets if missing or checksums are different, restart Vita
+
+		oncopy = false
+
+		if game.exists("PSPEMUCFW") and files.exists(ADRENALINE) and
+			files.exists(ADRENALINE.."/eboot.bin") and files.exists(ADRENALINE.."/eboot.pbp") then
+
+			if not files.exists(ADRENALINE.."/adrenaline.bin") then
+				oncopy = true
+				files.copy("payloads/abm/bubbles/adrenaline.bin", ADRENALINE)
+			end
+
+			if not files.exists(ADRENALINE.."/menucolor.bin") then
+				oncopy = true
+				files.copy("payloads/abm/bubbles/menucolor.bin", ADRENALINE)
+			end
+
+			if not files.exists(ADRENALINE.."/sce_module/adrbubblebooter.suprx") then
+				oncopy = true
+				files.copy("payloads/abm/sce_module/", ADRENALINE)
+			else
+
+				for i=1,#MODULES do
+					if not files.exists(MODULES[i].fullpath) then
+						oncopy = true
+						files.copy(MODULES[i].path, ADRENALINE.."/sce_module/")
+					else
+						if os.crc32(files.read(MODULES[i].fullpath) ) != MODULES[i].crc then
+							oncopy = true
+							files.copy(MODULES[i].path, ADRENALINE.."/sce_module/")
+						end
+					end
+				end
+
+			end
+
+			if oncopy then
+
+				install_message(lang_lines.ABB_Install) -- Installing AdrBubbleBooter plugin... - Message displayed after install, backwards I know but simpler, otherwise message is unnecessarily duplicated
+				os.delay(2500) -- Wait for 2.5 seconds
+
+				if loading_screen then loading_screen:blit(0, 0) end
+
+				screen.print(custom_font, 480, 400, lang_lines.ABB_Installed, font_size, white, black, __ACENTER) -- AdrBubbleBooter plugin has been installed...
+				screen.print(custom_font, 480, 425, lang_lines.ABB_Restart, font_size, white, black, __ACENTER) -- We need to restart your PS Vita
+
+				-- Load button images
+
+					local btnX = image.load("DATA/x.png")
+	        		local btnO = image.load("DATA/o.png")
+
+				-- Calculate centre alignment for images and strings
+
+	        		image.resize(btnX, 20, 20)
+	        		image.resize(btnO, 20, 20)
+
+					msg_btnLabel1 = screen.textwidth(custom_font, lang_lines.Restart_Now, font_size)
+					msg_btnLabel2 = screen.textwidth(custom_font, lang_lines.Restart_Later, font_size)
+					msg_btnMargin = 40 -- Distance between buttons
+					msg_btnPaddingRight = 15
+					msg_btImgWidth = 20
+					msg_btImgYoffset = 2.5
+
+					msg_overallWidth = msg_btImgWidth + msg_btnPaddingRight + msg_btnLabel1 + msg_btnMargin + msg_btImgWidth + msg_btnPaddingRight + msg_btnLabel2
+
+					local msg_xpos_cumulative = (960 - msg_overallWidth) / 2
+
+				-- Draw message
+
+					-- Button X
+					image.blit(btnX, msg_xpos_cumulative, 475 - msg_btImgYoffset)
+
+					-- String - Restart Now
+					msg_xpos_cumulative = msg_xpos_cumulative + msg_btImgWidth + msg_btnPaddingRight
+					screen.print(custom_font, msg_xpos_cumulative, 475, lang_lines.Restart_Now, font_size, white, black, __ALEFT)
+
+					-- Button O
+					msg_xpos_cumulative = msg_xpos_cumulative + msg_btnLabel1 + msg_btnMargin
+					image.blit(btnO, msg_xpos_cumulative, 475 - msg_btImgYoffset)
+
+					-- String - Restart Later
+					msg_xpos_cumulative = msg_xpos_cumulative + msg_btImgWidth + msg_btnPaddingRight
+					screen.print(custom_font, msg_xpos_cumulative, 475, lang_lines.Restart_Later, font_size, white, black, __ALEFT)
+
+				screen.flip()
+
+				while true do
+					buttons.read()
+					if buttons.cross then 
+						power.restart()
+					end	
+
+					if buttons.circle then 
+						break
+					end	
+				end
+
+			else
+			end
+
+		else
+		end
 
 
 -- COMMAND - SCAN GAMES
@@ -951,8 +1148,7 @@
 
 		print_loading_complete()
 
-
-
+		
 -- COMMAND - LAUNCH
 
 	-- Debugging

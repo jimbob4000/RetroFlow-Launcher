@@ -50,14 +50,14 @@ local db_Cached_File_pico8 = (db_Cache_Folder .. "db_pico8.lua")
 
 function delete_tables()
     -- List directory
-    db_Cached_Files = System.listDirectory(db_Cache_Folder)
+    db_Cached_Files = files.list(db_Cache_Folder)
 
     -- Delete old files
     for i, file in pairs(db_Cached_Files) do
-        if file.directory then
-            System.deleteDirectory(db_Cache_Folder .. file.name)
+        if file.directory == true then
+            files.delete(db_Cache_Folder .. file.name)
         else
-            System.deleteFile(db_Cache_Folder .. file.name)
+            files.delete(db_Cache_Folder .. file.name)
         end
     end
 end
@@ -259,7 +259,7 @@ end
 
 function print_table_system(def_user_db_file, def_table_name)
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cache_Folder .. (def_user_db_file)) then System.deleteFile(db_Cache_Folder .. (def_user_db_file)) else end
+    if files.exists(db_Cache_Folder .. (def_user_db_file)) then files.delete(db_Cache_Folder .. (def_user_db_file)) else end
     local db_Cached_File_files = (db_Cache_Folder .. (def_user_db_file))
     local db_files = assert(io.open(db_Cached_File_files, "w"))
     printTable((def_table_name), db_files)
@@ -270,7 +270,7 @@ function print_table_recently_played()
     local db_Cached_File_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_recently_played) then System.deleteFile(db_Cached_File_recently_played) else end
+    if files.exists(db_Cached_File_recently_played) then files.delete(db_Cached_File_recently_played) else end
     local db_recently_played = assert(io.open(db_Cached_File_recently_played, "w"))
     printTable(recently_played_table, db_recently_played)
     db_recently_played:close()
@@ -280,7 +280,7 @@ function print_table_recently_played_pre_launch()
     local db_Cached_File_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_recently_played) then System.deleteFile(db_Cached_File_recently_played) else end
+    if files.exists(db_Cached_File_recently_played) then files.delete(db_Cached_File_recently_played) else end
     local db_recently_played = assert(io.open(db_Cached_File_recently_played, "w"))
     printTable(recently_played_pre_launch_table, db_recently_played)
     db_recently_played:close()
@@ -290,7 +290,7 @@ function print_table_renamed_games()
     local db_Cached_File_renamed_games = "ux0:/data/RetroFlow/renamed_games.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_renamed_games) then System.deleteFile(db_Cached_File_renamed_games) else end
+    if files.exists(db_Cached_File_renamed_games) then files.delete(db_Cached_File_renamed_games) else end
     local db_renamed_games = assert(io.open(db_Cached_File_renamed_games, "w"))
     printTable(renamed_games_table, db_renamed_games)
     db_renamed_games:close()
@@ -300,7 +300,7 @@ function print_table_launch_overrides()
     local db_Cached_File_launch_overrides = "ux0:/data/RetroFlow/launch_overrides.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_launch_overrides) then System.deleteFile(db_Cached_File_launch_overrides) else end
+    if files.exists(db_Cached_File_launch_overrides) then files.delete(db_Cached_File_launch_overrides) else end
     local db_launch_overrides = assert(io.open(db_Cached_File_launch_overrides, "w"))
     printTable(launch_overrides_table, db_launch_overrides)
     db_launch_overrides:close()
@@ -310,7 +310,7 @@ function print_table_hidden_games()
     local db_Cached_File_hidden_games = "ux0:/data/RetroFlow/hidden_games.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_hidden_games) then System.deleteFile(db_Cached_File_hidden_games) else end
+    if files.exists(db_Cached_File_hidden_games) then files.delete(db_Cached_File_hidden_games) else end
     local db_hidden_games = assert(io.open(db_Cached_File_hidden_games, "w"))
     printTable(hidden_games_table, db_hidden_games)
     db_hidden_games:close()
@@ -320,7 +320,7 @@ function print_table_rom_dirs(def_table_name)
     local db_Cached_File_rom_directories = "ux0:/data/RetroFlow/rom_directories.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_rom_directories) then System.deleteFile(db_Cached_File_rom_directories) else end
+    if files.exists(db_Cached_File_rom_directories) then files.delete(db_Cached_File_rom_directories) else end
     local db_rom_directories = assert(io.open(db_Cached_File_rom_directories, "w"))
     table.sort((def_table_name), function(a, b) return (a.v:lower() < b.v:lower()) end)
     printTable((def_table_name), db_rom_directories)
@@ -331,7 +331,7 @@ function print_table_collection_files(def_table_name)
     local db_Cached_File_collections = "ux0:/data/RetroFlow/collections.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_collections) then System.deleteFile(db_Cached_File_collections) else end
+    if files.exists(db_Cached_File_collections) then files.delete(db_Cached_File_collections) else end
     local db_collections = assert(io.open(db_Cached_File_collections, "w"))
     -- table.sort((def_table_name), function(a, b) return (a.v:lower() < b.v:lower()) end)
     printTable((def_table_name), db_collections)
@@ -340,7 +340,7 @@ end
 
 function print_table_collection(def_user_db_file, def_table_name)
     local db_Cached_Folder_collections = "ux0:/data/RetroFlow/COLLECTIONS/"
-    if System.doesFileExist(db_Cached_Folder_collections .. (def_user_db_file)) then System.deleteFile(db_Cached_Folder_collections .. (def_user_db_file)) else end
+    if files.exists(db_Cached_Folder_collections .. (def_user_db_file)) then files.delete(db_Cached_Folder_collections .. (def_user_db_file)) else end
     local db_Cached_File_collections = (db_Cached_Folder_collections .. (def_user_db_file))
     local db_file_collection = assert(io.open(db_Cached_File_collections, "w"))
     printTable((def_table_name), db_file_collection)
@@ -351,7 +351,7 @@ function print_missing_covers()
     local db_Cached_File_missing_covers = "ux0:/data/RetroFlow/TITLES/missing_covers.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_missing_covers) then System.deleteFile(db_Cached_File_missing_covers) else end
+    if files.exists(db_Cached_File_missing_covers) then files.delete(db_Cached_File_missing_covers) else end
     local db_missing_covers = assert(io.open(db_Cached_File_missing_covers, "w"))
     printTable(missing_artwork_table, db_missing_covers)
     db_missing_covers:close()
@@ -361,7 +361,7 @@ function print_missing_snaps()
     local db_Cached_File_missing_snaps = "ux0:/data/RetroFlow/TITLES/missing_snaps.lua"
 
     -- Create directories - Database Cache
-    if System.doesFileExist(db_Cached_File_missing_snaps) then System.deleteFile(db_Cached_File_missing_snaps) else end
+    if files.exists(db_Cached_File_missing_snaps) then files.delete(db_Cached_File_missing_snaps) else end
     local db_missing_snaps = assert(io.open(db_Cached_File_missing_snaps, "w"))
     printTable(missing_artwork_table, db_missing_snaps)
     db_missing_snaps:close()
