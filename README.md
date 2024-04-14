@@ -8,7 +8,7 @@
 ## About
 This is a modded version of [HexFlow Launcher](https://github.com/VitaHEX-Games/HexFlow-Launcher); a 3d coverflow like launcher for PS Vita. 
 
-With RetroFlow you can also integerate retro games without the need to create bubbles for Adrenaline, RetroArch, DaedalusX64 and Flycast.
+With RetroFlow you can also integrate retro games without the need to create bubbles for Adrenaline, RetroArch, DaedalusX64 and Flycast.
 
 **Main features added since forking from HexFlow:**
 
@@ -21,7 +21,7 @@ With RetroFlow you can also integerate retro games without the need to create bu
 * Ability to rename games
 * Support for game backgrounds images
 * Support for multiple music tracks
-* Support for multiple wallapers
+* Support for multiple wallpapers
 * Load from cache for faster startup
 * File browser added for setting up game directories
 * Smooth scrolling of game covers
@@ -34,17 +34,20 @@ PS Vita, PSP, Playstation, Playstation Mobile, Nintendo 64, Super Nintendo, Nint
 
 # Installation & setup
 
+**Note:** [Adrenaline v7](https://github.com/TheOfficialFloW/Adrenaline) is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline please install v7.
+
 ## 1. Install the RetroFlow VPK's.
 
 * Install the [latest version of RetroFlow](https://github.com/jimbob4000/RetroFlow-Launcher/releases) 
-* Also install the 'RetroFlow Adrenaline launcher' VPK from the [latest version of RetroFlow](https://github.com/jimbob4000/RetroFlow-Launcher/releases).
-* 'RetroFlow Launcher' is the app you will use to browse games. 'RetroFlow Adrenaline launcher' is needed for launching Playstation and PSP games.
+* On the first run it will install some required files for Adrenaline if necessary.
+* Adrenaline Bubble Booter will be installed automatically if you haven't got it already, you will be prompted to restart the vita if this is installed. 
+* RetroFlow Adrenaline Launcher vpk will also be installed which is used for launching games with Adrenaline. You don't need to open this bubble, but keep it as RetroFlow uses it when launching games with Adrenaline.
+
 
 ## 2. Install any other necessary apps
-* [Adrenaline](https://github.com/TheOfficialFloW/Adrenaline) is required for Playstation and PSP games.
 * [DaedalusX64](https://github.com/Rinnegatamante/DaedalusX64-vitaGL/releases) is required for N64 games. 
 * [RetroArch](https://www.retroarch.com/index.php?page=platforms) is required for other retro systems.  
-* [Flycast](https://www.psx-place.com/threads/release-flycast-vita-v-1-0-3-sega-dreamcast-emulator-for-psvita-pstv.38180/) is required to play Dreamcast games. Also see the [compatability list](https://newflycast.rinnegatamante.it/)  as not all games are playable yet.
+* [Flycast](https://www.psx-place.com/threads/release-flycast-vita-v-1-0-3-sega-dreamcast-emulator-for-psvita-pstv.38180/) is required to play Dreamcast games. Also see the [compatibility list](https://newflycast.rinnegatamante.it/)  as not all games are playable yet.
 * [FAKE-08](https://github.com/jtothebell/fake-08/releases) is required for PICO-8 games.
 * [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.
 
@@ -68,7 +71,7 @@ For best results it's recommended that your games are named using the **no-intro
 #### Option 1 - Use the default folders
 
 * Launch RetroFlow for the first time, RetroFlow will create the folders where you can save your games.
-* Once it's finshed loading; close RetroFlow and copy or move your favourite retro games into the relevant game subfolders here: `ux0:/data/RetroFlow/ROMS/`
+* Once it's finished loading; close RetroFlow and copy or move your favourite retro games into the relevant game subfolders here: `ux0:/data/RetroFlow/ROMS/`
 
 #### Option 2 - Use your own  game folders
 
@@ -132,7 +135,7 @@ Please see the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/mai
 #### Covers:
 * Custom covers can be saved in the game folders here: `ux0:/data/RetroFlow/COVERS/`.
 
-#### Backgounds:
+#### Backgrounds:
 * Custom game backgrounds can be saved in the game folders here: `ux0:/data/RetroFlow/BACKGROUNDS/`.
 
 #### Filenames:
@@ -169,10 +172,10 @@ You can change your background within the app by going to the settings menu > th
 * Original [HexFlow](https://github.com/VitaHEX-Games/HexFlow-Launcher) app by: VitaHex Games.
 * Programming/UI: Sakis RG.
 * Developed with [Lua Player Plus](http://rinnegatamante.github.io/lpp-vita/) by Rinnegatamante.
-* Scanning PSP and PSX games made possible by using [ONELua](http://onelua.x10.mx/) by Team ONElua.
-* Extracting Vita backgrounds: Based on code for [copyicons](https://github.com/cy33hc/copyicons) by cy33hc.
-* Aurora wallaper: Photo by [Maria Vojtovicova](https://unsplash.com/@maripopeo).
-* Blur 2 and Blur 3 wallaper by [Tech & ALL](https://techandall.com/10-blur-wallpapers-backgrounds-for-your-website/).
+* Scanning PSP and PSX games, and CRC checks made possible by using [ONELua](http://onelua.x10.mx/) by Team ONElua.
+* Extracting Vita backgrounds is an integrated version of [copyicons](https://github.com/cy33hc/copyicons) by cy33hc.
+* Aurora wallpaper: Photo by [Maria Vojtovicova](https://unsplash.com/@maripopeo).
+* Blur 2 and Blur 3 wallpaper by [Tech & ALL](https://techandall.com/10-blur-wallpapers-backgrounds-for-your-website/).
 
 ### Special thanks
 
@@ -209,7 +212,7 @@ Please note that I'm not a developer, this mod started as a personal project, pl
 Please feel free to build upon the mod as long as you provide credit to the original HexFlow developer and the people who contributed to the project.
 
 **Supporting developers:** 
-I don't accept dontations or payment for this project, however if you would like to support VitaHex; the developer of the original HexFlow app you can support their work by becoming a [Patron](https://www.patreon.com/vitahex).
+I don't accept donations or payment for this project, however if you would like to support VitaHex; the developer of the original HexFlow app you can support their work by becoming a [Patron](https://www.patreon.com/vitahex).
 
 You can also donate to them using [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RM8ECMVYMTXGJ&source=url). If you would like to follow them, you can find VitaHex on [Twitter](https://twitter.com/VitaHex), or their website [vitahex.weebly.com](https://vitahex.weebly.com/).
 

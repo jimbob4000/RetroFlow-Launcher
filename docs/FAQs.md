@@ -12,6 +12,7 @@
 * [Atari 5200 loads the memopad in RetroArch?](#atari-5200-loads-the-memopad-in-retroarch)
 * [Missing artwork - How should I name my games so covers are found?](#missing-artwork---how-should-i-name-my-games-so-covers-are-found)
 * [Custom covers - How do I add custom covers?](#custom-covers---how-do-i-add-custom-covers)
+* [CRC identification - Which systems and formats are supported?](#crc-identification---which-systems-and-formats-are-supported)
 * [Why is there no option to download homebrew covers?](#why-is-there-no-option-to-download-homebrew-covers)
 * [How do I add disk based games?](#how-do-i-add-disk-based-games)
 * [PS1 and RetroArch, how do I set it up?](#ps1-and-retroarch-how-do-i-set-it-up)
@@ -22,6 +23,7 @@
 * [Can I use HexFlow too?](#can-i-use-hexflow-too)
 * [Do I need to create bubbles for games?](#do-i-need-to-create-bubbles-for-games)
 * [Can I change the Mega Drive name to Genesis?](#can-i-change-the-mega-drive-name-to-genesis)
+* [How do I uninstall Adrenaline Bubble Booter?](#how-do-i-uninstall-adrenaline-bubble-booter)
 <br><br>
 
 ### Adrenaline - My games aren't working?
@@ -56,7 +58,8 @@ The games should work provided you have everything else setup.
 
 ### Missing artwork - How should I name my games so covers are found?
 It's recommended that your roms are named using the **no-intro** file naming convention, e.g. "Game Name (USA)", these names are used to match with cover images.
-<br><br>
+
+From version 7 onwards when downloading artwork RetroFlow will check the game CRC checksum where possible to try and identify games. However; not all systems are supported, which is why no-intro filenames are still recommended. See [CRC identification - which systems and formats are supported?](#crc-identification---which-systems-and-formats-are-supported) for a more information.<br><br>
 
 ### Custom covers - How do I add custom covers?
 
@@ -78,8 +81,26 @@ Make sure your custom cover is saved in the cover directory and in the correct s
 `ux0:/data/RetroFlow/COVERS/Nintendo - Game Boy Advance`
 
 **Don't forget** you need to **rescan your games** so the custom cover is found.
-
 <br><br>
+
+
+### CRC identification - Which systems and formats are supported?
+
+**Archive support and CRC:**<br>
+Zip and rar archives are support but **7z is not supported**.
+
+Whilst CRC checks can be performed on zip and rar files, the app will need to extract them to read the file inside. If you encounter issues or crashes due to memory, then extract the files on a PC and rescan.
+
+**CRC support available for:**<br>
+Nintendo 64, Super Nintendo, Nintendo Entertainment System, Game Boy Advance, Game Boy Color, Game Boy, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, TurboGrafx-16, WonderSwan, WonderSwan Color, MSX, MSX2, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, Neo Geo Pocket Color.
+
+**CRC is not unavailable for:<br>**
+Sega Dreamcast, Sega CD, PC Engine CD, TurboGrafx-CD, Commodore Amiga, Commodore 64, ZX Spectrum.
+
+**Systems which don't need CRC: <br>**
+PS Vita, PSP, Playstation, Playstation Mobile, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), ScummVM and PICO-8. Other methods are used to identify the games.<br><br>
+
+
 ### Why is there no option to download homebrew covers?
 Covers haven't been made for homebrew applications as it's not necessary as the app icon is used. 
 
@@ -127,6 +148,24 @@ No; RetroFlow doesn't need bubbles for games.
 
 ### Can I change the Mega Drive name to Genesis?
 Sure; changing your language to 'English - American' will change the 'Mega Drive' name and logo to 'Genesis'.
+<br><br>
+
+### How do I uninstall Adrenaline Bubble Booter?
+If you followed the install guide you should be on Adrenaline version 7.
+
+**For Adrenaline v7:**
+
+ * Please copy the 'sce_module' folder from here: `ux0:app/RETROFLOW/payloads/adrenaline/sce_module`
+ * Then paste it into the adrenaline directory: `ux0:app/PSPEMUCFW` overwriting the old 'sce_module' folder. If you want a backup, then rename the folder before pasting so it's not overwritten.
+ * Restart the vita for the changes to take effect.
+
+
+**For other versions of Adrenaline:**
+
+ * Please uninstall Adrenaline and install again.
+
+**Note:** Uninstalling Adrenaline Bubble Booter will stop any custom PS1 or PSP bubbles you created using Adrenaline Bubble manager from working unless it is installed once again, Adrenaline Bubble manager can install it again for you if needed.
+
 <br><br>
 
 [< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)
