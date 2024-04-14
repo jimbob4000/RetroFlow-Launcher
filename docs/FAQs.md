@@ -6,7 +6,7 @@
 
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
-* [RetroArch games don't load](#retrocarch-games-dont-load)
+* [RetroArch games don't load](#retroarch-games-dont-load)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
 * [ScummVM some games won't launch](#scummvm-some-games-wont-launch)
