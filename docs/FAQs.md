@@ -6,6 +6,7 @@
 
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
+* [RetroArch games don't load](#retrocarch-games-dont-load)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
 * [ScummVM some games won't launch](#scummvm-some-games-wont-launch)
@@ -38,9 +39,14 @@ Behaviour: Adrenaline opens and then closes without loading the game (returning 
 This is a known issue with Adrenaline, called the 'double launch bug'. This can be easily fixed by following the guide here: [https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug](https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug)
 <br><br>
 
+### RetroArch games won't load
+Older versions of RetroArch don't support launchers, try updating to a more recent version, I think the version I use is 1.9.4, see the [RetroArch buildbot](https://buildbot.libretro.com/stable/) for alternate versions.
+<br><br>
+
 ### RetroArch fails to load games with "&" symbol in the game name
 This appears to be an issue with RetroArch version 1.11 onward, try installing an [older version](https://buildbot.libretro.com/stable/) of RetroArch until the issue is resolved.
 <br><br>
+
 ### PICO-8 games won't launch
 Support for launchers was added after July 5, 2021. Please try a more current version of [FAKE-08](https://github.com/jtothebell/fake-08/releases). 
 <br><br>
