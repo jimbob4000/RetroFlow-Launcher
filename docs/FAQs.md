@@ -39,7 +39,7 @@ Behaviour: Adrenaline opens and then closes without loading the game (returning 
 This is a known issue with Adrenaline, called the 'double launch bug'. This can be easily fixed by following the guide here: [https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug](https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug)
 <br><br>
 
-### RetroArch games won't load
+### RetroArch games don't load
 Older versions of RetroArch don't support launchers, try updating to a more recent version, I think the version I use is 1.9.4, see the [RetroArch buildbot](https://buildbot.libretro.com/stable/) for alternate versions.
 <br><br>
 
