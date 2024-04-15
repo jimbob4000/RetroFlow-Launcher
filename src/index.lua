@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.0"
+local appversion = "7.0.1"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -2795,81 +2795,84 @@ function AutoMakeBootBin(def_rom_location, def_driver, def_bin, def_plugins, def
                                     
                 -- Driver 
                 fp:seek("set",0x04)
-                if driver == "INFERN0" then number = "\x00\x00\x00\x00"
-                elseif driver == "MARCH33" then number = "\x01\x00\x00\x00"
-                elseif driver == "NP9660" then number = "\x02\x00\x00\x00"
+                if driver == "INFERN0" then number_driver = "\x00\x00\x00\x00"
+                elseif driver == "MARCH33" then number_driver = "\x01\x00\x00\x00"
+                elseif driver == "NP9660" then number_driver = "\x02\x00\x00\x00"
                 end
-                fp:write(number)
-                number = 0
+                fp:write(number_driver)
 
                 -- Bin Execute
                 fp:seek("set",0x08)
-                if bin == "EBOOT.BIN" then number = "\x00\x00\x00\x00"
-                elseif bin == "EBOOT.OLD" then number = "\x01\x00\x00\x00"
-                elseif bin == "BOOT.BIN" then number = "\x02\x00\x00\x00"
+                if bin == "EBOOT.BIN" then number_bin = "\x00\x00\x00\x00"
+                elseif bin == "EBOOT.OLD" then number_bin = "\x01\x00\x00\x00"
+                elseif bin == "BOOT.BIN" then number_bin = "\x02\x00\x00\x00"
                 end
-                fp:write(number)
-                number = 0
+                fp:write(number_bin)
 
                 -- Suspend
                 if suspend ~= 0 then
                     fp:seek("set", 0x18)
-                    if suspend == 1 then number = "\x01\x00\x00\x00"        -- No
+                    if suspend == 1 then number_suspend = "\x01\x00\x00\x00"        -- No
+                    else
+                        number_suspend = "\x00\x00\x00\x00"                         -- Yes
                     end
-                    fp:write(number)
-                    number = 0
+                    fp:write(number_suspend)
                 end
 
                 -- cpuspeed
                 if speed ~= 0 then
                     fp:seek("set", 0x1C)
-                    if speed == 1      then number = "\x01\x00\x00\x00"     -- 20/10
-                    elseif speed == 2  then number = "\x02\x00\x00\x00"     -- 50/25
-                    elseif speed == 3  then number = "\x03\x00\x00\x00"     -- 75/37
-                    elseif speed == 4  then number = "\x04\x00\x00\x00"     -- 100/50
-                    elseif speed == 5  then number = "\x05\x00\x00\x00"     -- 111/55
-                    elseif speed == 6  then number = "\x06\x00\x00\x00"     -- 122/61
-                    elseif speed == 7  then number = "\x07\x00\x00\x00"     -- 133/66
-                    elseif speed == 8  then number = "\x08\x00\x00\x00"     -- 166/83
-                    elseif speed == 9  then number = "\x09\x00\x00\x00"     -- 200/100
-                    elseif speed == 10 then number = "\x0A\x00\x00\x00"     -- 222/111
-                    elseif speed == 11 then number = "\x0B\x00\x00\x00"     -- 266/133
-                    elseif speed == 12 then number = "\x0C\x00\x00\x00"     -- 288/144
-                    elseif speed == 13 then number = "\x0D\x00\x00\x00"     -- 300/150
-                    elseif speed == 14 then number = "\x0E\x00\x00\x00"     -- 333/166
+                    if speed == 1      then number_speed = "\x01\x00\x00\x00"       -- 20/10
+                    elseif speed == 2  then number_speed = "\x02\x00\x00\x00"       -- 50/25
+                    elseif speed == 3  then number_speed = "\x03\x00\x00\x00"       -- 75/37
+                    elseif speed == 4  then number_speed = "\x04\x00\x00\x00"       -- 100/50
+                    elseif speed == 5  then number_speed = "\x05\x00\x00\x00"       -- 111/55
+                    elseif speed == 6  then number_speed = "\x06\x00\x00\x00"       -- 122/61
+                    elseif speed == 7  then number_speed = "\x07\x00\x00\x00"       -- 133/66
+                    elseif speed == 8  then number_speed = "\x08\x00\x00\x00"       -- 166/83
+                    elseif speed == 9  then number_speed = "\x09\x00\x00\x00"       -- 200/100
+                    elseif speed == 10 then number_speed = "\x0A\x00\x00\x00"       -- 222/111
+                    elseif speed == 11 then number_speed = "\x0B\x00\x00\x00"       -- 266/133
+                    elseif speed == 12 then number_speed = "\x0C\x00\x00\x00"       -- 288/144
+                    elseif speed == 13 then number_speed = "\x0D\x00\x00\x00"       -- 300/150
+                    elseif speed == 14 then number_speed = "\x0E\x00\x00\x00"       -- 333/166
+                    else
+                        number_speed = "\x00\x00\x00\x00"                           -- Default
                     end
-                    fp:write(number)
-                    number = 0
+                    fp:write(number_speed)
                 end
 
                 -- Plugins
                 if plugins ~= 0 then
                     fp:seek("set", 0x20)
-                    if plugins == 1 then number = "\x01\x00\x00\x00"        -- Enable
-                    elseif plugins == 2 then number = "\x02\x00\x00\x00"    -- Disable
+                    if plugins == 1 then number_plugin = "\x01\x00\x00\x00"         -- Enable
+                    elseif plugins == 2 then number_plugin = "\x02\x00\x00\x00"     -- Disable
+                    else
+                        number_plugin = "\x00\x00\x00\x00"                          -- Default
                     end
-                    fp:write(number)
-                    number = 0
+                    fp:write(number_plugin)
                 end
 
                 -- NonpDRM
                 if nonpdrm ~= 0 then
                     fp:seek("set", 0x24)
-                    if nonpdrm == 1 then number = "\x01\x00\x00\x00"        -- Enable
-                    elseif nonpdrm == 2 then number = "\x02\x00\x00\x00"    -- Disable
+                    if nonpdrm == 1 then number_nonpdrm = "\x01\x00\x00\x00"        -- Enable
+                    elseif nonpdrm == 2 then number_nonpdrm = "\x02\x00\x00\x00"    -- Disable
+                    else
+                        number_nonpdrm = "\x00\x00\x00\x00"                         -- Default
                     end
-                    fp:write(number)
-                    number = 0
+                    fp:write(number_nonpdrm)
                 end
 
                 --HighMemory
                 if hm ~= 0 then
                     fp:seek("set", 0x28)
-                    if hm == 1 then number = "\x01\x00\x00\x00"             -- Enable
-                    elseif hm == 2 then number = "\x02\x00\x00\x00"         -- Disable
+                    if hm == 1 then number_hm = "\x01\x00\x00\x00"                  -- Enable
+                    elseif hm == 2 then number_hm = "\x02\x00\x00\x00"              -- Disable
+                    else
+                        number_hm = "\x00\x00\x00\x00"                              -- Default
                     end
-                    fp:write(number)
-                    number = 0
+                    fp:write(number_hm)
                 end
 
                 -- Path2game
