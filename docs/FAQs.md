@@ -6,6 +6,7 @@
 
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
+* [Adrenaline how do I customise the game's boot settings?](#adrenaline-how-do-i-customise-the-games-boot-settings)
 * [RetroArch games don't load](#retroarch-games-dont-load)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
@@ -37,6 +38,12 @@ Or try installing [AdrBubbleBooterInstaller](https://vitadb.rinnegatamante.it/#/
 Behaviour: Adrenaline opens and then closes without loading the game (returning you to the livearea).
 
 This is a known issue with Adrenaline, called the 'double launch bug'. This can be easily fixed by following the guide here: [https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug](https://github.com/TheOfficialFloW/Adrenaline#getting-rid-of-double-launch-bug)
+<br><br>
+
+### Adrenaline how do I customise the game's boot settings?
+If you need to change the boot settings for PSP games, this should be done in RetroFlow, go to the game press triangle twice then select 'Adrenaline options' customise your settings and then click save.
+
+If you change the settings whilst the game is running, RetroFlow won't remember them, so it's best to do it in RetroFlow so they are saved for next time.
 <br><br>
 
 ### RetroArch games don't load
