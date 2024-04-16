@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.1"
+local appversion = "7.0.2"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -3469,8 +3469,10 @@ function import_renamed_games()
         local db_renamed_games = {}
         db_renamed_games = dofile(db_Cache_renamed_games)
 
-        for k, v in ipairs(db_renamed_games) do
-            table.insert(renamed_games_table, v)
+        if #db_renamed_games ~= nil then
+            for k, v in ipairs(db_renamed_games) do
+                table.insert(renamed_games_table, v)
+            end
         end
     end
 end
@@ -3493,11 +3495,13 @@ end
                     db_import = dofile(collections_dir .. collection_file_num.filename)
                     
                     -- Find matching games in files table and insert into custom cat table
-                    for l, file in ipairs(db_import) do -- or xapptype lookup
-                        local key = find_game_table_pos_key(files_table, file.name)
-                        if key ~= nil then
-                            if files_table[key].app_type == file.app_type then
-                                table.insert(_G[collection_file_num.table_name], files_table[key])
+                    if #db_import ~= nil then
+                        for l, file in ipairs(db_import) do -- or xapptype lookup
+                            local key = find_game_table_pos_key(files_table, file.name)
+                            if key ~= nil then
+                                if files_table[key].app_type == file.app_type then
+                                    table.insert(_G[collection_file_num.table_name], files_table[key])
+                                end
                             end
                         end
                     end
@@ -3517,20 +3521,23 @@ function import_hidden_games()
         local db_hidden_games = {}
         db_hidden_games = dofile(db_Cache_hidden_games)
 
-        for k, v in ipairs(db_hidden_games) do
-            if v.directory == false then
-                if System.doesFileExist(v.game_path) then
-                    table.insert(hidden_games_table, v)
+        if #db_hidden_games ~= nil then
+            for k, v in ipairs(db_hidden_games) do
+                if v.directory == false then
+                    if System.doesFileExist(v.game_path) then
+                        table.insert(hidden_games_table, v)
+                    else
+                    end
                 else
+                    if System.doesDirExist(v.game_path) then
+                        table.insert(hidden_games_table, v)
+                    else
+                    end
                 end
-            else
-                if System.doesDirExist(v.game_path) then
-                    table.insert(hidden_games_table, v)
-                else
-                end
-            end
 
+            end
         end
+        
     end
 end
 
