@@ -573,6 +573,25 @@
 
 		end
 
+
+		function importLuaFile(filename)
+
+			-- Funcion used to fix: Unexpected symbol near eof, unfinished string near eof
+		    local status, chunk = pcall(loadfile, filename)
+		    if not status then
+		        -- print("Error loading Lua file:", chunk)
+		        return nil
+		    end
+		    
+		    local success, result = pcall(chunk)
+		    if not success then
+		        -- print("Error executing Lua file:", result)
+		        return nil
+		    end
+		    
+		    return result
+		end
+
 		-- Check CRC for files with missing covers
 		if missing_artwork_count >= 1 then
 
@@ -590,11 +609,22 @@
 			-- Load previous CRC matches
 			user_crc_table = {}
 
-		    -- if files.exists(titles_dir .. "/" .. user_crc_lua) then  
+		    
 			if files.exists(titles_dir .. "/" .. user_crc_lua) then 
-		        user_crc_table = dofile(titles_dir .. user_crc_lua)
-		    else
-		    end
+
+				-- Load file and check for errors
+				local importFileNoError = importLuaFile(titles_dir .. "/" .. user_crc_lua)
+
+				if importFileNoError then
+				    -- File has no errors, import
+				    user_crc_table = dofile(titles_dir .. user_crc_lua)
+				else
+				    -- File has errors, delete it
+				    files.delete(titles_dir .. "/" .. user_crc_lua)
+				end
+
+			else
+			end
 
 
 		    local crc_results_table = {}
