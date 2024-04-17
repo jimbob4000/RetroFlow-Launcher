@@ -2721,9 +2721,9 @@ function cleanRomNames()
     romname_noExtension = {}
     romname_noExtension = romname_withExtension:match("(.+)%..+$")
 
-    -- remove space before parenthesis " (" then letters and numbers "(.*)"
+    -- remove space before parenthesis " (" then letters and numbers "(.*)", also remove space and square brackets " [.*]"
     romname_noRegion_noExtension = {}
-    romname_noRegion_noExtension = romname_noExtension:gsub(" %(", "("):gsub('%b()', '')
+    romname_noRegion_noExtension = romname_noExtension:gsub(" %(", "("):gsub('%b()', ''):gsub("%s*%b[]", "")
 
     -- encode url
     romname_url_encoded = {}
@@ -2748,6 +2748,10 @@ function cleanRomNames()
         else
             romname_region = " "
         end
+
+        -- Tidy up ")(" replace with space - Tosec style names
+        romname_region = romname_region:gsub("%)%(", " ")
+        
 
     -- If no parenthesis, then add blank to prevent nil error
     else
