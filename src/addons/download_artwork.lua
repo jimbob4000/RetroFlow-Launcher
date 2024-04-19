@@ -758,7 +758,7 @@
 											
 										end
 
-									else
+									elseif not string.match(file.filename, "%.7z") then
 
 										if current_crc_apptype == 5 then
 											-- N64 - Lookup header CRC
@@ -794,6 +794,9 @@
 								    		file.crc_result = Dec2Hex(os.crc32(files.read(filetoread) ))
 								    	end
 
+								    else
+								    	-- Is probably an incompatible 7z file, do nothing
+								    	file.crc_result = "nil"
 									end
 
 								else
@@ -1052,7 +1055,7 @@
 
 						    	-- Add to table for saving to user crc file
 
-						    	if crc_checked_before == false then
+						    	if crc_checked_before == false and not string.match(file.filename, "%.7z") then
 
 						    		local crc_info = {}
 
