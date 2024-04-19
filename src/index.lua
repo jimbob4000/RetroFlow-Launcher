@@ -833,6 +833,7 @@ setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
 
 -- End of Game list view setup
 
+temp_hb_collection = {}
 
 Graphics.setImageFilters(imgFloor, FILTER_LINEAR, FILTER_LINEAR)
 
@@ -5985,7 +5986,22 @@ function listDirectory(dir)
         end
     end
 
+    -- 
+    function MatchFilters(name, filters)
+        -- Takes a filename and a table of filters. It iterates over each filter in the table and checks if any of them match the filename
+        for _, filter in ipairs(filters) do
+            if string.match(name, filter) then
+                return true
+            end
+        end
+        return false
+    end
+
     function Scan_Rom_Filter(def, def_table_name, def_filter)
+
+        if type(def_filter) == "string" then
+            def_filter = {def_filter}  -- Convert single string into a table with one element
+        end
 
         if System.doesDirExist(SystemsToScan[(def)].romFolder) then
 
@@ -5993,7 +6009,7 @@ function listDirectory(dir)
             for i, file in pairs(files) do
                 local custom_path, custom_path_id, app_type, name, title, name_online, version = nil, nil, nil, nil, nil, nil, nil
                 -- Scan files only, ignore temporary files, Windows = "Thumbs.db", Mac = "DS_Store", and "._name" 
-                if not file.directory and string.match(file.name, (def_filter)) 
+                if not file.directory and MatchFilters(file.name, def_filter)
                     and string.match(file.name, "%.") -- has an extension
                     and not string.match(file.name, "Thumbs%.db") 
                     and not string.match(file.name, "DS_Store") 
@@ -6102,7 +6118,7 @@ function listDirectory(dir)
                     file_subfolder = System.listDirectory((SystemsToScan[(def)].romFolder .. "/" .. file.name))
                     for i, file_subfolder in pairs(file_subfolder) do
                         -- Scan files only, ignore temporary files, Windows = "Thumbs.db", Mac = "DS_Store", and "._name" 
-                        if not file_subfolder.directory and string.match(file_subfolder.name, (def_filter)) 
+                        if not file_subfolder.directory and MatchFilters(file_subfolder.name, def_filter)
                             and string.match(file_subfolder.name, "%.") -- has an extension
                             and not string.match(file_subfolder.name, "Thumbs%.db") 
                             and not string.match(file_subfolder.name, "DS_Store") 
@@ -6167,17 +6183,17 @@ function listDirectory(dir)
 
                             if custom_path and System.doesFileExist(custom_path) then
                                 img_path = (SystemsToScan[(def)].localCoverPath) .. app_title .. ".png" --custom cover by app name
-                                file.cover = true
+                                file_subfolder.cover = true
                             elseif custom_path_id and System.doesFileExist(custom_path_id) then
                                 img_path = (SystemsToScan[(def)].localCoverPath) .. file_subfolder.name .. ".png" --custom cover by app id
-                                file.cover = true
+                                file_subfolder.cover = true
                             else
                                 if System.doesFileExist("app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)) then
                                     img_path = "app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)  --app icon
-                                    file.cover = false
+                                    file_subfolder.cover = false
                                 else
                                     img_path = "app0:/DATA/noimg.png" --blank grey
-                                    file.cover = false
+                                    file_subfolder.cover = false
                                 end
                             end
 
@@ -6904,8 +6920,8 @@ function listDirectory(dir)
     end
     
     -- SCAN ROMS
-    -- Scan_Type        (def,  def_table_name)
-    scan_Rom_PS1_Eboot  (SystemsToScan[4].romFolder, "psx.lua") 
+    -- Scan_Type            (def,  def_table_name)
+    scan_Rom_PS1_Eboot      (SystemsToScan[4].romFolder, "psx.lua") 
     Scan_Rom_PS1            (4, psx_table) -- Retroarch rom folder exluding pbp formats
     Scan_Rom_Simple         (5, n64_table)
     Scan_Rom_Simple         (6, snes_table)
@@ -6913,20 +6929,16 @@ function listDirectory(dir)
     Scan_Rom_Simple         (8, gba_table)
     Scan_Rom_Simple         (9, gbc_table)
     Scan_Rom_Simple         (10, gb_table)
-    Scan_Rom_Filter         (11, dreamcast_table, "%.cdi")
-    Scan_Rom_Filter         (11, dreamcast_table, "%.gdi")
-    Scan_Rom_Filter         (12, sega_cd_table, "%.chd")
-    Scan_Rom_Filter         (12, sega_cd_table, "%.cue")
+    Scan_Rom_Filter         (11, dreamcast_table, { "%.cdi", "%.gdi" })
+    Scan_Rom_Filter         (12, sega_cd_table, { "%.chd", "%.cue" })
     Scan_Rom_Simple         (13, s32x_table)
     Scan_Rom_Simple         (14, md_table)
     Scan_Rom_Simple         (15, sms_table)
     Scan_Rom_Simple         (16, gg_table)
     Scan_Rom_Simple         (17, tg16_table)
-    Scan_Rom_Filter         (18, tgcd_table, "%.cue")
-    Scan_Rom_Filter         (18, tgcd_table, "%.chd")
+    Scan_Rom_Filter         (18, tgcd_table, { "%.cue", "%.chd" })
     Scan_Rom_Simple         (19, pce_table)
-    Scan_Rom_Filter         (20, pcecd_table, "%.cue")
-    Scan_Rom_Filter         (20, pcecd_table, "%.chd")
+    Scan_Rom_Filter         (20, pcecd_table, { "%.cue", "%.chd" })
     Scan_Rom_DB_Lookup      (21, amiga_table, "amiga.lua", "amiga.db")
     Scan_Rom_Simple         (22, c64_table)
     Scan_Rom_Simple         (23, wswan_col_table)
