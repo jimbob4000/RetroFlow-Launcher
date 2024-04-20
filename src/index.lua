@@ -102,6 +102,34 @@ for k, v in pairs(romDir_Default) do
     System.createDirectory(tostring(v))
 end
 
+-- Error handling for importing cached lua files to tables
+function importLuaFile(filename, tableToAssign)
+    local importLuaFileError = false  -- Initialize error flag to false
+
+    local chunk, err = loadfile(filename)
+    if not chunk then
+        -- print("Error loading/compiling Lua file:", err)
+        importLuaFileError = true  -- Set error flag to true
+        return importLuaFileError  -- Return error flag
+    end
+
+    local success, result = pcall(chunk)
+    if not success then
+        -- print("Error executing Lua file:", result)
+        importLuaFileError = true  -- Set error flag to true
+        return importLuaFileError  -- Return error flag
+    end
+    
+    -- If a tableToAssign parameter is provided, assign the result to it
+    if tableToAssign then
+        for k, v in pairs(result) do
+            tableToAssign[k] = v
+        end
+    end
+    
+    return importLuaFileError  -- Return error flag
+end
+
 -- Save a copy of the default locations to an lua file so it can be customised later
 if not System.doesFileExist("ux0:/data/RetroFlow/rom_directories.lua") then
     print_table_rom_dirs(romDir_Default)
@@ -2920,30 +2948,38 @@ function import_launch_overrides()
         db_Cache_launch_overrides = "ux0:/data/RetroFlow/launch_overrides.lua"
 
         db_launch_overrides = {}
-        db_launch_overrides = dofile(db_Cache_launch_overrides)
+        local importLuaFileError = importLuaFile(db_Cache_launch_overrides, db_launch_overrides)
 
-        for k, v in ipairs(db_launch_overrides) do
+        if importLuaFileError then
+            -- File is corrupt, don't import it
+        else
 
-            -- If queries are a legacy fix for new settings that were added
-            if v.plugins == nil then
-                v.plugins = game_adr_plugins
-            end
-            if v.speed == nil then
-                v.speed = game_adr_speed
-            end
-            if v.hm == nil then
-                v.hm = game_adr_hm
-            end
-            if v.nonpdrm == nil then
-                v.nonpdrm = game_adr_nonpdrm
-            end
-            if v.speed == nil then
-                v.suspend = game_adr_suspend
-            end
+            for k, v in ipairs(db_launch_overrides) do
+
+                -- If queries are a legacy fix for new settings that were added
+                if v.plugins == nil then
+                    v.plugins = game_adr_plugins
+                end
+                if v.speed == nil then
+                    v.speed = game_adr_speed
+                end
+                if v.hm == nil then
+                    v.hm = game_adr_hm
+                end
+                if v.nonpdrm == nil then
+                    v.nonpdrm = game_adr_nonpdrm
+                end
+                if v.speed == nil then
+                    v.suspend = game_adr_suspend
+                end
 
 
-            table.insert(launch_overrides_table, v)
+                table.insert(launch_overrides_table, v)
+            end
+
         end
+
+        
     end
 end
 
@@ -3285,168 +3321,173 @@ function import_recently_played()
             db_Cache_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
 
             local db_recently_played = {}
-            db_recently_played = dofile(db_Cache_recently_played)
+            local importLuaFileError = importLuaFile(db_Cache_recently_played, db_recently_played)
 
-            for k, v in ipairs(db_recently_played) do
+            if importLuaFileError then
+                -- File is corrupt, don't import it
+            else
 
-                -- Various fixes on import
-                local key = find_game_table_pos_key(xAppNumTableLookup(v.app_type), v.name)
-                if key ~= nil then
+                for k, v in ipairs(db_recently_played) do
 
-                    -- Legacy fix - Add default app type to recently played table
-                    if v.app_type_default ~= nil then
-                        v.app_type_default = xAppNumTableLookup(v.app_type)[key].app_type_default
-                    end
+                    -- Various fixes on import
+                    local key = find_game_table_pos_key(xAppNumTableLookup(v.app_type), v.name)
+                    if key ~= nil then
 
-                    -- Legacy fix - Add hidden to recently played table
-                    if v.hidden ~= nil then
-                        v.hidden = xAppNumTableLookup(v.app_type)[key].hidden
-                    end
-
-                    -- Sync hidden with cached files
-                    cached_hidden = xAppNumTableLookup(v.app_type)[key].hidden
-                    if cached_hidden == true and v.hidden == false then
-                        v.hidden = true
-                    end
-
-                    -- Sync favourites with cached files
-                    cached_fav = xAppNumTableLookup(v.app_type)[key].favourite
-                    if cached_fav == true and v.favourite == false then
-                        v.favourite = true
-                    end
-
-                    -- Sync cover found with cached files
-                    cached_cover = xAppNumTableLookup(v.app_type)[key].cover
-                    v.cover = cached_cover
-
-                else
-                end
-
-                -- Check rom exists
-                -- If file
-                if v.directory == false then
-                    if System.doesFileExist(v.game_path) then
-                        if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
-                            table.insert(recently_played_table, v)
-                            --add blank icon to all
-                            v.icon = imgCoverTmp
-                            v.icon_path = v.icon_path
-                            v.apptitle = v.apptitle
-                        end
-                    end
-                else
-                    -- Not file, is folder
-                    if System.doesDirExist(v.game_path) then
-                        if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
-                            table.insert(recently_played_table, v)
-                            --add blank icon to all
-                            v.icon = imgCoverTmp
-                            v.icon_path = v.icon_path
-                            v.apptitle = v.apptitle
-                        end
-                    end
-                end
-            end
-
-            -- apply_overrides_to_recently_played
-            if System.doesFileExist(cur_dir .. "/overrides.dat") then
-                
-                for k, v in pairs(recently_played_table) do
-
-                    if string.match(str, v.name .. "=1") then
-                        v.app_type=1
-                        v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSVita/"
-                        v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/"
-
-                        if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png" --custom cover by app name
-                            v.cover = true
-                        elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png" --custom cover by app id
-                            v.cover = true
-                        else
-                            if System.doesFileExist("ur0:/appmeta/" .. v.name .. "/icon0.png") then
-                                v.icon_path = "ur0:/appmeta/" .. v.name .. "/icon0.png"  --app icon
-                                v.cover = true
-                            else
-                                v.icon_path = "app0:/DATA/noimg.png" --blank grey
-                                v.cover = false
-                            end
+                        -- Legacy fix - Add default app type to recently played table
+                        if v.app_type_default ~= nil then
+                            v.app_type_default = xAppNumTableLookup(v.app_type)[key].app_type_default
                         end
 
-                    elseif string.match(str, v.name .. "=2") then
-                        v.app_type=2
-                        v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSP/"
-                        v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/"
-
-                        if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png" --custom cover by app name
-                            v.cover = true
-                        elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png" --custom cover by app id
-                            v.cover = true
-                        else
-                            if System.doesFileExist("app0:/DATA/missing_cover_psp.png") then
-                                v.icon_path = "app0:/DATA/missing_cover_psp.png"  --app icon
-                                v.cover = false
-                            else
-                                v.icon_path = "app0:/DATA/noimg.png" --blank grey
-                                v.cover = false
-                            end
+                        -- Legacy fix - Add hidden to recently played table
+                        if v.hidden ~= nil then
+                            v.hidden = xAppNumTableLookup(v.app_type)[key].hidden
                         end
 
-                    elseif string.match(str, v.name .. "=3") then
-                        v.app_type=3
-                        v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PS1/"
-                        v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/"
-
-                        if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png" --custom cover by app name
-                            v.cover = true
-                        elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png" --custom cover by app id
-                            v.cover = true
-                        else
-                            if System.doesFileExist("app0:/DATA/missing_cover_psx.png") then
-                                v.icon_path = "app0:/DATA/missing_cover_psx.png"  --app icon
-                                v.cover = false
-                            else
-                                v.icon_path = "app0:/DATA/noimg.png" --blank grey
-                                v.cover = false
-                            end
+                        -- Sync hidden with cached files
+                        cached_hidden = xAppNumTableLookup(v.app_type)[key].hidden
+                        if cached_hidden == true and v.hidden == false then
+                            v.hidden = true
                         end
 
-                    elseif string.match(str, v.name .. "=4") then
-                        v.app_type=0
-                        v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/HOMEBREW/"
-                        v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Homebrew/"
-
-                        if "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png" --custom cover by app name
-                            v.cover = true
-                        elseif "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png") then
-                            v.icon_path = "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png" --custom cover by app id
-                            v.cover = true
-                        else
-                            if System.doesFileExist("ur0:/appmeta/" .. v.name .. "/icon0.png") then
-                                v.icon_path = "ur0:/appmeta/" .. v.name .. "/icon0.png"  --app icon
-                                v.cover = true
-                            else
-                                v.icon_path = "app0:/DATA/noimg.png" --blank grey
-                                v.cover = false
-                            end
+                        -- Sync favourites with cached files
+                        cached_fav = xAppNumTableLookup(v.app_type)[key].favourite
+                        if cached_fav == true and v.favourite == false then
+                            v.favourite = true
                         end
+
+                        -- Sync cover found with cached files
+                        cached_cover = xAppNumTableLookup(v.app_type)[key].cover
+                        v.cover = cached_cover
 
                     else
-                        -- Fix for existing lists which don't have the snap path local entry
-                        if v.snap_path_local == nil then
-                            v.snap_path_local = ""
-                        end 
+                    end
 
+                    -- Check rom exists
+                    -- If file
+                    if v.directory == false then
+                        if System.doesFileExist(v.game_path) then
+                            if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
+                                table.insert(recently_played_table, v)
+                                --add blank icon to all
+                                v.icon = imgCoverTmp
+                                v.icon_path = v.icon_path
+                                v.apptitle = v.apptitle
+                            end
+                        end
+                    else
+                        -- Not file, is folder
+                        if System.doesDirExist(v.game_path) then
+                            if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
+                                table.insert(recently_played_table, v)
+                                --add blank icon to all
+                                v.icon = imgCoverTmp
+                                v.icon_path = v.icon_path
+                                v.apptitle = v.apptitle
+                            end
+                        end
                     end
                 end
-            end
 
+                -- apply_overrides_to_recently_played
+                if System.doesFileExist(cur_dir .. "/overrides.dat") then
+                    
+                    for k, v in pairs(recently_played_table) do
+
+                        if string.match(str, v.name .. "=1") then
+                            v.app_type=1
+                            v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSVita/"
+                            v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/"
+
+                            if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.apptitle .. ".png" --custom cover by app name
+                                v.cover = true
+                            elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Vita/" .. v.name .. ".png" --custom cover by app id
+                                v.cover = true
+                            else
+                                if System.doesFileExist("ur0:/appmeta/" .. v.name .. "/icon0.png") then
+                                    v.icon_path = "ur0:/appmeta/" .. v.name .. "/icon0.png"  --app icon
+                                    v.cover = true
+                                else
+                                    v.icon_path = "app0:/DATA/noimg.png" --blank grey
+                                    v.cover = false
+                                end
+                            end
+
+                        elseif string.match(str, v.name .. "=2") then
+                            v.app_type=2
+                            v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSP/"
+                            v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/"
+
+                            if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.apptitle .. ".png" --custom cover by app name
+                                v.cover = true
+                            elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation Portable/" .. v.name .. ".png" --custom cover by app id
+                                v.cover = true
+                            else
+                                if System.doesFileExist("app0:/DATA/missing_cover_psp.png") then
+                                    v.icon_path = "app0:/DATA/missing_cover_psp.png"  --app icon
+                                    v.cover = false
+                                else
+                                    v.icon_path = "app0:/DATA/noimg.png" --blank grey
+                                    v.cover = false
+                                end
+                            end
+
+                        elseif string.match(str, v.name .. "=3") then
+                            v.app_type=3
+                            v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PS1/"
+                            v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/"
+
+                            if "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.apptitle .. ".png" --custom cover by app name
+                                v.cover = true
+                            elseif "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Sony - PlayStation/" .. v.name .. ".png" --custom cover by app id
+                                v.cover = true
+                            else
+                                if System.doesFileExist("app0:/DATA/missing_cover_psx.png") then
+                                    v.icon_path = "app0:/DATA/missing_cover_psx.png"  --app icon
+                                    v.cover = false
+                                else
+                                    v.icon_path = "app0:/DATA/noimg.png" --blank grey
+                                    v.cover = false
+                                end
+                            end
+
+                        elseif string.match(str, v.name .. "=4") then
+                            v.app_type=0
+                            v.cover_path_online = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/HOMEBREW/"
+                            v.cover_path_local = "ux0:/data/RetroFlow/COVERS/Homebrew/"
+
+                            if "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.apptitle .. ".png" --custom cover by app name
+                                v.cover = true
+                            elseif "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png" and System.doesFileExist("ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png") then
+                                v.icon_path = "ux0:/data/RetroFlow/COVERS/Homebrew/" .. v.name .. ".png" --custom cover by app id
+                                v.cover = true
+                            else
+                                if System.doesFileExist("ur0:/appmeta/" .. v.name .. "/icon0.png") then
+                                    v.icon_path = "ur0:/appmeta/" .. v.name .. "/icon0.png"  --app icon
+                                    v.cover = true
+                                else
+                                    v.icon_path = "app0:/DATA/noimg.png" --blank grey
+                                    v.cover = false
+                                end
+                            end
+
+                        else
+                            -- Fix for existing lists which don't have the snap path local entry
+                            if v.snap_path_local == nil then
+                                v.snap_path_local = ""
+                            end 
+
+                        end
+                    end
+                end
+
+            end
             
         end
     else
@@ -3472,13 +3513,20 @@ function import_renamed_games()
         db_Cache_renamed_games = "ux0:/data/RetroFlow/renamed_games.lua"
 
         local db_renamed_games = {}
-        db_renamed_games = dofile(db_Cache_renamed_games)
+        local importLuaFileError = importLuaFile(db_Cache_renamed_games, db_renamed_games)
 
-        if #db_renamed_games ~= nil then
-            for k, v in ipairs(db_renamed_games) do
-                table.insert(renamed_games_table, v)
+        if importLuaFileError then
+            -- File is corrupt, delete it
+            System.deleteFile(db_Cache_renamed_games)
+
+        else
+            if #db_renamed_games ~= nil then
+                for k, v in ipairs(db_renamed_games) do
+                    table.insert(renamed_games_table, v)
+                end
             end
         end
+
     end
 end
 
@@ -3497,19 +3545,25 @@ end
 
                     -- Import lua file into temp table
                     local db_import = {}
-                    db_import = dofile(collections_dir .. collection_file_num.filename)
-                    
-                    -- Find matching games in files table and insert into custom cat table
-                    if #db_import ~= nil then
-                        for l, file in ipairs(db_import) do -- or xapptype lookup
-                            local key = find_game_table_pos_key(files_table, file.name)
-                            if key ~= nil then
-                                if files_table[key].app_type == file.app_type then
-                                    table.insert(_G[collection_file_num.table_name], files_table[key])
+                    local importLuaFileError = importLuaFile(collections_dir .. collection_file_num.filename, db_import)
+
+                    if importLuaFileError then
+                        -- File is corrupt, don't import
+
+                    else
+                        -- Find matching games in files table and insert into custom cat table
+                        if #db_import ~= nil then
+                            for l, file in ipairs(db_import) do -- or xapptype lookup
+                                local key = find_game_table_pos_key(files_table, file.name)
+                                if key ~= nil then
+                                    if files_table[key].app_type == file.app_type then
+                                        table.insert(_G[collection_file_num.table_name], files_table[key])
+                                    end
                                 end
                             end
                         end
                     end
+
                 end
 
             else
@@ -3524,25 +3578,29 @@ function import_hidden_games()
         db_Cache_hidden_games = "ux0:/data/RetroFlow/hidden_games.lua"
 
         local db_hidden_games = {}
-        db_hidden_games = dofile(db_Cache_hidden_games)
+        local importLuaFileError = importLuaFile(db_Cache_hidden_games, db_hidden_games)
 
-        if #db_hidden_games ~= nil then
-            for k, v in ipairs(db_hidden_games) do
-                if v.directory == false then
-                    if System.doesFileExist(v.game_path) then
-                        table.insert(hidden_games_table, v)
+        if importLuaFileError then
+            -- File is corrupt, don't import it
+        else
+            if #db_hidden_games ~= nil then
+                for k, v in ipairs(db_hidden_games) do
+                    if v.directory == false then
+                        if System.doesFileExist(v.game_path) then
+                            table.insert(hidden_games_table, v)
+                        else
+                        end
                     else
+                        if System.doesDirExist(v.game_path) then
+                            table.insert(hidden_games_table, v)
+                        else
+                        end
                     end
-                else
-                    if System.doesDirExist(v.game_path) then
-                        table.insert(hidden_games_table, v)
-                    else
-                    end
+
                 end
-
             end
         end
-        
+
     end
 end
 
@@ -7025,7 +7083,19 @@ function import_cached_DB_tables(def_user_db_file, def_table_name)
         db_Cache = db_Cache_Folder .. (def_user_db_file)
 
         local db_import = {}
-        db_import = dofile(db_Cache)
+        local importLuaFileError = importLuaFile(db_Cache, db_import)
+        
+        if importLuaFileError then
+            -- File is corrupt, delete it
+            System.deleteFile(db_Cache)
+
+            -- Start app again to rescan
+            FreeMemory()
+            Network.term()
+            dofile("app0:index.lua")
+
+        else
+        -- db_import = dofile(db_Cache)
 
             for k, v in ipairs(db_import) do
 
@@ -7158,6 +7228,8 @@ function import_cached_DB_tables(def_user_db_file, def_table_name)
 
             end
         
+        end
+
     end
 end
 
@@ -7169,11 +7241,16 @@ function import_cached_DB_homebrews_in_collections(def_user_db_file, def_table_n
             
             -- Import lua file into temp table
             local temp_db_import = {}
-            temp_db_import = dofile(collections_dir .. collection_file_num.filename)
-            
-            for l, file in ipairs(temp_db_import) do
-                if file.app_type == 0 then
-                    table.insert(temp_hb_collection, file)
+            local importLuaFileError = importLuaFile(collections_dir .. collection_file_num.filename, temp_db_import)
+
+            if importLuaFileError then
+                -- File is corrupt, delete it
+                System.deleteFile(collections_dir .. collection_file_num.filename)
+            else
+                for l, file in ipairs(temp_db_import) do
+                    if file.app_type == 0 then
+                        table.insert(temp_hb_collection, file)
+                    end
                 end
             end
 
@@ -7183,57 +7260,97 @@ function import_cached_DB_homebrews_in_collections(def_user_db_file, def_table_n
             db_Cache = db_Cache_Folder .. (def_user_db_file)
 
             local db_import = {}
-            db_import = dofile(db_Cache)
+            local importLuaFileError = importLuaFile(db_Cache, db_import)
+            
+            if importLuaFileError then
+                -- File is corrupt, delete it
+                System.deleteFile(db_Cache)
 
-            for k, v in ipairs(db_import) do
+                -- Start app again to rescan
+                FreeMemory()
+                Network.term()
+                dofile("app0:index.lua")
 
-                -- For each game to be imported, cross reference against then hidden games list
-                for l, file in ipairs(hidden_games_table) do
+            else
 
-                    -- Check the app type matches
-                    if file.app_type == v.app_type then
+                for k, v in ipairs(db_import) do
 
-                        -- Check if hidden game is in the import table
-                        local key = {}
-                        key = find_game_table_pos_key(db_import, file.name)
+                    -- For each game to be imported, cross reference against then hidden games list
+                    for l, file in ipairs(hidden_games_table) do
 
-                        if key ~= nil then
-                            -- Game found 
-                            -- Update hidden key
-                            if file.hidden == true then
-                                db_import[key].hidden = true
-                            else
-                                db_import[key].hidden = false
-                            end
-                        else
-                            -- Game not found
-                            -- If showing hidden games, then check the game file / folder exists for adding to the import table
-                            if showHidden==1 then
-                                if v.directory == false then
-                                    if System.doesFileExist(v.game_path) then
-                                        table.insert(db_import, file)
-                                    end
+                        -- Check the app type matches
+                        if file.app_type == v.app_type then
+
+                            -- Check if hidden game is in the import table
+                            local key = {}
+                            key = find_game_table_pos_key(db_import, file.name)
+
+                            if key ~= nil then
+                                -- Game found 
+                                -- Update hidden key
+                                if file.hidden == true then
+                                    db_import[key].hidden = true
                                 else
-                                    if System.doesDirExist(v.game_path) then
-                                        table.insert(db_import, file)
-                                    end
+                                    db_import[key].hidden = false
                                 end
                             else
+                                -- Game not found
+                                -- If showing hidden games, then check the game file / folder exists for adding to the import table
+                                if showHidden==1 then
+                                    if v.directory == false then
+                                        if System.doesFileExist(v.game_path) then
+                                            table.insert(db_import, file)
+                                        end
+                                    else
+                                        if System.doesDirExist(v.game_path) then
+                                            table.insert(db_import, file)
+                                        end
+                                    end
+                                else
+                                end
                             end
+                        else
                         end
-                    else
+
                     end
 
-                end
+                    -- Import homebrew if in collection
+                    for key, data in pairs(temp_hb_collection) do
+                        if data.name == v.name then
 
-                -- Import homebrew if in collection
-                for key, data in pairs(temp_hb_collection) do
-                    if data.name == v.name then
+                            -- If hiding games, only import non-hidden games
+                            if showHidden==0 then
+                                if v.hidden==false then
 
-                        -- If hiding games, only import non-hidden games
-                        if showHidden==0 then
-                            if v.hidden==false then
+                                    -- Show missing covers if off
+                                    if showMissingCovers == 0 then
+                                        if v.cover==true then
+                                            table.insert(folders_table, v)
+                                            table.insert(homebrews_table, v)
 
+                                            --add blank icon to all
+                                            v.icon = imgCoverTmp
+                                            v.icon_path = v.icon_path
+
+                                            v.apptitle = v.apptitle
+                                            table.insert(files_table, count_of_systems, v.apptitle)
+                                        else
+                                        end
+
+                                    else
+                                        table.insert(folders_table, v)
+                                        table.insert(homebrews_table, v)
+
+                                        --add blank icon to all
+                                        v.icon = imgCoverTmp
+                                        v.icon_path = v.icon_path
+
+                                        v.apptitle = v.apptitle
+                                        table.insert(files_table, count_of_systems, v.apptitle)
+                                    end
+                                else
+                                end
+                            else
                                 -- Show missing covers if off
                                 if showMissingCovers == 0 then
                                     if v.cover==true then
@@ -7260,48 +7377,19 @@ function import_cached_DB_homebrews_in_collections(def_user_db_file, def_table_n
                                     v.apptitle = v.apptitle
                                     table.insert(files_table, count_of_systems, v.apptitle)
                                 end
-                            else
                             end
-                        else
-                            -- Show missing covers if off
-                            if showMissingCovers == 0 then
-                                if v.cover==true then
-                                    table.insert(folders_table, v)
-                                    table.insert(homebrews_table, v)
 
-                                    --add blank icon to all
-                                    v.icon = imgCoverTmp
-                                    v.icon_path = v.icon_path
-
-                                    v.apptitle = v.apptitle
-                                    table.insert(files_table, count_of_systems, v.apptitle)
-                                else
-                                end
-
-                            else
-                                table.insert(folders_table, v)
-                                table.insert(homebrews_table, v)
-
-                                --add blank icon to all
-                                v.icon = imgCoverTmp
-                                v.icon_path = v.icon_path
-
-                                v.apptitle = v.apptitle
-                                table.insert(files_table, count_of_systems, v.apptitle)
-                            end
                         end
-
                     end
+
                 end
 
-            end        
+            end
+
         end
 
     else
     end
-
-
-
 end
 
 
@@ -14270,22 +14358,36 @@ while true do
 
 
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
-                if menuY > 0 then
-                    menuY = menuY - 1
-                    else
-                    menuY=menuItems
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY > 0 then
+                        menuY = menuY - 1
+                        else
+                        menuY=menuItems
+                    end
+                else
                 end
+
+                
             elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
-                if menuY < menuItems then
-                    menuY = menuY + 1
-                    else
-                    menuY=0
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY < menuItems then
+                        menuY = menuY + 1
+                        else
+                        menuY=0
+                    end
+                else
                 end
             elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
-                oldpad = pad
-                GetInfoSelected()
-                showMenu = 1
-                menuY=0
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    oldpad = pad
+                    GetInfoSelected()
+                    showMenu = 1
+                    menuY=0
+                else
+                end
             end
         end
 
@@ -14790,46 +14892,66 @@ while true do
                 else
                 end
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
-                if menuY > 0 then
-                    menuY = menuY - 1
-                    else
-                    menuY=menuItems
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY > 0 then
+                        menuY = menuY - 1
+                        else
+                        menuY=menuItems
+                    end
+                else
                 end
             elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
-                if menuY < menuItems then
-                    menuY = menuY + 1
-                    else
-                    menuY=0
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY < menuItems then
+                        menuY = menuY + 1
+                        else
+                        menuY=0
+                    end
+                else
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                if menuY == 1 then -- #1 Add to collection
-                    
-                    if collection_number > 0 then
-                        collection_number = collection_number - 1
-                    else
-                        collection_number = #collection_files
-                    end
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then -- #1 Add to collection
+                        
+                        if collection_number > 0 then
+                            collection_number = collection_number - 1
+                        else
+                            collection_number = #collection_files
+                        end
 
+                    else
+                    end
                 else
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                if menuY == 1 then -- #1 Add to collection
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then -- #1 Add to collection
 
-                    if collection_number < #collection_files then
-                        collection_number = collection_number + 1
+                        if collection_number < #collection_files then
+                            collection_number = collection_number + 1
+                        else
+                            collection_number = 0
+                        end
+
                     else
-                        collection_number = 0
                     end
-
                 else
                 end
 
             elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
-                -- collection_number = 0
-                oldpad = pad
-                GetInfoSelected()
-                showMenu = 20
-                menuY=3
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    -- collection_number = 0
+                    oldpad = pad
+                    GetInfoSelected()
+                    showMenu = 20
+                    menuY=3
+                else
+                end
             end
         end
 
@@ -15142,37 +15264,53 @@ while true do
 
                 end
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
-                if menuY > 0 then
-                    menuY = menuY - 1
-                    else
-                    menuY=menuItems
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY > 0 then
+                        menuY = menuY - 1
+                        else
+                        menuY=menuItems
+                    end
+                else
                 end
             elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
-                if menuY < menuItems then
-                    menuY = menuY + 1
-                    else
-                    menuY=0
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY < menuItems then
+                        menuY = menuY + 1
+                        else
+                        menuY=0
+                    end
+                else
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                if menuY == 1 then -- #1 Add to collection
-                    
-                    if xcollection_number > 1 then
-                        xcollection_number = xcollection_number - 1
-                    else
-                        xcollection_number = #collection_files
-                    end
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then -- #1 Add to collection
+                        
+                        if xcollection_number > 1 then
+                            xcollection_number = xcollection_number - 1
+                        else
+                            xcollection_number = #collection_files
+                        end
 
+                    else
+                    end
                 else
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                if menuY == 1 then -- #1 Add to collection
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then -- #1 Add to collection
 
-                    if xcollection_number < #collection_files then
-                        xcollection_number = xcollection_number + 1
+                        if xcollection_number < #collection_files then
+                            xcollection_number = xcollection_number + 1
+                        else
+                            xcollection_number = 1
+                        end
+
                     else
-                        xcollection_number = 1
                     end
-
                 else
                 end
             end
