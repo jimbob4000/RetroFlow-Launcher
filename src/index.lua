@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.2"
+local appversion = "7.0.3"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -3832,10 +3832,25 @@ function listDirectory(dir)
     local strFav = System.readFile(fileFav_over, fileFavsize)
     System.closeFile(fileFav_over)
 
-    local bubble_filter = System.openFile("app0:/addons/adrenaline_bubble_filter.dat", FREAD)
-    local bubble_filtersize = System.sizeFile(bubble_filter)
-    local bubble_filter_title_codes = System.readFile(bubble_filter, bubble_filtersize)
-    System.closeFile(bubble_filter)
+    -- Get bubble filters
+
+        -- Read file
+        local bubble_filter = System.openFile("app0:/addons/adrenaline_bubble_filter.dat", FREAD)
+        local bubble_filtersize = System.sizeFile(bubble_filter)
+        local bubble_filter_title_codes = System.readFile(bubble_filter, bubble_filtersize)
+        System.closeFile(bubble_filter)
+
+        -- Insert to table
+        local title_codes = {}
+        for code in bubble_filter_title_codes:gmatch("[^\r\n]+") do
+            table.insert(title_codes, code)
+        end
+
+        -- Convert title_codes to a set for fast lookup
+        local title_codes_set = {}
+        for _, code in ipairs(title_codes) do
+            title_codes_set[code] = true
+        end
 
     import_renamed_games()
     import_hidden_games()
@@ -3847,12 +3862,19 @@ function listDirectory(dir)
 
         if file.directory then
             -- Filter bubbles by the first 4 characters, eg SLUS
-            name4chars = string.sub(file.name, 1, 4)            
-            if string.find(bubble_filter_title_codes, name4chars,1,true) ~= nil then
+            name4chars = string.sub(file.name, 1, 4)
+
+            if title_codes_set[name4chars] then
                 bubble = true
             else
                 bubble = false
             end
+       
+            -- if string.find(bubble_filter_title_codes, name4chars,1,true) ~= nil then
+            --     bubble = true
+            -- else
+            --     bubble = false
+            -- end
         end
 
         if file.directory
@@ -3868,8 +3890,20 @@ function listDirectory(dir)
             -- get app name to match with custom cover file name
             if System.doesFileExist(working_dir .. "/" .. file.name .. "/sce_sys/param.sfo") then
                 info = System.extractSfo(working_dir .. "/" .. file.name .. "/sce_sys/param.sfo")
-                -- app_title = info.short_title:gsub("\n"," "):gsub("™",""):gsub("â„¢",""):gsub(" ®",""):gsub("â€¢",""):gsub("Â®",""):gsub('[Â]',''):gsub('[®]',''):gsub('[â]',''):gsub('[„]',''):gsub('[¢]',''):gsub("„","")
-                app_title = info.short_title:gsub("\n"," "):gsub("™",""):gsub(" ®",""):gsub("®","")
+
+                -- Determine the app title to use, if short title empty, use title, if title also empty use "-"
+                -- local app_title
+                if info.short_title and info.short_title:match("%S") then
+                    app_title = info.short_title
+                elseif info.title and info.title:match("%S") then
+                    app_title = info.title
+                else
+                    app_title = "-"
+                end
+
+                -- Clean up the title
+                app_title = app_title:gsub("\n"," "):gsub("™",""):gsub(" ®",""):gsub("®","")
+
                 file.titleid = tostring(info.titleid)
                 file.version = tostring(info.version)
             end
