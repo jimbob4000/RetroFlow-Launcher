@@ -700,18 +700,23 @@
 										archive_contents = {}
 										archive_contents = files.scan(tostring(file.game_path))
 
-										-- If there is only one file, then check the CRC
-										if #archive_contents == 1 then
-
-
-											if current_crc_apptype == 5 then
+										-- Check contents of zip file	
+										if archive_contents == nil then
+											-- Empty zip file skip crc check
+											file.crc_result = "nil"
+										elseif #archive_contents == 0 then
+											-- Empty zip file skip crc check
+											file.crc_result = "nil"
+										elseif #archive_contents == 1 then
+											-- If there is only one file, then check the CRC
 
 												-- Extract file so can be read with byte offset
 												files.extractfile (tostring(file.game_path), tostring(archive_contents[1].name), "ux0:/data/RetroFlow/")
 												extracted_file = tostring("ux0:/data/RetroFlow/" .. archive_contents[1].name)
 
+											if current_crc_apptype == 5 then
+
 												-- N64 - Lookup header CRC
-												
 												local f = assert(io.open(tostring(extracted_file), "rb"))
 												-- Offset first 10 bytes and get only 4 blocks for N64
 												f:seek ("cur", 0x10)
@@ -725,37 +730,65 @@
 													bytestring = bytestring .. new_byte
 												end
 
-												-- Delete extacted file
-												files.delete(extracted_file)
-
 											    file.crc_result = bytestring
 
 											elseif current_crc_apptype == 7 then
 												
-												-- Extract file so can be read with byte offset
-												files.extractfile (tostring(file.game_path), tostring(archive_contents[1].name), "ux0:/data/RetroFlow/")
-												extracted_file = tostring("ux0:/data/RetroFlow/" .. archive_contents[1].name)
-
 												-- Offset first 10 bytes for NES
 									    		f = io.open(tostring(extracted_file))
 												f:seek ("cur", 0x10)
 												local tmp = tostring(f:read("*all"))
 												f:close()
 
-												-- Delete extacted file
-												files.delete(extracted_file)
-
 												file.crc_result = Dec2Hex(os.crc32(tmp) )
 
 											else
-												-- Read the file into RAM without extracting
-												archive_game = tostring(files.extractbuffer(tostring(file.game_path), tostring(archive_contents[1].name)) )
+												-- -- Read the file into RAM without extracting
+												-- archive_game = tostring(files.extractbuffer(tostring(file.game_path), tostring(archive_contents[1].name)) )
+												-- file.crc_result = Dec2Hex(os.crc32(archive_game) )
 
-												file.crc_result = Dec2Hex(os.crc32(archive_game) )
+												-- Read the whole file
+
+													-- Function to calculate CRC32 in chunks
+													local function crc32_file(file_path)
+													    -- local chunk_size = 4096 -- 4 KB per chunk
+													    local chunk_size = 16384 -- Increased chunk size to 16 KB for fewer I/O operations
+													    local file = io.open(file_path, "rb")
+													    if not file then
+													    	-- Error: Could not open file, move on
+													        file.crc_result = "nil"
+													    end
+													    
+													    local crc32 = 0 -- Initialize CRC32 with zero
+													    while true do
+													        local chunk = file:read(chunk_size)
+													        if not chunk then break end
+													        crc32 = os.crc32(chunk, crc32) -- Update CRC32 with each chunk
+													    end
+													    file:close()
+													    return Dec2Hex(crc32)
+													end
+
+													-- Convert the game path to a string
+													local filetoread = tostring(extracted_file)
+
+													-- Calculate the CRC32 checksum using chunked reading
+													local crc_result, err = crc32_file(filetoread)
+
+													-- Handle the result
+													if not crc_result then
+													    -- Error: Move on
+													    file.crc_result = "nil"
+													else
+													    file.crc_result = crc_result
+													end
+
 											end
 
-										else
-											
+											-- Delete extacted file
+											files.delete(extracted_file)
+
+										else						
 										end
 
 									elseif not string.match(file.filename, "%.7z") then
@@ -788,10 +821,43 @@
 											file.crc_result = Dec2Hex(os.crc32(tmp) )
 
 								    	else
-								    		-- Read the whole file
-								    		filetoread = tostring(file.game_path)
 
-								    		file.crc_result = Dec2Hex(os.crc32(files.read(filetoread) ))
+											-- Read the whole file
+
+												-- Function to calculate CRC32 in chunks
+												local function crc32_file(file_path)
+												    -- local chunk_size = 4096 -- 4 KB per chunk
+												    local chunk_size = 16384 -- Increased chunk size to 16 KB for fewer I/O operations
+												    local file = io.open(file_path, "rb")
+												    if not file then
+												    	-- Error: Could not open file, move on
+												        file.crc_result = "nil"
+												    end
+												    
+												    local crc32 = 0 -- Initialize CRC32 with zero
+												    while true do
+												        local chunk = file:read(chunk_size)
+												        if not chunk then break end
+												        crc32 = os.crc32(chunk, crc32) -- Update CRC32 with each chunk
+												    end
+												    file:close()
+												    return Dec2Hex(crc32)
+												end
+
+												-- Convert the game path to a string
+												local filetoread = tostring(file.game_path)
+
+												-- Calculate the CRC32 checksum using chunked reading
+												local crc_result, err = crc32_file(filetoread)
+
+												-- Handle the result
+												if not crc_result then
+												    -- Error: Move on
+												    file.crc_result = "nil"
+												else
+												    file.crc_result = crc_result
+												end
+
 								    	end
 
 								    else
