@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.3"
+local appversion = "7.0.4"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -750,7 +750,11 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
         local collection_count = 0
         collection_count = #collection_files
         collection_syscount = syscount + collection_count
-        collection_count_of_start_categories = collection_count + count_of_start_categories + 1
+        if collection_count == 0 then
+            collection_count_of_start_categories = count_of_start_categories
+        else
+            collection_count_of_start_categories = collection_count + count_of_start_categories + 1
+        end
 
 
 
@@ -1400,7 +1404,7 @@ function SaveSettings()
             if startCategory_collection_renamed ~= nil then
                 startCategory_collection = startCategory_collection_renamed
             else
-                if collection_files[Collection_CatNum].table_name ~= nil then
+                if collection_files and collection_files[Collection_CatNum] and collection_files[Collection_CatNum].table_name ~= nil then
                     startCategory_collection = collection_files[Collection_CatNum].table_name
                 else
                     startCategory_collection = "not_set"
