@@ -272,6 +272,7 @@ return {
 ["Delete"] = "削除",
 ["Edit_collections"] = "コレクションを編集する",
 ["Show_collections_colon"] = "コレクションを表示：",
+["Customise_game_order"] = "グムヌ順番ィカスタマイズシェー",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk をインストールしています...",

@@ -272,6 +272,7 @@ return {
 ["Delete"] = "Удалить",
 ["Edit_collections"] = "Редактировать коллекции",
 ["Show_collections_colon"] = "Показать коллекции:",
+["Customise_game_order"] = "Настроить порядок игр",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Установка RetroFlow Adrenaline Launcher vpk...",

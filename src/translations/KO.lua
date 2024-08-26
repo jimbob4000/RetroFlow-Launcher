@@ -272,6 +272,7 @@ return {
 ["Delete"] = "삭제",
 ["Edit_collections"] = "컬렉션 편집",
 ["Show_collections_colon"] = "컬렉션 표시:",
+["Customise_game_order"] = "게임 순서 사용자 지정",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk 설치 중...",

@@ -272,6 +272,7 @@ return {
 ["Delete"] = "删除",
 ["Edit_collections"] = "编辑集合",
 ["Show_collections_colon"] = "显示集合：",
+["Customise_game_order"] = "自定义游戏顺序",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "正在安装 RetroFlow Adrenaline Launcher vpk...",

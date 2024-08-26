@@ -272,6 +272,7 @@ return {
 ["Delete"] = "Törlés",
 ["Edit_collections"] = "Gyűjtemények szerkesztése",
 ["Show_collections_colon"] = "Gyűjtemények mutatása:",
+["Customise_game_order"] = "Játéksorrend testreszabása",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "A RetroFlow Adrenaline Launcher vpk telepítése...",

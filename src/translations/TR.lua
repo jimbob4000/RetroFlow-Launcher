@@ -272,6 +272,7 @@ return {
 ["Delete"] = "Sil",
 ["Edit_collections"] = "Koleksiyonları düzenle",
 ["Show_collections_colon"] = "Koleksiyonları göster:",
+["Customise_game_order"] = "Oyun sırasını özelleştir",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk yükleniyor...",

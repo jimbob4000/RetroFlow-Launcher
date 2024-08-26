@@ -272,6 +272,7 @@ return {
 ["Delete"] = "Verwijderen",
 ["Edit_collections"] = "Collecties bewerken",
 ["Show_collections_colon"] = "Toon collecties:",
+["Customise_game_order"] = "Pas de spelvolgorde aan",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk installeren...",

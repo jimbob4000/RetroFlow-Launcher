@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.4"
+local appversion = "7.0.5"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -798,6 +798,10 @@ setting_icon_other = Graphics.loadImage("app0:/DATA/setting-icon-other.png")
 setting_icon_heart = Graphics.loadImage("app0:/DATA/setting-icon-heart.png")
 setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
 
+setting_icon_sort = Graphics.loadImage("app0:/DATA/setting-icon-sort.png")
+setting_icon_sort_up = Graphics.loadImage("app0:/DATA/setting-icon-sort-up.png")
+setting_icon_sort_down = Graphics.loadImage("app0:/DATA/setting-icon-sort-down.png")
+
 -- Start of ROM Browser setup
 
     local grey_dir = Color.new(200, 200, 200)
@@ -856,6 +860,18 @@ setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
     local i = 1
 
 -- End of ROM Browser setup
+
+
+-- Start of Custom Collection Sort Scroll list
+    cc_scrollPosition = 0  -- Current scroll offset (in items)
+    cc_maxVisibleItems = 8  -- Maximum items that can fit on the screen
+    cc_selected = 1  -- Index of the selected item
+    cc_edit_mode = false -- Edit mode affects controls
+    cc_updated = false -- If changes made then set to true
+    cc_reset = false -- If reset to alphabetical then set to true
+    cc_already_custom = false -- If collection already has custom sorting
+
+-- End of Custom Collection Sort Scroll list
 
 
 -- Start of Game list view setup
@@ -2051,6 +2067,7 @@ local lang_default =
 ["Delete"] = "Delete",
 ["Edit_collections"] = "Edit collections",
 ["Show_collections_colon"] = "Show collections:",
+["Customise_game_order"] = "Customise game order",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Installing RetroFlow Adrenaline Launcher vpk...",
@@ -2441,6 +2458,9 @@ function FreeMemory()
     Graphics.freeImage(file_browser_folder_closed)
     Graphics.freeImage(file_browser_file)
     Graphics.freeImage(footer_gradient)
+    Graphics.freeImage(setting_icon_sort)
+    Graphics.freeImage(setting_icon_sort_up)
+    Graphics.freeImage(setting_icon_sort_down)
 end
 
 
@@ -3557,6 +3577,12 @@ end
                     else
                         -- Find matching games in files table and insert into custom cat table
                         if #db_import ~= nil then
+
+                            -- Sort by custom sort order if available
+                            if db_import[1].custom_sort_order ~= nil then
+                                table.sort(db_import, function(a, b) return (tonumber(a.custom_sort_order) < tonumber(b.custom_sort_order)) end)
+                            end
+
                             for l, file in ipairs(db_import) do -- or xapptype lookup
                                 local key = find_game_table_pos_key(files_table, file.name)
                                 if key ~= nil then
@@ -14880,17 +14906,40 @@ while true do
                         -- Check if game is already in the collection list
                         if check_if_game_is_in_collection_table(collection_number) == false then
 
+
+                            if xCollectionTableLookup(collection_number)[1].custom_sort_order ~= nil then
+                                cc_already_custom = true
+                            end
+
                             -- Create new table of basic info
                             game_info_for_collection = {}
-                            game_info_for_collection = 
-                            { 
-                                [1] = 
-                                {
-                                    ["apptitle"] = xCatLookup(showCat)[p].title,
-                                    ["name"] = xCatLookup(showCat)[p].name,
-                                    ["app_type"] = xCatLookup(showCat)[p].app_type,
-                                },
-                            }
+
+                            if cc_already_custom == true then
+
+                                -- Target collection has custom sorting, include 'custom_sort_order' field and add to the end
+                                game_info_for_collection = 
+                                { 
+                                    [1] = 
+                                    {
+                                        ["apptitle"] = xCatLookup(showCat)[p].title,
+                                        ["name"] = xCatLookup(showCat)[p].name,
+                                        ["app_type"] = xCatLookup(showCat)[p].app_type,
+                                        ["custom_sort_order"] = #xCollectionTableLookup(collection_number) + 1,
+                                    },
+                                }
+                            else
+
+                                -- Target collection does not have custom sorting, exclude 'custom_sort_order' field
+                                game_info_for_collection = 
+                                { 
+                                    [1] = 
+                                    {
+                                        ["apptitle"] = xCatLookup(showCat)[p].title,
+                                        ["name"] = xCatLookup(showCat)[p].name,
+                                        ["app_type"] = xCatLookup(showCat)[p].app_type,
+                                    },
+                                }
+                            end
 
                             -- Add basic info from games aleady in the collection to the table
                             for i, file in pairs(xCollectionTableLookup(collection_number)) do
@@ -14898,6 +14947,9 @@ while true do
                                 existing_collection_info.apptitle = file.title
                                 existing_collection_info.name = file.name
                                 existing_collection_info.app_type = file.app_type
+                                if cc_already_custom == true then
+                                    existing_collection_info.custom_sort_order = file.custom_sort_order
+                                end
                                 table.insert(game_info_for_collection, existing_collection_info)
                             end
 
@@ -15082,6 +15134,11 @@ while true do
                            -- Create new table of basic info
                             game_info_for_collection = {}                            
 
+                            -- Check if collection has custom sorting
+                            if xCollectionTableLookup(collection_removal_table[xcollection_number].matched_collection_num)[1].custom_sort_order ~= nil then
+                                cc_already_custom = true
+                            end
+
                             for i, file in pairs(xCollectionTableLookup(collection_removal_table[xcollection_number].matched_collection_num)) do
 
                                 -- if not string.match (tostring(file.apptitle), tostring(xCatLookup(showCat)[p].apptitle)) then
@@ -15090,6 +15147,12 @@ while true do
                                     existing_collection_info.apptitle = file.title
                                     existing_collection_info.name = file.name
                                     existing_collection_info.app_type = file.app_type
+
+                                    -- If custom sorting, include field
+                                    if cc_already_custom == true then
+                                        existing_collection_info.custom_sort_order = file.custom_sort_order
+                                    end
+
                                     table.insert(game_info_for_collection, existing_collection_info)
                                 end
                             end
@@ -15188,7 +15251,7 @@ while true do
 
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
-        menuItems = 3
+        menuItems = 4
 
         -- MENU 24 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -15234,19 +15297,28 @@ while true do
             Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. lang_lines.No_collections .. "  >", white_opaque)
         end
 
-        -- MENU 24 / #2 Rename
+        -- MENU 24 / #2 Custom sort order
         if collections_flag == true then
-            Font.print(fnt22, setting_x, setting_y2, lang_lines.Rename, white)--Rename
+            Font.print(fnt22, setting_x, setting_y2, lang_lines.Customise_game_order, white)--Delete
         else
-            Font.print(fnt22, setting_x, setting_y2, lang_lines.Rename, white_opaque)--Rename
+            Font.print(fnt22, setting_x, setting_y2, lang_lines.Customise_game_order, white_opaque)--Delete
         end
 
-        -- MENU 24 / #3 Delete
+        -- MENU 24 / #3 Rename
         if collections_flag == true then
-            Font.print(fnt22, setting_x, setting_y3, lang_lines.Delete, white)--Delete
+            Font.print(fnt22, setting_x, setting_y3, lang_lines.Rename, white)--Rename
         else
-            Font.print(fnt22, setting_x, setting_y3, lang_lines.Delete, white_opaque)--Delete
+            Font.print(fnt22, setting_x, setting_y3, lang_lines.Rename, white_opaque)--Rename
         end
+
+        -- MENU 24 / #4 Delete
+        if collections_flag == true then
+            Font.print(fnt22, setting_x, setting_y4, lang_lines.Delete, white)--Delete
+        else
+            Font.print(fnt22, setting_x, setting_y4, lang_lines.Delete, white_opaque)--Delete
+        end
+
+        
     
 
         -- MENU 24 - FUNCTIONS
@@ -15260,7 +15332,11 @@ while true do
                     showMenu = 19  -- Other settings
                     menuY = 5
 
-                elseif menuY == 2 then -- #2 Rename collection
+                elseif menuY == 2 then -- #2 Custom sort order
+                    showMenu = 26  -- Collection custom sort order
+                    menuY = 0
+
+                elseif menuY == 3 then -- #3 Rename collection
                     -- Do something
 
                     -- Rename
@@ -15276,10 +15352,10 @@ while true do
                         showMenu = 19  -- Other settings
                         menuY = 3
                         showMenu = 24  -- Edit collections
-                        menuY = 2
+                        menuY = 3
                     end
 
-                elseif menuY == 3 then -- #2 Delete collection
+                elseif menuY == 4 then -- #4 Delete collection
                     -- Do something
                     if System.doesFileExist(collections_dir .. collection_files[xcollection_number].filename) then
                         System.deleteFile(collections_dir .. collection_files[xcollection_number].filename)
@@ -15299,6 +15375,7 @@ while true do
                         dofile("app0:index.lua")
                     else
                     end
+                
 
                 end
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
@@ -15524,6 +15601,246 @@ while true do
             elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
                 
             end
+        end
+
+
+
+-- MENU 26 - COLLECTION CUSTOM SORT ORDER
+    elseif showMenu == 26 then
+        
+        -- SETTINGS
+        -- Footer buttons and icons
+        -- Get text widths for positioning
+        label1 = Font.getTextWidth(fnt20, lang_lines.Close)--Close
+        label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
+
+        Graphics.drawImage(900-label1, 510, btnO)
+        Font.print(fnt20, 900+28-label1, 508, lang_lines.Close, white)--Close
+
+        Graphics.drawImage(900-(btnMargin * 2)-label1-label2, 510, btnT)
+        Font.print(fnt20, 900+28-(btnMargin * 2)-label1-label2, 508, lang_lines.Default, white)--Default (Reset)
+
+        Graphics.drawImage(900-(btnMargin * 4)-label1-label2-label3, 510, btnX)
+        Font.print(fnt20, 900+28-(btnMargin * 4)-label1-label2-label3, 508, lang_lines.Select, white)--Select
+
+        
+        Graphics.fillRect(60, 900, 34, 460, darkalpha)
+
+        Font.print(fnt22, setting_x, setting_yh, collection_files[xcollection_number].display_name, white)--Name of collection
+        Graphics.fillRect(60, 900, 78, 81, white)
+
+
+            function cc_drawList()
+                Screen.clear(black)
+                
+                -- Calculate the start and end indices for the visible items
+                local startIdx = math.max(1, cc_scrollPosition + 1)
+                local endIdx = math.min(#xCollectionTableLookup(xcollection_number), cc_scrollPosition + cc_maxVisibleItems)
+
+                -- Draw the visible items
+                for i = startIdx, endIdx do
+                    local yPosition = setting_y0 + ((i - startIdx) * 47)
+                    if cc_edit_mode == true then
+                        color = white_opaque
+                    else
+                        color = white
+                    end
+                    if i == cc_selected then
+                        Graphics.fillRect(60, 900, yPosition - 10, yPosition + 38, themeCol)-- selection
+                        color = white  -- Highlight selected item in white
+                    end
+                    if cc_edit_mode == true and i == cc_selected and i < #xCollectionTableLookup(xcollection_number) and i > 1 then
+                        Graphics.drawImage(13, yPosition, setting_icon_sort)
+                    end
+                    if cc_edit_mode == true and i == cc_selected and i == #xCollectionTableLookup(xcollection_number) then
+                        Graphics.drawImage(13, yPosition, setting_icon_sort_up)
+                    end
+                    if cc_edit_mode == true and i == cc_selected and i == 1 then
+                        Graphics.drawImage(13, yPosition, setting_icon_sort_down)
+                    end
+
+                    Font.print(fnt22, setting_x, yPosition, xCollectionTableLookup(xcollection_number)[i].apptitle, color)
+                end
+                Screen.flip()
+            end
+
+            cc_drawList()  -- Draw the game list
+
+    
+
+        -- MENU 26 - FUNCTIONS
+        status = System.getMessageState()
+        if status ~= RUNNING then
+            
+            -- Check for input
+            pad = Controls.read()
+
+            if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
+
+                if cc_edit_mode == false then
+                    cc_edit_mode = true
+                else
+                    cc_edit_mode = false
+                end
+
+
+            elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+                
+                if cc_edit_mode == true then
+
+                    -- Move selected item Up
+                    if cc_selected > 1 and cc_edit_mode == true then
+                        local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
+                        xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected - 1]
+                        xCollectionTableLookup(xcollection_number)[cc_selected - 1] = temp
+
+                        cc_selected = cc_selected - 1
+                        if cc_selected <= cc_scrollPosition then
+                            cc_scrollPosition = cc_scrollPosition - 1
+                        end
+                    end
+                    cc_updated = true
+                    cc_reset = false
+                else
+
+                    -- Scroll up
+                    if cc_selected > 1 then
+                        cc_selected = cc_selected - 1
+                        if cc_selected <= cc_scrollPosition then
+                            cc_scrollPosition = cc_scrollPosition - 1
+                        end
+                    end
+                end
+         
+            elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
+                
+                if cc_edit_mode == true then
+
+                    -- Move selected item down
+                    if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                        local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
+                        xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected + 1]
+                        xCollectionTableLookup(xcollection_number)[cc_selected + 1] = temp
+
+                        cc_selected = cc_selected + 1
+                        if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
+                            cc_scrollPosition = cc_scrollPosition + 1
+                        end
+
+                    end
+                    cc_updated = true
+                    cc_reset = false
+
+                else
+
+                    -- Scroll down
+                    if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                        cc_selected = cc_selected + 1
+                        if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
+                            cc_scrollPosition = cc_scrollPosition + 1
+                        end
+                    end
+                end
+            
+            elseif (Controls.check(pad, SCE_CTRL_TRIANGLE) and not Controls.check(oldpad, SCE_CTRL_TRIANGLE)) then
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    
+                    cc_edit_mode = false
+
+                    -- Reset to alphabetical order
+                    table.sort(xCollectionTableLookup(xcollection_number), function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+                    
+                    cc_reset = true
+                    cc_updated = false
+                    cc_scrollPosition = 0
+                    cc_selected = 1
+
+                else
+                end
+
+            elseif (Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP)) then
+
+                    -- Save changes
+
+                        -- Filename to save as
+                            ret_collection_filename = "Collection_" .. collection_files[xcollection_number].display_name:gsub(" ", "_") .. ".lua"--Name of collection
+
+                        -- Delete old file
+                            function check_if_collection_file_exists(def_duplicate_name_num)
+                                if System.doesFileExist(collections_dir .. ret_collection_filename) then
+                                    System.deleteFile(collections_dir .. ret_collection_filename)
+                                end
+                            end
+
+                        -- Update table before saving
+
+                            -- Empty table to add to for caching
+                                local cc_table_to_print = {}
+
+                            -- Custom sort has been used
+                                if cc_updated == true then
+                                    for k, v in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                        v.custom_sort_order = k
+                                    end
+
+                                    for i, item in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                        -- Add a new entry to selected_fields_collection with only the desired fields
+                                        cc_table_to_print[i] = {
+                                            ["app_type"] = item["app_type"],
+                                            ["name"] = item["name"],
+                                            ["apptitle"] = item["apptitle"],
+                                            ["custom_sort_order"] = item["custom_sort_order"],
+                                        }
+                                    end
+                                    update_cached_collection(ret_collection_filename, cc_table_to_print)
+                                end
+
+                            -- Has been reset, remove custom sort
+                                if cc_reset == true then
+                                    for i, item in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                        -- Add a new entry to selected_fields_collection with only the desired fields
+                                        cc_table_to_print[i] = {
+                                            ["app_type"] = item["app_type"],
+                                            ["name"] = item["name"],
+                                            ["apptitle"] = item["apptitle"],
+                                            -- ["custom_sort_order"] = item["custom_sort_order"],
+                                        }
+                                    end
+                                    update_cached_collection(ret_collection_filename, cc_table_to_print)
+
+                                end
+
+                        cc_edit_mode = false
+                        cc_scrollPosition = 0
+                        cc_selected = 1
+
+                        oldpad = pad
+                        showMenu = 24
+                        menuY = 2
+
+
+
+            elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then
+                        -- Do something
+                    else
+                    end
+                else
+                end
+            elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
+                state = Keyboard.getState()
+                if state ~= RUNNING then
+                    if menuY == 1 then
+                        -- Do something
+                    else
+                    end
+                else
+                end
+            end
+
         end
 
 
@@ -16581,6 +16898,9 @@ while true do
                 elseif showMenu == 24 then -- Edit collections
                     showMenu = 19
                     menuY=5
+                elseif showMenu == 26 then -- Collection Custom sort order
+                    -- showMenu = 24
+                    -- menuY=4
                     
                 elseif showMenu == 2 then
                     -- If search cancelled with circle, return to settings menu

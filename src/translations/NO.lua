@@ -272,6 +272,7 @@ return {
 ["Delete"] = "Slett",
 ["Edit_collections"] = "Rediger samlinger",
 ["Show_collections_colon"] = "Vis samlinger:",
+["Customise_game_order"] = "Tilpass spillrekkefølge",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Installerer RetroFlow Adrenaline Launcher vpk...",
