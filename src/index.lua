@@ -9211,7 +9211,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddle      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGB          -- Average approx 50.00
         else
-            if apptype==5 or apptype==6 or apptype==7 then
+            if apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 then
                 return  modCoverN64 -- Average approx 42.31
             else
                 return modCoverGB
@@ -9235,7 +9235,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddleNoref      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGBNoref          -- Average approx 50.00
         else
-            if apptype==5 or apptype==6 or apptype==7 then
+            if apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 then
                 return  modCoverN64Noref -- Average approx 42.31
             else
                 return modCoverGBNoref
@@ -9278,8 +9278,8 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
                 Render.drawModel(modCoverPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==5 or apptype==6 or apptype==7 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 then
-            -- Get closest cover: N64, Snes, Nes, Sega CD, TG16, TG CD, PCE, PCE CD, Amiga, FBA, Mame 2003, Mame 2000, ScummVM
+        elseif apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 then
+            -- Get closest cover: N64, Snes, Nes, GBA, GBC, GB, Sega CD, TG16, TG CD, PCE, PCE CD, Amiga, FBA, Mame 2003, Mame 2000, ScummVM
             if setReflections == 1 then
                 Render.useTexture(closestBox(), icon)
                 Render.drawModel(closestBox(), x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
@@ -9295,7 +9295,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
                 Render.useTexture(modCoverNESNoref, icon)
                 Render.drawModel(modCoverNESNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==8 or apptype==9 or apptype==10 or apptype==11 then
+        elseif apptype==11 then
             if setReflections == 1 then
                 Render.useTexture(modCoverGB, icon)
                 Render.drawModel(modCoverGB, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
@@ -11029,7 +11029,7 @@ while true do
             Render.drawModel(modCoverNESNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.NES_Game 
         elseif apptype==8 then
-            Render.drawModel(modCoverGBNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            Render.drawModel(closestBoxNoref_getinfo(), prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.GBA_Game 
         elseif apptype==9 then
             Render.drawModel(modCoverGBNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
