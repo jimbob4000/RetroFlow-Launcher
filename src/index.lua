@@ -8663,7 +8663,14 @@ function DownloadCovers()
                                     cvrfound = cvrfound + 1
                                     percent = (app_idx / #(def_table_name)) * 100
                                     clean_name = (def_table_name)[app_idx].name:gsub("\n","")
-                                    txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. cvrfound .. lang_lines.of .. #(def_table_name)
+
+                                    if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                                        -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                                        txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. #(def_table_name) .. lang_lines.of .. cvrfound
+                                    else
+                                        -- Normal x/xxx
+                                        txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. cvrfound .. lang_lines.of .. #(def_table_name)
+                                    end
 
                                     Graphics.initBlend()
                                     Graphics.termBlend()
@@ -8702,7 +8709,15 @@ function DownloadCovers()
                                         
                                         percent = (app_idx / #(def_table_name)) * 100
                                         clean_name = (def_table_name)[app_idx].name:gsub("\n","")
-                                        txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. cvrfound .. lang_lines.of .. #(def_table_name)
+
+
+                                        if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                                            -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                                            txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. #(def_table_name) .. lang_lines.of .. cvrfound
+                                        else
+                                            -- Normal x/xxx
+                                            txt = (def_lang_lines_Downloading_SysName_covers) .. "...\n" .. lang_lines.Cover .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. cvrfound .. lang_lines.of .. #(def_table_name)
+                                        end
 
                                         Graphics.initBlend()
                                         Graphics.termBlend()
@@ -8837,7 +8852,14 @@ function DownloadSnaps()
                                     bgfound = bgfound + 1
                                     percent = (app_idx / #(def_table_name)) * 100
                                     clean_name = (def_table_name)[app_idx].name:gsub("\n","")
-                                    txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. bgfound .. lang_lines.of .. #(def_table_name)
+
+                                    if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                                        -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                                        txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. #(def_table_name) .. lang_lines.of .. bgfound
+                                    else
+                                        -- Normal x/xxx
+                                        txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. bgfound .. lang_lines.of .. #(def_table_name)
+                                    end
 
                                     Graphics.initBlend()
                                     Graphics.termBlend()
@@ -8860,7 +8882,14 @@ function DownloadSnaps()
                                         
                                         percent = (app_idx / #(def_table_name)) * 100
                                         clean_name = (def_table_name)[app_idx].name:gsub("\n","")
-                                        txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. bgfound .. lang_lines.of .. #(def_table_name)
+
+                                        if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                                            -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                                            txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. #(def_table_name) .. lang_lines.of .. bgfound
+                                        else
+                                            -- Normal x/xxx
+                                            txt = (def_lang_lines_Downloading_SysName_backgrounds) .. "...\n" .. lang_lines.Background .. " " .. clean_name .. "\n" .. lang_lines.Found .. " " .. bgfound .. lang_lines.of .. #(def_table_name)
+                                        end
 
                                         Graphics.initBlend()
                                         Graphics.termBlend()
@@ -10034,10 +10063,22 @@ function drawCategory (def)
         if showView >= 5 then
             -- Font.print(fnt20, fv_left_margin - fv_border, fv_cover_height + fv_cover_y + 60, p .. lang_lines.of .. #(def), white_opaque)
             if showView == 6 then
-                Font.print(fnt20, 32, 508, p .. lang_lines.of .. #(def), white)-- Draw total items
+                if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                    -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                    Font.print(fnt20, 32, 508, #(def) .. lang_lines.of .. p, white)-- Draw total items
+                else
+                    -- Normal x/xxx
+                    Font.print(fnt20, 32, 508, p .. lang_lines.of .. #(def), white)-- Draw total items
+                end
             end
         else
-            PrintCentered(fnt20, 480, 462, p .. lang_lines.of .. #(def), white, 20)-- Draw total items
+            if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+                -- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+                PrintCentered(fnt20, 480, 462, #(def) .. lang_lines.of .. p, white, 20)-- Draw total items
+            else
+                -- Normal x/xxx
+                PrintCentered(fnt20, 480, 462, p .. lang_lines.of .. #(def), white, 20)-- Draw total items
+            end
         end
     end
 end

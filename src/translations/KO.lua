@@ -106,7 +106,7 @@ return {
 ["found_exclamation"] = "찾았다!",
 ["Cover_not_found"] = "표지를 찾을 수 없음",
 ["Background_not_found"] = "배경을 찾을 수 없음",
-["of"] = "/",
+["of"] = "의 ",
 
 ["Downloading_covers"] = "표지 다운로드",
 ["Downloading_backgrounds"] = "배경 다운로드",

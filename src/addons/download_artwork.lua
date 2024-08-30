@@ -961,7 +961,13 @@
 					    			crc_progress_bar_update()
 							    	-- screen.print(10,10,tostring(file.filename))
 							    	screen.print(10,10,tostring(file.title))
-							    	screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+							    	if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+							    		-- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+							    		screen.print(10,35,tostring(missing_artwork_total) .. lang_lines.of .. tostring(crcs_checked))
+							    	else
+							    		-- Normal x/xxx
+							    		screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+							    	end
 									-- if crc_checked_before == true then
 									-- 	screen.print(10,60,tostring("CRC: " .. file.crc_result))
 									-- 	screen.print(10,85,tostring("Cached CRC - No match"))
@@ -1098,7 +1104,13 @@
 					    			crc_progress_bar_update()
 							    	-- screen.print(10,10,tostring(file.filename))
 							    	screen.print(10,10,tostring(file.title))
-							    	screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+							    	if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+							    		-- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+							    		screen.print(10,35,tostring(missing_artwork_total) .. lang_lines.of .. tostring(crcs_checked))
+							    	else
+							    		-- Normal x/xxx
+							    		screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+							    	end
 							    	-- if crc_checked_before == true then
 							    	-- 	screen.print(10,60,tostring("CRC: " .. file.crc_result))
 									-- 	screen.print(10,85,tostring("Cached CRC - Match"))
@@ -1281,7 +1293,13 @@
 				    			crc_progress_bar_update()
 						    	-- screen.print(10,10,tostring(file.name))
 						    	screen.print(10,10,tostring(file.title))
-						    	screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+						    	if setLanguage == 9 or setLanguage == 10 or setLanguage == 17 or setLanguage == 18 or setLanguage == 19 then
+						    		-- Reverse order of numbering xxx/x : Japanese, Chinese (Traditional), Korean, Chinese (Simplified), Japanese (Ryukyuan)
+						    		screen.print(10,35,tostring(missing_artwork_total) .. lang_lines.of .. tostring(crcs_checked))
+						    	else
+						    		-- Normal x/xxx
+						    		screen.print(10,35,tostring(crcs_checked) .. lang_lines.of .. tostring(missing_artwork_total))
+						    	end
 						    	-- screen.print(10,60,tostring("CRC unavailable"))
 								
 								screen.flip()

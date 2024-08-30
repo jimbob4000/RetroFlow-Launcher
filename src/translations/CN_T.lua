@@ -106,7 +106,7 @@ return {
 ["found_exclamation"] = "找到",
 ["Cover_not_found"] = "未找到封面",
 ["Background_not_found"] = "未找到背景",
-["of"] = " 的 ",
+["of"] = "分之",
 
 ["Downloading_covers"] = "下載封面",
 ["Downloading_backgrounds"] = "下載背景",
