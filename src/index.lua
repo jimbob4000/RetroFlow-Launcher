@@ -15374,50 +15374,61 @@ while true do
                     menuY = 5
 
                 elseif menuY == 2 then -- #2 Custom sort order
-                    showMenu = 26  -- Collection custom sort order
-                    menuY = 0
+
+                    -- If collections exist
+                    if collections_flag == true then
+                        showMenu = 26  -- Collection custom sort order
+                        menuY = 0
+                    else
+                    end
 
                 elseif menuY == 3 then -- #3 Rename collection
-                    -- Do something
+                    
+                    -- If collections exist
+                    if collections_flag == true then
+                        -- Rename
+                        if hasTyped==false then
 
-                    -- Rename
-                    if hasTyped==false then
+                            Keyboard.start(tostring(lang_lines.Rename), collection_files[xcollection_number].display_name, 512, TYPE_LATIN, MODE_TEXT)
+                            hasTyped=true
+                            keyboard_collection_rename=true
+                            keyboard_collection_rename_filename = collection_files[xcollection_number].filename
+                            keyboard_collection_rename_table_name = collection_files[xcollection_number].table_name
+            
 
-                        Keyboard.start(tostring(lang_lines.Rename), collection_files[xcollection_number].display_name, 512, TYPE_LATIN, MODE_TEXT)
-                        hasTyped=true
-                        keyboard_collection_rename=true
-                        keyboard_collection_rename_filename = collection_files[xcollection_number].filename
-                        keyboard_collection_rename_table_name = collection_files[xcollection_number].table_name
-        
-
-                        showMenu = 19  -- Other settings
-                        menuY = 3
-                        showMenu = 24  -- Edit collections
-                        menuY = 3
+                            showMenu = 19  -- Other settings
+                            menuY = 3
+                            showMenu = 24  -- Edit collections
+                            menuY = 3
+                        end
+                    else
                     end
 
                 elseif menuY == 4 then -- #4 Delete collection
-                    -- Do something
-                    if System.doesFileExist(collections_dir .. collection_files[xcollection_number].filename) then
-                        System.deleteFile(collections_dir .. collection_files[xcollection_number].filename)
+
+                    -- If collections exist
+                    if collections_flag == true then
+                        if System.doesFileExist(collections_dir .. collection_files[xcollection_number].filename) then
+                            System.deleteFile(collections_dir .. collection_files[xcollection_number].filename)
 
 
-                        if string.match(startCategory_collection, collection_files[xcollection_number].table_name) then
-                            -- startCategory_collection_renamed = {} -- commented out, bug fix for removing coll when coll is set as startcat 
-                            startCategory_collection = "not_set"
-                            startCategory = 1
-                            SaveSettings()
+                            if string.match(startCategory_collection, collection_files[xcollection_number].table_name) then
+                                -- startCategory_collection_renamed = {} -- commented out, bug fix for removing coll when coll is set as startcat 
+                                startCategory_collection = "not_set"
+                                startCategory = 1
+                                SaveSettings()
+                            else
+                            end
+
+                            FreeIcons()
+                            FreeMemory()
+                            Network.term()
+                            dofile("app0:index.lua")
                         else
                         end
-
-                        FreeIcons()
-                        FreeMemory()
-                        Network.term()
-                        dofile("app0:index.lua")
                     else
                     end
                 
-
                 end
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
                 state = Keyboard.getState()
