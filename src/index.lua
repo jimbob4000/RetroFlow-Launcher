@@ -8827,12 +8827,32 @@ function DownloadSnaps()
                                 else
                                     -- Not found - download
 
-                                    if (def_table_name)[app_idx].app_type == 21 then
-                                        -- Amiga fix
-                                        Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. urlencode((def_table_name)[app_idx].name_title_search) .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                    if (def_table_name)[app_idx].snap_path_online:find("libretro") then
+
+                                        name_after_libretro_gsub = {}
+
+                                        -- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+                                        if (def_table_name)[app_idx].app_type == 21 then
+                                            -- Amiga fix
+                                            name_after_libretro_gsub = (def_table_name)[app_idx].name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")                                            
+                                        else
+                                            name_after_libretro_gsub = (def_table_name)[app_idx].name:gsub("[&*/:`<>?\\|\"]+", "_")
+                                        end
+
+                                        Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. urlencode(name_after_libretro_gsub) .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+
                                     else
-                                        Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+
+                                        -- Not libretro
+                                        if (def_table_name)[app_idx].app_type == 21 then
+                                            -- Amiga fix
+                                            Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. urlencode((def_table_name)[app_idx].name_title_search) .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                        else
+                                            Network.downloadFileAsync((def_table_name)[app_idx].snap_path_online .. (def_table_name)[app_idx].name_online .. ".png", "ux0:/data/RetroFlow/" .. (def_table_name)[app_idx].name:gsub("%%","%%%%") .. ".png")
+                                        end
                                     end
+
+                                    
                                     
                                     running = true
                                 end
@@ -9685,13 +9705,32 @@ function DownloadSingleSnap()
 
         app_titleid = app_titleid:gsub("\n","")
 
-        if apptype == 21 then
-            -- Amiga fix
-            Network.downloadFile(onlineSnapPath .. xCatLookup(showCat)[p].name_title_search:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
-        else
-            Network.downloadFile(onlineSnapPath .. app_titleid:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
-        end
+        if onlineSnapPath:find("libretro") then
 
+            name_after_libretro_gsub = {}
+
+            -- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+            if apptype == 21 then
+                -- Amiga fix
+                name_after_libretro_gsub = xCatLookup(showCat)[p].name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")
+                Network.downloadFile(onlineSnapPath .. xCatLookup(showCat)[p].name_title_search:gsub("[&*/:`<>?\\|\"]+", "_"):gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+            else
+                name_after_libretro_gsub = app_titleid:gsub("[&*/:`<>?\\|\"]+", "_")
+            end
+
+            Network.downloadFile(onlineSnapPath .. name_after_libretro_gsub:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+
+        else
+
+            -- Not libretro
+            if apptype == 21 then
+            -- Amiga fix
+                Network.downloadFile(onlineSnapPath .. xCatLookup(showCat)[p].name_title_search:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+            else
+                Network.downloadFile(onlineSnapPath .. app_titleid:gsub("%s+", '%%20') .. ".png", "ux0:/data/RetroFlow/" .. app_titleid .. ".png")
+            end
+        end
+        
 
         if System.doesFileExist("ux0:/data/RetroFlow/" .. app_titleid .. ".png") then
             tmpfile = System.openFile("ux0:/data/RetroFlow/" .. app_titleid .. ".png", FREAD)
@@ -10206,6 +10245,18 @@ while true do
                     state = CANCELED
                     -- Terminating keyboard
                     Keyboard.clear()
+                end
+
+                -- Bug fix if someone names a game "-", if allowed then they won't be able to rename again.
+                if ret_rename == "-" then
+                    state = CANCELED
+                    -- Terminating keyboard
+                    Keyboard.clear()
+
+                    if status ~= RUNNING then
+                        System.setMessage("Invalid title", false, BUTTON_OK)
+                    end
+                    
                 end
 
                 if state == CANCELED and keyboard_rename == true then

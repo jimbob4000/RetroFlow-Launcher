@@ -879,8 +879,20 @@
 						    		-- No match found - download artwork using filename instead
 
 					    				local artwork_found = false
+					    				local artwork_file_url = ""
 
-						    			local artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+					    				if file[download_mode_path_online()]:find("libretro") then
+
+					    					-- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+					    					name_after_libretro_gsub = {}
+					    					name_after_libretro_gsub = file.name:gsub("[&*/:`<>?\\|\"]+", "_")
+					    					artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+					    				else
+
+					    					-- Not libretro
+					    					artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+					    				end
+						    			
 						    			local artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. file.name .. ".png")
 						    			local artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 						    			local artwork_file_dest_path = tostring(file[download_mode_path_local()] .. file.name .. ".png")
@@ -994,8 +1006,20 @@
 					    			-- Match found, download artwork
 
 					    				local artwork_found = false
+					    				local artwork_file_url = ""
 
-						    			local artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(crc_db_table[file.crc_result].name) .. ".png")
+					    				if file[download_mode_path_online()]:find("libretro") then
+
+					    					-- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+											name_after_libretro_gsub = {}
+											name_after_libretro_gsub = crc_db_table[file.crc_result].name:gsub("[&*/:`<>?\\|\"]+", "_")
+					    					artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+					    				else
+
+					    					-- Not libretro
+					    					artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(crc_db_table[file.crc_result].name) .. ".png")
+					    				end
+						    			
 						    			local artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. file.name .. ".png")
 						    			local artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 						    			local artwork_file_dest_path = tostring(file[download_mode_path_local()] .. file.name .. ".png")
@@ -1017,7 +1041,21 @@
 
 								            	-- If artwork not found, try using filename instead
 								            	if artwork_found == false then
-									            	local artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+
+								            		local artwork_file_url = ""
+
+								            		if file[download_mode_path_online()]:find("libretro") then
+
+								            			-- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+								            			name_after_libretro_gsub = {}
+														name_after_libretro_gsub = file.name:gsub("[&*/:`<>?\\|\"]+", "_")
+								            			artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+								            		else
+
+								            			-- Not libretro
+								            			artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+								            		end
+									            		
 									    			local artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. file.name .. ".png")
 									    			local artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 									    			local artwork_file_dest_path = tostring(file[download_mode_path_local()] .. file.name .. ".png")
@@ -1202,14 +1240,38 @@
 
 						    	-- Amiga use title for search
 						    	if current_crc_apptype == 21 then
-						    		artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name_title_search) .. ".png")
+
+						    		if file[download_mode_path_online()]:find("libretro") then
+
+						    			-- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+										name_after_libretro_gsub = {}
+										name_after_libretro_gsub = file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")
+										artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+						    		else
+
+						    			-- Not libretro
+						    			artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name_title_search) .. ".png")
+						    		end
+						    		
 						    		romname_noExtension = file.filename:match("(.+)%..+$")
 						    		artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. romname_noExtension .. ".png")
 					    			artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 					    			artwork_file_dest_path = tostring(file[download_mode_path_local()] .. romname_noExtension .. ".png")
 					    			http.download(artwork_file_url, artwork_file_tmp)
 						    	else
-						    		artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+
+						    		if file[download_mode_path_online()]:find("libretro") then
+
+						    			-- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+										name_after_libretro_gsub = {}
+										name_after_libretro_gsub = file.name:gsub("[&*/:`<>?\\|\"]+", "_")
+										artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+						    		else
+
+						    			-- Not libretro
+						    			artwork_file_url = tostring(file[download_mode_path_online()] .. urlencode(file.name) .. ".png")
+						    		end
+						    		
 						    		artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. file.name .. ".png")
 					    			artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 					    			artwork_file_dest_path = tostring(file[download_mode_path_local()] .. file.name .. ".png")
