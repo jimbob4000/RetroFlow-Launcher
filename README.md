@@ -99,6 +99,10 @@ For best results it's recommended that your games are named using the **no-intro
 * From version 5 onwards you can also extract background images for PSP games from PSP iso files.
 * If you add your own covers, rescan for them to be updated.
 
+# FAQ's & Troubleshooting
+
+Please see the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page for answers to common questions and issues.
+
 # Controls
 
 Navigate your library using the **DPad** or the **Left Stick** or with the **Touch Screen**.
@@ -123,9 +127,7 @@ Navigate your library using the **DPad** or the **Left Stick** or with the **Tou
 
 **DPad Down + L/R triggers**: Skip games alphabetically
 
-# Troubleshooting
 
-Please see the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page before posting an issue.
 
 # Customisation
 
@@ -205,7 +207,7 @@ You can change your background within the app by going to the settings menu > th
 # Support
 
 **Help and FAQ's:**
-For Help and answers to frequent questions please visit the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page.
+For help and answers to frequent questions please visit the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page.
 
 **Feature requests:** 
 Please note that I'm not a developer, this mod started as a personal project, please be mindful that there may be some redundant code, or some requests that will be beyond my knowledge to implement.

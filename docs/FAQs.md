@@ -131,7 +131,7 @@ RetroArch Playstation 1 games use the 'PCSX ReARMed' core, more information on s
 <br><br>
 
 ### Can I set RetroFlow to launch when the Vita boots up?
-If you want to auto-launch **RetroFlow Launcher** every time your PS Vita boots up you can use the [**AutoBoot**](https://vitadb.rinnegatamante.it/#/info/261) plugin by Rinnegatamante. Please be careful using this app, use at your own risk. The title ID for RetroFlow is "RETROFLOW".
+If you want to auto-launch **RetroFlow Launcher** every time your PS Vita boots up you can use the [**AutoBoot**](https://www.rinnegatamante.eu/vitadb/#/info/261) plugin by Rinnegatamante. Please be careful using this app, use at your own risk. The title ID for RetroFlow is "RETROFLOW".
 <br><br>
 
 ### Some systems aren't showing?
