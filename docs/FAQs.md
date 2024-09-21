@@ -4,6 +4,7 @@
 
 **Topics:**
 
+* [Can I set RetroFlow to launch when the Vita boots up?](#can-i-set-retroflow-to-launch-when-the-vita-boots-up)
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
 * [Adrenaline how do I customise the game's boot settings?](#adrenaline-how-do-i-customise-the-games-boot-settings)
@@ -18,7 +19,6 @@
 * [Why is there no option to download homebrew covers?](#why-is-there-no-option-to-download-homebrew-covers)
 * [How do I add disk based games?](#how-do-i-add-disk-based-games)
 * [PS1 and RetroArch, how do I set it up?](#ps1-and-retroarch-how-do-i-set-it-up)
-* [Can I set RetroFlow to launch when the Vita boots up?](#can-i-set-retroflow-to-launch-when-the-vita-boots-up)
 * [Some systems aren't showing?](#some-systems-arent-showing)
 * [Can I change a core for RetroArch?](#can-i-change-a-core-for-retroarch)
 * [Can I change the game folder locations?](#can-i-change-the-game-folder-locations)
@@ -26,6 +26,10 @@
 * [Do I need to create bubbles for games?](#do-i-need-to-create-bubbles-for-games)
 * [Can I change the Mega Drive name to Genesis?](#can-i-change-the-mega-drive-name-to-genesis)
 * [How do I uninstall Adrenaline Bubble Booter?](#how-do-i-uninstall-adrenaline-bubble-booter)
+<br><br>
+
+### Can I set RetroFlow to launch when the Vita boots up?
+If you want to auto-launch **RetroFlow Launcher** every time your PS Vita boots up you can use the [**AutoBoot**](https://www.rinnegatamante.eu/vitadb/#/info/261) plugin by Rinnegatamante. Please be careful using this app, use at your own risk. The title ID for RetroFlow is "RETROFLOW".
 <br><br>
 
 ### Adrenaline - My games aren't working?
@@ -130,9 +134,7 @@ If you move a homebrew game port into the Vita category you can download a cover
 RetroArch Playstation 1 games use the 'PCSX ReARMed' core, more information on supported extensions and setup see here: [https://docs.libretro.com/library/pcsx_rearmed/](https://docs.libretro.com/library/pcsx_rearmed/)
 <br><br>
 
-### Can I set RetroFlow to launch when the Vita boots up?
-If you want to auto-launch **RetroFlow Launcher** every time your PS Vita boots up you can use the [**AutoBoot**](https://www.rinnegatamante.eu/vitadb/#/info/261) plugin by Rinnegatamante. Please be careful using this app, use at your own risk. The title ID for RetroFlow is "RETROFLOW".
-<br><br>
+
 
 ### Some systems aren't showing?
 Empty collections are hidden by default, once you add some games into the game's folder, they will appear.
