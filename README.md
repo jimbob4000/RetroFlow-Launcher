@@ -11,7 +11,7 @@ This is a modded version of [HexFlow Launcher](https://github.com/VitaHEX-Games/
 With RetroFlow you can also integrate retro games without the need to create bubbles for Adrenaline, RetroArch, DaedalusX64 and Flycast.
 
 **Supported systems:**
-PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, GBA, GBC, Game Boy, Sega Dreamcast, Sega CD, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD, Commodore Amiga, Commodore 64, WonderSwan, WonderSwan Color, MSX, MSX2, ZX Spectrum, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), Neo Geo Pocket Color, ScummVM and PICO-8.
+PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, Game Boy Advance, Game Boy Color, Game Boy, Sega Dreamcast, Sega CD, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD, Commodore Amiga, Commodore 64, WonderSwan, WonderSwan Color, MSX, MSX2, ZX Spectrum, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), Neo Geo Pocket Color, ScummVM and PICO-8.
 
 **Main features added since forking from HexFlow:**
 
