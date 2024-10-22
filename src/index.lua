@@ -6545,10 +6545,20 @@ function listDirectory(dir)
 
                     -- Load previous matches
                     if System.doesFileExist(user_DB_Folder .. (def_user_db_file)) then
-                        database_rename_PSP = user_DB_Folder .. (def_user_db_file)
-                        pspdb = dofile(database_rename_PSP)
+                        game_title_file = user_DB_Folder .. (def_user_db_file)
+
+                        -- Check file integrity
+                        local status, result = pcall(dofile, game_title_file)
+                        
+                        if status and type(result) == "table" then
+                            -- File imported is okay
+                            game_title_db = result
+                        else
+                            -- File is corrupt
+                            game_title_db = {}
+                        end
                     else
-                        pspdb = {}
+                        game_title_db = {}
                     end
 
                     -- Special lookup string for Amiga WHDLoad
@@ -6563,10 +6573,10 @@ function listDirectory(dir)
                     end
 
                     -- Check if scanned titleID is a saved match
-                    psp_search = pspdb[romname_noExtension]
+                    game_title_db_match = game_title_db[romname_noExtension]
 
                     -- If no
-                    if psp_search == nil then
+                    if game_title_db_match == nil then
 
                         -- Load the full sql database to find the new titleID
 
@@ -6591,7 +6601,7 @@ function listDirectory(dir)
 
                     -- If found; use the game name from the saved match
                     else
-                        title = pspdb[romname_noExtension].name
+                        title = game_title_db[romname_noExtension].name
                     end
 
                     romname_noRegion_noExtension = {}
