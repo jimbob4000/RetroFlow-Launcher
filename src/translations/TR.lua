@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "Şimdi yeniden başlat",
 ["Restart_Later"] = "Daha sonra yeniden başlat",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Bu oyunu oynamak için Adrenaline'i kurmanız gerekiyor.",
+["Emulator_not_installed_ScummVM"] = "Bu oyunu oynamak için ScummVM'i kurmanız gerekiyor.",
+["Emulator_not_installed_Pico8"] = "Bu oyunu oynamak için FAKE-08'i kurmanız gerekiyor.",
+["Emulator_not_installed_Retroarch"] = "Bu oyunu oynamak için RetroArch'ı kurmanız gerekiyor.",
+["Emulator_not_installed_DaedalusX64"] = "Bu oyunu oynamak için DaedalusX64'ü kurmanız gerekiyor.",
+["Emulator_not_installed_Flycast"] = "Bu oyunu oynamak için Flycast'ı kurmanız gerekiyor.",
+["Game_not_installed_rescan"] = "Bu oyun yüklü değil, lütfen oyunlarınızı tekrar tarayın.",
+
 }

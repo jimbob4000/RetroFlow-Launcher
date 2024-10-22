@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "Riavvia ora",
 ["Restart_Later"] = "Riavvia più tardi",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Devi installare Adrenaline per giocare a questo gioco.",
+["Emulator_not_installed_ScummVM"] = "Devi installare ScummVM per giocare a questo gioco.",
+["Emulator_not_installed_Pico8"] = "Devi installare FAKE-08 per giocare a questo gioco.",
+["Emulator_not_installed_Retroarch"] = "Devi installare RetroArch per giocare a questo gioco.",
+["Emulator_not_installed_DaedalusX64"] = "Devi installare DaedalusX64 per giocare a questo gioco.",
+["Emulator_not_installed_Flycast"] = "Devi installare Flycast per giocare a questo gioco.",
+["Game_not_installed_rescan"] = "Questo gioco non è installato, per favore scansiona nuovamente i tuoi giochi.",
+
 }

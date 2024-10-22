@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "Újraindítás most",
 ["Restart_Later"] = "Újraindítás később",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Az Adrenaline telepítése szükséges a játékhoz.",
+["Emulator_not_installed_ScummVM"] = "A ScummVM telepítése szükséges a játékhoz.",
+["Emulator_not_installed_Pico8"] = "A FAKE-08 telepítése szükséges a játékhoz.",
+["Emulator_not_installed_Retroarch"] = "A RetroArch telepítése szükséges a játékhoz.",
+["Emulator_not_installed_DaedalusX64"] = "A DaedalusX64 telepítése szükséges a játékhoz.",
+["Emulator_not_installed_Flycast"] = "A Flycast telepítése szükséges a játékhoz.",
+["Game_not_installed_rescan"] = "Ez a játék nincs telepítve, kérem, szkennelje újra a játékait.",
+
 }

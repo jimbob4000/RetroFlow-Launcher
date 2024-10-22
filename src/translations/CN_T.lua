@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "立即重新啟動",
 ["Restart_Later"] = "稍後重新啟動",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "你需要安裝 Adrenaline 才能玩這個遊戲。",
+["Emulator_not_installed_ScummVM"] = "你需要安裝 ScummVM 才能玩這個遊戲。",
+["Emulator_not_installed_Pico8"] = "你需要安裝 FAKE-08 才能玩這個遊戲。",
+["Emulator_not_installed_Retroarch"] = "你需要安裝 RetroArch 才能玩這個遊戲。",
+["Emulator_not_installed_DaedalusX64"] = "你需要安裝 DaedalusX64 才能玩這個遊戲。",
+["Emulator_not_installed_Flycast"] = "你需要安裝 Flycast 才能玩這個遊戲。",
+["Game_not_installed_rescan"] = "遊戲未安裝，請重新掃描遊戲。",
+
 }

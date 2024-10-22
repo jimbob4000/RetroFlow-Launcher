@@ -282,4 +282,14 @@ return {
 ["ABB_Restart"] = "Vi skal genstarte din PS Vita.",
 ["Restart_Now"] = "Genstart nu",
 ["Restart_Later"] = "Genstart senere",
+
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Du skal installere Adrenaline for at spille dette spil.",
+["Emulator_not_installed_ScummVM"] = "Du skal installere ScummVM for at spille dette spil.",
+["Emulator_not_installed_Pico8"] = "Du skal installere FAKE-08 for at spille dette spil.",
+["Emulator_not_installed_Retroarch"] = "Du skal installere RetroArch for at spille dette spil.",
+["Emulator_not_installed_DaedalusX64"] = "Du skal installere DaedalusX64 for at spille dette spil.",
+["Emulator_not_installed_Flycast"] = "Du skal installere Flycast for at spille dette spil.",
+["Game_not_installed_rescan"] = "Dette spil er ikke installeret, venligst scan dine spil igen.",
+
 }

@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "지금 다시 시작",
 ["Restart_Later"] = "나중에 다시 시작",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "이 게임을 하려면 Adrenaline을 설치해야 합니다.",
+["Emulator_not_installed_ScummVM"] = "이 게임을 하려면 ScummVM을 설치해야 합니다.",
+["Emulator_not_installed_Pico8"] = "이 게임을 하려면 FAKE-08을 설치해야 합니다.",
+["Emulator_not_installed_Retroarch"] = "이 게임을 하려면 RetroArch를 설치해야 합니다.",
+["Emulator_not_installed_DaedalusX64"] = "이 게임을 하려면 DaedalusX64를 설치해야 합니다.",
+["Emulator_not_installed_Flycast"] = "이 게임을 하려면 Flycast를 설치해야 합니다.",
+["Game_not_installed_rescan"] = "이 게임이 설치되지 않았습니다. 게임을 다시 스캔해 주세요.",
+
 }

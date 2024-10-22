@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "Käynnistä uudelleen nyt",
 ["Restart_Later"] = "Käynnistä uudelleen myöhemmin",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Sinun on asennettava Adrenaline pelataksesi tätä peliä.",
+["Emulator_not_installed_ScummVM"] = "Sinun on asennettava ScummVM pelataksesi tätä peliä.",
+["Emulator_not_installed_Pico8"] = "Sinun on asennettava FAKE-08 pelataksesi tätä peliä.",
+["Emulator_not_installed_Retroarch"] = "Sinun on asennettava RetroArch pelataksesi tätä peliä.",
+["Emulator_not_installed_DaedalusX64"] = "Sinun on asennettava DaedalusX64 pelataksesi tätä peliä.",
+["Emulator_not_installed_Flycast"] = "Sinun on asennettava Flycast pelataksesi tätä peliä.",
+["Game_not_installed_rescan"] = "Tätä peliä ei ole asennettu, ole hyvä ja skannaa pelisi uudelleen.",
+
 }

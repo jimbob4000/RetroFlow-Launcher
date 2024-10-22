@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "今ちゅら再起動",
 ["Restart_Later"] = "後ちゅら再起動",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Adrenalineぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_ScummVM"] = "ScummVMぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_Pico8"] = "FAKE-08ぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_Retroarch"] = "RetroArchぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_DaedalusX64"] = "DaedalusX64ぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_Flycast"] = "Flycastぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Game_not_installed_rescan"] = "ゲームや、インストールさりぬくとぅ、ゲームや再スキャンしみそーり。",
+
 }

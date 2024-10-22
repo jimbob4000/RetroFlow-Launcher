@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.0.5"
+local appversion = "7.1.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -2078,6 +2078,15 @@ local lang_default =
 ["Restart_Now"] = "Restart Now",
 ["Restart_Later"] = "Restart Later",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "You need to install Adrenaline to play this game.",
+["Emulator_not_installed_ScummVM"] = "You need to install the ScummVM to play this game.",
+["Emulator_not_installed_Pico8"] = "You need to install FAKE-08 to play this game.",
+["Emulator_not_installed_Retroarch"] = "You need to install RetroArch to play this game.",
+["Emulator_not_installed_DaedalusX64"] = "You need to install DaedalusX64 to play this game.",
+["Emulator_not_installed_Flycast"] = "You need to install Flycast to play this game.",
+["Game_not_installed_rescan"] = "This game is not installed, please rescan your games.",
+
 }
 
 -- Define fonts for languages
@@ -3009,101 +3018,225 @@ end
 
 launch_overrides_table = {}
 import_launch_overrides()
+launch_check_app_installed = false -- Checks if emulator is installed (prompt to install if not installed)
+launch_check_game_available = false -- Checks if game is installed (prompt to rescan if not installed)
+
+function check_app_installed(def_title, def_message)
+    -- if System.doesAppExist(def_title) then -- Commented out, not sure if it checks the live area or appdb, could be restricted by bubble limit
+    if System.doesDirExist("ux0:/app/" .. def_title) then -- Check ux0 instead
+        -- Emulator installed
+        launch_check_app_installed = true
+    else
+        -- Not installed, display message
+        launch_check_app_installed = false
+        status = System.getMessageState()
+        if status ~= RUNNING then
+            System.setMessage(def_message, false, BUTTON_OK)
+        end
+    end
+end
+
+function check_game_available(def_rom_location)
+    if launch_check_app_installed == true then
+        if System.doesFileExist(def_rom_location) or System.doesDirExist(def_rom_location) then
+            launch_check_game_available = true
+        else
+            launch_check_game_available = false
+            status = System.getMessageState()
+            if status ~= RUNNING then
+                System.setMessage(lang_lines.Game_not_installed_rescan, false, BUTTON_OK)
+            end
+        end
+    else
+    end
+end
+
+function check_game_available_appdb(def_titleid)
+    -- Check game is installed by checking app db
+    db = Database.open("ur0:shell/db/app.db")
+
+    sql_db_search_mame = "\"" .. (def_titleid) .. "\""
+    local query_string = "SELECT title FROM tbl_appinfo_icon where titleid is "  .. sql_db_search_mame
+    sql_db_search_result = Database.execQuery(db, query_string)
+
+    if next(sql_db_search_result) == nil then
+        -- Not found
+        launch_check_app_installed = false
+    else
+        -- Found
+        launch_check_app_installed = true
+    end
+    Database.close(db)
+
+    if launch_check_app_installed == false then
+        -- Not installed, display message
+        status = System.getMessageState()
+        if status ~= RUNNING then
+            System.setMessage(lang_lines.Game_not_installed_rescan, false, BUTTON_OK)
+        end
+    end
+end
+
+function prepare_for_launch()
+    FreeMemory()
+    -- Add to recently played
+    AddtoRecentlyPlayed()
+    update_cached_table_recently_played_pre_launch()
+end
 
 function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
 
-    -- Check if game has custom launch overrides
-    if #launch_overrides_table ~= nil then
-        local key = find_game_table_pos_key(launch_overrides_table, (def_rom_title_id))
-        if key ~= nil then
-            -- Overrides found
-            saved_driver = launch_overrides_table[key].driver
-            if saved_driver == 1 then 
-                driver = "INFERN0"
-            elseif saved_driver == 2 then
-                driver = "MARCH33"
-            elseif saved_driver == 3 then
-                driver = "NP9660"
+    -- Launch preflight check
+    check_app_installed("PSPEMUCFW", lang_lines.Emulator_not_installed_Adrenaline)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        
+        -- Check if game has custom launch overrides
+        if #launch_overrides_table ~= nil then
+            local key = find_game_table_pos_key(launch_overrides_table, (def_rom_title_id))
+            if key ~= nil then
+                -- Overrides found
+                saved_driver = launch_overrides_table[key].driver
+                if saved_driver == 1 then 
+                    driver = "INFERN0"
+                elseif saved_driver == 2 then
+                    driver = "MARCH33"
+                elseif saved_driver == 3 then
+                    driver = "NP9660"
+                else
+                    driver = "INFERN0"
+                end
+
+                saved_bin = launch_overrides_table[key].bin
+                if saved_bin == 1 then 
+                    bin = "EBOOT.BIN"
+                elseif saved_bin == 2 then
+                    bin = "EBOOT.OLD"
+                elseif saved_bin == 3 then
+                    bin = "BOOT.BIN"
+                else
+                    bin = "EBOOT.BIN"
+                end
+
+                plugins = launch_overrides_table[key].plugins
+                speed = launch_overrides_table[key].speed
+                hm = launch_overrides_table[key].hm
+                nonpdrm = launch_overrides_table[key].nonpdrm
+                suspend = launch_overrides_table[key].suspend
+
             else
+                -- Overrides not found, use default
                 driver = "INFERN0"
-            end
-
-            saved_bin = launch_overrides_table[key].bin
-            if saved_bin == 1 then 
-                bin = "EBOOT.BIN"
-            elseif saved_bin == 2 then
-                bin = "EBOOT.OLD"
-            elseif saved_bin == 3 then
-                bin = "BOOT.BIN"
-            else
                 bin = "EBOOT.BIN"
             end
-
-            plugins = launch_overrides_table[key].plugins
-            speed = launch_overrides_table[key].speed
-            hm = launch_overrides_table[key].hm
-            nonpdrm = launch_overrides_table[key].nonpdrm
-            suspend = launch_overrides_table[key].suspend
-
         else
-            -- Overrides not found, use default
+            -- Table is empty, use default
             driver = "INFERN0"
             bin = "EBOOT.BIN"
+            plugins = 0
+            speed = 0
+            hm = 0
+            nonpdrm = 0
+            suspend = 0
         end
-    else
-        -- Table is empty, use default
-        driver = "INFERN0"
-        bin = "EBOOT.BIN"
-        plugins = 0
-        speed = 0
-        hm = 0
-        nonpdrm = 0
-        suspend = 0
+
+        -- Delete the old Adrenaline inf file
+        if  System.doesFileExist(launch_dir_adr .. "data/boot.inf") then
+            System.deleteFile(launch_dir_adr .. "data/boot.inf")
+        end
+
+        -- Delete the old Adrenaline bin file
+        if  System.doesFileExist(launch_dir_adr .. "data/boot.bin") then
+            System.deleteFile(launch_dir_adr .. "data/boot.bin")
+        end
+
+        AutoMakeBootBin((def_rom_location), driver, bin, plugins, speed, hm, nonpdrm, suspend)
+
     end
-
-    -- Delete the old Adrenaline inf file
-    if  System.doesFileExist(launch_dir_adr .. "data/boot.inf") then
-        System.deleteFile(launch_dir_adr .. "data/boot.inf")
-    end
-
-    -- Delete the old Adrenaline bin file
-    if  System.doesFileExist(launch_dir_adr .. "data/boot.bin") then
-        System.deleteFile(launch_dir_adr .. "data/boot.bin")
-    end
-
-    AutoMakeBootBin((def_rom_location), driver, bin, plugins, speed, hm, nonpdrm, suspend)
-
 end
 
-
 function launch_scummvm()
-    System.executeUri("psgm:play?titleid=VSCU00001" .. "&path=" .. rom_location .. "&game_id=" .. rom_title_id)
-    System.exit()
+    -- Launch preflight check
+    check_app_installed("VSCU00001", lang_lines.Emulator_not_installed_ScummVM)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=VSCU00001" .. "&path=" .. rom_location .. "&game_id=" .. rom_title_id)
+        System.exit()
+    end
 end
 
 function launch_pico8()
-    System.executeUri("psgm:play?titleid=FAKE00008" .. "&param=" .. rom_location)
-    System.exit()
+    -- Launch preflight check
+    check_app_installed("FAKE00008", lang_lines.Emulator_not_installed_Pico8)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=FAKE00008" .. "&param=" .. rom_location)
+        System.exit()
+    end
 end
 
 function launch_retroarch(def_core_name)
-    System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
-    System.exit()
+    -- Launch preflight check
+    check_app_installed("RETROVITA", lang_lines.Emulator_not_installed_Retroarch)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
+        System.exit()
+    end
 end
 
 function launch_DaedalusX64()
-    System.executeUri("psgm:play?titleid=DEDALOX64" .. "&param=" .. rom_location)
-    System.exit()
+    -- Launch preflight check
+    check_app_installed("DEDALOX64", lang_lines.Emulator_not_installed_DaedalusX64)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=DEDALOX64" .. "&param=" .. rom_location)
+        System.exit()
+    end
 end
 
 function launch_Flycast()
-    System.executeUri("psgm:play?titleid=FLYCASTDC" .. "&param=" .. rom_location)
-    System.exit()
+    -- Launch preflight check
+    check_app_installed("FLYCASTDC", lang_lines.Emulator_not_installed_Flycast)
+    check_game_available(rom_location)
+
+    if launch_check_app_installed and launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=FLYCASTDC" .. "&param=" .. rom_location)
+        System.exit()
+    end
 end
 
-function launch_psmobile(def_rom_title_id)
-    System.executeUri("psgm:play?titleid=" .. (def_rom_title_id))
-    System.exit()
+function launch_psmobile(def_titleid)
+    -- Launch preflight check
+    check_game_available_appdb(def_titleid)
+
+    if launch_check_app_installed == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=" .. (def_titleid))
+        System.exit()
+    end
+end
+
+function launch_vita_title(def_titleid)
+    -- Launch preflight check
+    check_app_installed(def_titleid, lang_lines.Game_not_installed_rescan)
+
+    if launch_check_app_installed == true then
+        prepare_for_launch()
+        System.launchApp(def_titleid)
+        System.exit()
+    end
 end
 
 
@@ -16115,18 +16248,7 @@ while true do
 
             if state ~= RUNNING and messagestate ~= RUNNING then
                 if gettingCovers == false and app_title~="-" then
-                    FreeMemory()
-
-                    -- Add to recently played if game is not hidden
-                    -- if xCatLookup(showCat)[p].hidden == false then
-                    --     AddtoRecentlyPlayed()
-                    --     update_cached_table_recently_played_pre_launch()
-                    -- end
-
-                    -- Add to recently played
-                    AddtoRecentlyPlayed()
-                    update_cached_table_recently_played_pre_launch()
-
+                    
                     if showCat == 1 then
                         if string.match (games_table[p].game_path, "pspemu") then
                             -- Launch adrenaline
@@ -16140,7 +16262,7 @@ while true do
                                 rom_location = (games_table[p].game_path) launch_retroarch(core.PS1)
                             else
                                 -- Vita app
-                                System.launchApp(games_table[p].name)
+                                launch_vita_title(games_table[p].name)
                             end
                         end
 
@@ -16157,7 +16279,7 @@ while true do
                                 rom_location = (homebrews_table[p].game_path) launch_retroarch(core.PS1)
                             else
                                 -- Vita app
-                                System.launchApp(homebrews_table[p].name)
+                                launch_vita_title(homebrews_table[p].name)
                             end
                         end
 
@@ -16174,7 +16296,7 @@ while true do
                                 rom_location = (psp_table[p].game_path) launch_retroarch(core.PS1)
                             else
                                 -- Vita app
-                                System.launchApp(psp_table[p].name)
+                                launch_vita_title(psp_table[p].name)
                             end
                         end
 
@@ -16192,7 +16314,7 @@ while true do
                                 rom_location = (psx_table[p].game_path) launch_retroarch(core.PS1)
                             else
                                 -- Vita app
-                                System.launchApp(psx_table[p].name)
+                                launch_vita_title(psx_table[p].name)
                             end
                         end
 
@@ -16249,7 +16371,7 @@ while true do
                                     rom_location = (xCatLookup(showCat)[p].game_path) launch_retroarch(core.PS1)
                                 else
                                     -- Vita app
-                                    System.launchApp(xCatLookup(showCat)[p].name)
+                                    launch_vita_title(xCatLookup(showCat)[p].name)
                                 end
                             end
 
@@ -16299,14 +16421,19 @@ while true do
                                 rom_filename = (xCatLookup(showCat)[p].filename)
                                 launch_Adrenaline(rom_location, rom_title_id, rom_filename)
                             else
-                                System.launchApp(xCatLookup(showCat)[p].name)
+                                -- Vita app
+                                launch_vita_title(xCatLookup(showCat)[p].name)
                             end
 
                             appdir=working_dir .. "/" .. xCatLookup(showCat)[p].name
                         end
                         
                     end
-                    System.exit()
+
+                    -- if launch_check_app_installed and launch_check_game_available == true then
+                    --     System.exit()
+                    -- else
+                    -- end
                 end
             else
             end
@@ -16333,6 +16460,8 @@ while true do
         -- Select button - Games screen
         elseif (Controls.check(pad, SCE_CTRL_SELECT) and not Controls.check(oldpad, SCE_CTRL_SELECT)) then
             state = Keyboard.getState()
+            messagestate = System.getMessageState() -- Check if message active - RetroFlow Adrenaline Launcher needs to be installed
+
             if state ~= RUNNING then
                 -- Search
                 if hasTyped==false then

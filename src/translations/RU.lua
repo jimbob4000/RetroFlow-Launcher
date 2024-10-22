@@ -283,4 +283,13 @@ return {
 ["Restart_Now"] = "Перезагрузить сейчас",
 ["Restart_Later"] = "Перезагрузить позже",
 
+-- Launch messages
+["Emulator_not_installed_Adrenaline"] = "Для игры необходимо установить Adrenaline.",
+["Emulator_not_installed_ScummVM"] = "Для игры необходимо установить ScummVM.",
+["Emulator_not_installed_Pico8"] = "Для игры необходимо установить FAKE-08.",
+["Emulator_not_installed_Retroarch"] = "Для игры необходимо установить RetroArch.",
+["Emulator_not_installed_DaedalusX64"] = "Для игры необходимо установить DaedalusX64.",
+["Emulator_not_installed_Flycast"] = "Для игры необходимо установить Flycast.",
+["Game_not_installed_rescan"] = "Эта игра не установлена. Пожалуйста, повторно сканируйте игры.",
+
 }
