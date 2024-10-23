@@ -15945,6 +15945,14 @@ while true do
             -- Check for input
             pad = Controls.read()
 
+            -- Capture left analog stick input (rename to avoid conflicts)
+            local analogX, analogY = Controls.readLeftAnalog()
+
+            -- Decrease delayButton for scrolling
+            if delayButton > 0 then
+                delayButton = delayButton - 0.05   -- Slower decrement
+            end
+
             if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
 
                 if cc_edit_mode == false then
@@ -15953,8 +15961,8 @@ while true do
                     cc_edit_mode = false
                 end
 
-
-            elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+            -- Handle upward movement (using Up button or left analog stick up)
+            elseif (Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP)) or (analogY < 120 and delayButton < 0.5) then
                 
                 if cc_edit_mode == true then
 
@@ -15981,9 +15989,13 @@ while true do
                         end
                     end
                 end
+
+                -- Reset delayButton after scrolling (adjusted to slow it down)
+                delayButton = 1.5    -- Increase this value to slow the speed
          
-            elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
-                
+            -- Handle downward movement (using Down button or left analog stick down)
+            elseif (Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN)) or (analogY > 140 and delayButton < 0.5) then
+
                 if cc_edit_mode == true then
 
                     -- Move selected item down
@@ -16011,6 +16023,9 @@ while true do
                         end
                     end
                 end
+
+                -- Reset delayButton after scrolling (adjusted to slow it down)
+                delayButton = 1.5    -- Increase this value to slow the speed
             
             elseif (Controls.check(pad, SCE_CTRL_TRIANGLE) and not Controls.check(oldpad, SCE_CTRL_TRIANGLE)) then
                 state = Keyboard.getState()
@@ -16110,6 +16125,8 @@ while true do
                 else
                 end
             end
+
+            oldpad = pad
 
         end
 
