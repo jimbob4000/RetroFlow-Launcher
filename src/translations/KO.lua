@@ -13,6 +13,7 @@ return {
 -- General settings
 ["Language_colon"] = "언어: ",
 ["Homebrews_Category_colon"] = "홈브류 카테고리: ",
+["System_Apps_colon"] = "시스템 앱: ",
 ["Recently_Played_colon"] = "최근에 재생 된: ",
 ["Startup_scan_colon"] = "시동 검사: ",
 ["On"] = "켜짐",
@@ -88,6 +89,7 @@ return {
 ["Neo_Geo"] = "Neo Geo",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "시스템 앱",
 
 -- Download
 ["Download_colon"] = "다운로드: ",
@@ -166,6 +168,7 @@ return {
 ["Neo_Geo_Game"] = "Neo Geo 게임",
 ["ScummVM_Game"] = "ScummVM 게임",
 ["PICO8_Game"] = "PICO-8 게임",
+["System_App"] = "시스템 앱",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "RetroFlow Adrenaline Launcher 를 설치하세요.",

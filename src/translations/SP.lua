@@ -13,6 +13,7 @@ return {
 -- General settings
 ["Language_colon"] = "Idioma: ",
 ["Homebrews_Category_colon"] = "Categoría de Homebrews: ",
+["System_Apps_colon"] = "Aplicaciones del Sistema: ",
 ["Recently_Played_colon"] = "Recientemente jugado: ",
 ["Startup_scan_colon"] = "Escaneo de inicio: ",
 ["On"] = "Encendido",
@@ -88,6 +89,7 @@ return {
 ["Neo_Geo"] = "Neo Geo",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "Aplicaciones del Sistema",
 
 -- Download
 ["Download_colon"] = "Descargar:",
@@ -166,6 +168,7 @@ return {
 ["Neo_Geo_Game"] = "Juego de Neo Geo",
 ["ScummVM_Game"] = "Juego de ScummVM",
 ["PICO8_Game"] = "Juego de PICO-8",
+["System_App"] = "Aplicación del Sistema",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Instale RetroFlow Adrenaline Launcher.",

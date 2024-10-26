@@ -13,6 +13,7 @@ return {
 -- General settings
 ["Language_colon"] = "Kieli: ",
 ["Homebrews_Category_colon"] = "Homebrews luokka: ",
+["System_Apps_colon"] = "Järjestelmäsovellukset: ",
 ["Recently_Played_colon"] = "Äskettäin pelattu: ",
 ["Startup_scan_colon"] = "Käynnistysskannaus: ",
 ["On"] = "Päällä",
@@ -88,6 +89,7 @@ return {
 ["Neo_Geo"] = "Neo Geo",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "Järjestelmäsovellukset",
 
 -- Download
 ["Download_colon"] = "Lataa:",
@@ -166,6 +168,7 @@ return {
 ["Neo_Geo_Game"] = "Neo Geo peli",
 ["ScummVM_Game"] = "ScummVM peli",
 ["PICO8_Game"] = "PICO-8 peli",
+["System_App"] = "Järjestelmäsovellus",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Ole hyvä ja asenna RetroFlow Adrenaline Launcher.",

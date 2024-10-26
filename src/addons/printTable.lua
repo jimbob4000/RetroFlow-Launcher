@@ -45,6 +45,7 @@ local db_Cached_File_ngpc = (db_Cache_Folder .. "db_ngpc.lua")
 local db_Cached_File_psm = (db_Cache_Folder .. "db_psm.lua")
 local db_Cached_File_scummvm = (db_Cache_Folder .. "db_scummvm.lua")
 local db_Cached_File_pico8 = (db_Cache_Folder .. "db_pico8.lua")
+local db_Cached_File_sysapps = (db_Cache_Folder .. "db_sysapps.lua")
 -- local db_Cached_File_favorites = (db_Cache_Folder .. "db_favorites.lua")
 
 
@@ -244,6 +245,10 @@ function print_tables()
     local db_pico8 = assert(io.open(db_Cached_File_pico8, "w"))
     printTable(pico8_table, db_pico8)
     db_pico8:close()
+
+    local db_sysapps = assert(io.open(db_Cached_File_sysapps, "w"))
+    printTable(sysapps_table, db_sysapps)
+    db_sysapps:close()
 
     -- local db_favorites = assert(io.open(db_Cached_File_favorites, "w"))
     -- printTable(favorites_table, db_favorites)

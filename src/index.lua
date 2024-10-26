@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.1.0"
+local appversion = "7.2.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -662,18 +662,20 @@ SystemsToScan =
     },
     [42] = 
     {
-        -- ["apptype"] = 42,
-        ["table"] = "fav_count",
-        -- ["user_db_file"] = "",
+        ["apptype"] = 42,
+        ["table"] = "sysapps_table",
+        ["user_db_file"] = "db_sysapps.lua",
         -- ["romFolder"] = "",
-        -- ["localCoverPath"] = "",
-        -- ["onlineCoverPathSystem"] = "",
-        -- ["Missing_Cover"] = "",
+        ["localCoverPath"] = covDir .. "System apps" .. "/",
+        ["localSnapPath"] = snapDir .. "System apps" .. "/",
+        ["onlineCoverPathSystem"] = "",
+        ["onlineSnapPathSystem"] = "",
+        ["Missing_Cover"] = "icon_psv.png",
     },
     [43] = 
     {
-        -- ["apptype"] = 42,
-        ["table"] = "recently_played_table",
+        -- ["apptype"] = 43,
+        ["table"] = "fav_count",
         -- ["user_db_file"] = "",
         -- ["romFolder"] = "",
         -- ["localCoverPath"] = "",
@@ -683,6 +685,16 @@ SystemsToScan =
     [44] = 
     {
         -- ["apptype"] = 43,
+        ["table"] = "recently_played_table",
+        -- ["user_db_file"] = "",
+        -- ["romFolder"] = "",
+        -- ["localCoverPath"] = "",
+        -- ["onlineCoverPathSystem"] = "",
+        -- ["Missing_Cover"] = "",
+    },
+    [45] = 
+    {
+        -- ["apptype"] = 44,
         ["table"] = "search_results_table",
         -- ["user_db_file"] = "",
         -- ["romFolder"] = "",
@@ -690,6 +702,7 @@ SystemsToScan =
         -- ["onlineCoverPathSystem"] = "",
         -- ["Missing_Cover"] = "",
     },
+    
 }
 
 -- Counts
@@ -1402,11 +1415,12 @@ local filterGames = 0 -- All
 local showMissingCovers = 1 -- On
 local smoothScrolling = 1 -- On
 
-local set2DViews = 1 -- On
+set2DViews = 1 -- On
 setChangeViews = 1 -- On
 
 setCRCScan = 1 -- On
 download_artwork_type = 0 -- Covers
+showSysApps = 1 -- On
 
 function SaveSettings()
 
@@ -1415,8 +1429,8 @@ function SaveSettings()
     if file_config ~= nil then
         settings = {} 
 
-        if startCategory >= 45 then
-            Collection_CatNum = startCategory - 44
+        if startCategory >= 46 then
+            Collection_CatNum = startCategory - 45
             if startCategory_collection_renamed ~= nil then
                 startCategory_collection = startCategory_collection_renamed
             else
@@ -1458,6 +1472,7 @@ function SaveSettings()
         "\nChange_views=" .. setChangeViews .. " " .. 
         "\nTime=" .. setTime .. " " .. 
         "\nCRC=" .. setCRCScan .. " " .. 
+        "\nShow_System_Apps=" .. showSysApps .. " " .. 
         "\nStartup_Collection=" .. startCategory_collection -- MUST ALWAYS BE LAST -- the config is split into a table using number values which this setting does not have. Need to add proper ini file reading
 
         file_config:write(settings)
@@ -1508,6 +1523,7 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
     local getChangeViews = settingValue[24]; if getChangeViews ~= nil then setChangeViews = getChangeViews end
     local getTime = settingValue[25]; if getTime ~= nil then setTime = getTime end
     local getCRCScan = settingValue[26]; if getCRCScan ~= nil then setCRCScan = getCRCScan end
+    local getShowSysApps = settingValue[27]; if getShowSysApps ~= nil then showSysApps = getShowSysApps end
     -- settingValue[26] is startup collection 
 
     selectedwall = setBackground
@@ -1649,7 +1665,7 @@ else
 end
 
 if collection_files_start_match > 0 then
-    showCat = 44 + collection_files_start_match
+    showCat = 45 + collection_files_start_match
     startCategory = syscount + collection_files_start_match
 else
     showCat = startCategory
@@ -1804,6 +1820,7 @@ local lang_default =
 -- General settings
 ["Language_colon"] = "Language: ",
 ["Homebrews_Category_colon"] = "Homebrews Category: ",
+["System_Apps_colon"] = "System Apps: ",
 ["Recently_Played_colon"] = "Recently Played: ",
 ["Startup_scan_colon"] = "Startup scan: ",
 ["On"] = "On",
@@ -1879,6 +1896,7 @@ local lang_default =
 ["Neo_Geo"] = "Neo Geo",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "System Apps",
 
 -- Download
 ["Download_colon"] = "Download:",
@@ -1962,6 +1980,7 @@ local lang_default =
 ["Neo_Geo_Game"] = "Neo Geo Game",
 ["ScummVM_Game"] = "ScummVM Game",
 ["PICO8_Game"] = "PICO-8 Game",
+["System_App"] = "System App",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Please install RetroFlow Adrenaline Launcher.",
@@ -2515,16 +2534,17 @@ function xCatLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showcat
     elseif CatNum == 39 then    return  mame_2000_table
     elseif CatNum == 40 then    return  neogeo_table
     elseif CatNum == 41 then    return  ngpc_table
-    elseif CatNum == 42 then    return  fav_count
-    elseif CatNum == 43 then    return  recently_played_table
-    elseif CatNum == 44 then    return  search_results_table
+    elseif CatNum == 42 then    return  sysapps_table
+    elseif CatNum == 43 then    return  fav_count
+    elseif CatNum == 44 then    return  recently_played_table
+    elseif CatNum == 45 then    return  search_results_table
 
     -- COLLECTIONS
-    elseif CatNum >= 45 and CatNum <= collection_syscount then
-        Collection_CatNum = CatNum - 44
+    elseif CatNum >= 46 and CatNum <= collection_syscount then
+        Collection_CatNum = CatNum - 45
         return _G[collection_files[Collection_CatNum].table_name]
 
-    else             return files_table
+    else             return files_table_no_sysapps -- Hide sys apps from all list
     end
 end
 
@@ -2586,15 +2606,16 @@ function xCatDbFileLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showc
     elseif CatNum == 39 then    return  "db_mame_2000.lua"
     elseif CatNum == 40 then    return  "db_neogeo.lua"
     elseif CatNum == 41 then    return  "db_ngpc.lua"
+    elseif CatNum == 42 then    return  "db_sysapps.lua"
     else
     end
-    -- elseif CatNum == 42 then    return fav_count
-    -- elseif CatNum == 43 then    return recently_played_table
-    -- elseif CatNum == 44 then    return search_results_table
+    -- elseif CatNum == 43 then    return fav_count
+    -- elseif CatNum == 44 then    return recently_played_table
+    -- elseif CatNum == 45 then    return search_results_table
 
     -- -- COLLECTIONS
-    -- elseif CatNum >= 45 and CatNum <= collection_syscount then
-    --     Collection_CatNum = CatNum - 44
+    -- elseif CatNum >= 46 and CatNum <= collection_syscount then
+    --     Collection_CatNum = CatNum - 45
     --     return _G[collection_files[Collection_CatNum].table_name]
 
     -- else             return files_table
@@ -2642,9 +2663,10 @@ function xAppNumTableLookup(AppTypeNum)
     elseif AppTypeNum == 39 then return psm_table
     elseif AppTypeNum == 40 then return scummvm_table
     elseif AppTypeNum == 41 then return pico8_table
-    elseif AppTypeNum == 42 then return fav_count
-    elseif AppTypeNum == 43 then return recently_played_table
-    elseif AppTypeNum == 44 then return search_results_table
+    elseif AppTypeNum == 42 then return sysapps_table
+    elseif AppTypeNum == 43 then return fav_count
+    elseif AppTypeNum == 44 then return recently_played_table
+    elseif AppTypeNum == 45 then return search_results_table
     else return homebrews_table
     end
 end
@@ -2690,6 +2712,7 @@ function xAppDbFileLookup(AppTypeNum)
     elseif AppTypeNum == 39 then return "db_psm.lua"
     elseif AppTypeNum == 40 then return "db_scummvm.lua"
     elseif AppTypeNum == 41 then return "db_pico8.lua"
+    elseif AppTypeNum == 42 then return "db_sysapps.lua"
     else return "db_homebrews.lua"
     end
 end
@@ -2753,6 +2776,7 @@ function xAppNumTableLookup_Missing_Cover(AppTypeNum)
     elseif AppTypeNum == 39 then return "missing_cover_psm"
     elseif AppTypeNum == 40 then return "missing_cover_scummvm"
     elseif AppTypeNum == 41 then return "missing_cover_pico8"
+    elseif AppTypeNum == 42 then return "missing_cover_sysapp"
     else return "missing_cover_homebrew"
     end
 end
@@ -3026,6 +3050,9 @@ function check_app_installed(def_title, def_message)
     if System.doesDirExist("ux0:/app/" .. def_title) then -- Check ux0 instead
         -- Emulator installed
         launch_check_app_installed = true
+    elseif System.doesDirExist("vs0:/app/" .. def_title) then
+        -- System app installed
+        launch_check_app_installed = true
     else
         -- Not installed, display message
         launch_check_app_installed = false
@@ -3239,6 +3266,40 @@ function launch_vita_title(def_titleid)
     end
 end
 
+function launch_vita_sysapp(def_titleid)
+    -- Launch preflight check
+    check_app_installed(def_titleid, lang_lines.Game_not_installed_rescan)
+
+    if launch_check_app_installed == true then
+        
+        local uri = {
+            ["NPXS10000"] = "near:",            -- Near
+            ["NPXS10001"] = "pspy:",            -- Party
+            ["NPXS10002"] = "psns:browse?category=STORE-MSF73008-VITAGAMES:",            -- Playstation Store
+            ["NPXS10003"] = "wbapp0:",          -- Internet browser
+            ["NPXS10004"] = "photo:",           -- Photos
+            ["NPXS10008"] = "pstc:",            -- Trophy collection
+            ["NPXS10009"] = "music:",           -- Music
+            -- ["NPXS10010"] = "video:",           -- Video
+            ["NPXS10014"] = "psnmsg:",          -- Messages
+            ["NPXS10015"] = "settings_dlg:",    -- Settings
+            ["NPXS10072"] = "email:",           -- Email
+            ["NPXS10078"] = "scecomboplay:",    -- Cross-Controller
+            ["NPXS10091"] = "scecalendar:"      -- Calendar
+        }
+
+        -- Check if def_titleid exists in uri table and execute the corresponding URI
+        if uri[def_titleid] then
+            System.executeUri(uri[def_titleid])
+        else
+            -- For apps without URI commands, they will fail to open unless opened using onelua's game.open command.
+            FreeMemory()
+            System.executeUriNPXS("psgm:play?titleid=" .. def_titleid)
+            System.exit()
+        end
+    end
+end
+
 
 function CreateUserTitleTable_for_File(def_user_db_file, def_table_name)
 
@@ -3365,8 +3426,8 @@ function create_fav_count_table(def_table_input)
         -- Fav, not hidden
         if file.favourite==true and file.hidden==false then
 
-            -- showHomebrews is off
-            if showHomebrews == 0 then
+            -- Exlude Homebrews or SysApps if off
+            if showHomebrews == 0 or showSysApps == 0 then
                 -- ignore homebrew apps
                 if file.app_type ~= nil then
                     if file.favourite==true then
@@ -3375,7 +3436,6 @@ function create_fav_count_table(def_table_input)
                 else
                 end
 
-            -- showHomebrews is on
             else
                 if file.favourite==true then
                     table.insert(fav_count, file)
@@ -3388,8 +3448,8 @@ function create_fav_count_table(def_table_input)
             -- Show hidden is on
             if showHidden==1 then
 
-                -- showHomebrews is off
-                if showHomebrews == 0 then
+                -- Exlude Homebrews or SysApps if off
+                if showHomebrews == 0 or showSysApps == 0 then
                     -- ignore homebrew apps
                     if file.app_type ~= nil then
                         if file.favourite==true then
@@ -3972,11 +4032,13 @@ function listDirectory(dir)
     psm_table = {}
     scummvm_table = {}
     pico8_table = {}
+    sysapps_table = {}
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
     renamed_games_table = {}
     hidden_games_table = {}
+    files_table_no_sysapps = {}
 
     -- psxdbfull = {}
     -- pspdbfull = {}
@@ -7207,7 +7269,172 @@ function listDirectory(dir)
         else
         end
     end
-    
+
+    function Scan_Sys_App_DB_Lookup(def, def_table_name)
+
+        local sys_app_directory = "vs0:/app"
+
+        local filterList = {
+            "NPXS10000", "NPXS10001", "NPXS10002", "NPXS10003",
+            "NPXS10004", "NPXS10006", "NPXS10008", "NPXS10009",
+            "NPXS10010", "NPXS10012", "NPXS10013", "NPXS10014",
+            "NPXS10015", "NPXS10026", "NPXS10072", "NPXS10078",
+            "NPXS10091", "NPXS10094"
+        }
+
+        local function isInFilterList(item)
+            for _, code in ipairs(filterList) do
+                if string.sub(item, 1, string.len(code)) == code then
+                    return true
+                end
+            end
+            return false
+        end
+
+        if System.doesDirExist(sys_app_directory) then
+
+            files = System.listDirectory(sys_app_directory)
+
+            for i, file in pairs(files) do
+            local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
+                -- Scan files only, ignore temporary files, Windows = "Thumbs.db", Mac = "DS_Store", and "._name" 
+            if file.directory and (isInFilterList(file.name)) then
+
+                    local sys_app_installed = false
+
+                    -- check if game is in the favorites list
+                    if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                        if string.find(strFav, file.name,1,true) ~= nil then
+                            file.favourite = true
+                        else
+                            file.favourite = false
+                        end
+                    end
+
+                    file.game_path = sys_app_directory .. "/" .. file.name
+
+                    file.titleid = tostring(file.name)
+
+                    -- LOOKUP TITLE ID: Get game name based on titleID, search saved table of data, or sql table of data if titleID not found
+
+                    -- Load the full sql database to find the new titleID
+
+                    db = Database.open("ur0:shell/db/app.db")
+
+                    sql_db_search_mame = "\"" .. file.name .. "\""
+                    local query_string = "SELECT title FROM tbl_appinfo_icon where titleid is "  .. sql_db_search_mame
+                    sql_db_search_result = Database.execQuery(db, query_string)
+
+                    if next(sql_db_search_result) == nil then
+
+                        
+                        -- Cross-Controller workaround - not in db table as part of ps3 app
+                        if file.name == "NPXS10078" then
+                            if System.doesDirExist("vs0:app/NPXS10012") then
+                                sys_app_installed = true
+                                title = "Cross-Controller"
+                            end
+
+                        -- Otherwise not found
+                        else
+                            title = file.name
+                        end
+                        
+                    else
+                        -- Found; use the game name from the full database
+                        sys_app_installed = true
+                        title = sql_db_search_result[1].title
+                    end
+                    Database.close(db)
+
+                    
+                    if sys_app_installed == true then
+
+                        table.insert(folders_table, file)
+
+                        -- file.filename = file.name
+                        file.filename = file.name
+                        file.name = file.name
+                        file.title = title
+                        file.name_online = file.name
+                        file.version = " "
+                        file.name_title_search = file.name
+                        file.apptitle = title
+                        file.date_played = 0
+                        file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
+                        file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
+                        file.app_type=((def))
+                        file.app_type_default=((def))
+
+                        custom_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png"
+                        custom_path_id = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png"
+
+                        -- Check for renamed game names
+                        if #renamed_games_table ~= nil then
+                            local key = find_game_table_pos_key(renamed_games_table, file.name)
+                            if key ~= nil then
+                              -- Yes - Found in files table
+                              file.title = renamed_games_table[key].title
+                              file.apptitle = renamed_games_table[key].title
+                            else
+                              -- No
+                            end
+                        else
+                        end
+
+                        -- Check for hidden game names
+                        file.hidden = check_for_hidden_tag_on_scan(file.name, file.app_type)
+
+                        table.insert((def_table_name), file)
+                        update_loading_screen_progress()
+
+                        if custom_path and System.doesFileExist(custom_path) then
+                            img_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png" --custom cover by app name
+                            file.cover = true
+                        elseif custom_path_id and System.doesFileExist(custom_path_id) then
+                            img_path = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png" --custom cover by app id
+                            file.cover = true
+                        else
+                            if System.doesFileExist("vs0:/app/" .. file.name .. "/sce_sys/icon0.png") then
+                                img_path = "vs0:/app/" .. file.name .. "/sce_sys/icon0.png"  --app icon
+                                file.cover = true
+                            elseif System.doesFileExist("app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)) then
+                                img_path = "app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)  --app icon
+                                file.cover = false
+                            else
+                                img_path = "app0:/DATA/noimg.png" --blank grey
+                                file.cover = false
+                            end
+                        end
+                        
+                        file.app_type=((def))
+                        file.app_type_default=((def))
+
+                        -- file.filename = file.name
+                        file.filename = file.titleid
+                        file.name = file.titleid
+                        file.cover_path_online = (SystemsToScan[(def)].onlineCoverPathSystem)
+                        file.cover_path_local = (SystemsToScan[(def)].localCoverPath)
+                        file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
+                        file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
+
+                        --add blank icon to all
+                        file.icon = imgCoverTmp
+                        file.icon_path = img_path
+                        
+                        table.insert(files_table, count_of_systems, file.icon) 
+                        table.insert(files_table, count_of_systems, file.apptitle)
+
+                    else
+                    end
+
+                end
+            end
+
+        else
+        end
+    end
+
     -- SCAN ROMS
     -- Scan_Type            (def,  def_table_name)
     scan_Rom_PS1_Eboot      (SystemsToScan[4].romFolder, "psx.lua") 
@@ -7249,6 +7476,7 @@ function listDirectory(dir)
     Scan_PSM_DB_Lookup      (39, psm_table, "psm.lua")
     Scan_Scummvm_DB_Lookup  (40, scummvm_table, "scummvm.lua", "scummvm.db")
     Scan_Rom_Filter_Pico8   (41, pico8_table, "%.p8.png")
+    Scan_Sys_App_DB_Lookup  (42, sysapps_table)
   
     import_recently_played()
     update_md_regional_cover()
@@ -7298,6 +7526,7 @@ function listDirectory(dir)
     table.sort(psm_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(scummvm_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(pico8_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    table.sort(sysapps_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
     table.sort(recently_played_table, function(a, b) return (tonumber(a.date_played) > tonumber(b.date_played)) end)
     
@@ -7669,11 +7898,13 @@ function import_cached_DB()
     psm_table = {}
     scummvm_table = {}
     pico8_table = {}
+    sysapps_table = {}
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
     renamed_games_table = {}
     hidden_games_table = {}
+    files_table_no_sysapps = {}
     
 
     local file_over = System.openFile(cur_dir .. "/overrides.dat", FREAD)
@@ -7731,6 +7962,9 @@ function import_cached_DB()
     import_cached_DB_tables("db_psm.lua", psm_table)
     import_cached_DB_tables("db_scummvm.lua", scummvm_table)
     import_cached_DB_tables("db_pico8.lua", pico8_table)
+    if showSysApps == 1 then
+        import_cached_DB_tables("db_sysapps.lua", sysapps_table)
+    end
     import_recently_played()
     update_md_regional_cover()
     update_dc_regional_cover()
@@ -7780,10 +8014,19 @@ function import_cached_DB()
     table.sort(psm_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(scummvm_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(pico8_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    table.sort(sysapps_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
     table.sort(recently_played_table, function(a, b) return (tonumber(a.date_played) > tonumber(b.date_played)) end)
 
     return_table = TableConcat(folders_table, files_table)
+
+    -- Hide sys apps from all list
+    for k, v in ipairs(return_table) do
+        if v.app_type ~= 42 then
+            table.insert(files_table_no_sysapps, v)
+        else
+        end
+    end
 
     total_all = #files_table
     total_games = #games_table
@@ -7957,6 +8200,10 @@ function GetPicPath(def_table_name)
         elseif System.doesFileExist("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
             pic_path = "ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png"
 
+        -- Not found? Then check vs0 pic
+        elseif System.doesFileExist("vs0:/app/" .. (def_table_name)[p].name .. "/sce_sys/pic0.png") then
+            pic_path = "vs0:/app/" .. (def_table_name)[p].name .. "/sce_sys/pic0.png"
+
          -- Not found? Check snap folder
         elseif System.doesFileExist((def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png") then
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png"
@@ -8036,6 +8283,7 @@ function xAppIconPathLookup(AppTypeNum)
     elseif apptype==38  then return "app0:/DATA/icon_ngpc.png"
     elseif apptype==40  then return "app0:/DATA/icon_scummvm.png"
     elseif apptype==41  then return "app0:/DATA/icon_pico8.png"
+    elseif apptype==42  then return "app0:/DATA/icon_psv.png"
     else 
         -- Homebrew 
         return xCatLookup(showCat)[p].icon_path
@@ -8053,7 +8301,7 @@ function GetNameAndAppTypeSelected() -- Credit to BlackSheepBoy69 - This gives a
         app_title = "-"
     end
 
-    if showCat == 44 and #search_results_table == 0 then
+    if showCat == 45 and #search_results_table == 0 then
         app_title = lang_lines.Search_No_Results
     end
 
@@ -8063,7 +8311,7 @@ end
 function GetInfoSelected()
 
     if next(xCatLookup(showCat)) ~= nil then
-        -- if showCat == 42 then
+        -- if showCat == 43 then
         --     create_fav_count_table(files_table)
         -- end
 
@@ -8166,25 +8414,25 @@ end
 
 
 
-function temp_import_homebrew()
+function temp_import_hidden_cats(def_showHiddenCat, def_table_name, def_user_db_file)
 
     temp_import = true
 
-    -- If homebrew is hidden then Temporarily import for caching
-    if showHomebrews == 0 and #homebrews_table == 0 then
-        local temp_homebrews_table = {}
-        if System.doesFileExist("ux0:/data/RetroFlow/CACHE/db_homebrews.lua") then
-            import_cached_DB_tables("db_homebrews.lua", temp_homebrews_table)
+    -- If homebrew or SysApps are hidden then Temporarily import for caching
+    if (def_showHiddenCat) == 0 and #(def_table_name) == 0 then
+        local temp_table = {}
+        if System.doesFileExist("ux0:/data/RetroFlow/CACHE/" .. (def_user_db_file)) then
+            import_cached_DB_tables((def_user_db_file), temp_table)
         else
         end
 
         if #temp_hb_collection ~= nil then
-            for k, v in pairs(temp_homebrews_table) do
+            for k, v in pairs(temp_table) do
 
                 for key, data in pairs(temp_hb_collection) do
                     if data.name == v.name then
                     else
-                        table.insert(homebrews_table,k)
+                        table.insert((def_table_name),k)
                     end
                 end
             end
@@ -8196,34 +8444,33 @@ function temp_import_homebrew()
     temp_import = false
 end
 
-function temp_import_homebrew_cleanup()
+function temp_import_hidden_cats_cleanup(def_showHiddenCat, def_table_name, def_user_db_file)
 
 
-    -- Remove hidden games from homebrew
-    if showHidden == 0 and #homebrews_table ~= nil then
-        for l, file in pairs(homebrews_table) do
+    -- Remove hidden games from homebrew and SysApps
+    if (def_showHiddenCat) == 0 and #(def_table_name) ~= nil then
+        for l, file in pairs((def_table_name)) do
             if file.hidden == true then
-                table.remove(homebrews_table,l)
+                table.remove((def_table_name),l)
             else
             end
         end
     end
 
     -- Remove homebrew if hidden
-    if showHomebrews == 0 and #homebrews_table ~= nil then
+    if (def_showHiddenCat) == 0 and #(def_table_name) ~= nil then
         for l, file in pairs(files_table) do
             if file.app_type == 0 then
                 table.remove(files_table,l)
             else
             end
         end
-        homebrews_table = {}
+        def_table_name = {}
     end
 
-    if showHomebrews == 0 then
-        import_cached_DB_homebrews_in_collections("db_homebrews.lua", homebrews_table)
+    if (def_showHiddenCat) == 0 then
+        import_cached_DB_homebrews_in_collections((def_user_db_file), (def_table_name))
     else
-        -- import_cached_DB_tables("db_homebrews.lua", homebrews_table)
     end
 end
 
@@ -8253,7 +8500,8 @@ function AddOrRemoveFavorite()
         file_override:close()
 
 
-        temp_import_homebrew()
+        temp_import_hidden_cats(showHomebrews, homebrews_table, "db_homebrews.lua")
+        temp_import_hidden_cats(showSysApps, sysapps_table, "db_sysapps.lua")
 
         -- Update and cache tables
 
@@ -8263,19 +8511,19 @@ function AddOrRemoveFavorite()
             update_cached_table(xCatDbFileLookup(showCat), xCatLookup(showCat))
         
         -- Favourites
-        elseif showCat == 42 then
+        elseif showCat == 43 then
             -- Find game in other tables and update
             update_favorites_table_favorites(xAppNumTableLookup(apptype))
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Recent
-        elseif showCat == 43 then
+        elseif showCat == 44 then
             -- Find game in other tables and update
             update_favorites_table_recent(xAppNumTableLookup(apptype))
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Search results
-        elseif showCat == 44 then
+        elseif showCat == 45 then
             update_favorites_table_system(search_results_table)
 
             -- Find game in other tables and update
@@ -8283,7 +8531,7 @@ function AddOrRemoveFavorite()
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Collections
-        elseif showCat >= 45 then
+        elseif showCat >= 46 then
             if xCatLookup(showCat)[p].favourite == true then 
                 xCatLookup(showCat)[p].favourite=false
             else
@@ -8306,7 +8554,8 @@ function AddOrRemoveFavorite()
         update_cached_table_recently_played()
 
 
-        temp_import_homebrew_cleanup()
+        temp_import_hidden_cats_cleanup(showHomebrews, homebrews_table, "db_homebrews.lua")
+        temp_import_hidden_cats_cleanup(showSysApps, sysapps_table, "db_sysapps.lua")
 
         --Reload
         -- FreeIcons()
@@ -8320,10 +8569,11 @@ end
 
 function AddOrRemoveHidden(def_hide_game_flag)
 
-    temp_import_homebrew()
+    temp_import_hidden_cats(showHomebrews, homebrews_table, "db_homebrews.lua")
+    temp_import_hidden_cats(showSysApps, sysapps_table, "db_sysapps.lua")
 
     -- Recent cat
-    if showCat == 43 then
+    if showCat == 44 then
 
         -- Update recent table
         if #recently_played_table ~= nil then
@@ -8364,7 +8614,8 @@ function AddOrRemoveHidden(def_hide_game_flag)
         
     end
 
-    temp_import_homebrew_cleanup()
+    temp_import_hidden_cats_cleanup(showHomebrews, homebrews_table, "db_homebrews.lua")
+    temp_import_hidden_cats_cleanup(showSysApps, sysapps_table, "db_sysapps.lua")
 
 end
 
@@ -9246,6 +9497,13 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
     else                      space = 1
     end
 
+    -- N64 and SNES wide box fix
+    if showView == 1 then
+        if showCat == 6 or showCat == 7 then
+            space = 2.5
+        end
+    end
+
     side_factor = x / space -- This is 0 when x is in the exact center, and 1 or -1 when x is at a side of the middle zone
     abs_side_factor = math.abs(side_factor)
 
@@ -9259,22 +9517,47 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
             -- Smooth scrolling is on
             if x > space then
                 extraz = 6
-                extrax = 1
+                -- N64 and SNES wide box fix
+                if showCat == 6 or showCat == 7 then
+                    extrax = 1.3
+                else
+                    extrax = 1
+                end
             elseif x < -space then
                 extraz = 6
-                extrax = -1
+                -- N64 and SNES wide box fix
+                if showCat == 6 or showCat == 7 then
+                    extrax = -1.3
+                else
+                    extrax = -1
+                end
             else
                 extraz = 6 * dezoom_factor
-                extrax = 1 * side_factor
+                -- N64 and SNES wide box fix
+                if showCat == 6 or showCat == 7 then
+                    extrax = 1.3 * side_factor
+                else
+                    extrax = 1 * side_factor
+                end
             end
         else
             -- Smooth scrolling is off
             if x > 0.5 then
                 extraz = 6
-                extrax = 1
+                -- N64 and SNES wide box fix
+                if showCat == 6 or showCat == 7 then
+                    extrax = 1.3
+                else
+                    extrax = 1
+                end
             elseif x < -0.5 then
                 extraz = 6
-                extrax = -1
+                -- N64 and SNES wide box fix
+                if showCat == 6 or showCat == 7 then
+                    extrax = -1.3
+                else
+                    extrax = -1
+                end
             end
         end
 
@@ -9622,6 +9905,7 @@ function FreeIcons()
     for k, v in pairs(mame_2000_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(neogeo_table)             do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(ngpc_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+    for k, v in pairs(sysapps_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
 
     for k, v in pairs(recently_played_table)    do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(homebrews_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
@@ -9801,19 +10085,19 @@ function DownloadSingleCover()
                 -- Normal systems
                 update_cvrfound_showcats(xCatLookup(showCat), xCatDbFileLookup(showCat))
 
-            elseif showCat == 42 then 
+            elseif showCat == 43 then 
                 -- Favourites
                 update_cvrfound_showcats(fav_count, "db_files.lua")
 
-            elseif showCat == 43 then 
+            elseif showCat == 44 then 
                 -- Recent
                 update_cvrfound_showcats_recent()
 
-            elseif showCat == 44 then 
+            elseif showCat == 45 then 
                 -- Search results
                 update_cvrfound_showcats(search_results_table, "db_files.lua")
 
-            elseif showCat >= 45 then
+            elseif showCat >= 46 then
                 -- Collections
 
                 -- Update main game categories
@@ -10365,7 +10649,7 @@ while true do
 
                     search_results_table = {}
                     -- If already on search category, move away
-                    if showCat == 44 then 
+                    if showCat == 45 then 
                         showCat = 0
                     end
 
@@ -10385,7 +10669,7 @@ while true do
                         end
                     end
 
-                    showCat = 44
+                    showCat = 45
                     p = 1
                     master_index = p
                     showMenu = 0
@@ -10459,6 +10743,10 @@ while true do
                                 elseif System.doesFileExist("ur0:/appmeta/" .. recently_played_table[key].name .. "/icon0.png") then
                                     recently_played_table[key].icon_path = "ur0:/appmeta/" .. recently_played_table[key].name .. "/icon0.png"
 
+                                -- Vita vs0 png - sysapp
+                                elseif System.doesFileExist("vs0:/app/" .. recently_played_table[key].name .. "/sce_sys/icon0.png") then
+                                    recently_played_table[key].icon_path = "vs0:/app/" .. recently_played_table[key].name .. "/sce_sys/icon0.png"
+
                                 -- Pico8 rom folder png
                                 elseif recently_played_table[key].app_type == 41 then
                                     recently_played_table[key].icon_path = recently_played_table[key].game_path
@@ -10489,6 +10777,10 @@ while true do
                                     -- Vita ur0 png
                                     elseif System.doesFileExist("ur0:/appmeta/" .. recently_played_table[key].name .. "/icon0.png") then
                                         xAppNumTableLookup(apptype)[key2].icon_path = "ur0:/appmeta/" .. recently_played_table[key].name .. "/icon0.png"
+
+                                    -- Vita vs0 png - sysapp
+                                    elseif System.doesFileExist("vs0:/app/" .. recently_played_table[key].name .. "/sce_sys/icon0.png") then
+                                        xAppNumTableLookup(apptype)[key2].icon_path = "vs0:/app/" .. recently_played_table[key].name .. "/sce_sys/icon0.png"
 
                                     -- Pico8 rom folder png
                                     elseif xAppNumTableLookup(apptype)[key2].app_type == 41 then
@@ -10540,6 +10832,10 @@ while true do
                         elseif System.doesFileExist("ur0:/appmeta/" .. xCatLookup(showCat)[p].name .. "/icon0.png") then
                             xCatLookup(showCat)[p].icon_path = "ur0:/appmeta/" .. xCatLookup(showCat)[p].name .. "/icon0.png"
 
+                        -- Vita vs0 png - sysapp
+                        elseif System.doesFileExist("vs0:/app/" .. xCatLookup(showCat)[p].name .. "/sce_sys/icon0.png") then
+                            xAppNumTableLookup(apptype)[key2].icon_path = "vs0:/app/" .. xCatLookup(showCat)[p].name .. "/sce_sys/icon0.png"
+
                         -- Pico8 rom folder png
                         elseif xCatLookup(showCat)[p].app_type == 41 then
                             xCatLookup(showCat)[p].icon_path = xCatLookup(showCat)[p].game_path
@@ -10575,7 +10871,8 @@ while true do
                     else
                     end
 
-                    temp_import_homebrew()
+                    temp_import_hidden_cats(showHomebrews, homebrews_table, "db_homebrews.lua")
+                    temp_import_hidden_cats(showSysApps, sysapps_table, "db_sysapps.lua")
 
                     -- Apptype table
                     update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
@@ -10908,10 +11205,11 @@ while true do
         elseif showCat == 39 then Font.print(fnt22, 32, 34, lang_lines.MAME_2000, white)
         elseif showCat == 40 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo, white)
         elseif showCat == 41 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo_Pocket_Color, white)
-        elseif showCat == 42 then Font.print(fnt22, 32, 34, lang_lines.Favorites, white)
-        elseif showCat == 43 then Font.print(fnt22, 32, 34, lang_lines.Recently_Played, white)
-        elseif showCat == 44 then Font.print(fnt22, 32, 34, lang_lines.Search_Results, white)
-        elseif showCat >= 45 and showCat <= collection_syscount then Collection_CatNum = showCat - 44 Font.print(fnt22, 32, 34, collection_files[Collection_CatNum].display_name, white)
+        elseif showCat == 42 then Font.print(fnt22, 32, 34, lang_lines.System_Apps, white)  
+        elseif showCat == 43 then Font.print(fnt22, 32, 34, lang_lines.Favorites, white)
+        elseif showCat == 44 then Font.print(fnt22, 32, 34, lang_lines.Recently_Played, white)
+        elseif showCat == 45 then Font.print(fnt22, 32, 34, lang_lines.Search_Results, white)
+        elseif showCat >= 46 and showCat <= collection_syscount then Collection_CatNum = showCat - 45 Font.print(fnt22, 32, 34, collection_files[Collection_CatNum].display_name, white)
 
         else Font.print(fnt22, 32, 34, lang_lines.All, white)
         end
@@ -10952,7 +11250,7 @@ while true do
         -- Draw Covers
         base_x = 0
         
-        if showCat == 42 then
+        if showCat == 43 then
             -- count favorites
             create_fav_count_table(files_table)
             
@@ -11175,6 +11473,7 @@ while true do
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].ricon) -- ngpc_table
                 Render.useTexture(modCoverHbrNoref, (def_table_name)[p].ricon) -- psm_table
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].ricon) -- scummvm_table
+                Render.useTexture(modCoverHbrNoref, (def_table_name)[p].ricon) -- sysapps_table
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].ricon) -- fav_count
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].ricon) -- recently played
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].ricon) -- search
@@ -11230,6 +11529,7 @@ while true do
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].icon) -- ngpc_table
                 Render.useTexture(modCoverHbrNoref, (def_table_name)[p].icon) -- psm_table
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].icon) -- scummvm_table
+                Render.useTexture(modCoverHbrNoref, (def_table_name)[p].icon) -- sysapps_table
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].icon) -- fav_count
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].icon) -- recently played
                 Render.useTexture(modCoverMDNoref, (def_table_name)[p].icon) -- search
@@ -11393,6 +11693,9 @@ while true do
         elseif apptype==41 then
             Render.drawModel(modCoverLYNXNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.PICO8_Game
+        elseif apptype==42 then
+            Render.drawModel(modCoverHbrNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            tmpapptype = lang_lines.System_App
         else
             Render.drawModel(modCoverHbrNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.Homebrew 
@@ -11446,6 +11749,8 @@ while true do
         elseif apptype == 34 or apptype == 35 or apptype == 36 or apptype == 37 or apptype == 41 then 
             Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                           Size:
+        elseif apptype == 42 then -- Sys app
+            Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid, white)-- Draw info
         else
             Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.Version_colon .. app_version .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
             --                                               Version:                                           Size:
@@ -11469,8 +11774,8 @@ while true do
 
         if apptype == 0 or apptype == 1 then
             tmpimageText = lang_lines.Download_Cover
-        elseif apptype == 39 or apptype == 41 then
-            -- don't show anything for ps mobile and pico8
+        elseif apptype == 39 or apptype == 41 or apptype == 42 then
+            -- don't show anything for ps mobile, pico8 and sys apps
         else
             if tmpimagecat==1 then
                 tmpimageText = lang_lines.Download_Background -- Backgrounds
@@ -11530,7 +11835,7 @@ while true do
 
 
         -- All other systems
-        elseif apptype == 39 or apptype == 41 then
+        elseif apptype == 39 or apptype == 41 or apptype == 42 then
             -- dont show anything
         else
             if menuY==1 then
@@ -11544,8 +11849,8 @@ while true do
             -- Font.print(fnt22, 50, 352+3, "< " .. tmpimageText .. " >", white)
         end
 
-        -- Download background - don't show on vita, homebrew or ps mobile or pico8
-        if apptype == 0 or apptype == 1 or apptype == 39  or apptype == 41 then
+        -- Download background - don't show on vita, homebrew or ps mobile or pico8 or sys app
+        if apptype == 0 or apptype == 1 or apptype == 39  or apptype == 41  or apptype == 42 then
             Font.print(fnt22, 50, 352+3, tmpimageText, white)
         else
             Font.print(fnt22, 50, 352+3, "< " .. tmpimageText .. " >", white)
@@ -11904,7 +12209,7 @@ while true do
 
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
-        menuItems = 6
+        menuItems = 7
 
         -- MENU 3 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -11954,11 +12259,12 @@ while true do
         elseif startCategory == 39 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MAME_2000, white)--MAME_2000
         elseif startCategory == 40 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Neo_Geo, white)--Neo_Geo
         elseif startCategory == 41 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Neo_Geo_Pocket_Color, white)--Neo_Geo_Pocket_Color
-        elseif startCategory == 42 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Favorites, white)--Favorite
-        elseif startCategory == 43 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Recently_Played, white)--Recently Played
+        elseif startCategory == 42 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.System_Apps, white)--System Apps
+        elseif startCategory == 43 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Favorites, white)--Favorite
+        elseif startCategory == 44 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Recently_Played, white)--Recently Played
         
-        elseif startCategory >= 45 then
-            Collection_CatNum = startCategory - 44
+        elseif startCategory >= 46 then
+            Collection_CatNum = startCategory - 45
             Font.print(fnt22, setting_x_offset, setting_y1, collection_files[Collection_CatNum].display_name, white)--Collections
         end
 
@@ -11970,36 +12276,44 @@ while true do
             Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 3 / #3 Recently Played
-        Font.print(fnt22, setting_x, setting_y3, lang_lines.Recently_Played_colon, white)--Recently Played
-        if showRecentlyPlayed == 1 then
+        -- MENU 3 / #3 Show System Apps
+        Font.print(fnt22, setting_x, setting_y3, lang_lines.System_Apps_colon, white)--Show System Apps
+        if showSysApps == 1 then
             Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.On, white)--ON
         else
             Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 3 / #4 All Category
-        Font.print(fnt22, setting_x, setting_y4, lang_lines.All_Category, white)--All Category
-        if showAll == 1 then
+        -- MENU 3 / #4 Recently Played
+        Font.print(fnt22, setting_x, setting_y4, lang_lines.Recently_Played_colon, white)--Recently Played
+        if showRecentlyPlayed == 1 then
             Font.print(fnt22, setting_x_offset, setting_y4, lang_lines.On, white)--ON
         else
             Font.print(fnt22, setting_x_offset, setting_y4, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 4 / #5 Show hidden games
-        Font.print(fnt22, setting_x, setting_y5, lang_lines.Show_hidden_games_colon, white)--Show hidden games
-        if showHidden == 1 then
+        -- MENU 3 / #5 All Category
+        Font.print(fnt22, setting_x, setting_y5, lang_lines.All_Category, white)--All Category
+        if showAll == 1 then
             Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.On, white)--ON
         else
             Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 4 / #6 Show collections
-        Font.print(fnt22, setting_x, setting_y6, lang_lines.Show_collections_colon, white)--Show collections
-        if showCollections == 1 then
+        -- MENU 4 / #6 Show hidden games
+        Font.print(fnt22, setting_x, setting_y6, lang_lines.Show_hidden_games_colon, white)--Show hidden games
+        if showHidden == 1 then
             Font.print(fnt22, setting_x_offset, setting_y6, lang_lines.On, white)--ON
         else
             Font.print(fnt22, setting_x_offset, setting_y6, lang_lines.Off, white)--OFF
+        end
+
+        -- MENU 4 / #7 Show collections
+        Font.print(fnt22, setting_x, setting_y7, lang_lines.Show_collections_colon, white)--Show collections
+        if showCollections == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y7, lang_lines.On, white)--ON
+        else
+            Font.print(fnt22, setting_x_offset, setting_y7, lang_lines.Off, white)--OFF
         end
 
         -- MENU 3 - FUNCTIONS
@@ -12063,18 +12377,19 @@ while true do
                     if startCategory == 39 then if  #mame_2000_table == 0 then startCategory = startCategory + 1 end end
                     if startCategory == 40 then if  #neogeo_table == 0 then startCategory = startCategory + 1 end end
                     if startCategory == 41 then if  #ngpc_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 42 then if  #fav_count == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 44 then startCategory = startCategory + 1 end
-                    -- if startCategory == 43 then if #recently_played_table == 0 then startCategory = startCategory + 1 end end
+                    if startCategory == 42 then if  #sysapps_table == 0 then startCategory = startCategory + 1 end end
+                    if startCategory == 43 then if  #fav_count == 0 then startCategory = startCategory + 1 end end
+                    if startCategory == 45 then startCategory = startCategory + 1 end
+                    -- if startCategory == 44 then if #recently_played_table == 0 then startCategory = startCategory + 1 end end
 
   
-                    if startCategory >= 45 and startCategory < collection_count_of_start_categories then
+                    if startCategory >= 46 and startCategory < collection_count_of_start_categories then
                         if next(xCatLookup(startCategory)) ~= nil then
                         else
                             -- empty
                             startCategory = startCategory + 1
                         end
-                    elseif startCategory > 45 and startCategory == collection_count_of_start_categories then
+                    elseif startCategory > 46 and startCategory == collection_count_of_start_categories then
                     else
                     end
 
@@ -12102,15 +12417,38 @@ while true do
                         count_cache_and_reload()
                         GetInfoSelected()
                     end
-
-                elseif menuY == 3 then -- #3 Recently Played
+                elseif menuY == 3 then -- #3 Show System Apps
+                    if showSysApps == 1 then
+                        showSysApps = 0
+                        -- Import cache to update All games category
+                        FreeIcons()
+                        count_cache_and_reload()
+                        
+                        -- If currently on system apps category view, move to Vita category to hide empty homebrew category
+                        if showCat == 42 then
+                            showCat = 1
+                            p = 1
+                            master_index = p
+                            GetInfoSelected()
+                        else
+                            check_for_out_of_bounds()
+                            GetInfoSelected()
+                        end
+                    else
+                        showSysApps = 1
+                        -- Import cache to update All games category
+                        FreeIcons()
+                        count_cache_and_reload()
+                        GetInfoSelected()
+                    end
+                elseif menuY == 4 then -- #4 Recently Played
                     if showRecentlyPlayed == 1 then -- 0 Off, 1 On
                         showRecentlyPlayed = 0
                         -- Import cache to update All games category
                         FreeIcons()
                         count_cache_and_reload()
                         -- If currently on recent category view, move to Vita category to hide empty recent category
-                        if showCat == 43 then
+                        if showCat == 44 then
                             curTotal = #recently_played_table
                             if #recently_played_table == 0 then
                                 showCat = 1
@@ -12122,7 +12460,7 @@ while true do
                         FreeIcons()
                         count_cache_and_reload()
                     end
-                elseif menuY == 4 then -- #4 All Category
+                elseif menuY == 5 then -- #5 All Category
                     if showAll == 1 then -- 0 Off, 1 On
                         showAll = 0
                         -- Import cache to update All games category
@@ -12136,13 +12474,13 @@ while true do
                         showAll = 1
                     end
 
-                elseif menuY == 5 then -- #5 Show hidden
+                elseif menuY == 6 then -- #6 Show hidden
                     if showHidden == 1 then
                         showHidden = 0
                         -- Import cache to update All games category
                         FreeIcons()
                         count_cache_and_reload()
-                        if showCat == 42 then 
+                        if showCat == 43 then 
                             create_fav_count_table(files_table)
                         end
                         check_for_out_of_bounds()
@@ -12152,18 +12490,18 @@ while true do
                         -- Import cache to update All games category
                         FreeIcons()
                         count_cache_and_reload()
-                        if showCat == 42 then 
+                        if showCat == 43 then 
                             create_fav_count_table(files_table)
                         end
                         check_for_out_of_bounds()
                         GetNameAndAppTypeSelected()
                     end
 
-                elseif menuY == 6 then -- #5 Show collections
+                elseif menuY == 7 then -- #7 Show collections
                     if showCollections == 1 then
                         showCollections = 0
                         
-                        if showCat >= 45 and showCat <= collection_syscount then
+                        if showCat >= 46 and showCat <= collection_syscount then
                             if showAll==0 then
                                 showCat = 1
                             else
@@ -12502,8 +12840,8 @@ while true do
                                     missing_artwork_table_covers = {}
                                     
                                     for l, file in pairs(return_table) do
-                                        if file.app_type == 0 or file.app_type == 39 or file.app_type == 41 then
-                                            -- Do nothing - Homebrew, PSM, Pico
+                                        if file.app_type == 0 or file.app_type == 39 or file.app_type == 41 or file.app_type == 42 then
+                                            -- Do nothing - Homebrew, PSM, Pico, Sys app
                                         else
                                             if file.cover == false or string.match(file.icon_path, "%icon0.png") then
                                                 table.insert(missing_artwork_table_covers, file)
@@ -12527,8 +12865,8 @@ while true do
 
                                     for l, file in pairs(return_table) do
                                         local missing_snap = false
-                                        if file.app_type == 0 or file.app_type == 1 or file.app_type == 39 or file.app_type == 41 then
-                                            -- Do nothing -- Homebrew, Vita, PSM, Pico
+                                        if file.app_type == 0 or file.app_type == 1 or file.app_type == 39 or file.app_type == 41 or file.app_type == 42 then
+                                            -- Do nothing -- Homebrew, Vita, PSM, Pico, Sys app
                                         else
                                             if System.doesFileExist(file.snap_path_local .. file.name .. ".png") then
                                                 missing_snap = false
@@ -14340,7 +14678,7 @@ while true do
 
             -- Add extra for remove from recent
             local recent_cat_flag = false
-            if showCat == 43 then
+            if showCat == 44 then
                 recent_cat_flag = true
                 menuItems = menuItems + 1
             else
@@ -14521,7 +14859,7 @@ while true do
                     function dynamic_menu_remove_from_recent()
                         -- remove recent
                         if #recently_played_table ~= nil then
-                            if showCat == 43 then
+                            if showCat == 44 then
                                 -- We are in the recent category, remove the game and save cache
                                 table.remove(recently_played_table, p)
                                 update_cached_table_recently_played()
@@ -14557,7 +14895,7 @@ while true do
                     end
 
                     -- If on favorite category, go to main screen, otherwise the next fav game is shown
-                    if showCat == 42 then
+                    if showCat == 43 then
                         check_for_out_of_bounds()
                         GetInfoSelected()
                         oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
@@ -15716,7 +16054,7 @@ while true do
 
         -- GET MENU ITEM COUNT (Some menus app type specific)
             
-            menuItems = 2
+            menuItems = 3
         
             -- Calculate vertical centre
             vertically_centre_mini_menu(menuItems)
@@ -15759,13 +16097,17 @@ while true do
         Graphics.drawImage(setting_x, setting_y1 + y_centre_text_offset, setting_icon_categories)
         Font.print(fnt22, setting_x_icon_offset + 70, setting_y1 + y_centre_text_offset, lang_lines.Recently_Played, white)--Recently Played
 
-        -- MENU 25 / #2 Filter games
-        Graphics.drawImage(setting_x, setting_y2 + y_centre_text_offset, setting_icon_filter)
+        -- MENU 25 / #2 System Apps
+        Graphics.drawImage(setting_x, setting_y2 + y_centre_text_offset, setting_icon_categories)
+        Font.print(fnt22, setting_x_icon_offset + 70, setting_y2 + y_centre_text_offset, lang_lines.System_Apps, white)--System Apps
+
+        -- MENU 25 / #3 Filter games
+        Graphics.drawImage(setting_x, setting_y3 + y_centre_text_offset, setting_icon_filter)
 
         if filterGames == 0 then
-            Font.print(fnt22, setting_x_icon_offset + 70, setting_y2 + y_centre_text_offset, "<  " .. lang_lines.All .. "  >", white)
+            Font.print(fnt22, setting_x_icon_offset + 70, setting_y3 + y_centre_text_offset, "<  " .. lang_lines.All .. "  >", white)
         else
-            Font.print(fnt22, setting_x_icon_offset + 70, setting_y2 + y_centre_text_offset, "<  " .. lang_lines.Collections .. "  >", white)
+            Font.print(fnt22, setting_x_icon_offset + 70, setting_y3 + y_centre_text_offset, "<  " .. lang_lines.Collections .. "  >", white)
         end
 
         
@@ -15786,7 +16128,7 @@ while true do
                     -- Favourites found
                     if #fav_count > 0 then
                         -- Skip to favorites
-                        showCat = 42
+                        showCat = 43
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -15800,7 +16142,7 @@ while true do
 
                     if #recently_played_table > 0 then
                         -- Skip to recent
-                        showCat = 43
+                        showCat = 44
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -15808,12 +16150,41 @@ while true do
                     else
                     -- No recently played, do nothing
                     end
+
+                elseif menuY == 2 then -- #2 System Apps
+
+                    if showSysApps == 0 then
+                        -- System apps hidden, import them
+
+                        -- Turn on temporarily
+                        showSysApps = 1
+
+                        -- Import and jump to menu
+                        FreeIcons()
+                        count_cache_and_reload()
+                        showCat = 42
+                        p = 1
+                        master_index = p
+                        showMenu = 0
+                        GetNameAndAppTypeSelected()
+
+                        -- Turn off again, the table will be removed when the user changes category (see category controls, square)
+                        showSysApps = 0
+
+                    else
+                        -- Skip to system apps
+                        showCat = 42
+                        p = 1
+                        master_index = p
+                        showMenu = 0
+                        GetNameAndAppTypeSelected()
+                    end
                     
-                elseif menuY == 2 then -- #2 Filter
+                elseif menuY == 3 then -- #3 Filter
 
                     if filterGames == 1 then
                         if collection_count ~= 0 then   
-                            showCat = 45
+                            showCat = 46
                             p = 1
                             master_index = p
                             showMenu = 0
@@ -16373,8 +16744,9 @@ while true do
                     elseif showCat == 39 then rom_location = (mame_2000_table[p].game_path) launch_retroarch(core.MAME_2000)
                     elseif showCat == 40 then rom_location = (neogeo_table[p].game_path) launch_retroarch(core.NEOGEO)
                     elseif showCat == 41 then rom_location = (ngpc_table[p].game_path) launch_retroarch(core.NGPC)
+                    elseif showCat == 42 then rom_location = launch_vita_sysapp(xCatLookup(showCat)[p].name)
 
-                    elseif showCat >= 42 or showCat == 0 then
+                    elseif showCat >= 43 or showCat == 0 then
                         if apptype == 1 or apptype == 2 or apptype == 3 or apptype == 4 then
                             if string.match (xCatLookup(showCat)[p].game_path, "pspemu") then
                                  -- Launch adrenaline
@@ -16386,6 +16758,9 @@ while true do
                                 if xCatLookup(showCat)[p].app_type_default == 3 then
                                     -- Launch PS1 retroarch
                                     rom_location = (xCatLookup(showCat)[p].game_path) launch_retroarch(core.PS1)
+                                elseif xCatLookup(showCat)[p].app_type_default == 42 then
+                                    -- Sys app
+                                    launch_vita_sysapp(xCatLookup(showCat)[p].name)
                                 else
                                     -- Vita app
                                     launch_vita_title(xCatLookup(showCat)[p].name)
@@ -16430,6 +16805,7 @@ while true do
                         elseif apptype == 39 then rom_title_id = tostring(xCatLookup(showCat)[p].name) launch_psmobile(rom_title_id)
                         elseif apptype == 40 then rom_title_id = (xCatLookup(showCat)[p].titleid) rom_location = (xCatLookup(showCat)[p].game_path) launch_scummvm()
                         elseif apptype == 41 then rom_location = (xCatLookup(showCat)[p].game_path) launch_pico8()
+                        elseif apptype == 42 then rom_location = launch_vita_sysapp(xCatLookup(showCat)[p].name)
                         else
                             -- Homebrew
                             if string.match (xCatLookup(showCat)[p].game_path, "pspemu") then
@@ -16492,6 +16868,12 @@ while true do
             state = Keyboard.getState()
             if state ~= RUNNING then
                 
+                -- If system apps were temporarily added to view through the up button quick menu, then remove the table
+                if showSysApps == 0 and #sysapps_table >= 1 then
+                    FreeIcons()
+                    count_cache_and_reload()
+                else
+                end
                 
                 if (Controls.check(pad, SCE_CTRL_DOWN)) then
 
@@ -16507,7 +16889,7 @@ while true do
 
                         -- Only Collections
                         if collection_count ~= 0 then   
-                            -- if showCat < collection_syscount and showCat >= 42 then
+                            -- if showCat < collection_syscount and showCat >= 43 then
                             if showCat >= 46 then
                                 showCat = showCat - 1
                             else
@@ -16542,21 +16924,21 @@ while true do
 
 
 
-                    if showCat == 44 then
+                    if showCat == 45 then
                         curTotal = #search_results_table   
                         if #search_results_table == 0 then 
+                            showCat = 44
+                        end
+                    end
+
+                    if showCat == 44 then 
+                        curTotal = #recently_played_table
+                        if #recently_played_table == 0 then 
                             showCat = 43
                         end
                     end
 
-                    if showCat == 43 then 
-                        curTotal = #recently_played_table
-                        if #recently_played_table == 0 then 
-                            showCat = 42
-                        end
-                    end
-
-                    if showCat == 42 then
+                    if showCat == 43 then
                         -- count favorites
                         create_fav_count_table(files_table)
 
@@ -16575,6 +16957,7 @@ while true do
                         end
                     end
 
+                    if showCat == 42 then curTotal =    #sysapps_table          if      #sysapps_table == 0 then        showCat = 41 end end
                     if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 40 end end
                     if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 39 end end
                     if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 38 end end
@@ -16619,6 +17002,11 @@ while true do
                     if showCat == 2 and showHomebrews==0 then -- HB is off
                         showCat = 1
                     end
+
+                    -- Skip Homebrew category if disabled
+                    if showCat == 41 and showSysApps==0 then -- HB is off
+                        showCat = 1
+                    end
                     
 
                     hideBoxes = 0.8 -- used to be 8
@@ -16639,7 +17027,7 @@ while true do
                         search_results_table = {}
                     end
 
-                    if showCat == 42 then
+                    if showCat == 43 then
                         -- count favorites
                         create_fav_count_table(files_table)
                     end
@@ -16648,16 +17036,16 @@ while true do
 
                         -- Only Collections
                         if collection_count ~= 0 then   
-                            if showCat < collection_syscount and showCat >= 42 then
+                            if showCat < collection_syscount and showCat >= 43 then
 
-                                if showCat == 42 or showCat == 43 then -- Recent and Fav
-                                    showCat = 45
+                                if showCat == 43 or showCat == 44 then -- Recent and Fav
+                                    showCat = 46
                                 else
                                     showCat = showCat + 1
                                 end
                             
                             else
-                                showCat = 45
+                                showCat = 46
                             end
                         end
 
@@ -16671,7 +17059,7 @@ while true do
                             -- Skip Homebrews category if disabled
                             elseif showCat==1 and showHomebrews==0 then
                                 showCat = 3
-                            elseif showCat==44 then
+                            elseif showCat==45 then
                                 if showAll==0 then
                                     showCat = 1
                                 else
@@ -16734,21 +17122,22 @@ while true do
                     if showCat == 39 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 40 end end
                     if showCat == 40 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 41 end end
                     if showCat == 41 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 42 end end
-                    if showCat == 42 then
+                    if showCat == 42 then curTotal =    #sysapps_table          if      #sysapps_table == 0 then        showCat = 43 end end
+                    if showCat == 43 then
                         -- count favorites
                         create_fav_count_table(files_table)
 
                         curTotal = #fav_count
-                        if #fav_count == 0 then showCat = 43
+                        if #fav_count == 0 then showCat = 44
                         end
                     end
-                    if showCat == 43 then 
+                    if showCat == 44 then 
                         curTotal = #recently_played_table
-                        if #recently_played_table == 0 then showCat = 44
+                        if #recently_played_table == 0 then showCat = 45
                         end
                     end
                     
-                    if showCat == 44 then
+                    if showCat == 45 then
                         curTotal = #search_results_table
                         if #search_results_table == 0 then
                             if collection_count ~= 0 then
@@ -16759,7 +17148,7 @@ while true do
                                         showCat = 0
                                     end
                                 else
-                                    showCat = 45
+                                    showCat = 46
                                 end
                             else
                                 if showAll==0 then
@@ -16771,15 +17160,15 @@ while true do
                         end
                     end
 
-                    if showCat > 45 and showCat < collection_syscount then
+                    if showCat > 46 and showCat < collection_syscount then
                         if next(xCatLookup(showCat)) ~= nil then
                         else
                             -- empty
                             showCat = showCat + 1
                         end
 
-                    -- elseif showCat > 45 and showCat == collection_syscount then
-                    elseif showCat > 45 and showCat == collection_syscount then
+                    -- elseif showCat > 46 and showCat == collection_syscount then
+                    elseif showCat > 46 and showCat == collection_syscount then
                         
                         -- -- empty
                         -- if showAll==0 then
@@ -17225,7 +17614,7 @@ while true do
     -- End Controls
 
 
-    if showCat == 42 then
+    if showCat == 43 then
         -- count favorites
         create_fav_count_table(files_table)
         

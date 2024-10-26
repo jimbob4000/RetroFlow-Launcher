@@ -13,6 +13,7 @@ return {
 -- General settings
 ["Language_colon"] = "Nyelv: ",
 ["Homebrews_Category_colon"] = "Homebrews Kategória: ",
+["System_Apps_colon"] = "Rendszeralkalmazások: ",
 ["Recently_Played_colon"] = "Nemrég Játszott: ",
 ["Startup_scan_colon"] = "Indítási keresés: ",
 ["On"] = "Be",
@@ -88,6 +89,7 @@ return {
 ["Neo_Geo"] = "Neo Geo",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "Rendszeralkalmazások",
 
 -- Download
 ["Download_colon"] = "Letöltés:",
@@ -166,6 +168,7 @@ return {
 ["Neo_Geo_Game"] = "Neo Geo Játék",
 ["ScummVM_Game"] = "ScummVM Játék",
 ["PICO8_Game"] = "PICO-8 Játék",
+["System_App"] = "Rendszeralkalmazás",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Kérlek telepítsd RetroFlow Adrenaline Launcher.",

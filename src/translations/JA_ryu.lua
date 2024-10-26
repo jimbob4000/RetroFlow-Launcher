@@ -13,6 +13,7 @@ return {
 -- General settings
 ["Language_colon"] = "言語：",
 ["Homebrews_Category_colon"] = "Homebrewsカテゴリー：",
+["System_Apps_colon"] = "システムユーティリティ：",
 ["Recently_Played_colon"] = "いまめープレイさびたん：",
 ["Startup_scan_colon"] = "スタートアップスキャン：",
 ["On"] = "オン",
@@ -88,6 +89,7 @@ return {
 ["Neo_Geo"] = "ネオジオ",
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
+["System_Apps"] = "システムユーティリティ",
 
 -- Download
 ["Download_colon"] = "ダウンロード：",
@@ -166,6 +168,7 @@ return {
 ["Neo_Geo_Game"] = "ネオジオぬゲーム",
 ["ScummVM_Game"] = "ScummVMぬゲーム",
 ["PICO8_Game"] = "PICO-8ぬゲーム",
+["System_App"] = "システムユーティリティ",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "RetroFlowアドレナリンランチャーインストールさびーん。",
