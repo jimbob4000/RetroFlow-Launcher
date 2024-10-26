@@ -10834,7 +10834,7 @@ while true do
 
                         -- Vita vs0 png - sysapp
                         elseif System.doesFileExist("vs0:/app/" .. xCatLookup(showCat)[p].name .. "/sce_sys/icon0.png") then
-                            xAppNumTableLookup(apptype)[key2].icon_path = "vs0:/app/" .. xCatLookup(showCat)[p].name .. "/sce_sys/icon0.png"
+                            xCatLookup(showCat)[p].icon_path = "vs0:/app/" .. xCatLookup(showCat)[p].name .. "/sce_sys/icon0.png"
 
                         -- Pico8 rom folder png
                         elseif xCatLookup(showCat)[p].app_type == 41 then
@@ -10885,6 +10885,22 @@ while true do
                     create_fav_count_table(return_table)
 
                     -- END updating other tables -- 
+
+                    -- If show system apps if off and currently viewing system apps when renaming, must have used quick menu.
+                    -- Turn on system apps temporarily so can see the result of the rename.
+                    if showSysApps == 0 and showCat == 42 then
+                        -- Turn on temporarily
+                        showSysApps = 1
+
+                        -- Import and jump to menu
+                        FreeIcons()
+                        count_cache_and_reload()
+                        showCat = 42
+
+                        -- Turn off again, the table will be removed when the user changes category (see category controls, square)
+                        showSysApps = 0
+                    else
+                    end
 
                     -- Get ready for reload - Game position may change due to alphabetical sorting, find its new position
                     if #xCatLookup(showCat) ~= nil then
