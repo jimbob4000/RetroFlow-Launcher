@@ -1122,26 +1122,37 @@ local ret_rename_collection = ""
 -- Loading progress
 -- loading_tasks = 0
 
+-- Pcall for safe import of lua files
+    function safe_dofile(file_path)
+        local success, result = pcall(dofile, file_path)
+        if success then
+            return result  -- Return the result if successful
+        else
+            -- print("Error loading file:", result)  -- Log the error message
+            return {}  -- Return an empty table on error
+        end
+    end
+
 -- Import title info scanned from onelua script
 function import_onelua_titles()
     -- Import onelua sfo scanned psp and psx titles
     if System.doesFileExist (user_DB_Folder .. "sfo_scan_isos.lua") then
-        sfo_scan_isos_db = dofile(user_DB_Folder .. "sfo_scan_isos.lua")
+        sfo_scan_isos_db = safe_dofile(user_DB_Folder .. "sfo_scan_isos.lua")
     else
         sfo_scan_isos_db = {}
     end
     if System.doesFileExist (user_DB_Folder .. "sfo_scan_games.lua") then
-        sfo_scan_games_db = dofile(user_DB_Folder .. "sfo_scan_games.lua")
+        sfo_scan_games_db = safe_dofile(user_DB_Folder .. "sfo_scan_games.lua")
     else
         sfo_scan_games_db = {}
     end
     if System.doesFileExist (user_DB_Folder .. "sfo_scan_retroarch.lua") then
-        sfo_scan_retroarch_db = dofile(user_DB_Folder .. "sfo_scan_retroarch.lua")
+        sfo_scan_retroarch_db = safe_dofile(user_DB_Folder .. "sfo_scan_retroarch.lua")
     else
         sfo_scan_retroarch_db = {}
     end
     if System.doesFileExist (user_DB_Folder .. "scan_scummvm.lua") then
-        scan_scummvm_db = dofile(user_DB_Folder .. "scan_scummvm.lua")
+        scan_scummvm_db = safe_dofile(user_DB_Folder .. "scan_scummvm.lua")
     else
         scan_scummvm_db = {}
     end
@@ -3292,9 +3303,22 @@ function launch_vita_sysapp(def_titleid)
         if uri[def_titleid] then
             System.executeUri(uri[def_titleid])
         else
-            -- For apps without URI commands, they will fail to open unless opened using onelua's game.open command.
+
+            -- Explanation:
+            -- For apps without URI commands, they will fail create a launch txt file, for the launch_sys_app bin.
+            -- The bin file uses sceAppMgrLaunchAppByUri(0x40000, TITLEID) to open the app without launching.
+
+            -- Write file for opening with bin
+            local file_over = System.openFile(cur_dir .. "/TITLES/system_app_launch.txt", FCREATE)
+            System.closeFile(file_over)
+
+            file = io.open(cur_dir .. "/TITLES/system_app_launch.txt", "w")
+            file:write(def_titleid)
+            file:close()
+
+            -- Launch the bin
             FreeMemory()
-            System.executeUriNPXS("psgm:play?titleid=" .. def_titleid)
+            System.launchEboot("app0:/launch_sys_app.bin")
             System.exit()
         end
     end
@@ -6742,16 +6766,8 @@ function listDirectory(dir)
                     if System.doesFileExist(user_DB_Folder .. (def_user_db_file)) then
                         game_title_file = user_DB_Folder .. (def_user_db_file)
 
-                        -- Check file integrity
-                        local status, result = pcall(dofile, game_title_file)
-                        
-                        if status and type(result) == "table" then
-                            -- File imported is okay
-                            game_title_db = result
-                        else
-                            -- File is corrupt
-                            game_title_db = {}
-                        end
+                        -- Use safe_dofile to check file integrity
+                        game_title_db = safe_dofile(game_title_file)
                     else
                         game_title_db = {}
                     end
@@ -6981,7 +6997,7 @@ function listDirectory(dir)
                     -- Load previous matches
                     if System.doesFileExist(user_DB_Folder .. (def_user_db_file)) then
                         database_rename_PSM = user_DB_Folder .. (def_user_db_file)
-                        psmdb = dofile(database_rename_PSM)
+                        psmdb = safe_dofile(database_rename_PSM)
                     else
                         psmdb = {}
                     end

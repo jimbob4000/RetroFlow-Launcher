@@ -129,6 +129,18 @@
 		local gradient_end = color.new(0, 0, 0, 0)	
 
 
+	-- Pcall for safe import of lua files
+		function safe_dofile(file_path)
+		    local success, result = pcall(dofile, file_path)
+		    if success then
+		        return result  -- Return the result if successful
+		    else
+		        -- print("Error loading file:", result)  -- Log the error message
+		        return {}  -- Return an empty table on error
+		    end
+		end
+
+
 -- COMMAND - Download missing artwork using CRC
 
 	if files.exists(titles_dir .. "/" .. "missing_covers.lua") or files.exists(titles_dir .. "/" .. "missing_snaps.lua") then
@@ -155,7 +167,7 @@
 		-- Import PSP iso table
 
 			if files.exists(titles_dir .. "/" .. sfo_scan_isos_lua) then
-				cached_table_iso = dofile(titles_dir .. "/" .. sfo_scan_isos_lua)
+				cached_table_iso = safe_dofile(titles_dir .. "/" .. sfo_scan_isos_lua)
 			else
 				cached_table_iso = {}
 			end
@@ -283,19 +295,19 @@
 	-- Import cached SF0 files - To check for new games
 
 		if files.exists(titles_dir .. "/" .. sfo_scan_isos_lua) then
-			cached_table_iso = dofile(titles_dir .. "/" .. sfo_scan_isos_lua)
+			cached_table_iso = safe_dofile(titles_dir .. "/" .. sfo_scan_isos_lua)
 		else
 			cached_table_iso = {}
 		end
 
 		if files.exists(titles_dir .. "/" .. sfo_scan_games_lua) then
-			cached_table_games = dofile(titles_dir .. "/" .. sfo_scan_games_lua)
+			cached_table_games = safe_dofile(titles_dir .. "/" .. sfo_scan_games_lua)
 		else
 			cached_table_games = {}
 		end
 
 		if files.exists(titles_dir .. "/" .. sfo_scan_retroarch_lua) then
-			cached_table_retroarch = dofile(titles_dir .. "/" .. sfo_scan_retroarch_lua)
+			cached_table_retroarch = safe_dofile(titles_dir .. "/" .. sfo_scan_retroarch_lua)
 		else
 			cached_table_retroarch = {}
 		end
@@ -307,7 +319,7 @@
 		    -- File exists, import user rom dirs
 		    db_romdir = "ux0:/data/RetroFlow/rom_directories.lua"
 		    romUserDir = {}
-		    romUserDir = dofile(db_romdir)
+		    romUserDir = safe_dofile(db_romdir)
 
 		    -- File not empty
 		    if romUserDir ~= nil then 
@@ -546,6 +558,10 @@
 
 					if string.match(file.name, "%.iso") or string.match(file.name, "%.cso") then
 
+						if cached_table_iso == nil then
+						    cached_table_iso = {}
+						end
+
 						-- Check if game in cached file
 						if cached_table_iso[file.name] ~= nil then
 							-- Found
@@ -592,6 +608,10 @@
 
 					for i, file in pairs(subfolder_file) do
 						if string.match(file.name, "%.iso") or string.match(file.name, "%.cso") then
+
+							if cached_table_iso == nil then
+							    cached_table_iso = {}
+							end
 
 							-- Check if game in cached file
 							if cached_table_iso[file.name] ~= nil then
@@ -641,6 +661,10 @@
 				for i, file in pairs(dir) do
 					if files.exists(rom_dir .. "/" .. file.name .. "/EBOOT.pbp") then
 
+						if cached_table_games == nil then
+						    cached_table_games = {}
+						end
+
 						-- Check if game in cached file
 						if cached_table_games[file.name] ~= nil then
 							-- Found
@@ -687,6 +711,10 @@
 					if subfolder_file ~= nil then
 						for i, file in pairs(subfolder_file) do
 							if files.exists(file.path .. "/EBOOT.pbp") then
+
+								if cached_table_games == nil then
+								    cached_table_games = {}
+								end
 
 								-- Check if game in cached file
 								if cached_table_games[file.name] ~= nil then
@@ -740,6 +768,10 @@
 
 					if string.match(file.name, "%.pbp") or string.match(file.name, "%.PBP") or string.match(file.name, "%.iso") then
 
+						if cached_table_retroarch == nil then
+						    cached_table_retroarch = {}
+						end
+
 						-- Check if game in cached file
 						if cached_table_retroarch[file.name] ~= nil then
 							-- Found
@@ -781,6 +813,10 @@
 					for i, file in pairs(subfolder_file) do
 						if string.match(file.name, "%.pbp") or string.match(file.name, "%.PBP") or string.match(file.name, "%.iso") then
 
+							if cached_table_retroarch == nil then
+							    cached_table_retroarch = {}
+							end
+						
 							-- Check if game in cached file
 							if cached_table_retroarch[subfolder.name] ~= nil then
 								-- Found
