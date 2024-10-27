@@ -12509,9 +12509,26 @@ while true do
                 elseif menuY == 6 then -- #6 Show hidden
                     if showHidden == 1 then
                         showHidden = 0
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
+
+                        -- If show system apps if off and currently viewing system apps when renaming, must have used quick menu.
+                        -- Turn on system apps temporarily so can see the result of the rename.
+                        if showSysApps == 0 and showCat == 42 then
+                            -- Turn on temporarily
+                            showSysApps = 1
+
+                            -- Import and jump to menu
+                            FreeIcons()
+                            count_cache_and_reload()
+                            showCat = 42
+
+                            -- Turn off again, the table will be removed when the user changes category (see category controls, square)
+                            showSysApps = 0
+                        else
+                            -- Import cache to update All games category
+                            FreeIcons()
+                            count_cache_and_reload()
+                        end
+
                         if showCat == 43 then 
                             create_fav_count_table(files_table)
                         end
@@ -12519,9 +12536,26 @@ while true do
                         GetNameAndAppTypeSelected()
                     else
                         showHidden = 1
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
+
+                        -- If show system apps if off and currently viewing system apps when renaming, must have used quick menu.
+                        -- Turn on system apps temporarily so can see the result of the rename.
+                        if showSysApps == 0 and showCat == 42 then
+                            -- Turn on temporarily
+                            showSysApps = 1
+
+                            -- Import and jump to menu
+                            FreeIcons()
+                            count_cache_and_reload()
+                            showCat = 42
+
+                            -- Turn off again, the table will be removed when the user changes category (see category controls, square)
+                            showSysApps = 0
+                        else
+                            -- Import cache to update All games category
+                            FreeIcons()
+                            count_cache_and_reload()
+                        end
+
                         if showCat == 43 then 
                             create_fav_count_table(files_table)
                         end
@@ -14991,9 +15025,24 @@ while true do
                         -- Save the hidden game table for importing on restart
                         update_cached_table_hidden_games()
 
-                    FreeIcons()
-                    count_cache_and_reload()
-                    GetInfoSelected()
+                    -- If show system apps if off and currently viewing system apps when renaming, must have used quick menu.
+                    -- Turn on system apps temporarily so can see the result of the rename.
+                    if showSysApps == 0 and showCat == 42 then
+                        -- Turn on temporarily
+                        showSysApps = 1
+
+                        -- Import and jump to menu
+                        FreeIcons()
+                        count_cache_and_reload()
+                        showCat = 42
+
+                        -- Turn off again, the table will be removed when the user changes category (see category controls, square)
+                        showSysApps = 0
+                    else
+                        FreeIcons()
+                        count_cache_and_reload()
+                        GetInfoSelected()
+                    end
 
                     if showHidden == 0 then
                         oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
