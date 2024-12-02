@@ -32,7 +32,7 @@ PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, Game Boy Advance,
 * Two more views added, a 2D list view and also a 2D side scrolling view
 
 **Note:**
-RetroFlow does not replace the Vita's LiveArea UI. You can use [AutoBoot](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md#can-i-set-retroflow-to-launch-when-the-vita-boots-up) to open RetroFlow when the Vita boots up, but you will need to relaunch RetroFlow once you exit a game.
+RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called AutoBoot to open RetroFlow when the Vita boots up, but you will need to relaunch RetroFlow once you exit a game. See the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md#can-i-set-retroflow-to-launch-when-the-vita-boots-up) for more information on AutoBoot.
 
 
 # Installation & setup
