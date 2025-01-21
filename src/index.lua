@@ -17033,12 +17033,17 @@ while true do
                         create_fav_count_table(files_table)
 
                         curTotal = #fav_count
-                        if #fav_count == 0 then showCat = 40
+                        if #fav_count == 0 then 
+                            if showSysApps == 1 then
+                                showCat = 42
+                            else
+                                showCat = 41
+                            end
                         end
                     end
 
                     
-                    if showCat >= 3 and showCat <= 40 then
+                    if showCat >= 3 and showCat <= 41 then
                         showCatTemp = showCat - 1
                         curTotal = #xCatLookup(showCat)
 
