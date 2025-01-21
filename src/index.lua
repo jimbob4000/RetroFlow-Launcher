@@ -4112,14 +4112,21 @@ function listDirectory(dir)
     -- Set sfo_read_success to false if sfo is corrupt and cannot be read
     local sfo_read_success = true
 
+        local adrenaline_bubble = false
+
         if file.directory then
             -- Filter bubbles by the first 4 characters, eg SLUS
             name4chars = string.sub(file.name, 1, 4)
 
             if title_codes_set[name4chars] then
-                bubble = true
+                adrenaline_bubble = true
             else
-                bubble = false
+                adrenaline_bubble = false
+            end
+
+            -- Don't scan PSP and PSX Bubbles
+            if System.doesFileExist(working_dir .. "/" .. file.name .. "/menucolor.bin") and not string.match(file.name, "PSPEMUCFW") then
+                adrenaline_bubble = true
             end
        
             -- if string.find(bubble_filter_title_codes, name4chars,1,true) ~= nil then
@@ -4127,6 +4134,8 @@ function listDirectory(dir)
             -- else
             --     bubble = false
             -- end
+
+
         end
 
         if file.directory
@@ -4134,8 +4143,8 @@ function listDirectory(dir)
             and not string.match(file.name, "RETROLNCR") -- Don't index Retroflow Adrenaline Launcher
             and not string.match(file.name, "ADRLANCHR") -- Don't index Adrenaline Launcher
             and not string.match(file.name, "PSPEMU" .. "%d") -- Don't index PSPEMU001 games, but include PSPEMUCFW (Adrenaline)
-            and not System.doesFileExist(working_dir .. "/" .. file.name .. "/data/config.bin") -- Don't scan PSP and PSX Bubbles
-            and not bubble == true -- Don't scan PSP and PSX Bubbles
+            -- and not System.doesFileExist(working_dir .. "/" .. file.name .. "/data/config.bin") -- Don't scan PSP and PSX Bubbles
+            and not adrenaline_bubble == true -- Don't scan PSP and PSX Bubbles
             and string.len(file.name) == 9 -- Only use folders with 9 characters
             then
 
