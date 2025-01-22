@@ -9,6 +9,7 @@
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
 * [Adrenaline how do I customise the game's boot settings?](#adrenaline-how-do-i-customise-the-games-boot-settings)
 * [RetroArch games don't load](#retroarch-games-dont-load)
+* [Some system apps open but don't launch?](#some-system-apps-dont-launch)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
 * [ScummVM some games won't launch](#scummvm-some-games-wont-launch)
@@ -33,8 +34,11 @@ If you want to auto-launch **RetroFlow Launcher** every time your PS Vita boots 
 <br><br>
 
 ### Adrenaline - My games aren't working?
- * If Adrenaline games aren't launching, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). <br>
-Or try installing [AdrBubbleBooterInstaller](https://vitadb.rinnegatamante.it/#/info/307).
+<!-- * If Adrenaline games aren't launching, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). <br>
+Or try installing [AdrBubbleBooterInstaller](https://vitadb.rinnegatamante.it/#/info/307).-->
+ * Check you are using the official version of Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW.
+<br>Forks of Adrenaline are not supported.
+<br>
  * Check you have installed the 'RetroFlow Adrenaline Launcher' and that Adrenaline is functioning okay outside of RetroFlow.
 <br><br>
 
@@ -52,6 +56,10 @@ If you change the settings whilst the game is running, RetroFlow won't remember 
 
 ### RetroArch games don't load
 Older versions of RetroArch don't support launchers, try updating to a more recent version, I think the version I use is 1.9.4, see the [RetroArch buildbot](https://buildbot.libretro.com/stable/) for alternate versions.
+<br><br>
+
+### Some system apps open but don't launch?
+The launch commands for some system apps are unkown, this is the best we can do at the moment.
 <br><br>
 
 ### RetroArch fails to load games with "&" symbol in the game name

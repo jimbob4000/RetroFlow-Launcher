@@ -37,7 +37,8 @@ RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called A
 
 # Installation & setup
 
-**Note:** [Adrenaline v7](https://github.com/TheOfficialFloW/Adrenaline) is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline please install v7.
+**Note:** Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline or a fork of Adrenaline, please install the one in the link above. 
+<br>Unofficial forks of Adrenaline are not supported.
 
 ## 1. Install the RetroFlow VPK's.
 
