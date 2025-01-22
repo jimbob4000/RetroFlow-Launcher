@@ -9,7 +9,7 @@
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
 * [Adrenaline how do I customise the game's boot settings?](#adrenaline-how-do-i-customise-the-games-boot-settings)
 * [RetroArch games don't load](#retroarch-games-dont-load)
-* [Some system apps open but don't launch?](#some-system-apps-dont-launch)
+* [Some system apps open but don't launch?](#some-system-apps-open-but-dont-launch)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
 * [ScummVM some games won't launch](#scummvm-some-games-wont-launch)
