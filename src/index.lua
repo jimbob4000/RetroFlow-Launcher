@@ -4662,7 +4662,16 @@ function listDirectory(dir)
                         -- CATEGORY: ISO/CSO UG, PSN EG, HBs MG, PS1 ME, PBOOT.PBP PG 
 
                         -- PSP Official and PSP Homebrew only
-                        if string.match(file.category, "UG") or string.match(file.category, "MG") then
+
+                        if file.category == nil then
+                            -- Legacy fix
+                            delete_cache()
+                            FreeIcons()
+                            FreeMemory()
+                            Network.term()
+                            dofile("app0:index.lua")
+
+                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") then
 
                             -- check if game is in the favorites list
                             if System.doesFileExist(cur_dir .. "/favorites.dat") then
@@ -4964,7 +4973,16 @@ function listDirectory(dir)
                         -- CATEGORY: ISO/CSO UG, PSN EG, HBs MG, PS1 ME, PBOOT.PBP PG 
 
                         -- PSP Official and PSP Homebrew only
-                        if string.match(file.category, "UG") or string.match(file.category, "MG") then
+
+                        if file.category == nil then
+                            -- Legacy fix
+                            delete_cache()
+                            FreeIcons()
+                            FreeMemory()
+                            Network.term()
+                            dofile("app0:index.lua")
+
+                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") then
 
                             -- check if game is in the favorites list
                             if System.doesFileExist(cur_dir .. "/favorites.dat") then
@@ -5285,7 +5303,16 @@ function listDirectory(dir)
                         -- CATEGORY: ISO/CSO UG, PSN EG, HBs MG, PS1 ME, PBOOT.PBP PG 
 
                         -- PSX titles
-                        if string.match(file.category, "ME") then
+                        
+                        if file.category == nil then
+                            -- Legacy fix
+                            delete_cache()
+                            FreeIcons()
+                            FreeMemory()
+                            Network.term()
+                            dofile("app0:index.lua")
+
+                        elseif string.match(file.category, "ME") then
 
                             -- check if game is in the favorites list
                             if System.doesFileExist(cur_dir .. "/favorites.dat") then
