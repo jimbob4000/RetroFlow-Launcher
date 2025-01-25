@@ -529,7 +529,9 @@
 	    file = io.open(pathini, "w+")
 		file:write("return" .. "\n" .. "{" .. "\n")
 	    for k, v in pairs((tbl)) do
-			file:write('["' .. v.filename .. '"] = {title = "' .. v.title .. '", titleid = "' .. v.titleid .. '", region = "' .. v.region .. '", path = "' .. v.path .. '"},' .. "\n")
+			-- file:write('["' .. v.filename .. '"] = {title = "' .. v.title .. '", titleid = "' .. v.titleid .. '", region = "' .. v.region .. '", path = "' .. v.path .. '"},' .. "\n")
+			file:write('["' .. v.filename .. '"] = {title = "' .. v.title .. '", titleid = "' .. v.titleid .. '", category = "' .. v.category .. '", region = "' .. v.region .. '", path = "' .. v.path .. '"},' .. "\n")
+
 	    end
 	    file:write('}')
 	    file:close()
@@ -572,7 +574,7 @@
 
 							-- Error handling for bad sfo files
 							if sfo ~= nil then
-								if sfo.TITLE and sfo.DISC_ID and sfo.REGION ~= nil then
+								if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 									-- Cleanup game title
 									sfo_title = cleanup_game_title(sfo.TITLE)
@@ -582,6 +584,7 @@
 									file.titleid = sfo.DISC_ID
 									file.region = sfo.REGION
 									file.path = file.path
+									file.category = sfo.CATEGORY
 
 									table.insert(table_iso, file)
 								else
@@ -623,7 +626,7 @@
 
 								-- Error handling for bad sfo files
 								if sfo ~= nil then
-									if sfo.TITLE and sfo.DISC_ID and sfo.REGION ~= nil then
+									if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 										-- Cleanup game title
 										sfo_title = cleanup_game_title(sfo.TITLE)
@@ -633,6 +636,7 @@
 										file.titleid = sfo.DISC_ID
 										file.region = sfo.REGION
 										file.path = file.path
+										file.category = sfo.CATEGORY
 										
 										table.insert(table_iso, file)
 									else
@@ -679,9 +683,11 @@
 
 								file.filename = file.name
 								file.title = sfo_title
-								file.titleid = sfo.DISC_ID
-								file.region = sfo.REGION
 								file.path = file.path .. "/EBOOT.pbp"
+
+								file.titleid = sfo.DISC_ID or "UNK"
+								file.category = sfo.CATEGORY or "UNK"
+								file.region = sfo.REGION or "UNK"
 
 								if file.filename and file.title and file.titleid and file.region and file.path ~= nil then
 									table.insert(table_games, file)
@@ -730,9 +736,11 @@
 										
 										file.filename = file.name
 										file.title = sfo_title
-										file.titleid = sfo.DISC_ID
-										file.region = sfo.REGION
 										file.path = file.path .. "/EBOOT.pbp"
+
+										file.titleid = sfo.DISC_ID or "UNK"
+										file.category = sfo.CATEGORY or "UNK"
+										file.region = sfo.REGION or "UNK"
 
 										if file.filename and file.title and file.titleid and file.region and file.path ~= nil then
 											table.insert(table_games, file)
@@ -782,7 +790,7 @@
 
 							-- Error handling for bad sfo files
 							if sfo ~= nil then
-								if sfo.TITLE and sfo.DISC_ID and sfo.REGION ~= nil then
+								if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 									-- Cleanup game title
 									sfo_title = cleanup_game_title(sfo.TITLE)
@@ -792,6 +800,7 @@
 									file.titleid = sfo.DISC_ID
 									file.region = sfo.REGION
 									file.path = file.path
+									file.category = sfo.CATEGORY
 									table.insert(table_retroarch, file)
 								else
 								end
@@ -827,7 +836,7 @@
 
 								-- Error handling for bad sfo files
 								if sfo ~= nil then
-									if sfo.TITLE and sfo.DISC_ID and sfo.REGION ~= nil then
+									if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 										-- Cleanup game title
 										sfo_title = cleanup_game_title(sfo.TITLE)
@@ -837,6 +846,7 @@
 										file.titleid = sfo.DISC_ID
 										file.region = sfo.REGION
 										file.path = file.path
+										file.category = sfo.CATEGORY
 										table.insert(table_retroarch, file)
 									else
 									end
