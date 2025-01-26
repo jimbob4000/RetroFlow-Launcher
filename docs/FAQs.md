@@ -111,7 +111,7 @@ PSP Homebrew - iso format (saved in ux0:pspemu/ISO/):
 PSP Homebrew - eboot format (saved in ux0:pspemu/PSP/GAME/):
 
 	Homebrew folder name = Flappy Bird
-	Normal cover name = Flappy Bird.png
+	Cover name = Flappy Bird.png
 	
 
 <br>
