@@ -96,12 +96,25 @@ Retro game example:
 	Normal cover name = My Game (USA).png
 	Custom cover name = My Game.png
 	
-Vita, PSP, PSX, PSM and Homebrew example:
+Vita, PSP, PSX, PSM and Vita Homebrew example:
 
 	App ID = PCSE123456
 	Normal cover name = PCSE123456.png
 	Custom cover name = My Game.png
 
+PSP Homebrew - iso format (saved in ux0:pspemu/ISO/):
+
+	App ID = PCSE123456
+	Normal cover name = PCSE123456.png
+	Custom cover name = My Game.png
+
+PSP Homebrew - eboot format (saved in ux0:pspemu/PSP/GAME/):
+
+	Homebrew folder name = Flappy Bird
+	Normal cover name = Flappy Bird.png
+	
+
+<br>
 Make sure your custom cover is saved in the cover directory and in the correct subfolder i.e. <br>
 `ux0:/data/RetroFlow/COVERS/Nintendo - Game Boy Advance`
 
