@@ -4666,7 +4666,6 @@ function listDirectory(dir)
                         if file.category == nil then
                             -- Legacy fix
                             delete_cache()
-                            FreeIcons()
                             FreeMemory()
                             Network.term()
                             dofile("app0:index.lua")
@@ -4977,7 +4976,6 @@ function listDirectory(dir)
                         if file.category == nil then
                             -- Legacy fix
                             delete_cache()
-                            FreeIcons()
                             FreeMemory()
                             Network.term()
                             dofile("app0:index.lua")
@@ -5307,7 +5305,6 @@ function listDirectory(dir)
                         if file.category == nil then
                             -- Legacy fix
                             delete_cache()
-                            FreeIcons()
                             FreeMemory()
                             Network.term()
                             dofile("app0:index.lua")
