@@ -17,6 +17,7 @@
 * The VPK tool will read your RetroFlow cache and export a tidy tab deliminated list of all of your games.
 * The exported list of games will be saved here:
 `ux0:/data/RetroFlow/Exported game list.txt`
+* The following fields will be exported: The name of the game, system, whether the game is set as a favourite or hidden, and also the file path of the game.
 * The list can be opened in Microsoft Excel so you can read the list easily and also use filters.
 
 
