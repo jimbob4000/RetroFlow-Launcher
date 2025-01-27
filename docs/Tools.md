@@ -8,6 +8,7 @@
 
 * Supported systems: Playstation Vita
 * Format: VPK 
+* Requirements: RetroFlow must be installed and setup.
 * Download link: [RetroFlow_Export_Game_List_v1.vpk](https://github.com/jimbob4000/RetroFlow-Launcher/raw/refs/heads/main/Tools/RetroFlow_Export_Game_List_v1.vpk)
 
 
@@ -19,7 +20,7 @@
 * The list can be opened in Microsoft Excel so you can read the list easily and also use filters.
 
 
-**Use cases**
+**Use cases:**
 
-* More than one version of a game installed, but you can't locate the duplicate? The exported list will help. Systems like PS1 which are generally stored in folders using the title ID only which can be make if harder to find otherwise.
-* You may want to curate your library.
+* Duplicate PS1 games installed? <br>This tool will help you find where they are. PS1 which are generally stored in folders using the title ID only which can be make if harder to find otherwise.
+* Want to export your library? <br>This is a quick way to get a list of all the games you have on your Vita.
