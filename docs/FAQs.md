@@ -27,6 +27,7 @@
 * [Do I need to create bubbles for games?](#do-i-need-to-create-bubbles-for-games)
 * [Can I change the Mega Drive name to Genesis?](#can-i-change-the-mega-drive-name-to-genesis)
 * [How do I uninstall Adrenaline Bubble Booter?](#how-do-i-uninstall-adrenaline-bubble-booter)
+* [I have duplicate games showing](#i-have-duplicate-games-showing)
 <br><br>
 
 ### Can I set RetroFlow to launch when the Vita boots up?
@@ -201,6 +202,11 @@ If you followed the install guide you should be on Adrenaline version 7.
  * Please uninstall Adrenaline and install again.
 
 **Note:** Uninstalling Adrenaline Bubble Booter will stop any custom PS1 or PSP bubbles you created using Adrenaline Bubble manager from working unless it is installed once again, Adrenaline Bubble manager can install it again for you if needed.
+<br><br>
+
+### I have duplicate games showing
+Check that you don't have more than one version of the game installed.
+<br>This tool can help: [RetroFlow Export Game List](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Tools.md#retroflow-export-game-list).
 
 <br><br>
 

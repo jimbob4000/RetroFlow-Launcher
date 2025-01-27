@@ -8,7 +8,7 @@
 
 * Supported systems: Playstation Vita
 * Format: VPK 
-* Requirements: RetroFlow must be installed and setup.
+* Requirements: RetroFlow must be installed and setup on your Vita.
 * Download link: [RetroFlow_Export_Game_List_v1.vpk](https://github.com/jimbob4000/RetroFlow-Launcher/raw/refs/heads/main/Tools/RetroFlow_Export_Game_List_v1.vpk)
 
 
