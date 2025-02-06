@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.2.0"
+local appversion = "7.2.1"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -4670,7 +4670,7 @@ function listDirectory(dir)
                             Network.term()
                             dofile("app0:index.lua")
 
-                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") then
+                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") or string.match(file.category, "EG") then
 
                             -- check if game is in the favorites list
                             if System.doesFileExist(cur_dir .. "/favorites.dat") then
@@ -4980,7 +4980,7 @@ function listDirectory(dir)
                             Network.term()
                             dofile("app0:index.lua")
 
-                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") then
+                        elseif string.match(file.category, "UG") or string.match(file.category, "MG") or string.match(file.category, "EG") then
 
                             -- check if game is in the favorites list
                             if System.doesFileExist(cur_dir .. "/favorites.dat") then
@@ -4998,7 +4998,7 @@ function listDirectory(dir)
                             file.category = file.category
 
                             -- PSP Official
-                            if string.match(file.category, "UG") then
+                            if string.match(file.category, "UG") or string.match(file.category, "EG") then
 
                                 info = file.title
                                 app_title = file.title
