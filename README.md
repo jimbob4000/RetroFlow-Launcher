@@ -166,6 +166,11 @@ You can change your background within the app by going to the settings menu > th
 * Songs can be added to `ux0:/data/RetroFlow/MUSIC/`. 
 * Music must be in **.ogg** format.
 
+#### Custom Music to get you started:
+* Check out the awesome 6 free-to-use loopable background music-tracks by andiweli (a key contributor to the HexFlow and RetroFlow projects).
+* You can download the tracks here: [https://github.com/andiweli/hexflow-covers/tree/main/Music](https://github.com/andiweli/hexflow-covers/tree/main/Music)
+* The music was taken from the never released Amiga game "PhaseOut" back in the 90s for which he did the music for. Years later a C64 version [became available](https://www.c64-wiki.de/wiki/Phase_Out).
+
 
 
 ## Known issues
