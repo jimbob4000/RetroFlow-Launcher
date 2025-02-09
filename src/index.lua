@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.2.1"
+local appversion = "7.2.2"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
