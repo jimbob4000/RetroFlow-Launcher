@@ -22,7 +22,7 @@ return {
 -- Appearance
 ["Custom_Background_colon"] = "Eigener Hintergrund: ",
 ["Reflection_Effect_colon"] = "Spiegelungseffekt: ",
-["Smooth_Scrolling_colon"] = "Glatt Scrollen: ",
+["Smooth_Scrolling_colon"] = "Weiches Scrollen: ",
 ["Theme_Color_colon"] = "Themenfarbe: ",
 ["Red"] = "Rot",
 ["Yellow"] = "Gelb",
@@ -113,7 +113,7 @@ return {
 ["Downloading_covers"] = "Cover herunterladen",
 ["Downloading_backgrounds"] = "Hintergründe herunterladen",
 
-["No_missing_artwork"] = "Kein fehlendes Kunstwerk",
+["No_missing_artwork"] = "Keine fehlende Grafik",
 
 
 -- Info Screen
@@ -182,8 +182,8 @@ return {
 
 -- Settings Menu
 ["Categories"] = "Kategorien",
-["Sounds"] = "Geräusche",
-["Artwork"] = "Kunstwerk",
+["Sounds"] = "Töne",
+["Artwork"] = "Grafiken",
 ["Scan_Settings"] = "Scaneinstellungen",
 ["Adrenaline_roms"] = "Adrenaline-Spiele: ",
 ["All_Category"] = "Alle Kategorie: ",
@@ -234,10 +234,10 @@ return {
 ["Menu"] = "Menü",
 ["LiveArea"] = "LiveArea",
 ["Standard"] = "Norm",
-["Show_missing_covers_colon"] = "Fehlende cover anzeigen:",
+["Show_missing_covers_colon"] = "Fehlende Cover anzeigen:",
 ["Time_colon"] = "Uhrzeit:",
-["Time_12hr"] = "12-Stunden-Uhr",
-["Time_24hr"] = "24-Stunden-Uhr",
+["Time_12hr"] = "12-Stunden Uhr",
+["Time_24hr"] = "24-Stunden Uhr",
 
 -- Game options
 ["Options"] = "Optionen",
@@ -256,7 +256,7 @@ return {
 
 ["Save"] = "Speichern",
 ["Add_to_favorites"] = "Zu Favoriten hinzufügen",
-["Remove_from_favorites"] = "Von den Favoriten entfernen",
+["Remove_from_favorites"] = "Aus Favoriten entfernen",
 ["Show_hidden_games_colon"] = "Versteckte Spiele anzeigen:",
 ["Hide_game"] = "Spiel verstecken",
 ["Unhide_game"] = "Spiel einblenden",
