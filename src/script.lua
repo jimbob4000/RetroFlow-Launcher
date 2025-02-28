@@ -577,14 +577,15 @@
 								if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 									-- Cleanup game title
-									sfo_title = cleanup_game_title(sfo.TITLE)
+									sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 									
 									file.filename = file.name
-									file.title = sfo_title
-									file.titleid = sfo.DISC_ID
-									file.region = sfo.REGION
 									file.path = file.path
-									file.category = sfo.CATEGORY
+
+									file.title = sfo_title
+									file.titleid = sfo.DISC_ID or "UNK"
+									file.category = sfo.CATEGORY or "UNK"
+									file.region = sfo.REGION or "UNK"
 
 									table.insert(table_iso, file)
 								else
@@ -629,14 +630,15 @@
 									if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 										-- Cleanup game title
-										sfo_title = cleanup_game_title(sfo.TITLE)
+										sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 									
 										file.filename = file.name
-										file.title = sfo_title
-										file.titleid = sfo.DISC_ID
-										file.region = sfo.REGION
 										file.path = file.path
-										file.category = sfo.CATEGORY
+
+										file.title = sfo_title
+										file.titleid = sfo.DISC_ID or "UNK"
+										file.category = sfo.CATEGORY or "UNK"
+										file.region = sfo.REGION or "UNK"
 										
 										table.insert(table_iso, file)
 									else
@@ -679,12 +681,12 @@
 
 							if sfo ~= nil then
 								-- Cleanup game title
-								sfo_title = cleanup_game_title(sfo.TITLE)
+								sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 
 								file.filename = file.name
-								file.title = sfo_title
 								file.path = file.path .. "/EBOOT.pbp"
 
+								file.title = sfo_title
 								file.titleid = sfo.DISC_ID or "UNK"
 								file.category = sfo.CATEGORY or "UNK"
 								file.region = sfo.REGION or "UNK"
@@ -732,12 +734,12 @@
 
 									if sfo ~= nil then
 										-- Cleanup game title
-										sfo_title = cleanup_game_title(sfo.TITLE)
+										sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 										
 										file.filename = file.name
-										file.title = sfo_title
 										file.path = file.path .. "/EBOOT.pbp"
 
+										file.title = sfo_title
 										file.titleid = sfo.DISC_ID or "UNK"
 										file.category = sfo.CATEGORY or "UNK"
 										file.region = sfo.REGION or "UNK"
@@ -793,14 +795,16 @@
 								if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 									-- Cleanup game title
-									sfo_title = cleanup_game_title(sfo.TITLE)
+									sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 
 									file.filename = file.name
-									file.title = sfo_title
-									file.titleid = sfo.DISC_ID
-									file.region = sfo.REGION
 									file.path = file.path
-									file.category = sfo.CATEGORY
+
+									file.title = sfo_title
+									file.titleid = sfo.DISC_ID or "UNK"
+									file.category = sfo.CATEGORY or "UNK"
+									file.region = sfo.REGION or "UNK"
+
 									table.insert(table_retroarch, file)
 								else
 								end
@@ -839,14 +843,16 @@
 									if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
 
 										-- Cleanup game title
-										sfo_title = cleanup_game_title(sfo.TITLE)
+										sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
 
 										file.filename = subfolder.name
-										file.title = sfo_title
-										file.titleid = sfo.DISC_ID
-										file.region = sfo.REGION
 										file.path = file.path
-										file.category = sfo.CATEGORY
+
+										file.title = sfo_title
+										file.titleid = sfo.DISC_ID or "UNK"
+										file.category = sfo.CATEGORY or "UNK"
+										file.region = sfo.REGION or "UNK"
+
 										table.insert(table_retroarch, file)
 									else
 									end
