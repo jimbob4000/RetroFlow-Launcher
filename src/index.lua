@@ -7342,7 +7342,7 @@ function listDirectory(dir)
             "NPXS10004", "NPXS10006", "NPXS10008", "NPXS10009",
             "NPXS10010", "NPXS10012", "NPXS10013", "NPXS10014",
             "NPXS10015", "NPXS10026", "NPXS10072", "NPXS10078",
-            "NPXS10091", "NPXS10094"
+            "NPXS10091", "NPXS10094", "NPXS10098"
         }
 
         local function isInFilterList(item)
