@@ -16785,6 +16785,8 @@ while true do
             if state ~= RUNNING and messagestate ~= RUNNING then
                 if gettingCovers == false and app_title~="-" then
                     
+                    GetNameAndAppTypeSelected() -- Bug fix for list view not passing launch checks in mixed categories (apptype not found or path? Not sure)
+
                     if showCat == 1 then
                         if string.match (games_table[p].game_path, "pspemu") then
                             -- Launch adrenaline
