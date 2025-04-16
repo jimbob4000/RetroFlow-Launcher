@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "Hakutulokset",
 ["Search_No_Results"] = "Hae uudelleen painamalla select-näppäintä",
 
+-- Random game
+["Random_Game"] = "Satunnainen peli",
+
 -- Settings Menu
 ["Categories"] = "Kategoriat",
 ["Sounds"] = "Soundit",

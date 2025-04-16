@@ -181,6 +181,9 @@ return {
 ["Search_Results"] = "Search Results",
 ["Search_No_Results"] = "Press select to search again",
 
+-- Random game
+["Random_Game"] = "Random Game",
+
 -- Settings Menu
 ["Categories"] = "Categories",
 ["Sounds"] = "Sounds",

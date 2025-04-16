@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "Resultados de la búsqueda",
 ["Search_No_Results"] = "Presiona seleccionar para buscar de nuevo",
 
+-- Random game
+["Random_Game"] = "Juego aleatorio",
+
 -- Settings Menu
 ["Categories"] = "Categorías",
 ["Sounds"] = "Sonidos",

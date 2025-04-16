@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "ぬ検索結果",
 ["Search_No_Results"] = "選択うち再度検索さびーん",
 
+-- Random game
+["Random_Game"] = "ランダムなアシビ",
+
 -- Settings Menu
 ["Categories"] = "カテゴリ",
 ["Sounds"] = "サウンド",

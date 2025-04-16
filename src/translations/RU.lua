@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "Результаты поиска",
 ["Search_No_Results"] = "Нажмите \"Выбрать\" для повторного поиска",
 
+-- Random game
+["Random_Game"] = "Случайная игра",
+
 -- Settings Menu
 ["Categories"] = "Категории",
 ["Sounds"] = "Звуки",

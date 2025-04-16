@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "검색 결과",
 ["Search_No_Results"] = "다시 검색하려면 선택을 누르세요.",
 
+-- Random game
+["Random_Game"] = "무작위 게임",
+
 -- Settings Menu
 ["Categories"] = "카테고리",
 ["Sounds"] = "소리",

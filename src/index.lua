@@ -6,7 +6,7 @@ local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
 local working_dir = "ux0:/app"
-local appversion = "7.2.2"
+local appversion = "7.3.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -811,6 +811,8 @@ setting_icon_other = Graphics.loadImage("app0:/DATA/setting-icon-other.png")
 setting_icon_heart = Graphics.loadImage("app0:/DATA/setting-icon-heart.png")
 setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
 
+setting_icon_random = Graphics.loadImage("app0:/DATA/setting-icon-random.png")
+
 setting_icon_sort = Graphics.loadImage("app0:/DATA/setting-icon-sort.png")
 setting_icon_sort_up = Graphics.loadImage("app0:/DATA/setting-icon-sort-up.png")
 setting_icon_sort_down = Graphics.loadImage("app0:/DATA/setting-icon-sort-down.png")
@@ -1118,6 +1120,10 @@ local ret_collection = ""
 -- Collection rename
 local keyboard_collection_rename = false
 local ret_rename_collection = ""
+
+-- Random game
+-- random_game_selected = false
+
 
 -- Loading progress
 -- loading_tasks = 0
@@ -2003,6 +2009,9 @@ local lang_default =
 ["Search_Results"] = "Search Results",
 ["Search_No_Results"] = "Press select to search again",
 
+-- Random game
+["Random_Game"] = "Random Game",
+
 -- Settings Menu
 ["Categories"] = "Categories",
 ["Sounds"] = "Sounds",
@@ -2549,7 +2558,7 @@ function xCatLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showcat
     elseif CatNum == 42 then    return  sysapps_table
     elseif CatNum == 43 then    return  fav_count
     elseif CatNum == 44 then    return  recently_played_table
-    elseif CatNum == 45 then    return  search_results_table
+    elseif CatNum == 45 then    return  search_results_table -- Table also used for random game selection
 
     -- COLLECTIONS
     elseif CatNum >= 46 and CatNum <= collection_syscount then
@@ -10693,6 +10702,9 @@ while true do
     -- Keyboard functions
     
         function keyboard_search_function()
+
+            
+
             if state ~= RUNNING and hasTyped == true then
                         
                 hasTyped = false
@@ -10712,7 +10724,8 @@ while true do
 
                     search_results_table = {}
                     -- If already on search category, move away
-                    if showCat == 45 then 
+                    if showCat == 45 then
+                        random_game_selected = false -- Workaround, as random games and search use the same table
                         showCat = 0
                     end
 
@@ -11287,7 +11300,12 @@ while true do
         elseif showCat == 42 then Font.print(fnt22, 32, 34, lang_lines.System_Apps, white)  
         elseif showCat == 43 then Font.print(fnt22, 32, 34, lang_lines.Favorites, white)
         elseif showCat == 44 then Font.print(fnt22, 32, 34, lang_lines.Recently_Played, white)
-        elseif showCat == 45 then Font.print(fnt22, 32, 34, lang_lines.Search_Results, white)
+        elseif showCat == 45 then
+            if random_game_selected == false then
+                Font.print(fnt22, 32, 34, lang_lines.Search_Results, white)
+            else
+                Font.print(fnt22, 32, 34, lang_lines.Random_Game, white)
+            end            
         elseif showCat >= 46 and showCat <= collection_syscount then Collection_CatNum = showCat - 45 Font.print(fnt22, 32, 34, collection_files[Collection_CatNum].display_name, white)
 
         else Font.print(fnt22, 32, 34, lang_lines.All, white)
@@ -16202,7 +16220,7 @@ while true do
 
         -- GET MENU ITEM COUNT (Some menus app type specific)
             
-            menuItems = 3
+            menuItems = 4
         
             -- Calculate vertical centre
             vertically_centre_mini_menu(menuItems)
@@ -16237,26 +16255,33 @@ while true do
         -- MENU 25 / Heading
         Font.print(fnt22, setting_x, setting_yh + y_centre_text_offset, lang_lines.Category, white)--Category
 
-        -- MENU 25 / #0 Favorites
-        Graphics.drawImage(setting_x, setting_y0 + y_centre_text_offset, setting_icon_heart)
-        Font.print(fnt22, setting_x_icon_offset + 70, setting_y0 + y_centre_text_offset, lang_lines.Favorites, white)--Favourites
+        -- MENU 25 / #0 System Apps
+        Graphics.drawImage(setting_x, setting_y0 + y_centre_text_offset, setting_icon_random)
+        Font.print(fnt22, setting_x_icon_offset + 70, setting_y0 + y_centre_text_offset, lang_lines.Random_Game, white)--Random Game
 
-        -- MENU 25 / #1 Recently Played
-        Graphics.drawImage(setting_x, setting_y1 + y_centre_text_offset, setting_icon_categories)
-        Font.print(fnt22, setting_x_icon_offset + 70, setting_y1 + y_centre_text_offset, lang_lines.Recently_Played, white)--Recently Played
+        -- MENU 25 / #1 Favorites
+        Graphics.drawImage(setting_x, setting_y1 + y_centre_text_offset, setting_icon_heart)
+        Font.print(fnt22, setting_x_icon_offset + 70, setting_y1 + y_centre_text_offset, lang_lines.Favorites, white)--Favourites
 
-        -- MENU 25 / #2 System Apps
+        -- MENU 25 / #2 Recently Played
         Graphics.drawImage(setting_x, setting_y2 + y_centre_text_offset, setting_icon_categories)
-        Font.print(fnt22, setting_x_icon_offset + 70, setting_y2 + y_centre_text_offset, lang_lines.System_Apps, white)--System Apps
+        Font.print(fnt22, setting_x_icon_offset + 70, setting_y2 + y_centre_text_offset, lang_lines.Recently_Played, white)--Recently Played
 
-        -- MENU 25 / #3 Filter games
-        Graphics.drawImage(setting_x, setting_y3 + y_centre_text_offset, setting_icon_filter)
+        -- MENU 25 / #3 System Apps
+        Graphics.drawImage(setting_x, setting_y3 + y_centre_text_offset, setting_icon_categories)
+        Font.print(fnt22, setting_x_icon_offset + 70, setting_y3 + y_centre_text_offset, lang_lines.System_Apps, white)--System Apps
+
+        -- MENU 25 / #4 Filter games
+        Graphics.drawImage(setting_x, setting_y4 + y_centre_text_offset, setting_icon_filter)
 
         if filterGames == 0 then
-            Font.print(fnt22, setting_x_icon_offset + 70, setting_y3 + y_centre_text_offset, "<  " .. lang_lines.All .. "  >", white)
+            Font.print(fnt22, setting_x_icon_offset + 70, setting_y4 + y_centre_text_offset, "<  " .. lang_lines.All .. "  >", white)
         else
-            Font.print(fnt22, setting_x_icon_offset + 70, setting_y3 + y_centre_text_offset, "<  " .. lang_lines.Collections .. "  >", white)
+            Font.print(fnt22, setting_x_icon_offset + 70, setting_y4 + y_centre_text_offset, "<  " .. lang_lines.Collections .. "  >", white)
         end
+
+        
+
 
         
         -- MENU 25 - FUNCTIONS
@@ -16268,7 +16293,53 @@ while true do
                 oldpad = pad
 
                 -- MENU 20
-                if menuY == 0 then -- #0 Favorites
+
+                if menuY == 0 then -- #0 Random game
+
+                    function Shuffle(files_table)
+                        -- math.randomseed(os.time())
+                        math.randomseed(os.clock() * 1000000)
+                        local search_results_table = {}
+
+                        -- Create a filtered list of only allowed app types, exclude homebrew and system apps
+                        local valid_games = {}
+                        for i = 1, #files_table do
+                            local app = files_table[i]
+                            if app.app_type ~= 0 and app.app_type ~= 42 then
+                                table.insert(valid_games, app)
+                            end
+                        end
+
+                        -- Pick one random game from valid list
+                        if #valid_games > 0 then
+                            local rand_index = math.random(1, #valid_games)
+                            search_results_table[1] = valid_games[rand_index]
+                        end
+
+                        return search_results_table
+                    end
+
+                    -- Run the shuffle to get one random game
+                    search_results_table = Shuffle(files_table)
+
+                    -- Check if a game was added
+                    if search_results_table[1] then
+                        random_game_selected = true
+                        random_game = search_results_table[1].name
+                    else
+                        random_game_selected = false
+                    end
+
+                    -- Proceed only if a game was found
+                    if random_game_selected == true then
+                        showCat = 45
+                        p = 1
+                        master_index = p
+                        showMenu = 0
+                        GetNameAndAppTypeSelected()
+                    end
+
+                elseif menuY == 1 then -- #1 Favorites
 
                     -- Check if there are favourites first
                     create_fav_count_table(files_table)
@@ -16285,8 +16356,7 @@ while true do
                     -- No favourites, do nothing
                     end
 
-                    
-                elseif menuY == 1 then -- #1 Recently Played
+                elseif menuY == 2 then -- #2 Recently Played
 
                     if #recently_played_table > 0 then
                         -- Skip to recent
@@ -16299,7 +16369,7 @@ while true do
                     -- No recently played, do nothing
                     end
 
-                elseif menuY == 2 then -- #2 System Apps
+                elseif menuY == 3 then -- #3 System Apps
 
                     if showSysApps == 0 then
                         -- System apps hidden, import them
@@ -16328,7 +16398,7 @@ while true do
                         GetNameAndAppTypeSelected()
                     end
                     
-                elseif menuY == 3 then -- #3 Filter
+                elseif menuY == 4 then -- #4 Filter
 
                     if filterGames == 1 then
                         if collection_count ~= 0 then   
@@ -16351,8 +16421,7 @@ while true do
                     end
 
                 SaveSettings()
-
-                                     
+                     
                 end
 
 
@@ -16370,7 +16439,7 @@ while true do
                     menuY=0
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                if menuY == 2 then -- #2 Filter
+                if menuY == 3 then -- #3 Filter
                     if filterGames > 0 then
                         filterGames = filterGames - 1
                     else
@@ -16379,7 +16448,7 @@ while true do
                 else
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                if menuY == 2 then -- #2 Filter
+                if menuY == 3 then -- #3 Filter
                     if filterGames < 1 then
                         filterGames = filterGames + 1
                     else

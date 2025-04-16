@@ -180,6 +180,9 @@ return {
 ["Search_Results"] = "Suchergebnisse",
 ["Search_No_Results"] = "Drücken Sie Auswahl, um erneut zu suchen",
 
+-- Random game
+["Random_Game"] = "Zufälliges Spiel",
+
 -- Settings Menu
 ["Categories"] = "Kategorien",
 ["Sounds"] = "Töne",
@@ -219,7 +222,7 @@ return {
 ["guide_3_content"] = "Cover: \nBenutzerdefinierte Cover können hier in den Spielordnern gespeichert werden: 'ux0:/data/RetroFlow/COVERS/'. \n\nHintergründe: \nBenutzerdefinierte Spielhintergründe können hier in den Spielordnern gespeichert werden: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nDateinamen:\nDer Dateiname muss mit der App-ID übereinstimmen oder die App-Namensbilder müssen im .png-Format vorliegen.",
 
 ["guide_4_heading"] = "Benutzerdefinierte Hintergrundbilder und Musik",
-["guide_4_content"] = "Hintergrundbild: \nSie können beliebig viele Hintergrundbilder hinzufügen, indem Sie sie hier speichern: 'ux0:/data/RetroFlow/WALLPAPER/'. \nBilder müssen im .jpg- oder .png-Format vorliegen und die Größe sollte 960 px x 544 px betragen. \n\nMusik: \nLieder können zu „ux0:/data/RetroFlow/MUSIC/“ hinzugefügt werden. \nMusik muss im .ogg-Format vorliegen.",
+["guide_4_content"] = "Hintergrundbild: \nSie können beliebig viele Hintergrundbilder hinzufügen, indem Sie sie hier speichern: 'ux0:/data/RetroFlow/WALLPAPER/'. \nBilder müssen im .jpg- oder .png-Format vorliegen und die Größe sollte 960 px x 544 px betragen. \n\nMusik: \nLieder können zu „ux0:/data/RetroFlow/MUSIC/“ hinzugefügt werden. \nMusik muss im .ogg-Format vorliegen.",
 
 ["guide_5_heading"] = "Kombinationen von Tasten",
 ["guide_5_content"] = "Pfeiltaste nach oben: Zur Favoritenkategorie springen \n\nPfeiltaste nach unten + Quadrat: Eine Kategorie zurück gehen \n\nPfeiltaste nach unten + L/R-Trigger: Spiele alphabetisch überspringen",

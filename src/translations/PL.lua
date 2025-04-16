@@ -181,6 +181,9 @@ return {
 ["Search_Results"] = "Wyniki wyszukiwania",
 ["Search_No_Results"] = "Naciśnij przycisk SELECT, aby wyszukać ponownie",
 
+-- Random game
+["Random_Game"] = "Losowa gra",
+
 -- Settings Menu
 ["Categories"] = "Kategorie",
 ["Sounds"] = "Dźwięki",

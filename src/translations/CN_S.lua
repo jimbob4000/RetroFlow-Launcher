@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "搜索结果",
 ["Search_No_Results"] = "按选择再次搜索",
 
+-- Random game
+["Random_Game"] = "随机游戏",
+
 -- Settings Menu
 ["Categories"] = "类别",
 ["Sounds"] = "声音",

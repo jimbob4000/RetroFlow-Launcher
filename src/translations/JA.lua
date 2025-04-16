@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "の検索結果",
 ["Search_No_Results"] = "選択を押して再度検索します",
 
+-- Random game
+["Random_Game"] = "ランダムゲーム",
+
 -- Settings Menu
 ["Categories"] = "カテゴリー",
 ["Sounds"] = "サウンド",

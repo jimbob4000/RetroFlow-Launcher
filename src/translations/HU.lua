@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "Keresési Eredmények",
 ["Search_No_Results"] = "Nyomj SELECT-t az újboli kereséshez",
 
+-- Random game
+["Random_Game"] = "Véletlenszerű játék",
+
 -- Settings Menu
 ["Categories"] = "Kategóriák",
 ["Sounds"] = "Hangok",

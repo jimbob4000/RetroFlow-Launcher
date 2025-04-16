@@ -179,6 +179,9 @@ return {
 ["Search_Results"] = "Arama Sonuçları",
 ["Search_No_Results"] = "Tekrar aramak için seç'e basın",
 
+-- Random game
+["Random_Game"] = "Rastgele oyun",
+
 -- Settings Menu
 ["Categories"] = "Kategoriler",
 ["Sounds"] = "Sesler",
