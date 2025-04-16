@@ -16439,7 +16439,7 @@ while true do
                     menuY=0
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                if menuY == 3 then -- #3 Filter
+                if menuY == 4 then -- #4 Filter
                     if filterGames > 0 then
                         filterGames = filterGames - 1
                     else
@@ -16448,7 +16448,7 @@ while true do
                 else
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                if menuY == 3 then -- #3 Filter
+                if menuY == 4 then -- #4 Filter
                     if filterGames < 1 then
                         filterGames = filterGames + 1
                     else
