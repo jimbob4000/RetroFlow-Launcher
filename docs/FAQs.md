@@ -32,18 +32,24 @@
 <br><br>
 
 ### Error screen - The RetroFlow won't start anymore
-If you encounter a black error screen and the app won't load fully anymore, please try installing the [latest nightly build](https://github.com/jimbob4000/RetroFlow-Launcher/releases/tag/Nightly).
+If you encounter a black error screen and the app won't load fully anymore, then you can try the following fixes.
 
-If that doesn't work, then try deleting these two folders to clear the cache:
+**Fix 1: Install the latest version** 
+<br>
+Try installing the [latest nightly build](https://github.com/jimbob4000/RetroFlow-Launcher/releases/tag/Nightly).
 
-`ux0:/data/RetroFlow/CACHE/` and  `ux0:/data/RetroFlow/TITLES/`
+**Fix 2: Manually clear the cache** 
+<br>If that doesn't work, then try deleting these two folders to clear the cache:
 
+`ux0:/data/RetroFlow/CACHE/` and  `ux0:/data/RetroFlow/TITLES/`.
+
+**Fix 3: Start fresh**
+<br>
 As a last resort you can start again with a fresh install by renaming the RetroFlow's data folder:
 
 `ux0:/data/RetroFlow/` to `ux0:/data/RetroFlow_Old` or whatever you would like to name it.
 
 Once the app is working again you can try restoring assets like roms, covers, backgrounds, music etc. by moving or copying them back from the renamed folder.
-
 <br><br>
 
 ### Can I set RetroFlow to launch when the Vita boots up?
