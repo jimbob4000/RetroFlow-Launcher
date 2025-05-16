@@ -4,6 +4,7 @@
 
 **Topics:**
 
+* [Error screen - The RetroFlow won't start anymore](#error-screen---the-retroflow-wont-start-anymore)
 * [Can I set RetroFlow to launch when the Vita boots up?](#can-i-set-retroflow-to-launch-when-the-vita-boots-up)
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
@@ -28,6 +29,21 @@
 * [Can I change the Mega Drive name to Genesis?](#can-i-change-the-mega-drive-name-to-genesis)
 * [How do I uninstall Adrenaline Bubble Booter?](#how-do-i-uninstall-adrenaline-bubble-booter)
 * [I have duplicate games showing](#i-have-duplicate-games-showing)
+<br><br>
+
+### Error screen - The RetroFlow won't start anymore
+If you encounter a black error screen and the app won't load fully anymore, please try installing the [latest nightly build](https://github.com/jimbob4000/RetroFlow-Launcher/releases/tag/Nightly).
+
+If that doesn't work, then try deleting these two folders to clear the cache:
+
+`ux0:/data/RetroFlow/CACHE/` and  `ux0:/data/RetroFlow/TITLES/`
+
+As a last resort you can start again with a fresh install by renaming the RetroFlow's data folder:
+
+`ux0:/data/RetroFlow/` to `ux0:/data/RetroFlow_Old` or whatever you would like to name it.
+
+Once the app is working again you can try restoring assets like roms, covers, backgrounds, music etc. by moving or copying them back from the renamed folder.
+
 <br><br>
 
 ### Can I set RetroFlow to launch when the Vita boots up?
