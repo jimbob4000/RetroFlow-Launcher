@@ -1,4 +1,4 @@
-# FAQ's
+# FAQ's and Troubleshooting
 
 <br>
 
