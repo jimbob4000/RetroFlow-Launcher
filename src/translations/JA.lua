@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "NINTENDO64",
 ["Super_Nintendo"] = "スーパーファミコン",
 ["Nintendo_Entertainment_System"] = "ファミリーコンピュータ",
+["Nintendo_DS"] = "ニンテンドーDS",
 ["Game_Boy_Advance"] = "ゲームボーイアドバンス",
 ["Game_Boy_Color"] = "ゲームボーイカラー",
 ["Game_Boy"] = "ゲームボーイ",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "NINTENDO64のゲーム",
 ["SNES_Game"] = "スーパファミコンのゲーム",
 ["NES_Game"] = "ファミリーコンピュータのゲーム",
+["NDS_Game"] = "ニンテンドーDSのゲーム",
 ["GBA_Game"] = "ゲームボーイアドバンスのゲーム",
 ["GBC_Game"] = "ゲームボーイカラーのゲーム",
 ["GB_Game"] = "ゲームボーイのゲーム",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "最近プレイしたものから削除",
 ["Retroarch_options"] = "RetroArch オプション",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "DSVitaでゲームを設定する",
 
 -- Collections
 ["Collections"] = "コレクション",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "このゲームを遊ぶにはRetroArchをインストールする必要があります。",
 ["Emulator_not_installed_DaedalusX64"] = "このゲームを遊ぶにはDaedalusX64をインストールする必要があります。",
 ["Emulator_not_installed_Flycast"] = "このゲームを遊ぶにはFlycastをインストールする必要があります。",
+["Emulator_not_installed_DSVita"] = "このゲームを遊ぶにはDSVitaをインストールする必要があります。",
 ["Game_not_installed_rescan"] = "このゲームはインストールされていません。ゲームを再スキャンしてください。",
 
 }

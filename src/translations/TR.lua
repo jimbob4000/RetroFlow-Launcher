@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 oyunu",
 ["SNES_Game"] = "Super Nintendo oyunu",
 ["NES_Game"] = "Nintendo Entertainment System oyunu",
+["NDS_Game"] = "Nintendo DS oyunu",
 ["GBA_Game"] = "Game Boy Advance oyunu",
 ["GBC_Game"] = "Game Boy Color oyunu",
 ["GB_Game"] = "Game Boy oyunu",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Son oynananlardan kaldır",
 ["Retroarch_options"] = "RetroArch seçenekler",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "DSVita’da oyunu yapılandır",
 
 -- Collections
 ["Collections"] = "Koleksiyonlar",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "Bu oyunu oynamak için RetroArch'ı kurmanız gerekiyor.",
 ["Emulator_not_installed_DaedalusX64"] = "Bu oyunu oynamak için DaedalusX64'ü kurmanız gerekiyor.",
 ["Emulator_not_installed_Flycast"] = "Bu oyunu oynamak için Flycast'ı kurmanız gerekiyor.",
+["Emulator_not_installed_DSVita"] = "Bu oyunu oynamak için DSVita'ı kurmanız gerekiyor.",
 ["Game_not_installed_rescan"] = "Bu oyun yüklü değil, lütfen oyunlarınızı tekrar tarayın.",
 
 }

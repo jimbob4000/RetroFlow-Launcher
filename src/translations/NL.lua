@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 spel",
 ["SNES_Game"] = "Super Nintendo spel",
 ["NES_Game"] = "Nintendo Entertainment System spel",
+["NDS_Game"] = "Nintendo DS spel",
 ["GBA_Game"] = "Game Boy Advance spel",
 ["GBC_Game"] = "Game Boy Color spel",
 ["GB_Game"] = "Game Boy spel",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Verwijderen uit recent afgespeeld",
 ["Retroarch_options"] = "RetroArch-opties",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "Spel configureren in DSVita",
 
 -- Collections
 ["Collections"] = "Collecties",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "Je moet RetroArch installeren om dit spel te spelen.",
 ["Emulator_not_installed_DaedalusX64"] = "Je moet DaedalusX64 installeren om dit spel te spelen.",
 ["Emulator_not_installed_Flycast"] = "Je moet Flycast installeren om dit spel te spelen.",
+["Emulator_not_installed_DSVita"] = "Je moet DSVita installeren om dit spel te spelen.",
 ["Game_not_installed_rescan"] = "Dit spel is niet geïnstalleerd, scan je spellen opnieuw.",
 
 }

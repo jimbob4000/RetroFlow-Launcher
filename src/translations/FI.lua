@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 peli",
 ["SNES_Game"] = "Super Nintendo peli",
 ["NES_Game"] = "Nintendo Entertainment System peli",
+["NDS_Game"] = "Nintendo DS peli",
 ["GBA_Game"] = "Game Boy Advance peli",
 ["GBC_Game"] = "Game Boy Color peli",
 ["GB_Game"] = "Game Boy peli",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Poista viimeaikaisista",
 ["Retroarch_options"] = "RetroArch-vaihtoehdot",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "Määritä peli DSVitassa",
 
 -- Collections
 ["Collections"] = "Kokoelmia",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "Sinun on asennettava RetroArch pelataksesi tätä peliä.",
 ["Emulator_not_installed_DaedalusX64"] = "Sinun on asennettava DaedalusX64 pelataksesi tätä peliä.",
 ["Emulator_not_installed_Flycast"] = "Sinun on asennettava Flycast pelataksesi tätä peliä.",
+["Emulator_not_installed_DSVita"] = "Sinun on asennettava DSVita pelataksesi tätä peliä.",
 ["Game_not_installed_rescan"] = "Tätä peliä ei ole asennettu, ole hyvä ja skannaa pelisi uudelleen.",
 
 }

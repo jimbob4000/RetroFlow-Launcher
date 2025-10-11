@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 게임",
 ["SNES_Game"] = "Super Nintendo 게임",
 ["NES_Game"] = "Nintendo Entertainment System 게임",
+["NDS_Game"] = "Nintendo DS 게임",
 ["GBA_Game"] = "Game Boy Advance 게임",
 ["GBC_Game"] = "Game Boy Color 게임",
 ["GB_Game"] = "Game Boy 게임",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "최근 재생에서 제거",
 ["Retroarch_options"] = "RetroArch 옵션",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "DSVita에서 게임 구성",
 
 -- Collections
 ["Collections"] = "컬렉션",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "이 게임을 하려면 RetroArch를 설치해야 합니다.",
 ["Emulator_not_installed_DaedalusX64"] = "이 게임을 하려면 DaedalusX64를 설치해야 합니다.",
 ["Emulator_not_installed_Flycast"] = "이 게임을 하려면 Flycast를 설치해야 합니다.",
+["Emulator_not_installed_DSVita"] = "이 게임을 하려면 DSVita를 설치해야 합니다.",
 ["Game_not_installed_rescan"] = "이 게임이 설치되지 않았습니다. 게임을 다시 스캔해 주세요.",
 
 }

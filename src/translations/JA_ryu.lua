@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "NINTENDO64",
 ["Super_Nintendo"] = "スーパーファミコン",
 ["Nintendo_Entertainment_System"] = "ファミリーコンピュータ",
+["Nintendo_DS"] = "ニンテンドーDS",
 ["Game_Boy_Advance"] = "ゲームボーイアドバンス",
 ["Game_Boy_Color"] = "ゲームボーイカラー",
 ["Game_Boy"] = "ゲームボーイ",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "NINTENDO64ぬゲーム",
 ["SNES_Game"] = "スーパファミコンぬゲーム",
 ["NES_Game"] = "ファミリーコンピュータぬゲーム",
+["NDS_Game"] = "ニンチャンドーDSぬゲーム",
 ["GBA_Game"] = "ゲームボーイアドバンスぬゲーム",
 ["GBC_Game"] = "ゲームボーイカラーぬゲーム",
 ["GB_Game"] = "ゲームボーイぬゲーム",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "最近プレイしたものから削除",
 ["Retroarch_options"] = "RetroArch オプション",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "DSVitaウチにげーむ設定する",
 
 -- Collections
 ["Collections"] = "コレクション",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "RetroArchぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_DaedalusX64"] = "DaedalusX64ぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_Flycast"] = "Flycastぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_DSVita"] = "DSVitaぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Game_not_installed_rescan"] = "ゲームや、インストールさりぬくとぅ、ゲームや再スキャンしみそーり。",
 
 }

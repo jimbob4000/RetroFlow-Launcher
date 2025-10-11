@@ -180,6 +180,7 @@
 		    n64_table = {}
 		    snes_table = {}
 		    nes_table = {}
+		    nds_table = {}
 		    gba_table = {}
 		    gbc_table = {}
 		    gb_table = {}
@@ -222,6 +223,7 @@
 		    import_cached_DB_tables("db_n64.lua", n64_table)
 		    import_cached_DB_tables("db_snes.lua", snes_table)
 		    import_cached_DB_tables("db_nes.lua", nes_table)
+		    import_cached_DB_tables("db_nds.lua", nds_table)
 		    import_cached_DB_tables("db_gba.lua", gba_table)
 		    import_cached_DB_tables("db_gbc.lua", gbc_table)
 		    import_cached_DB_tables("db_gb.lua", gb_table)
@@ -265,6 +267,7 @@
 		    table.sort(n64_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 		    table.sort(snes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 		    table.sort(nes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+		    table.sort(nds_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 		    table.sort(gba_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 		    table.sort(gbc_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 		    table.sort(gb_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
@@ -362,9 +365,11 @@
 		    elseif AppTypeNum == 39 then return psm_table
 		    elseif AppTypeNum == 40 then return scummvm_table
 		    elseif AppTypeNum == 41 then return pico8_table
-		    -- elseif AppTypeNum == 42 then return fav_count
-		    -- elseif AppTypeNum == 43 then return recently_played_table
-		    -- elseif AppTypeNum == 44 then return search_results_table
+		    -- elseif AppTypeNum == 42 then return sysapps_table
+		    elseif AppTypeNum == 43 then return nds_table
+		    -- elseif AppTypeNum == 44 then return fav_count
+		    -- elseif AppTypeNum == 45 then return recently_played_table
+		    -- elseif AppTypeNum == 46 then return search_results_table
 		    else return homebrews_table
 		    end
 		end
@@ -410,6 +415,8 @@
 		    elseif AppTypeNum == 39 then return "db_psm.lua"
 		    elseif AppTypeNum == 40 then return "db_scummvm.lua"
 		    elseif AppTypeNum == 41 then return "db_pico8.lua"
+		    elseif AppTypeNum == 42 then return "db_sysapps.lua"
+		    elseif AppTypeNum == 43 then return "db_nds.lua"
 		    else return "db_homebrews.lua"
 		    end
 		end
@@ -459,6 +466,8 @@
 		    -- elseif AppTypeNum == 39 then return "crc_db_psm.lua"   			-- psm_table
 		    -- elseif AppTypeNum == 40 then return "crc_db_scummvm.lua"   		-- scummvm_table
 		    -- elseif AppTypeNum == 41 then return "crc_db_pico8.lua"   		-- pico8_table
+		    -- elseif AppTypeNum == 42 then return "crc_db_sysapps.lua"         -- sysapps_table
+		    -- elseif AppTypeNum == 43 then return "crc_db_nds.lua"             -- nds_table
 		    else
 		    	return false
 		    end
@@ -563,10 +572,10 @@
 			    image.blit(artwork_img, artwork_x_pos, artwork_y_pos)
 
 			    -- Add dark overlay for snaps
-			    if download_mode_snaps == true then
-					draw.fillrect (0,0,960,544,color.new(0,0,0, 150))
-					draw.gradrect (0, 0, 960, 150, gradient_start, gradient_end, 0)
-				end
+			    -- if download_mode_snaps == true then
+				-- 	draw.fillrect (0,0,960,544,color.new(0,0,0, 150))
+				-- 	draw.gradrect (0, 0, 960, 150, gradient_start, gradient_end, 0)
+				-- end
 
 			else
 			end
@@ -639,7 +648,7 @@
 			end
 
 			-- Check CRC
-			local syscount = 44
+			local syscount = 45
 			local current_crc_apptype = 1
 
 			while current_crc_apptype <= syscount do
@@ -1258,6 +1267,16 @@
 					    			artwork_file_dest_dir = tostring(file[download_mode_path_local()])
 					    			artwork_file_dest_path = tostring(file[download_mode_path_local()] .. romname_noExtension .. ".png")
 					    			http.download(artwork_file_url, artwork_file_tmp)
+
+
+					    		-- NDS use titleid
+					    		elseif current_crc_apptype == 43 then
+					    			artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. file.name .. ".png")
+					    			artwork_file_url = tostring(file[download_mode_path_online()] .. file.titleid .. ".png")
+					    			artwork_file_dest_dir = tostring(file[download_mode_path_local()])
+					    			artwork_file_dest_path = tostring(file[download_mode_path_local()] .. file.name .. ".png")
+					    			http.download(artwork_file_url, artwork_file_tmp)
+
 						    	else
 
 						    		if file[download_mode_path_online()]:find("libretro") then

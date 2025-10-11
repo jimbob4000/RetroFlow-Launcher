@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 Game",
 ["SNES_Game"] = "Super Nintendo Game",
 ["NES_Game"] = "Nintendo Entertainment System Game",
+["NDS_Game"] = "Nintendo DS Game",
 ["GBA_Game"] = "Game Boy Advance Game",
 ["GBC_Game"] = "Game Boy Color Game",
 ["GB_Game"] = "Game Boy Game",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Remove from recently played",
 ["Retroarch_options"] = "RetroArch options",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "Configure game in DSVita",
 
 -- Collections
 ["Collections"] = "Collections",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "You need to install RetroArch to play this game.",
 ["Emulator_not_installed_DaedalusX64"] = "You need to install DaedalusX64 to play this game.",
 ["Emulator_not_installed_Flycast"] = "You need to install Flycast to play this game.",
+["Emulator_not_installed_DSVita"] = "You need to install DSVita to play this game.",
 ["Game_not_installed_rescan"] = "This game is not installed, please rescan your games.",
 
 }

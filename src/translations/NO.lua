@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 spill",
 ["SNES_Game"] = "Super Nintendo spill",
 ["NES_Game"] = "Nintendo Entertainment System spill",
+["NDS_Game"] = "Nintendo DS spill",
 ["GBA_Game"] = "Game Boy Advance spill",
 ["GBC_Game"] = "Game Boy Color spill",
 ["GB_Game"] = "Game Boy spill",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Fjern fra nylig spilt",
 ["Retroarch_options"] = "RetroArch alternativer",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "Konfigurer spillet i DSVita",
 
 -- Collections
 ["Collections"] = "Samlinger",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "Du må installere RetroArch for å spille dette spillet.",
 ["Emulator_not_installed_DaedalusX64"] = "Du må installere DaedalusX64 for å spille dette spillet.",
 ["Emulator_not_installed_Flycast"] = "Du må installere Flycast for å spille dette spillet.",
+["Emulator_not_installed_DSVita"] = "Du må installere DSVita for å spille dette spillet.",
 ["Game_not_installed_rescan"] = "Dette spillet er ikke installert, vennligst skann spillene dine på nytt.",
 
 }

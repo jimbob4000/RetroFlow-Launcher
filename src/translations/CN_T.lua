@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 遊戲",
 ["SNES_Game"] = "Super Nintendo 遊戲",
 ["NES_Game"] = "Nintendo Entertainment System 遊戲",
+["NDS_Game"] = "Nintendo DS 遊戲",
 ["GBA_Game"] = "Game Boy Advance 遊戲",
 ["GBC_Game"] = "Game Boy Color 遊戲",
 ["GB_Game"] = "Game Boy 遊戲",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "最近播放的中移除",
 ["Retroarch_options"] = "RetroArch 選項",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "在 DSVita 中設定遊戲",
 
 -- Collections
 ["Collections"] = "收藏品",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "你需要安裝 RetroArch 才能玩這個遊戲。",
 ["Emulator_not_installed_DaedalusX64"] = "你需要安裝 DaedalusX64 才能玩這個遊戲。",
 ["Emulator_not_installed_Flycast"] = "你需要安裝 Flycast 才能玩這個遊戲。",
+["Emulator_not_installed_DSVita"] = "你需要安裝 DSVita 才能玩這個遊戲。",
 ["Game_not_installed_rescan"] = "遊戲未安裝，請重新掃描遊戲。",
 
 }

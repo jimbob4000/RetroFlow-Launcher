@@ -55,6 +55,7 @@ return {
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
 ["Game_Boy"] = "Game Boy",
@@ -134,6 +135,7 @@ return {
 ["N64_Game"] = "Nintendo 64 Játék",
 ["SNES_Game"] = "Super Nintendo Játék",
 ["NES_Game"] = "Nintendo Entertainment System Játék",
+["NDS_Game"] = "Nintendo DS Játék",
 ["GBA_Game"] = "Game Boy Advance Játék",
 ["GBC_Game"] = "Game Boy Color Játék",
 ["GB_Game"] = "Game Boy Játék",
@@ -265,6 +267,7 @@ return {
 ["Remove_from_recently_played"] = "Eltávolítás a nemrég játszottból",
 ["Retroarch_options"] = "RetroArch beállítások",
 ["Core_colon"] = "Core:",
+["Configure_game_in_DSVita"] = "Játék beállítása a DSVitában",
 
 -- Collections
 ["Collections"] = "Gyűjtemények",
@@ -296,6 +299,7 @@ return {
 ["Emulator_not_installed_Retroarch"] = "A RetroArch telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_DaedalusX64"] = "A DaedalusX64 telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_Flycast"] = "A Flycast telepítése szükséges a játékhoz.",
+["Emulator_not_installed_DSVita"] = "A DSVita telepítése szükséges a játékhoz.",
 ["Game_not_installed_rescan"] = "Ez a játék nincs telepítve, kérem, szkennelje újra a játékait.",
 
 }
