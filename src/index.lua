@@ -8127,8 +8127,6 @@ end
         return display_string
     end
 
-
-
     function getRomSize()
         -- Get rom size for info screen
         if System.doesFileExist(appdir) then
@@ -8146,28 +8144,6 @@ end
             game_size = display_string  -- Set global for backward compatibility
             
             return display_string
-        end
-    end
-
-
-
-    function getRomSize()
-        -- Get rom size for info screen
-        if System.doesFileExist(appdir) then
-            local tmpfile = System.openFile(appdir, FREAD)
-            local size = System.sizeFile(tmpfile)
-            System.closeFile(tmpfile)
-            
-            game_size = formatSize(size)
-            app_size = size / (1024 * 1024) -- Keep app_size in MB for compatibility
-            
-            return game_size, size, app_size
-        else
-            -- Error handling for missing game
-            game_size = "0 B"
-            app_size = 0
-            
-            return "0 B", 0, 0
         end
     end
 
@@ -11465,6 +11441,16 @@ while true do
             if folder == true then
                 if System.doesDirExist(appdir) then
                     game_size, _, app_size = getAppSize(appdir)
+
+                elseif xCatLookup(showCat)[p] and xCatLookup(showCat)[p].app_type == 2 and xCatLookup(showCat)[p].category == "MG" then
+                    -- Fix for psp homebrew eboots, get parent directory of EBOOT.PBP
+                    local mg_dir = appdir:lower():match("(.+)/eboot%.pbp$")
+                    if mg_dir and System.doesDirExist(mg_dir) then
+                        game_size, _, app_size = getAppSize(mg_dir)
+                    else
+                        game_size = "0 B"
+                        app_size = 0
+                    end
                 else
                     game_size = "0 B"
                     app_size = 0
