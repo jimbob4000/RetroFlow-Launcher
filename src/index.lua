@@ -11475,6 +11475,30 @@ while true do
                 end
 
             end
+
+            -- Get current app version for Vita and Homebrew
+            if apptype <= 1 then 
+                local sfo_path = appdir .. "/sce_sys/param.sfo"
+                if System.doesFileExist(sfo_path) then
+
+                    -- Try to extract the SFO file safely
+                    local sfo_read, info = pcall(System.extractSfo, sfo_path)
+
+                    if not sfo_read then
+                        sfo_read_success = false
+                    else
+                        sfo_read_success = true
+                    end
+
+                    if sfo_read_success == true then
+                        -- app_version = tostring(info.version) or xCatLookup(showCat)[p].version
+                        app_version = tostring(info.version) or xCatLookup(showCat)[p].version
+                    else
+                    end
+
+                end
+            else
+            end
             
             menuY=0
             tmpappcat=0
