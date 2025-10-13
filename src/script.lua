@@ -198,8 +198,6 @@
             for k, v in pairs(image_extraction_table) do
 
 
-                
-
                 -- If image already exists, dont display it
                 if files.exists (backgrounds_psp_dir .. v.titleid .. ".png") then
 
@@ -346,75 +344,150 @@
 
 -- SETUP - LOADING SCREEN
 
-    -- Pre scan folders to get percentage
 
-        local loading_tasks = 0
-        local sub_dir_count = 0
+    -- PRE-SCAN folders to get count of loading tasks and to iterate over tables later to get sfo information
 
-        function count_loading_tasks(dir)
-            if files.exists((dir)) then
-                local dir_count = {}
-                local dir_count = files.list((dir))
+        -- Setup for scanning
 
-                -- Scan sub folders for categories lite
-                sub_dir_count = 0
-                clite_dir_count = 0
+            local loading_tasks = 0
+            local sub_dir_count = 0
+            local loading_progress = 0
 
-                if #dir_count ~= nil then
-                    for i, file in pairs(dir_count) do
+            local QuickGameList = {
+                adrenaline_games_folder = {},
+                adrenaline_iso_folder = {},
+                psx_retroarch = {},
+            }
 
-                        -- Add categories lite folder contents to loading tasks
-                        if file.directory == true then
-                            sub_dir = files.list(file.path)
-                            for i, file in pairs(sub_dir) do
-                                if files.exists(file.path .. "/EBOOT.pbp") then
-                                    sub_dir_count = sub_dir_count + 1
-                                end
-                                if file.ext == "iso" or file.ext == "cso" then
-                                    sub_dir_count = sub_dir_count + 1
+            adr_partition_table = {
+                [1] = "ux0",
+                [2] = "ur0",
+                [3] = "imc0",
+                [4] = "xmc0",
+                [5] = "uma0",
+            }
+
+
+        -- Function: Quick scan games
+
+            function quickScanGames(dir_path, depth, allow, ...)
+                depth = depth or 0
+                allow = (allow == nil) and true or allow
+                local extensions = {...}  -- Collect all remaining arguments into a table
+                
+                local results = {}
+                local idx = 1
+                
+                -- Convert extensions to lookup table
+                local ext_lookup = {}
+                for _, ext in ipairs(extensions) do
+                    ext_lookup[ext:lower()] = true
+                end
+                
+                -- Excluded extensions
+                local excluded_exts = {
+                    ".sav", ".srm", ".eep", ".fla", ".rtc", ".dsv",
+                    ".st0", ".st1", ".st2", ".sta", ".state", ".sgm", 
+                    ".sr0", ".ss0", ".ss1", ".ss2", ".sv0", ".sv1",
+                    ".qs0", ".qs1", ".qs2", ".bsv", ".mpk", ".sra",
+                    ".mcr", ".mem", ".mc", ".mcd", ".vmp", ".vmu", 
+                    ".vms", ".dci", ".nv", ".nvm", ".nvram", ".hi",
+                    ".sna", ".szx", ".replay", ".cfg"
+                }
+                
+                local excluded_lookup = {}
+                for _, ext in ipairs(excluded_exts) do
+                    excluded_lookup[ext:lower()] = true
+                end
+                
+                local function scanDir(path, current_depth)
+                    if current_depth > depth then return end
+                    
+                    local files = files.list(path)
+                    if not files then return end
+                    
+                    for _, file in pairs(files) do
+                        if file.name ~= "." and file.name ~= ".." then
+                            local full_path = path .. "/" .. file.name
+                            
+                            if file.directory and current_depth < depth then
+                                scanDir(full_path, current_depth + 1)
+                            elseif not file.directory then
+                                -- Skip hidden files and metadata
+                                if file.name:sub(1,1) ~= "." and 
+                                   file.name ~= "DS_Store" and 
+                                   file.name ~= "Thumbs.db" then
+                                    
+                                    local ext = file.name:match("%.([^%.]+)$")
+                                    if ext then ext = "." .. ext:lower() end
+                                    
+                                    -- Check if excluded
+                                    if not (ext and excluded_lookup[ext]) and
+                                       not file.name:lower():find("bios") then
+                                        
+                                        -- Check extension filter
+                                        local include_file = false
+                                        if #extensions == 0 then
+                                            include_file = true
+                                        else
+                                            local has_ext = ext and ext_lookup[ext]
+                                            include_file = allow and has_ext or (not allow and not has_ext)
+                                        end
+                                        
+                                        if include_file then
+                                            results[idx] = {
+                                                name = file.name,
+                                                path = full_path,
+                                                subfolder = current_depth > 0,  -- true if found in subfolder
+                                                -- size = file.size
+                                            }
+                                            idx = idx + 1
+                                        end
+                                    end
                                 end
                             end
                         end
-
-                        -- Minus categories lite folders from loading tasks
-                        if file.directory == true and not files.exists(file.path .. "/EBOOT.pbp") then
-                            clite_dir_count = clite_dir_count + 1
-                        end
-                        if file.directory == true and files.exists(file.path .. "/" .. "%.iso") then
-                            clite_dir_count = clite_dir_count + 1
-                        end
-                        if file.directory == true and files.exists(file.path .. "/" .. "%.cso") then
-                            clite_dir_count = clite_dir_count + 1
-                        end
-
                     end
                 end
-                loading_tasks = loading_tasks + #dir_count + sub_dir_count - clite_dir_count
+                
+                scanDir(dir_path, 0)
+                return results
             end
-        end
 
-        function count_loading_tasks_game_dir(dir)
-            if files.exists((dir)) then
-                local dir_count = {}
-                local dir_count = files.listdirs((dir))
+        -- Command: Quick scan games
 
-                loading_tasks = loading_tasks + #dir_count
+            local function add_to_table (def_input_table, def_output_table)
+                if next(def_input_table) ~= nil then
+                    for i, entry in ipairs(def_input_table) do
+                        table.insert(def_output_table, entry)
+                    end
+                end
             end
-        end
+            
+            -- Scan all adrenaline partitions
+                for k, v in pairs(adr_partition_table) do
 
-        count_loading_tasks("ux0:/pspemu/ISO")
-        count_loading_tasks("ur0:/pspemu/ISO")
-        count_loading_tasks("imc0:/pspemu/ISO")
-        count_loading_tasks("xmc0:/pspemu/ISO")
-        count_loading_tasks("uma0:/pspemu/ISO")
-        count_loading_tasks_game_dir("ux0:/pspemu/PSP/GAME")
-        count_loading_tasks_game_dir("ur0:/pspemu/PSP/GAME")
-        count_loading_tasks_game_dir("imc0:/pspemu/PSP/GAME")
-        count_loading_tasks_game_dir("xmc0:/pspemu/PSP/GAME")
-        count_loading_tasks_game_dir("uma0:/pspemu/PSP/GAME")
-        count_loading_tasks(tostring((romUserDir.PlayStation)))
+                    local game_folder = quickScanGames(tostring(v)  .. ":/pspemu/PSP/GAME", 2, true, ".pbp")
+                    if next(game_folder) then
+                        add_to_table(game_folder, QuickGameList.adrenaline_games_folder)
+                    end
+                    local iso_folder = quickScanGames(tostring(v)  .. ":/pspemu/ISO", 2, true, ".iso", ".cso")
+                    if next(iso_folder) then
+                        add_to_table(iso_folder, QuickGameList.adrenaline_iso_folder)
+                    end
 
-        local loading_progress = 0
+                end
+
+            -- Scan retroarch folder
+                QuickGameList.psx_retroarch = quickScanGames(tostring((romUserDir.PlayStation)), 1, true, ".pbp")
+
+            -- Get total count of QuickGameList loading screen
+                for k, v in pairs(QuickGameList) do
+                    if type(v) == "table" then
+                        loading_tasks = loading_tasks + #v
+                    end
+                end
+
 
     -- Setup screen and assets
 
@@ -561,28 +634,175 @@
 
     -- Scan Function - ISO folders
 
-        function scan_iso_folder(scan_dir)
-            local rom_dir = (scan_dir)
-            local dir = files.listfiles(rom_dir)
-            
-            if files.exists(rom_dir) then
-                for i, file in pairs(dir) do
+        function scan_iso_folder()
 
-                    if string.match(file.name, "%.iso") or string.match(file.name, "%.cso") then
+            if next(QuickGameList.adrenaline_iso_folder) ~= nil then
 
-                        -- Check if game in cached file
-                        if cached_table_sfo_scans_onelua[file.name] ~= nil then
-                            -- Found
+                for i, file in pairs(QuickGameList.adrenaline_iso_folder) do
+
+                    -- Check if game in cached file
+                    if cached_table_sfo_scans_onelua[file.name] ~= nil then
+                        -- Found
+                        file.filename = file.name
+                        file.path = file.path
+
+                        file.title = cached_table_sfo_scans_onelua[file.name].title or "UNK"
+                        file.titleid = cached_table_sfo_scans_onelua[file.name].titleid or "UNK"
+                        file.category = cached_table_sfo_scans_onelua[file.name].category or "UNK"
+                        file.region = cached_table_sfo_scans_onelua[file.name].region or "UNK"
+
+                        table.insert(table_iso, file)
+                        table.insert(new_sfo_scans_onelua, file)
+                    else
+                        -- Not found, is a new game, scan SFO
+                        local sfo = {}
+                        sfo = game.info(file.path)
+
+                        -- Error handling for bad sfo files
+                        if sfo ~= nil then
+                            if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
+
+                                -- Cleanup game title
+                                sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
+                                
+                                file.filename = file.name
+                                file.path = file.path
+
+                                file.title = sfo_title
+                                file.titleid = sfo.DISC_ID or "UNK"
+                                file.category = sfo.CATEGORY or "UNK"
+                                file.region = sfo.REGION or "UNK"
+
+                                table.insert(table_iso, file)
+                                table.insert(new_sfo_scans_onelua, file)
+                            else
+                            end
+                        else
+                            -- Fallback, include anyway to prevent boot loop
                             file.filename = file.name
                             file.path = file.path
 
-                            file.title = cached_table_sfo_scans_onelua[file.name].title or "UNK"
-                            file.titleid = cached_table_sfo_scans_onelua[file.name].titleid or "UNK"
-                            file.category = cached_table_sfo_scans_onelua[file.name].category or "UNK"
-                            file.region = cached_table_sfo_scans_onelua[file.name].region or "UNK"
+                            file.title = "UNK"
+                            file.titleid = "UNK"
+                            file.category = "UNK"
+                            file.region = "UNK"
 
                             table.insert(table_iso, file)
                             table.insert(new_sfo_scans_onelua, file)
+                        end
+                        update_loading_screen_progress()
+                    end
+
+                end
+            else
+            end
+
+        end
+
+    -- Scan Function - Game folders
+
+        function scan_game_folder()
+
+            if next(QuickGameList.adrenaline_games_folder) ~= nil then
+                for i, file in pairs(QuickGameList.adrenaline_games_folder) do
+
+                    -- Get parent folder name
+                    local last_foldername_in_path = file.path:gsub(".*/([^/]+)/[^/]+$", "%1") -- Gsub returns the parent folder name eg. SCUS94306
+
+                    -- Check if game in cached file
+                    if cached_table_sfo_scans_onelua[last_foldername_in_path] ~= nil then
+                        -- Found
+                        file.filename = file.name
+                        file.path = file.path
+                        
+                        file.title = cached_table_sfo_scans_onelua[last_foldername_in_path].title or "UNK"
+                        file.titleid = cached_table_sfo_scans_onelua[last_foldername_in_path].titleid or "UNK"
+                        file.category = cached_table_sfo_scans_onelua[last_foldername_in_path].category or "UNK"
+                        file.region = cached_table_sfo_scans_onelua[last_foldername_in_path].region or "UNK"
+
+                        table.insert(table_games, file)
+                        table.insert(new_sfo_scans_onelua, file)
+                    else
+                        -- Not found, is a new game, scan SFO
+                        local sfo = {}
+                        sfo = game.info(file.path)
+
+                        if sfo ~= nil then
+                            -- Cleanup game title
+                            sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
+
+                            file.filename = last_foldername_in_path
+                            file.path = file.path
+
+                            if sfo.CATEGORY == "MG" then
+                                -- Homebrew - Use folder name for homebrew as many devs didn't bother creating proper sfo files
+                                file.title = last_foldername_in_path
+                            else
+                                file.title = sfo_title
+                            end
+
+                            
+                            file.titleid = sfo.DISC_ID or "UNK"
+                            file.category = sfo.CATEGORY or "UNK"
+                            file.region = sfo.REGION or "UNK"
+
+                            if file.filename and file.title and file.titleid and file.region and file.path ~= nil then
+                                table.insert(table_games, file)
+                                table.insert(new_sfo_scans_onelua, file)
+                            else
+                            end
+                        else
+                            -- Fallback, include anyway to prevent boot loop
+                            file.filename = last_foldername_in_path
+                            file.path = file.path
+
+                            file.title = "UNK"
+                            file.titleid = "UNK"
+                            file.category = "UNK"
+                            file.region = "UNK"
+
+                            table.insert(table_iso, file)
+                            table.insert(new_sfo_scans_onelua, file)
+                        end
+                        
+                        update_loading_screen_progress()
+
+                    end
+
+
+                end
+            else
+            end
+
+        end
+
+    -- Scan Function - Retroarch PS1 Game folders
+        function scan_Rom_PS1_Eboot()
+
+            if next(QuickGameList.psx_retroarch) ~= nil then
+
+                for i, file in pairs(QuickGameList.psx_retroarch) do
+
+                    -- Handle EBOOT.PBP files in subfolders
+                    if file.name:lower():match("eboot.pbp") and file.subfolder == true then
+
+                        -- Get parent folder name
+                        local last_foldername_in_path = file.path:gsub(".*/([^/]+)/[^/]+$", "%1")
+
+                        -- Check if game in cached file
+                        if cached_table_sfo_scans_onelua[last_foldername_in_path] ~= nil then
+                            -- Found
+                            file.filename = file.name
+                            file.path = file.path
+                            
+                            file.title = cached_table_sfo_scans_onelua[last_foldername_in_path].title or "UNK"
+                            file.titleid = cached_table_sfo_scans_onelua[last_foldername_in_path].titleid or "UNK"
+                            file.category = cached_table_sfo_scans_onelua[last_foldername_in_path].category or "UNK"
+                            file.region = cached_table_sfo_scans_onelua[last_foldername_in_path].region or "UNK"
+
+                            table.insert(table_retroarch, file)
+                            table.insert(new_sfo_scans_onelua, file)
+
                         else
                             -- Not found, is a new game, scan SFO
                             local sfo = {}
@@ -594,8 +814,8 @@
 
                                     -- Cleanup game title
                                     sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
-                                    
-                                    file.filename = file.name
+
+                                    file.filename = last_foldername_in_path
                                     file.path = file.path
 
                                     file.title = sfo_title
@@ -603,227 +823,32 @@
                                     file.category = sfo.CATEGORY or "UNK"
                                     file.region = sfo.REGION or "UNK"
 
-                                    table.insert(table_iso, file)
+                                    table.insert(table_retroarch, file)
                                     table.insert(new_sfo_scans_onelua, file)
                                 else
                                 end
-                            end
-                            update_loading_screen_progress()
-                        end
-
-                    else
-                    end
-
-                end
-            else
-            end
-
-            -- Scan sub folders for categories lite
-            local rom_dir = (scan_dir)
-            local sub_dir = files.listdirs(rom_dir)
-
-            if sub_dir ~= nil then
-                for i, subfolder in pairs(sub_dir) do
-                    subfolder_file = files.listfiles(subfolder.path)
-
-                    for i, file in pairs(subfolder_file) do
-                        if string.match(file.name, "%.iso") or string.match(file.name, "%.cso") then
-
-                            -- Check if game in cached file
-                            if cached_table_sfo_scans_onelua[file.name] ~= nil then
-                                -- Found
-                                file.filename = file.name
+                            else
+                                -- Fallback, include anyway to prevent boot loop
+                                file.filename = last_foldername_in_path
                                 file.path = file.path
-                                
-                                file.title = cached_table_sfo_scans_onelua[file.name].title or "UNK"
-                                file.titleid = cached_table_sfo_scans_onelua[file.name].titleid or "UNK"
-                                file.category = cached_table_sfo_scans_onelua[file.name].category or "UNK"
-                                file.region = cached_table_sfo_scans_onelua[file.name].region or "UNK"
+
+                                file.title = "UNK"
+                                file.titleid = "UNK"
+                                file.category = "UNK"
+                                file.region = "UNK"
 
                                 table.insert(table_iso, file)
                                 table.insert(new_sfo_scans_onelua, file)
-
-                            else
-                                -- Not found, is a new game, scan SFO
-                                local sfo = {}
-                                sfo = game.info(file.path)
-
-                                -- Error handling for bad sfo files
-                                if sfo ~= nil then
-                                    if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
-
-                                        -- Cleanup game title
-                                        sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
-                                    
-                                        file.filename = file.name
-                                        file.path = file.path
-
-                                        file.title = sfo_title
-                                        file.titleid = sfo.DISC_ID or "UNK"
-                                        file.category = sfo.CATEGORY or "UNK"
-                                        file.region = sfo.REGION or "UNK"   
-                                        table.insert(table_iso, file)
-                                        table.insert(new_sfo_scans_onelua, file)
-                                        
-                                    else
-                                    end
-                                end
-                                update_loading_screen_progress()
-                            end
-
-                        else
-                        end
-                    end
-                end
-            else
-            end
-
-        end
-
-    -- Scan Function - Game folders
-
-        function scan_game_folder(scan_dir)
-            local rom_dir = (scan_dir)
-            local dir = files.listdirs(rom_dir)
-
-            if files.exists(rom_dir) then
-                for i, file in pairs(dir) do
-                    if files.exists(rom_dir .. "/" .. file.name .. "/EBOOT.pbp") then
-
-                        -- Check if game in cached file
-                        if cached_table_sfo_scans_onelua[file.name] ~= nil then
-                            -- Found
-                            file.filename = file.name
-                            file.path = file.path .. "/EBOOT.pbp"
-                            
-                            file.title = cached_table_sfo_scans_onelua[file.name].title or "UNK"
-                            file.titleid = cached_table_sfo_scans_onelua[file.name].titleid or "UNK"
-                            file.category = cached_table_sfo_scans_onelua[file.name].category or "UNK"
-                            file.region = cached_table_sfo_scans_onelua[file.name].region or "UNK"
-
-                            table.insert(table_games, file)
-                            table.insert(new_sfo_scans_onelua, file)
-                        else
-                            -- Not found, is a new game, scan SFO
-                            local sfo = {}
-                            sfo = game.info(rom_dir .. "/" .. file.name .. "/EBOOT.pbp")
-
-                            if sfo ~= nil then
-                                -- Cleanup game title
-                                sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
-
-                                file.filename = file.name
-                                file.path = file.path .. "/EBOOT.pbp"
-
-                                if sfo.CATEGORY == "MG" then
-                                    -- Homebrew - Use folder name for homebrew as many devs didn't bother creating proper sfo files
-                                    file.title = file.name
-                                else
-                                    file.title = sfo_title
-                                end
-
-                                
-                                file.titleid = sfo.DISC_ID or "UNK"
-                                file.category = sfo.CATEGORY or "UNK"
-                                file.region = sfo.REGION or "UNK"
-
-                                if file.filename and file.title and file.titleid and file.region and file.path ~= nil then
-                                    table.insert(table_games, file)
-                                    table.insert(new_sfo_scans_onelua, file)
-                                else
-                                end
                             end
                             
                             update_loading_screen_progress()
-
                         end
 
-                    else
-                    end
-                end
-            else
-            end
-
-            -- Scan sub folders for categories lite
-            local rom_dir = (scan_dir)
-            local sub_dir = files.listdirs(rom_dir)
-
-            if sub_dir ~= nil then
-                for i, subfolder in pairs(sub_dir) do
-
-                    local subfolder_file = files.listdirs(subfolder.path)
-
-                    if subfolder_file ~= nil then
-                        for i, file in pairs(subfolder_file) do
-                            if files.exists(file.path .. "/EBOOT.pbp") then
-
-                                -- Check if game in cached file
-                                if cached_table_sfo_scans_onelua[file.name] ~= nil then
-                                    -- Found
-                                    file.filename = file.name
-                                    file.path = file.path .. "/EBOOT.pbp"
-                                    
-                                    file.title = cached_table_sfo_scans_onelua[file.name].title or "UNK"
-                                    file.titleid = cached_table_sfo_scans_onelua[file.name].titleid or "UNK"
-                                    file.category = cached_table_sfo_scans_onelua[file.name].category or "UNK"
-                                    file.region = cached_table_sfo_scans_onelua[file.name].region or "UNK"
-
-                                    table.insert(table_games, file)
-                                    table.insert(new_sfo_scans_onelua, file)
-                                else
-                                    -- Not found, is a new game, scan SFO
-                                    local sfo = {}
-                                    sfo = game.info(file.path .. "/EBOOT.pbp")
-
-                                    if sfo ~= nil then
-                                        -- Cleanup game title
-                                        sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
-                                        
-                                        file.filename = file.name
-                                        file.path = file.path .. "/EBOOT.pbp"
-
-                                        file.title = sfo_title
-                                        file.titleid = sfo.DISC_ID or "UNK"
-                                        file.category = sfo.CATEGORY or "UNK"
-                                        file.region = sfo.REGION or "UNK"
-
-                                        if file.filename and file.title and file.titleid and file.region and file.path ~= nil then
-                                            table.insert(table_games, file)
-                                            table.insert(new_sfo_scans_onelua, file)
-                                        else
-                                        end
-                                    end
-                                    
-                                    update_loading_screen_progress()
-
-                                end
-
-                            else
-                            end
-                        end
-                    else
-                    end
-                end
-            else
-            end
-
-        end
-
-    -- Scan Function - Retroarch PS1 Game folders
-        function scan_Rom_PS1_Eboot(scan_dir)
-            local rom_dir = (scan_dir)
-
-            if files.exists(rom_dir) then
-
-                -- scan files
-                local dir = files.listfiles(rom_dir)
-
-                for i, file in pairs(dir) do
-
-                    if string.match(file.name, "%.pbp") or string.match(file.name, "%.PBP") or string.match(file.name, "%.iso") then
+                    -- Handle other .PBP files (not EBOOT.PBP)
+                    elseif (string.match(file.name, "%.pbp") or string.match(file.name, "%.PBP")) and not file.name:lower():match("eboot.pbp") then
 
                         -- Check if game in cached file
-                        if cached_table_retroarch[file.name] ~= nil and cached_table_sfo_scans_onelua[file.name] ~= nil then
+                        if cached_table_sfo_scans_onelua[file.name] ~= nil then
                             -- Found
                             file.filename = file.name
                             file.path = file.path
@@ -860,71 +885,25 @@
                                     table.insert(new_sfo_scans_onelua, file)
                                 else
                                 end
+                            else
+                                -- Fallback, include anyway to prevent boot loop
+                                file.filename = file.name
+                                file.path = file.path
+
+                                file.title = "UNK"
+                                file.titleid = "UNK"
+                                file.category = "UNK"
+                                file.region = "UNK"
+
+                                table.insert(table_iso, file)
+                                table.insert(new_sfo_scans_onelua, file)
                             end
                             
                             update_loading_screen_progress()
                         end
 
-                    else
                     end
-                end
 
-                -- scan folders
-                local sub_dir = files.listdirs(rom_dir)
-
-                for i, subfolder in pairs(sub_dir) do
-                    subfolder_file = files.listfiles(subfolder.path)
-
-                    for i, file in pairs(subfolder_file) do
-                        if string.match(file.name, "%.pbp") or string.match(file.name, "%.PBP") or string.match(file.name, "%.iso") then
-                        
-                            -- Check if game in cached file
-                            if cached_table_retroarch[subfolder.name] ~= nil and cached_table_sfo_scans_onelua[subfolder.name] ~= nil then
-                                -- Found
-                                file.filename = subfolder.name
-                                file.path = file.path
-                                
-                                file.title = cached_table_sfo_scans_onelua[subfolder.name].title or "UNK"
-                                file.titleid = cached_table_sfo_scans_onelua[subfolder.name].titleid or "UNK"
-                                file.category = cached_table_sfo_scans_onelua[subfolder.name].category or "UNK"
-                                file.region = cached_table_sfo_scans_onelua[subfolder.name].region or "UNK"
-
-                                table.insert(table_retroarch, file)
-                                table.insert(new_sfo_scans_onelua, file)
-
-                            else
-                                -- Not found, is a new game, scan SFO
-                                local sfo = {}
-                                sfo = game.info(file.path)
-
-                                -- Error handling for bad sfo files
-                                if sfo ~= nil then
-                                    if sfo.TITLE and sfo.DISC_ID and sfo.REGION and sfo.CATEGORY ~= nil then
-
-                                        -- Cleanup game title
-                                        sfo_title = cleanup_game_title(sfo.TITLE) or "UNK"
-
-                                        file.filename = subfolder.name
-                                        file.path = file.path
-
-                                        file.title = sfo_title
-                                        file.titleid = sfo.DISC_ID or "UNK"
-                                        file.category = sfo.CATEGORY or "UNK"
-                                        file.region = sfo.REGION or "UNK"
-
-                                        table.insert(table_retroarch, file)
-                                        table.insert(new_sfo_scans_onelua, file)
-                                    else
-                                    end
-                                end
-                                
-                                update_loading_screen_progress()
-
-                            end
-
-                        else
-                        end
-                    end
                 end
 
             else
@@ -1117,20 +1096,8 @@
     -- Scan Command - ISO folders
 
         table_iso = {}
-        update_debug_message("Scanning: ux0:/pspemu/ISO")
-        scan_iso_folder ("ux0:/pspemu/ISO")
-
-        update_debug_message("Scanning: ur0:/pspemu/ISO")
-        scan_iso_folder ("ur0:/pspemu/ISO")
-
-        update_debug_message("Scanning: imc0:/pspemu/ISO")
-        scan_iso_folder ("imc0:/pspemu/ISO")
-
-        update_debug_message("Scanning: xmc0:/pspemu/ISO")
-        scan_iso_folder ("xmc0:/pspemu/ISO")
-
-        update_debug_message("Scanning: uma0:/pspemu/ISO")
-        scan_iso_folder ("uma0:/pspemu/ISO")
+        update_debug_message("Scanning: ISO folders")
+        scan_iso_folder ()
 
         update_debug_message("Creating table: iso")
         add_cached_games_to_table (cached_table_iso, table_iso)
@@ -1148,20 +1115,8 @@
 
         table_games = {}
 
-        update_debug_message("Scanning: ux0:/pspemu/PSP/GAME")
-        scan_game_folder ("ux0:/pspemu/PSP/GAME")
-
-        update_debug_message("Scanning: ur0:/pspemu/PSP/GAME")
-        scan_game_folder ("ur0:/pspemu/PSP/GAME")
-
-        update_debug_message("Scanning: imc0:/pspemu/PSP/GAME")
-        scan_game_folder ("imc0:/pspemu/PSP/GAME")
-
-        update_debug_message("Scanning: xmc0:/pspemu/PSP/GAME")
-        scan_game_folder ("xmc0:/pspemu/PSP/GAME")
-
-        update_debug_message("Scanning: uma0:/pspemu/PSP/GAME")
-        scan_game_folder ("uma0:/pspemu/PSP/GAME")
+        update_debug_message("Scanning: Game folders")
+        scan_game_folder ()
 
         update_debug_message("Creating table: games")
         add_cached_games_to_table (cached_table_games, table_games)
@@ -1179,7 +1134,7 @@
         table_retroarch = {}
 
         update_debug_message("Scanning: romUserDir.PlayStation")
-        scan_Rom_PS1_Eboot(romUserDir.PlayStation)
+        scan_Rom_PS1_Eboot()
         
         update_debug_message("Creating table: retroarch")
         add_cached_games_to_table (cached_table_retroarch, table_retroarch)
