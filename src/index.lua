@@ -1449,21 +1449,8 @@ function import_cached_titles()
             sfo_scans_onelua = {}
         end
 
-        if System.doesFileExist (user_DB_Folder .. "sfo_scan_isos.lua") then
-            sfo_scan_isos_db = safe_dofile(user_DB_Folder .. "sfo_scan_isos.lua")
-        else
-            sfo_scan_isos_db = {}
-        end
-        if System.doesFileExist (user_DB_Folder .. "sfo_scan_games.lua") then
-            sfo_scan_games_db = safe_dofile(user_DB_Folder .. "sfo_scan_games.lua")
-        else
-            sfo_scan_games_db = {}
-        end
-        if System.doesFileExist (user_DB_Folder .. "sfo_scan_retroarch.lua") then
-            sfo_scan_retroarch_db = safe_dofile(user_DB_Folder .. "sfo_scan_retroarch.lua")
-        else
-            sfo_scan_retroarch_db = {}
-        end
+    -- Create empty table for scummvm, populated when scanning later. Should probably belongs somewhere else, but if it ain't broke don't fix it
+
         scan_scummvm_db = {}
 end
 import_cached_titles()
@@ -1567,11 +1554,25 @@ function print_onelua_title_files()
         file = io.open(pathini, "w+")
         file:write("return" .. "\n" .. "{" .. "\n")
         for k, v in pairs((tbl)) do
-            -- file:write('["' .. k .. '"] = {title = "' .. v.title .. '", titleid = "' .. v.titleid .. '", category = "' .. v.category .. '", region = "' .. v.region .. '", path = "' .. v.path .. '"},' .. "\n")
-            file:write('["' .. k .. '"] = {title = "' .. v.title .. '", titleid = "' .. v.titleid .. '", category = "' .. v.category .. '", region = "' .. v.version .. '", path = "' .. v.path .. '"},' .. "\n")
+            file:write('["' .. k .. '"] = {title = "' .. (v.title or "UNK") .. '", titleid = "' .. (v.titleid or "UNK") .. '", category = "' .. (v.category or "UNK") .. '", region = "' .. (v.version or "UNK") .. '", path = "' .. (v.path or "UNK") .. '"},' .. "\n")
         end
         file:write('}')
         file:close()
+    end
+
+    -- Separate sfo_scans_onelua entries by path type
+    local sfo_scan_isos_db = {}
+    local sfo_scan_games_db = {}
+    local sfo_scan_retroarch_db = {}
+
+    for k, v in pairs(sfo_scans_onelua) do
+        if v.path and string.match(v.path, "pspemu/ISO/") then
+            sfo_scan_isos_db[k] = v
+        elseif v.path and string.match(v.path, "pspemu/PSP/GAME/") then
+            sfo_scan_games_db[k] = v
+        else
+            sfo_scan_retroarch_db[k] = v
+        end
     end
 
     write_ini(user_DB_Folder .. "sfo_scan_isos.lua", sfo_scan_isos_db)
