@@ -10627,6 +10627,20 @@ while true do
     -- Reading input
     pad = Controls.read()
     
+    -- Reset D-pad counters on button release (using previous frame's oldpad)
+    if not Controls.check(pad, SCE_CTRL_LEFT) and Controls.check(oldpad, SCE_CTRL_LEFT) then
+        dpadHeldLeft = 0
+    end
+    if not Controls.check(pad, SCE_CTRL_RIGHT) and Controls.check(oldpad, SCE_CTRL_RIGHT) then
+        dpadHeldRight = 0
+    end
+    if not Controls.check(pad, SCE_CTRL_UP) and Controls.check(oldpad, SCE_CTRL_UP) then
+        dpadHeldUp = 0
+    end
+    if not Controls.check(pad, SCE_CTRL_DOWN) and Controls.check(oldpad, SCE_CTRL_DOWN) then
+        dpadHeldDown = 0
+    end
+    
     mx, my = Controls.readLeftAnalog()
     
     -- touch input
@@ -11360,7 +11374,7 @@ while true do
 
         if smoothScrolling == 1 then
             -- Smooth dezoom factor
-            if mx < 64 or mx > 180 then -- Don't zoom on covers if quick scrolling
+            if mx < 64 or mx > 180 or (dpadHeldLeft and dpadHeldLeft > 1) or (dpadHeldRight and dpadHeldRight > 1) then -- Don't zoom on covers if quick scrolling
                 quick_scrolling_factor_goal = 1
             else
                 quick_scrolling_factor_goal = 0
@@ -14194,8 +14208,28 @@ while true do
                     end
                 elseif Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP) then
                     i = i - 1
+                    dpadHeldUp = 0  -- Reset counter on new press
+                elseif Controls.check(pad, SCE_CTRL_UP) then
+                    -- Initialize and increment held counter for continuous scrolling
+                    dpadHeldUp = (dpadHeldUp or 0) + 0.05
+                    
+                    -- Continuous scroll mode after initial delay
+                    if dpadHeldUp > 1 and delayButton < 0.05 then
+                        delayButton = 0.7  -- Repeat delay for continuous scrolling
+                        i = i - 1
+                    end
                 elseif Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN) then
                     i = i + 1
+                    dpadHeldDown = 0  -- Reset counter on new press
+                elseif Controls.check(pad, SCE_CTRL_DOWN) then
+                    -- Initialize and increment held counter for continuous scrolling
+                    dpadHeldDown = (dpadHeldDown or 0) + 0.05
+                    
+                    -- Continuous scroll mode after initial delay
+                    if dpadHeldDown > 1 and delayButton < 0.05 then
+                        delayButton = 0.7  -- Repeat delay for continuous scrolling
+                        i = i + 1
+                    end
                 elseif Controls.check(pad, SCE_CTRL_TRIANGLE) then
                     -- break
                     showMenu = 8
@@ -14207,6 +14241,14 @@ while true do
                         v.save = false
                     end
                     cur_dir_fm = selected_partition
+                end
+                
+                -- Reset D-pad held counters when buttons are released
+                if not Controls.check(pad, SCE_CTRL_UP) then
+                    dpadHeldUp = 0
+                end
+                if not Controls.check(pad, SCE_CTRL_DOWN) then
+                    dpadHeldDown = 0
                 end
 
             -- END ROM BROWSER 
@@ -16697,6 +16739,7 @@ while true do
             if delayButton > 0 then
                 delayButton = delayButton - 0.05   -- Slower decrement
             end
+            
 
             if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
 
@@ -16737,6 +16780,41 @@ while true do
 
                 -- Reset delayButton after scrolling (adjusted to slow it down)
                 delayButton = 1.5    -- Increase this value to slow the speed
+                dpadHeldUp = 0  -- Reset counter on new press
+                
+            -- D-pad UP continuous scrolling
+            elseif Controls.check(pad, SCE_CTRL_UP) then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldUp = (dpadHeldUp or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldUp > 1 and delayButton < 0.05 then
+                    delayButton = 0.7  -- Repeat delay for continuous scrolling
+                    
+                    if cc_edit_mode == true then
+                        -- Move selected item Up
+                        if cc_selected > 1 and cc_edit_mode == true then
+                            local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
+                            xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected - 1]
+                            xCollectionTableLookup(xcollection_number)[cc_selected - 1] = temp
+
+                            cc_selected = cc_selected - 1
+                            if cc_selected <= cc_scrollPosition then
+                                cc_scrollPosition = cc_scrollPosition - 1
+                            end
+                        end
+                        cc_updated = true
+                        cc_reset = false
+                    else
+                        -- Scroll up
+                        if cc_selected > 1 then
+                            cc_selected = cc_selected - 1
+                            if cc_selected <= cc_scrollPosition then
+                                cc_scrollPosition = cc_scrollPosition - 1
+                            end
+                        end
+                    end
+                end
          
             -- Handle downward movement (using Down button or left analog stick down)
             elseif (Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN)) or (analogY > 140 and delayButton < 0.5) then
@@ -16771,6 +16849,41 @@ while true do
 
                 -- Reset delayButton after scrolling (adjusted to slow it down)
                 delayButton = 1.5    -- Increase this value to slow the speed
+                dpadHeldDown = 0  -- Reset counter on new press
+                
+            -- D-pad DOWN continuous scrolling
+            elseif Controls.check(pad, SCE_CTRL_DOWN) then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldDown = (dpadHeldDown or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldDown > 1 and delayButton < 0.05 then
+                    delayButton = 0.7  -- Repeat delay for continuous scrolling
+                    
+                    if cc_edit_mode == true then
+                        -- Move selected item down
+                        if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                            local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
+                            xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected + 1]
+                            xCollectionTableLookup(xcollection_number)[cc_selected + 1] = temp
+
+                            cc_selected = cc_selected + 1
+                            if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
+                                cc_scrollPosition = cc_scrollPosition + 1
+                            end
+                        end
+                        cc_updated = true
+                        cc_reset = false
+                    else
+                        -- Scroll down
+                        if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                            cc_selected = cc_selected + 1
+                            if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
+                                cc_scrollPosition = cc_scrollPosition + 1
+                            end
+                        end
+                    end
+                end
             
             elseif (Controls.check(pad, SCE_CTRL_TRIANGLE) and not Controls.check(oldpad, SCE_CTRL_TRIANGLE)) then
                 state = Keyboard.getState()
@@ -16870,6 +16983,14 @@ while true do
                 else
                 end
             end
+            
+            -- Reset D-pad held counters when buttons are released (for collection sort)
+            if not Controls.check(pad, SCE_CTRL_UP) then
+                dpadHeldUp = 0
+            end
+            if not Controls.check(pad, SCE_CTRL_DOWN) then
+                dpadHeldDown = 0
+            end
 
             oldpad = pad
 
@@ -16938,6 +17059,47 @@ while true do
                     menuY=0
                 end
             end
+        end
+        
+        -- D-pad menu scrolling with continuous scrolling
+        if Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP) then
+            dpadHeldUp = 0
+        elseif Controls.check(pad, SCE_CTRL_UP) then
+            -- Initialize and increment held counter for continuous scrolling
+            dpadHeldUp = (dpadHeldUp or 0) + 0.05
+            
+            -- Continuous scroll mode after initial delay
+            if dpadHeldUp > 1 and delayButton < 0.05 then
+                delayButton = 0.7  -- Repeat delay for continuous scrolling
+                if menuY > 0 then
+                    menuY = menuY - 1
+                else
+                    menuY = menuItems
+                end
+            end
+        elseif Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN) then
+            dpadHeldDown = 0
+        elseif Controls.check(pad, SCE_CTRL_DOWN) then
+            -- Initialize and increment held counter for continuous scrolling
+            dpadHeldDown = (dpadHeldDown or 0) + 0.05
+            
+            -- Continuous scroll mode after initial delay
+            if dpadHeldDown > 1 and delayButton < 0.05 then
+                delayButton = 0.7  -- Repeat delay for continuous scrolling
+                if menuY < menuItems then
+                    menuY = menuY + 1
+                else
+                    menuY = 0
+                end
+            end
+        end
+        
+        -- Reset D-pad held counters when buttons are released (for menu navigation)
+        if not Controls.check(pad, SCE_CTRL_UP) then
+            dpadHeldUp = 0
+        end
+        if not Controls.check(pad, SCE_CTRL_DOWN) then
+            dpadHeldDown = 0
         end
 
     end
@@ -17640,9 +17802,32 @@ while true do
                     if (p <= master_index) then
                         master_index = p
                     end
-                else
                 end
-            else
+            end
+        elseif (Controls.check(pad, SCE_CTRL_LEFT)) then
+            if showView ~= 6 then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldLeft = (dpadHeldLeft or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldLeft > 1 and delayButton < 0.05 then
+                    delayButton = 0.55  -- Repeat delay for continuous scrolling
+                    state = Keyboard.getState()
+                    if state ~= RUNNING then
+                        if setSounds == 1 then
+                            Sound.play(click, NO_LOOP)
+                        end
+                        p = p - 1
+                        
+                        if p > 0 then
+                            GetNameAndAppTypeSelected()
+                        end
+                        
+                        if (p <= master_index) then
+                            master_index = p
+                        end
+                    end
+                end
             end
         elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
             if showView ~= 6 then
@@ -17660,17 +17845,44 @@ while true do
                     if (p >= master_index) then
                         master_index = p
                     end
-                else
                 end
             else
-                state = Keyboard.getState()
-                if state ~= RUNNING then
+                if delayButton < 0.05 then
+                    delayButton = 0.4
+                    state = Keyboard.getState()
+                    if state ~= RUNNING then
 
-                    -- Filter games
-                    showMenu = 25
-                    menuY = 0
+                        -- Filter games
+                        showMenu = 25
+                        menuY = 0
 
-                else
+                    else
+                    end
+                end
+            end
+        elseif (Controls.check(pad, SCE_CTRL_RIGHT)) then
+            if showView ~= 6 then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldRight = (dpadHeldRight or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldRight > 1 and delayButton < 0.05 then
+                    delayButton = 0.55  -- Repeat delay for continuous scrolling
+                    state = Keyboard.getState()
+                    if state ~= RUNNING then
+                        if setSounds == 1 then
+                            Sound.play(click, NO_LOOP)
+                        end
+                        p = p + 1
+                        
+                        if p <= curTotal then
+                            GetNameAndAppTypeSelected()
+                        end
+                        
+                        if (p >= master_index) then
+                            master_index = p
+                        end
+                    end
                 end
             end
         elseif (Controls.check(pad, SCE_CTRL_LTRIGGER)) and not (Controls.check(oldpad, SCE_CTRL_LTRIGGER)) then
@@ -17813,6 +18025,20 @@ while true do
                 end
                 p = p - 1
             end
+        elseif (Controls.check(pad, SCE_CTRL_UP)) then
+            if showView == 6 then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldUp = (dpadHeldUp or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldUp > 1 and delayButton < 0.05 then
+                    delayButton = 0.55  -- Repeat delay for continuous scrolling
+                    if setSounds == 1 then
+                        Sound.play(click, NO_LOOP)
+                    end
+                    p = p - 1
+                end
+            end
 
         -- game list
         elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
@@ -17822,6 +18048,20 @@ while true do
                 end
                 p = p + 1
             else
+            end
+        elseif (Controls.check(pad, SCE_CTRL_DOWN)) then
+            if showView == 6 then
+                -- Initialize and increment held counter for continuous scrolling
+                dpadHeldDown = (dpadHeldDown or 0) + 0.05
+                
+                -- Continuous scroll mode after initial delay
+                if dpadHeldDown > 1 and delayButton < 0.05 then
+                    delayButton = 0.55  -- Repeat delay for continuous scrolling
+                    if setSounds == 1 then
+                        Sound.play(click, NO_LOOP)
+                    end
+                    p = p + 1
+                end
             end
         end
         
