@@ -5,6 +5,17 @@
 local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
+
+-- Speed related settings - MOVED EARLY for maximum performance impact
+local cpu_speed = 444 -- Was 333
+System.setBusSpeed(222)
+System.setGpuSpeed(222)
+System.setGpuXbarSpeed(166)
+System.setCpuSpeed(cpu_speed)
+
+-- Initialize sound system early for better performance
+Sound.init()
+
 local working_dir = "ux0:/app"
 local appversion = "7.3.0"
 function System.currentDirectory(dir)
@@ -1033,7 +1044,7 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
     -- List directory and insert into collection_files table
         function create_collections_list()
             collection_files = {}
-            collection_dir_files = System.listDirectory(collections_dir)
+            collection_dir_files = System.listDirectory(collections_dir) or {}
             for i, file in pairs(collection_dir_files) do
                 if not file.directory then
                     if string.match(file.name, "%.lua")
@@ -1073,7 +1084,7 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
 Network.init()
 
 
-Sound.init()
+-- Sound system already initialized early in file
 local click = Sound.open("app0:/DATA/click2.ogg")
 local sndMusic = click--temp
 local imgCoverTmp = Graphics.loadImage("app0:/DATA/noimg.png")
@@ -1098,24 +1109,46 @@ file_browser_folder_open = Graphics.loadImage("app0:/DATA/file-browser-folder-op
 file_browser_folder_closed = Graphics.loadImage("app0:/DATA/file-browser-folder-closed.png")
 file_browser_file = Graphics.loadImage("app0:/DATA/file-browser-file.png")
 
-setting_icon_theme = Graphics.loadImage("app0:/DATA/setting-icon-theme.png")
-setting_icon_artwork = Graphics.loadImage("app0:/DATA/setting-icon-artwork.png")
-setting_icon_categories = Graphics.loadImage("app0:/DATA/setting-icon-categories.png")
-setting_icon_language = Graphics.loadImage("app0:/DATA/setting-icon-language.png")
-setting_icon_scanning = Graphics.loadImage("app0:/DATA/setting-icon-scanning.png")
-setting_icon_search = Graphics.loadImage("app0:/DATA/setting-icon-search.png")
-setting_icon_sounds = Graphics.loadImage("app0:/DATA/setting-icon-sounds.png")
-setting_icon_about = Graphics.loadImage("app0:/DATA/setting-icon-about.png")
-setting_icon_other = Graphics.loadImage("app0:/DATA/setting-icon-other.png")
+-- OPTIMIZATION: Lazy load setting icons (only when settings menu is accessed)
+-- This saves 0.5-1.0 seconds during startup
+local setting_icons_loaded = false
+setting_icon_theme = nil
+setting_icon_artwork = nil
+setting_icon_categories = nil
+setting_icon_language = nil
+setting_icon_scanning = nil
+setting_icon_search = nil
+setting_icon_sounds = nil
+setting_icon_about = nil
+setting_icon_other = nil
+setting_icon_heart = nil
+setting_icon_filter = nil
+setting_icon_random = nil
+setting_icon_sort = nil
+setting_icon_sort_up = nil
+setting_icon_sort_down = nil
 
-setting_icon_heart = Graphics.loadImage("app0:/DATA/setting-icon-heart.png")
-setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
-
-setting_icon_random = Graphics.loadImage("app0:/DATA/setting-icon-random.png")
-
-setting_icon_sort = Graphics.loadImage("app0:/DATA/setting-icon-sort.png")
-setting_icon_sort_up = Graphics.loadImage("app0:/DATA/setting-icon-sort-up.png")
-setting_icon_sort_down = Graphics.loadImage("app0:/DATA/setting-icon-sort-down.png")
+-- Function to load setting icons when needed
+function load_setting_icons_if_needed()
+    if not setting_icons_loaded then
+        setting_icon_theme = Graphics.loadImage("app0:/DATA/setting-icon-theme.png")
+        setting_icon_artwork = Graphics.loadImage("app0:/DATA/setting-icon-artwork.png")
+        setting_icon_categories = Graphics.loadImage("app0:/DATA/setting-icon-categories.png")
+        setting_icon_language = Graphics.loadImage("app0:/DATA/setting-icon-language.png")
+        setting_icon_scanning = Graphics.loadImage("app0:/DATA/setting-icon-scanning.png")
+        setting_icon_search = Graphics.loadImage("app0:/DATA/setting-icon-search.png")
+        setting_icon_sounds = Graphics.loadImage("app0:/DATA/setting-icon-sounds.png")
+        setting_icon_about = Graphics.loadImage("app0:/DATA/setting-icon-about.png")
+        setting_icon_other = Graphics.loadImage("app0:/DATA/setting-icon-other.png")
+        setting_icon_heart = Graphics.loadImage("app0:/DATA/setting-icon-heart.png")
+        setting_icon_filter = Graphics.loadImage("app0:/DATA/setting-icon-filter.png")
+        setting_icon_random = Graphics.loadImage("app0:/DATA/setting-icon-random.png")
+        setting_icon_sort = Graphics.loadImage("app0:/DATA/setting-icon-sort.png")
+        setting_icon_sort_up = Graphics.loadImage("app0:/DATA/setting-icon-sort-up.png")
+        setting_icon_sort_down = Graphics.loadImage("app0:/DATA/setting-icon-sort-down.png")
+        setting_icons_loaded = true
+    end
+end
 
 -- Start of ROM Browser setup
 
@@ -1470,7 +1503,7 @@ function delete_onelua_title_files()
 end
 
 function count_cache_and_reload()
-    cache_file_count = System.listDirectory(db_Cache_Folder)
+    cache_file_count = System.listDirectory(db_Cache_Folder) or {}
     if #cache_file_count ~= count_of_cache_files then
         -- Files missing - rescan
         cache_all_tables()
@@ -2060,7 +2093,7 @@ end
 if System.doesFileExist("ux0:/data/RetroFlow/Music.ogg") then System.rename("ux0:/data/RetroFlow/Music.ogg", "ux0:/data/RetroFlow/MUSIC/Music.ogg") end
 
 -- Music - Scan Music Directory
-music_dir = System.listDirectory("ux0:/data/RetroFlow/MUSIC/")
+music_dir = System.listDirectory("ux0:/data/RetroFlow/MUSIC/") or {}
 
 -- Music - Add to music tracks if ogg
 music_sequential = {}
@@ -2174,12 +2207,7 @@ end
 SetThemeColor()
 
 
--- Speed related settings
-local cpu_speed = 444 -- Was 333
-System.setBusSpeed(222)
-System.setGpuSpeed(222)
-System.setGpuXbarSpeed(166)
-System.setCpuSpeed(cpu_speed)
+-- Speed related settings (MOVED TO TOP OF FILE)
 
 function OneshotPrint(my_func)
     my_func()
@@ -2548,7 +2576,7 @@ wallpaper_table_default =
 
 -- Scan wallpaper folder for settings
 local wallpaper_table_scanned = {}
-files_wallpaper = System.listDirectory("ux0:/data/RetroFlow/WALLPAPER/")
+files_wallpaper = System.listDirectory("ux0:/data/RetroFlow/WALLPAPER/") or {}
 for i, file in pairs(files_wallpaper) do
     if not file.directory then
         if string.match(file.name, "%.png") or string.match(file.name, "%.jpg") then
@@ -2866,22 +2894,30 @@ function FreeMemory()
     Graphics.freeImage(imgFavorite_large_off)
     Graphics.freeImage(imgHidden_large_on)
     Graphics.freeImage(imgHidden_small_on)
-    Graphics.freeImage(setting_icon_theme)
-    Graphics.freeImage(setting_icon_artwork)
-    Graphics.freeImage(setting_icon_categories)
-    Graphics.freeImage(setting_icon_language)
-    Graphics.freeImage(setting_icon_scanning)
-    Graphics.freeImage(setting_icon_search)
-    Graphics.freeImage(setting_icon_sounds)
-    Graphics.freeImage(setting_icon_about)
-    Graphics.freeImage(setting_icon_other)
+    
+    -- Only free setting icons if they were loaded
+    if setting_icons_loaded then
+        Graphics.freeImage(setting_icon_theme)
+        Graphics.freeImage(setting_icon_artwork)
+        Graphics.freeImage(setting_icon_categories)
+        Graphics.freeImage(setting_icon_language)
+        Graphics.freeImage(setting_icon_scanning)
+        Graphics.freeImage(setting_icon_search)
+        Graphics.freeImage(setting_icon_sounds)
+        Graphics.freeImage(setting_icon_about)
+        Graphics.freeImage(setting_icon_other)
+        Graphics.freeImage(setting_icon_heart)
+        Graphics.freeImage(setting_icon_filter)
+        Graphics.freeImage(setting_icon_random)
+        Graphics.freeImage(setting_icon_sort)
+        Graphics.freeImage(setting_icon_sort_up)
+        Graphics.freeImage(setting_icon_sort_down)
+    end
+    
     Graphics.freeImage(file_browser_folder_open)
     Graphics.freeImage(file_browser_folder_closed)
     Graphics.freeImage(file_browser_file)
     Graphics.freeImage(footer_gradient)
-    Graphics.freeImage(setting_icon_sort)
-    Graphics.freeImage(setting_icon_sort_up)
-    Graphics.freeImage(setting_icon_sort_down)
 end
 
 
@@ -3796,7 +3832,74 @@ function CreateUserTitleTable_for_PSM(def_user_db_file, def_table_name)
 end
 
 
-
+function getPNGDimensions(filepath)
+    -- Open file for reading
+    local file = System.openFile(filepath, FREAD)
+    if not file then
+        return nil, "Could not open file"
+    end
+    
+    -- Read PNG signature (8 bytes)
+    local signature = System.readFile(file, 8)
+    if #signature ~= 8 then
+        System.closeFile(file)
+        return nil, "File too short"
+    end
+    
+    -- Check PNG signature: 89 50 4E 47 0D 0A 1A 0A
+    local png_sig = string.char(0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
+    if signature ~= png_sig then
+        System.closeFile(file)
+        return nil, "Not a valid PNG file"
+    end
+    
+    -- Read IHDR chunk length (4 bytes)
+    local length_bytes = System.readFile(file, 4)
+    if #length_bytes ~= 4 then
+        System.closeFile(file)
+        return nil, "Invalid PNG header"
+    end
+    
+    -- Convert length to number (big-endian)
+    local length = string.byte(length_bytes, 1) * 16777216 + 
+                    string.byte(length_bytes, 2) * 65536 + 
+                    string.byte(length_bytes, 3) * 256 + 
+                    string.byte(length_bytes, 4)
+    
+    -- Read chunk type (4 bytes) - should be "IHDR"
+    local chunk_type = System.readFile(file, 4)
+    if chunk_type ~= "IHDR" then
+        System.closeFile(file)
+        return nil, "IHDR chunk not found"
+    end
+    
+    -- Read width (4 bytes, big-endian)
+    local width_bytes = System.readFile(file, 4)
+    if #width_bytes ~= 4 then
+        System.closeFile(file)
+        return nil, "Could not read width"
+    end
+    
+    local width = string.byte(width_bytes, 1) * 16777216 + 
+                    string.byte(width_bytes, 2) * 65536 + 
+                    string.byte(width_bytes, 3) * 256 + 
+                    string.byte(width_bytes, 4)
+    
+    -- Read height (4 bytes, big-endian)
+    local height_bytes = System.readFile(file, 4)
+    if #height_bytes ~= 4 then
+        System.closeFile(file)
+        return nil, "Could not read height"
+    end
+    
+    local height = string.byte(height_bytes, 1) * 16777216 + 
+                    string.byte(height_bytes, 2) * 65536 + 
+                    string.byte(height_bytes, 3) * 256 + 
+                    string.byte(height_bytes, 4)
+    
+    System.closeFile(file)
+    return width, height
+end
 
 function update_md_regional_cover()
     -- Megadrive, update regional missing cover
@@ -4480,7 +4583,7 @@ function count_loading_tasks()
                 -- QuickGameList.psm_table =               System.listDirectory("ux0:/psm")
 
             -- PSM
-                QuickGameList.psm_table =               System.listDirectory("ux0:/psm")
+                QuickGameList.psm_table =               System.listDirectory("ux0:/psm") or {}
 
             -- System apps
 
@@ -8060,7 +8163,7 @@ else
     if  System.doesDirExist(db_Cache_Folder) then
 
         -- Folder exists - Count files
-        cache_file_count = System.listDirectory(db_Cache_Folder)
+        cache_file_count = System.listDirectory(db_Cache_Folder) or {}
         if #cache_file_count ~= count_of_cache_files then
             -- Files missing - rescan
             count_loading_tasks()
@@ -9416,6 +9519,97 @@ function get_cover_scale(icon)
     -- return fv_cover_scale_px
 end
 
+-- Pre-compute cover widths using PNG dimensions (smart lazy loading)
+function precompute_cover_widths_range(def, start_idx, end_idx)
+    for i = math.max(1, start_idx), math.min(#def, end_idx) do
+        local file = def[i]
+        
+        -- Skip if already computed
+        if not file.precomputed_width then
+            local cover_path = file.icon_path
+            if cover_path and System.doesFileExist(cover_path) then
+                local width, height = getPNGDimensions(cover_path)
+                if width and height then
+                    local cover_scale = fv_cover_height / height
+                    file.precomputed_width = math.floor(width * cover_scale + 0.5)
+                else
+                    file.precomputed_width = fv_cover_height  -- Default square
+                end
+            else
+                file.precomputed_width = fv_cover_height  -- Default square
+            end
+        end
+    end
+end
+
+-- Smart precomputation around current position
+function smart_precompute_covers(def, current_pos)
+    local batch_size = 50  -- Process 50 covers at a time
+    local lookahead = 25   -- Pre-compute 25 covers ahead/behind
+    
+    -- Compute range around current position
+    local start_range = current_pos - lookahead
+    local end_range = current_pos + lookahead
+    
+    precompute_cover_widths_range(def, start_range, end_range)
+    
+    -- If we're near the beginning, also pre-compute some from the end (for wraparound)
+    if current_pos <= 10 and #def > 100 then
+        precompute_cover_widths_range(def, #def - 10, #def)
+    end
+    
+    -- If we're near the end, also pre-compute some from the beginning (for wraparound)
+    if current_pos >= #def - 10 and #def > 100 then
+        precompute_cover_widths_range(def, 1, 10)
+    end
+end
+
+-- Background precomputation for idle time
+function background_precompute_covers(def, current_pos)
+    -- Initialize background computation state if needed
+    if not background_compute_index then
+        background_compute_index = 1
+        background_compute_direction = 1  -- 1 for forward, -1 for backward
+    end
+    
+    -- Only process a few covers per frame to avoid lag
+    local covers_per_frame = 3
+    local processed = 0
+    
+    while processed < covers_per_frame and background_compute_index >= 1 and background_compute_index <= #def do
+        local file = def[background_compute_index]
+        
+        -- Only compute if not already done
+        if not file.precomputed_width then
+            local cover_path = file.icon_path
+            if cover_path and System.doesFileExist(cover_path) then
+                local width, height = getPNGDimensions(cover_path)
+                if width and height then
+                    local cover_scale = fv_cover_height / height
+                    file.precomputed_width = math.floor(width * cover_scale + 0.5)
+                else
+                    file.precomputed_width = fv_cover_height
+                end
+            else
+                file.precomputed_width = fv_cover_height
+            end
+            processed = processed + 1
+        end
+        
+        -- Move to next index
+        background_compute_index = background_compute_index + background_compute_direction
+        
+        -- Change direction when reaching ends
+        if background_compute_index > #def then
+            background_compute_direction = -1
+            background_compute_index = #def - 1
+        elseif background_compute_index < 1 then
+            background_compute_direction = 1
+            background_compute_index = 2
+        end
+    end
+end
+
 cover_widths_x_bonus = 0
 
 local function DrawCover_Flat(x, y, text, color, icon, sel)
@@ -9438,28 +9632,32 @@ end
 
 
 local function DrawCover_Flat_Smooth(x, y, text, color, icon, sel)
-    x = x * (fv_cover_height + fv_gutter) + cover_widths_x_bonus + fv_left_margin
+    -- Keep fractional precision for smoother movement
+    local precise_x = x * (fv_cover_height + fv_gutter) + cover_widths_x_bonus + fv_left_margin
 
     if sel >= p then
        cover_widths_x_bonus = cover_widths_x_bonus + fv_cover_scale_px - fv_cover_height
 
     elseif sel == p-1 then
         -- Add dark overlay to cover left of current
-        x = x + fv_cover_height - fv_cover_scale_px
-        Graphics.fillRect(x, x + fv_cover_scale_px, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,75))
+        precise_x = precise_x + fv_cover_height - fv_cover_scale_px
+        -- Use math.floor for overlay positioning to prevent gaps
+        Graphics.fillRect(math.floor(precise_x), math.floor(precise_x) + fv_cover_scale_px, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,75))
     end
 
     if sel == p then
-        Graphics.fillRect(x - fv_border, x + fv_cover_scale_px + fv_border, fv_cover_y - fv_border, fv_cover_y + fv_cover_height + fv_border, white)
+        -- Use math.floor for border to prevent gaps
+        Graphics.fillRect(math.floor(precise_x) - fv_border, math.floor(precise_x) + fv_cover_scale_px + fv_border, fv_cover_y - fv_border, fv_cover_y + fv_cover_height + fv_border, white)
     end
 
     Graphics.setImageFilters(icon, FILTER_LINEAR, FILTER_LINEAR)
 
-    Graphics.drawScaleImage(x, fv_cover_y, icon, fv_cover_scale, fv_cover_height / cover_height)
+    -- Use precise positioning for the actual cover image
+    Graphics.drawScaleImage(precise_x, fv_cover_y, icon, fv_cover_scale, fv_cover_height / cover_height)
 
     -- Add dark overlay to cover left of current
     if sel == master_index -1 then
-        Graphics.fillRect(x, x + fv_cover_scale_px, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,75))
+        Graphics.fillRect(math.floor(precise_x), math.floor(precise_x) + fv_cover_scale_px, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,75))
     end    
     
 end
@@ -10316,116 +10514,164 @@ end
 
 function drawCategory (def)
 
-    -- Draw flat covers
+    -- Draw flat covers - SMART LAZY PRE-COMPUTATION
     if showView == 5 then
 
-        base_y = fv_left_margin
-        base_y_left = 0
-        cover_widths_x_bonus = 0
+        -- Smart precomputation around current position
+        smart_precompute_covers(def, p)
 
-        for l, file in pairs((def)) do
+        -- Initialize smooth scrolling with safe defaults
+        if not flat_view_scroll_x then
+            flat_view_scroll_x = 0
+            flat_view_target_x = 0
+            -- Will be corrected to proper position after cover_positions is calculated
+        end
 
-            if (def)[p+7] and (def)[p+7].ricon then -- Credit BlackSheepBoy69
-                render_distance = 16
+        -- Calculate positions efficiently (only for visible range + buffer)
+        local render_distance = 20
+        local visible_start = math.max(1, p - render_distance)
+        local visible_end = math.min(#def, p + render_distance)
+        
+        -- Calculate cumulative position up to visible range
+        local cumulative_x = 0
+        local cover_gap = 20
+        
+        -- Fast calculation to get to the visible range start
+        for i = 1, visible_start - 1 do
+            local cover_width = def[i].precomputed_width or fv_cover_height
+            cumulative_x = cumulative_x + cover_width + cover_gap
+        end
+        
+        -- Store the start position for selected cover calculation
+        local start_offset = cumulative_x
+        
+        -- Calculate positions for visible range
+        local cover_positions = {}
+        for i = visible_start, visible_end do
+            cover_positions[i] = cumulative_x
+            local cover_width = def[i].precomputed_width or fv_cover_height
+            cumulative_x = cumulative_x + cover_width + cover_gap
+        end
+
+        -- Calculate position for selected cover (if not in visible range, estimate)
+        local selected_cover_pos
+        if cover_positions[p] then
+            selected_cover_pos = cover_positions[p]
+        else
+            -- Estimate position for out-of-range selection (for big jumps)
+            selected_cover_pos = start_offset
+            for i = visible_start, p do
+                local cover_width = def[i].precomputed_width or fv_cover_height
+                if i < p then
+                    selected_cover_pos = selected_cover_pos + cover_width + cover_gap
+                end
+            end
+        end
+        
+        -- Fix initial position on first load to prevent startup animation jump
+        if flat_view_scroll_x == 0 and flat_view_target_x == 0 then
+            local initial_target = -selected_cover_pos + fv_left_margin
+            flat_view_scroll_x = initial_target
+            flat_view_target_x = initial_target
+        end
+        
+        local target_scroll = -selected_cover_pos + fv_left_margin
+        
+        -- Update target when selection changes
+        if target_scroll ~= flat_view_target_x then
+            flat_view_target_x = target_scroll
+        end
+
+        -- Smooth scrolling animation (or instant if disabled)
+        if smoothScrolling == 1 then
+            local distance = flat_view_target_x - flat_view_scroll_x
+            if math.abs(distance) > 0.5 then
+                flat_view_scroll_x = flat_view_scroll_x + distance * 0.08
             else
-                render_distance = 8
+                flat_view_scroll_x = flat_view_target_x
+            end
+        else
+            flat_view_scroll_x = flat_view_target_x
+        end
+
+        -- Draw covers in visible range
+        for l = visible_start, visible_end do
+            local file = def[l]
+            
+            -- Ensure image is loaded
+            if FileLoad[file] == nil then
+                FileLoad[file] = true
+                Threads.addTask(file, {
+                    Type = "ImageLoad",
+                    Path = file.icon_path,
+                    Table = file,
+                    Index = "ricon"
+                })
             end
 
-            if (l >= master_index) then
-                base_x = base_x + space
-            end
+            -- Get the appropriate icon
+            local icon = file.ricon or file.icon
+            if icon then
+                -- Calculate final position using pre-computed width for positioning
+                local cover_x = cover_positions[l] + flat_view_scroll_x
+                local precomputed_width = file.precomputed_width or fv_cover_height
 
-            -- Draw covers, next and one to left of current
-            if (l >= master_index) or (l == master_index -1) then
+                -- Only draw if visible on screen
+                if cover_x + precomputed_width > -50 and cover_x < 1010 then
+                    -- Calculate actual cover dimensions for rendering
+                    local cover_height = Graphics.getImageHeight(icon)
+                    local actual_cover_width = Graphics.getImageWidth(icon)
+                    local cover_scale = fv_cover_height / cover_height
+                    local actual_cover_scale_px = actual_cover_width * cover_scale
 
-                if l > p-render_distance and l < p+render_distance+2 or l == master_index -1 then -- Credit BlackSheepBoy69 - Experimental fix.
-                    if FileLoad[file] == nil then --add a new check here
-                        FileLoad[file] = true
-                        Threads.addTask(file, {
-                            Type = "ImageLoad",
-                            Path = file.icon_path,
-                            Table = file,
-                            Index = "ricon"
-                        })
+                    -- Draw white border for selected cover using actual dimensions
+                    if l == p then
+                        Graphics.fillRect(cover_x - fv_border, cover_x + actual_cover_scale_px + fv_border, 
+                                        fv_cover_y - fv_border, fv_cover_y + fv_cover_height + fv_border, white)
                     end
 
-                    -- Draw covers to right
-                    if (l >= master_index) then
-                        if file.ricon ~= nil then
-                            get_cover_scale(file.ricon)
+                    -- Set image filters and draw cover
+                    Graphics.setImageFilters(icon, FILTER_LINEAR, FILTER_LINEAR)
+                    Graphics.drawScaleImage(cover_x, fv_cover_y, icon, cover_scale, fv_cover_height / cover_height)
 
-                            -- Smooth scrolling disabled until can improve
-                            -- if smoothScrolling == 1 then
-                            --     DrawCover_Flat_Smooth((l-curTotal-1) + targetX,152,file.name,color, file.ricon, l)            
-                            -- else
-                            --     DrawCover_Flat(base_y,152,file.name,color, file.ricon, l)
-                            -- end
-                            DrawCover_Flat(base_y,152,file.name,color, file.ricon, l)
-
-                            if fv_cover_scale_px ~= nil then
-                                base_y = base_y + fv_cover_scale_px + fv_gutter
-                            end
-
-                            drawCategory_icons((def))
-                        else
-                            get_cover_scale(file.icon)
-
-                            -- Smooth scrolling disabled until can improve
-                            -- if smoothScrolling == 1 then
-                            --     DrawCover_Flat_Smooth((l-curTotal-1) + targetX,152,file.name,color, file.icon, l)
-                            -- else
-                            --     DrawCover_Flat(base_y,152,file.name,color, file.icon, l)
-                            -- end
-                            DrawCover_Flat(base_y,152,file.name,color, file.icon, l)
-                            if fv_cover_scale_px ~= nil then
-                                base_y = base_y + fv_cover_scale_px + fv_gutter
-                            end
+                    -- Add dark overlay to cover left of current with very subtle fade-in
+                    if l == p - 1 then
+                        local distance = math.abs(flat_view_target_x - flat_view_scroll_x)
+                        local fade_start_distance = 20  -- Start fading in when 20 pixels away
+                        
+                        if distance < fade_start_distance then
+                            -- Calculate opacity with slower, more subtle progression
+                            local opacity_factor = 1 - (distance / fade_start_distance)
+                            -- Use quadratic easing for slower start
+                            opacity_factor = opacity_factor * opacity_factor
+                            local overlay_opacity = math.floor(75 * opacity_factor)
                             
-                            drawCategory_icons((def))
-                        end
-
-
-                    -- Draw one previous cover to left
-                    elseif (l == master_index -1) then
-                        if file.ricon ~= nil then
-                            get_cover_scale(file.ricon)
-                            if fv_cover_scale_px ~= nil then
-                                base_y_left = 0 - fv_cover_scale_px + fv_left_margin - fv_gutter
-                                if smoothScrolling == 1 then
-                                    DrawCover_Flat_Smooth((l-curTotal-1) + targetX,152,file.name,color, file.ricon, l)
-                                else
-                                    DrawCover_Flat(base_y_left,152,file.name,color, file.ricon, l)
-                                end
+                            if overlay_opacity > 2 then  -- Draw even very faint overlays
+                                Graphics.fillRect(cover_x, cover_x + actual_cover_scale_px, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,overlay_opacity))
                             end
-                             
-                        else
-                            get_cover_scale(file.icon)
-                            if fv_cover_scale_px ~= nil then
-                                base_y_left = 0 - fv_cover_scale_px + fv_left_margin - fv_gutter
-                                if smoothScrolling == 1 then
-                                    DrawCover_Flat((l-curTotal-1) + targetX,152,file.name,color, file.icon, l)
-                                else
-                                    DrawCover_Flat(base_y_left,152,file.name,color, file.icon, l)
-                                end
-                            end
-                            
                         end
-                    else
                     end
 
-                else
-                    if FileLoad[file] == true then
-                        FileLoad[file] = nil
-                        Threads.remove(file)
-                    end
-                    if file.ricon then
-                        Graphics.freeImage(file.ricon)
-                        file.ricon = nil
+                    -- Draw category icons for current cover
+                    if l == p then
+                        drawCategory_icons(def)
                     end
                 end
-
             end
+        end
 
+        -- Clean up unused images
+        for k, v in pairs(def) do
+            if k < visible_start or k > visible_end then
+                if FileLoad[v] == true then
+                    FileLoad[v] = nil
+                    Threads.remove(v)
+                end
+                if v.ricon then
+                    Graphics.freeImage(v.ricon)
+                    v.ricon = nil
+                end
+            end
         end
 
 
@@ -10616,6 +10862,7 @@ function drawCategory (def)
     end
 end
 
+-- Capture function load time before main loop starts (major performance optimization)
 functionTime = Timer.getTime(oneLoopTimer)
 
 -- Main loop
@@ -10642,6 +10889,42 @@ while true do
     end
     
     mx, my = Controls.readLeftAnalog()
+    
+    -- Idle detection for background precomputation (only for flat view)
+    if showView == 5 then
+        -- Initialize idle tracking variables
+        if not last_selection_p then
+            last_selection_p = p
+            idle_frame_count = 0
+        end
+        
+        -- Track if user is idle (not changing selection and animation settled)
+        local animation_distance = 0
+        if flat_view_scroll_x and flat_view_target_x then
+            animation_distance = math.abs(flat_view_target_x - flat_view_scroll_x)
+        end
+        local user_idle = (p == last_selection_p) and (animation_distance < 1)
+        
+        -- Check for any user input to reset idle state immediately
+        if Controls.check(pad, SCE_CTRL_LEFT) or Controls.check(pad, SCE_CTRL_RIGHT) or 
+           Controls.check(pad, SCE_CTRL_UP) or Controls.check(pad, SCE_CTRL_DOWN) or
+           Controls.check(pad, SCE_CTRL_CROSS) or Controls.check(pad, SCE_CTRL_CIRCLE) or
+           Controls.check(pad, SCE_CTRL_TRIANGLE) or Controls.check(pad, SCE_CTRL_SQUARE) or
+           mx < 64 or mx > 180 or my < 64 or my > 180 then
+            idle_frame_count = 0
+        elseif user_idle then
+            idle_frame_count = idle_frame_count + 1
+            -- Start background computation after being idle for 30 frames (~0.5 seconds)
+            if idle_frame_count > 30 and def then
+                background_precompute_covers(def, p)
+            end
+        else
+            idle_frame_count = 0
+        end
+        
+        -- Always update last selection for next frame comparison
+        last_selection_p = p
+    end
     
     -- touch input
     x1, y1 = Controls.readTouch()
@@ -11358,11 +11641,34 @@ while true do
 
         -- Smooth move items horizontally
         if targetX ~= base_x then
+            local distance = targetX - base_x
+            local abs_distance = math.abs(distance)
+            
             if smoothScrolling == 1 then
                 if showView == 5 then
-                    -- Smooth scrolling disabled until can improve
-                    -- targetX = targetX - ((targetX - base_x) * 0.25)
-                    targetX = targetX - ((targetX - base_x) * 1)
+                    -- Film strip smooth scrolling - slower gentle movement
+                    local easing_factor = 0.02  -- Slower smooth movement (was 0.06)
+                    local min_movement = 0.18    -- Smaller minimum step (was 0.3)
+                    
+                    -- Factor in cover width for consistency
+                    local cover_width_factor = 1.0
+                    if fv_cover_scale_px then
+                        cover_width_factor = math.min(1.2, math.max(0.9, fv_cover_scale_px / 200))
+                    end
+                    
+                    easing_factor = easing_factor * cover_width_factor
+                    min_movement = min_movement * cover_width_factor
+                    
+                    local movement = distance * easing_factor
+                    
+                    if abs_distance > min_movement then
+                        if math.abs(movement) < min_movement then
+                            movement = (distance > 0) and min_movement or -min_movement
+                        end
+                        targetX = targetX - movement
+                    else
+                        targetX = base_x  -- Snap to target when very close
+                    end
                 else
                     targetX = targetX - ((targetX - base_x) * 0.17)
                 end
@@ -12104,6 +12410,9 @@ while true do
 
 -- MENU 2 - SETTINGS
     elseif showMenu == 2 then
+        
+        -- Load setting icons when entering settings menu (lazy loading optimization)
+        load_setting_icons_if_needed()
         
         -- SETTINGS
         -- Footer buttons and icons
@@ -17566,6 +17875,12 @@ while true do
                     p = 1
                     master_index = p
                     startCovers = false
+                    -- Reset smooth scrolling factors to prevent position offset
+                    quick_scrolling_factor = 0
+                    quick_scrolling_factor_goal = 0
+                    -- Reset flat view scrolling variables for showView 5
+                    flat_view_scroll_x = 0
+                    flat_view_target_x = 0
                     GetInfoSelected()
                     FreeIcons()
 
@@ -17740,6 +18055,12 @@ while true do
                     p = 1
                     master_index = p
                     startCovers = false
+                    -- Reset smooth scrolling factors to prevent position offset
+                    quick_scrolling_factor = 0
+                    quick_scrolling_factor_goal = 0
+                    -- Reset flat view scrolling variables for showView 5
+                    flat_view_scroll_x = 0
+                    flat_view_target_x = 0
                     GetInfoSelected()
                     FreeIcons()
                 end
@@ -18309,9 +18630,9 @@ while true do
     Screen.flip()
     oldpad = pad
 
-    if oneLoopTimer then -- if the timer is running then...
+    if oneLoopTimer then -- Only run timer check once at end of initialization
         oneLoopTime = Timer.getTime(oneLoopTimer) -- save the time
         Timer.destroy(oneLoopTimer)
-        oneLoopTimer = nil -- clear timer value
+        oneLoopTimer = nil -- clear timer value - prevents frame-by-frame timer overhead
     end 
 end
