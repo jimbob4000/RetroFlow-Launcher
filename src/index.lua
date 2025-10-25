@@ -4397,7 +4397,7 @@ function import_hidden_games()
                             end
 
                         else
-                            if System.doesDirExist(file.game_path) then
+                            if System.doesDirExist(file.game_path) or System.doesFileExist(file.game_path) then
                                 table.insert(hidden_games_table, file)
                             else
                             end
@@ -16718,6 +16718,9 @@ while true do
 
 -- MENU 25 - FILTER GAMES
     elseif showMenu == 25 then
+        
+        -- Load setting icons when entering filter games menu (lazy loading optimization)
+        load_setting_icons_if_needed()
         
         -- SETTINGS
         -- Footer buttons and icons
