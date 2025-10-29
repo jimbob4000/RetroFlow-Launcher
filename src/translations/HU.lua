@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Hátterek",
 ["Download_using_CRC_colon"] = "Letöltés CRC használatával:",
 ["Extract_PS_Vita_backgrounds"] = "PS Vita hátterek kibontása",
-["Extract_PSP_backgrounds"] = "PSP hátterek kibontása",
+["Extract_PSP_backgrounds"] = "PSP hátterek kibontása:",
 ["Extract_PICO8_backgrounds"] = "PICO-8 hátterek kibontása",
 
 ["All"] = "Összes",

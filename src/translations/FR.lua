@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Arrière-plans",
 ["Download_using_CRC_colon"] = "Téléchargez à l'aide du CRC :",
 ["Extract_PS_Vita_backgrounds"] = "Extraire les arrière-plans PS Vita",
-["Extract_PSP_backgrounds"] = "Extraire les arrière-plans PSP",
+["Extract_PSP_backgrounds"] = "Extraire les arrière-plans PSP :",
 ["Extract_PICO8_backgrounds"] = "Extraire les arrière-plans PICO-8",
 
 ["All"] = "Tout",

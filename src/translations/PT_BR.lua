@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Fundos",
 ["Download_using_CRC_colon"] = "Baixar usando CRC:",
 ["Extract_PS_Vita_backgrounds"] = "Extrair planos de fundo do PS Vita",
-["Extract_PSP_backgrounds"] = "Extrair planos de fundo do PSP",
+["Extract_PSP_backgrounds"] = "Extrair planos de fundo do PSP:",
 ["Extract_PICO8_backgrounds"] = "Extrair planos de fundo do PICO-8",
 
 ["All"] = "Todos",

@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Arka Planlar",
 ["Download_using_CRC_colon"] = "CRC kullanarak indir:",
 ["Extract_PS_Vita_backgrounds"] = "PS Vita arka planlarını ayıklayın",
-["Extract_PSP_backgrounds"] = "PSP arka planlarını ayıklayın",
+["Extract_PSP_backgrounds"] = "PSP arka planlarını ayıklayın:",
 ["Extract_PICO8_backgrounds"] = "PICO-8 arka planlarını ayıklayın",
 
 ["All"] = "Tüm",

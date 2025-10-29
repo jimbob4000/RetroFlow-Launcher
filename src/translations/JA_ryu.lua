@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "背景",
 ["Download_using_CRC_colon"] = "CRCを使用してダウンロード：",
 ["Extract_PS_Vita_backgrounds"] = "PS Vitaぬ背景抽出",
-["Extract_PSP_backgrounds"] = "PSPぬ背景抽出",
+["Extract_PSP_backgrounds"] = "PSPぬ背景抽出：",
 ["Extract_PICO8_backgrounds"] = "PICO-8ぬ背景抽出",
 
 ["All"] = "まじり",

@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Tła",
 ["Download_using_CRC_colon"] = "Pobierz za pomocą CRC:",
 ["Extract_PS_Vita_backgrounds"] = "Wyodrębnij tła PS Vita",
-["Extract_PSP_backgrounds"] = "Wyodrębnij tła PSP",
+["Extract_PSP_backgrounds"] = "Wyodrębnij tła PSP:",
 ["Extract_PICO8_backgrounds"] = "Wyodrębnij tła PICO-8",
 
 ["All"] = "Wszystko",

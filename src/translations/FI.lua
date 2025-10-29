@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Taustat",
 ["Download_using_CRC_colon"] = "Lataa CRC:n avulla:",
 ["Extract_PS_Vita_backgrounds"] = "Pura PS Vita-taustat",
-["Extract_PSP_backgrounds"] = "Pura PSP-taustat",
+["Extract_PSP_backgrounds"] = "Pura PSP-taustat:",
 ["Extract_PICO8_backgrounds"] = "Pura PICO-8-taustat",
 
 ["All"] = "Kaikki",

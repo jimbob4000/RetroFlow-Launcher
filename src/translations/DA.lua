@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Baggrunde",
 ["Download_using_CRC_colon"] = "Download med CRC:",
 ["Extract_PS_Vita_backgrounds"] = "Uddrag PS Vita-baggrunde",
-["Extract_PSP_backgrounds"] = "Uddrag PSP-baggrunde",
+["Extract_PSP_backgrounds"] = "Uddrag PSP-baggrunde:",
 ["Extract_PICO8_backgrounds"] = "Uddrag PICO-8-baggrunde",
 
 ["All"] = "Alle",

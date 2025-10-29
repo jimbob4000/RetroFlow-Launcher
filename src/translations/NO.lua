@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "Bakgrunner",
 ["Download_using_CRC_colon"] = "Last ned med CRC:",
 ["Extract_PS_Vita_backgrounds"] = "Pakk ut PS Vita-bakgrunnene",
-["Extract_PSP_backgrounds"] = "Pakk ut PSP-bakgrunnene",
+["Extract_PSP_backgrounds"] = "Pakk ut PSP-bakgrunnene:",
 ["Extract_PICO8_backgrounds"] = "Pakk ut PICO-8-bakgrunnene",
 
 ["All"] = "Alle",

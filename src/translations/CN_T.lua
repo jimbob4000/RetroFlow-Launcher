@@ -98,7 +98,7 @@ return {
 ["Backgrounds"] = "背景",
 ["Download_using_CRC_colon"] = "使用CRC下載 : ",
 ["Extract_PS_Vita_backgrounds"] = "提取 PS Vita 背景",
-["Extract_PSP_backgrounds"] = "提取 PSP 背景",
+["Extract_PSP_backgrounds"] = "提取 PSP 背景 : ",
 ["Extract_PICO8_backgrounds"] = "提取 PICO-8 背景",
 
 ["All"] = "全部",
