@@ -11190,159 +11190,263 @@ function drawCategory (def)
     -- Draw flat covers - SMART LAZY PRE-COMPUTATION
     if showView == 5 then
 
-        -- Smart precomputation around current position
-        smart_precompute_covers(def, p)
-
-        -- Initialize smooth scrolling with safe defaults
-        if not flat_view_scroll_x then
-            flat_view_scroll_x = 0
-            flat_view_target_x = 0
-            -- Will be corrected to proper position after cover_positions is calculated
-        end
-
-        -- Calculate positions efficiently (only for visible range + buffer)
-        local render_distance = 20
-        local visible_start = math.max(1, p - render_distance)
-        local visible_end = math.min(#def, p + render_distance)
-        
-        -- Calculate cumulative position up to visible range
-        local cumulative_x = 0
-        local cover_gap = 20
-        
-        -- Fast calculation to get to the visible range start
-        for i = 1, visible_start - 1 do
-            local cover_width = def[i].precomputed_width or get_predicted_cover_width(def[i].app_type or 0, def[i].icon_path)
-            cumulative_x = cumulative_x + cover_width + cover_gap
-        end
-        
-        -- Store the start position for selected cover calculation
-        local start_offset = cumulative_x
-        
-        -- Calculate positions for visible range
-        local cover_positions = {}
-        for i = visible_start, visible_end do
-            cover_positions[i] = cumulative_x
-            local cover_width = def[i].precomputed_width or get_predicted_cover_width(def[i].app_type or 0, def[i].icon_path)
-            cumulative_x = cumulative_x + cover_width + cover_gap
-        end
-
-        -- Calculate position for selected cover (if not in visible range, estimate)
-        local selected_cover_pos
-        if cover_positions[p] then
-            selected_cover_pos = cover_positions[p]
+        -- Common render distance calculation
+        local render_distance
+        if (def)[p+7] and (def)[p+7].ricon then -- Credit BlackSheepBoy69
+            render_distance = 16
         else
-            -- Estimate position for out-of-range selection (for big jumps)
-            selected_cover_pos = start_offset
-            for i = visible_start, p do
+            render_distance = 8
+        end
+
+        if smoothScrolling == 1 then
+            -- Gradual background precomputation to avoid lag spikes
+            -- Process a few covers per frame instead of all at once
+            if p > 1 then
+                -- Process only 2-3 covers per frame to spread the work
+                local covers_per_frame = 3
+                local start_idx = math.max(1, p - 10)
+                local end_idx = math.min(#def, start_idx + covers_per_frame - 1)
+                
+                -- Rotate through covers around current position
+                local frame_offset = (p % 10)  -- Simple rotation based on current position
+                start_idx = start_idx + (frame_offset * covers_per_frame) % 20
+                end_idx = math.min(#def, start_idx + covers_per_frame - 1)
+                
+                precompute_cover_widths_range(def, start_idx, end_idx)
+            end
+
+            -- Initialize smooth scrolling with safe defaults
+            if not flat_view_scroll_x then
+                flat_view_scroll_x = 0
+                flat_view_target_x = 0
+                -- Will be corrected to proper position after cover_positions is calculated
+            end
+
+            -- Calculate positions efficiently (only for visible range + buffer)
+            render_distance = 20  -- Override for smooth scrolling
+            local visible_start = math.max(1, p - render_distance)
+            local visible_end = math.min(#def, p + render_distance)
+            
+            -- Calculate cumulative position up to visible range
+            local cumulative_x = 0
+            local cover_gap = 20
+            
+            -- Fast calculation to get to the visible range start
+            for i = 1, visible_start - 1 do
                 local cover_width = def[i].precomputed_width or get_predicted_cover_width(def[i].app_type or 0, def[i].icon_path)
-                if i < p then
-                    selected_cover_pos = selected_cover_pos + cover_width + cover_gap
+                cumulative_x = cumulative_x + cover_width + cover_gap
+            end
+            
+            -- Store the start position for selected cover calculation
+            local start_offset = cumulative_x
+            
+            -- Calculate positions for visible range
+            local cover_positions = {}
+            for i = visible_start, visible_end do
+                cover_positions[i] = cumulative_x
+                local cover_width = def[i].precomputed_width or get_predicted_cover_width(def[i].app_type or 0, def[i].icon_path)
+                cumulative_x = cumulative_x + cover_width + cover_gap
+            end
+
+            -- Calculate position for selected cover (if not in visible range, estimate)
+            local selected_cover_pos
+            if cover_positions[p] then
+                selected_cover_pos = cover_positions[p]
+            else
+                -- Estimate position for out-of-range selection (for big jumps)
+                selected_cover_pos = start_offset
+                for i = visible_start, p do
+                    local cover_width = def[i].precomputed_width or get_predicted_cover_width(def[i].app_type or 0, def[i].icon_path)
+                    if i < p then
+                        selected_cover_pos = selected_cover_pos + cover_width + cover_gap
+                    end
                 end
             end
-        end
-        
-        -- Fix initial position on first load to prevent startup animation jump
-        if flat_view_scroll_x == 0 and flat_view_target_x == 0 then
-            local initial_target = -selected_cover_pos + fv_left_margin
-            flat_view_scroll_x = initial_target
-            flat_view_target_x = initial_target
-        end
-        
-        local target_scroll = -selected_cover_pos + fv_left_margin
-        
-        -- Update target when selection changes
-        if target_scroll ~= flat_view_target_x then
-            flat_view_target_x = target_scroll
-        end
+            
+            -- Fix initial position on first load to prevent startup animation jump
+            if flat_view_scroll_x == 0 and flat_view_target_x == 0 then
+                local initial_target = -selected_cover_pos + fv_left_margin
+                flat_view_scroll_x = initial_target
+                flat_view_target_x = initial_target
+            end
+            
+            local target_scroll = -selected_cover_pos + fv_left_margin
+            
+            -- Update target when selection changes
+            if target_scroll ~= flat_view_target_x then
+                flat_view_target_x = target_scroll
+            end
 
-        -- Smooth scrolling animation (or instant if disabled)
-        if smoothScrolling == 1 then
+            -- Smooth scrolling animation (or instant if disabled)
             local distance = flat_view_target_x - flat_view_scroll_x
             if math.abs(distance) > 0.5 then
                 flat_view_scroll_x = flat_view_scroll_x + distance * 0.08
             else
                 flat_view_scroll_x = flat_view_target_x
             end
-        else
-            flat_view_scroll_x = flat_view_target_x
-        end
 
-        -- Draw covers in visible range
-        for l = visible_start, visible_end do
-            local file = def[l]
-            
-            -- Ensure image is loaded
-            if FileLoad[file] == nil then
-                FileLoad[file] = true
-                Threads.addTask(file, {
-                    Type = "ImageLoad",
-                    Path = file.icon_path,
-                    Table = file,
-                    Index = "ricon"
-                })
-            end
+            -- Draw covers in visible range
+            for l = visible_start, visible_end do
+                local file = def[l]
+                
+                -- Ensure image is loaded
+                if FileLoad[file] == nil then
+                    FileLoad[file] = true
+                    Threads.addTask(file, {
+                        Type = "ImageLoad",
+                        Path = file.icon_path,
+                        Table = file,
+                        Index = "ricon"
+                    })
+                end
 
-            -- Get the appropriate icon
-            local icon = file.ricon or file.icon
-            if icon then
-                -- Calculate final position using pre-computed width for positioning
-                local cover_x = cover_positions[l] + flat_view_scroll_x
-                local precomputed_width = file.precomputed_width or get_predicted_cover_width(file.app_type or 0, file.icon_path)
+                -- Get the appropriate icon
+                local icon = file.ricon or file.icon
+                if icon then
+                    -- Calculate final position using pre-computed width for positioning
+                    local cover_x = cover_positions[l] + flat_view_scroll_x
+                    local precomputed_width = file.precomputed_width or get_predicted_cover_width(file.app_type or 0, file.icon_path)
 
-                -- Only draw if visible on screen
-                if cover_x + precomputed_width > -50 and cover_x < 1010 then
-                    -- Use precomputed_width for border (which includes predicted width fallback)
-                    local render_width = precomputed_width
+                    -- Only draw if visible on screen
+                    if cover_x + precomputed_width > -50 and cover_x < 1010 then
+                        -- Use precomputed_width for border (which includes predicted width fallback)
+                        local render_width = precomputed_width
 
-                    -- Draw white border for selected cover using predicted/computed dimensions
-                    if l == p then
-                        Graphics.fillRect(cover_x - fv_border, cover_x + render_width + fv_border, 
-                                        fv_cover_y - fv_border, fv_cover_y + fv_cover_height + fv_border, white)
-                    end
+                        -- Draw white border for selected cover using predicted/computed dimensions
+                        if l == p then
+                            Graphics.fillRect(cover_x - fv_border, cover_x + render_width + fv_border, 
+                                            fv_cover_y - fv_border, fv_cover_y + fv_cover_height + fv_border, white)
+                        end
 
-                    -- Set image filters and draw cover with predicted dimensions
-                    Graphics.setImageFilters(icon, FILTER_LINEAR, FILTER_LINEAR)
-                    
-                    -- Check if this is the default placeholder image (always scale to predicted width)
-                    if icon == imgCoverTmp or not file.precomputed_width then
-                        -- Scale to predicted width for uncomputed covers or default placeholder
-                        Graphics.drawScaleImage(cover_x, fv_cover_y, icon, render_width / Graphics.getImageWidth(icon), fv_cover_height / Graphics.getImageHeight(icon))
-                    else
-                        -- Use actual scale for computed covers
-                        local cover_height = Graphics.getImageHeight(icon)
-                        local cover_scale = fv_cover_height / cover_height
-                        Graphics.drawScaleImage(cover_x, fv_cover_y, icon, cover_scale, fv_cover_height / cover_height)
-                    end
-
-                    -- Add dark overlay to cover left of current with very subtle fade-in
-                    if l == p - 1 then
-                        local distance = math.abs(flat_view_target_x - flat_view_scroll_x)
-                        local fade_start_distance = 20  -- Start fading in when 20 pixels away
+                        -- Set image filters and draw cover with predicted dimensions
+                        Graphics.setImageFilters(icon, FILTER_LINEAR, FILTER_LINEAR)
                         
-                        if distance < fade_start_distance then
-                            -- Calculate opacity with slower, more subtle progression
-                            local opacity_factor = 1 - (distance / fade_start_distance)
-                            -- Use quadratic easing for slower start
-                            opacity_factor = opacity_factor * opacity_factor
-                            local overlay_opacity = math.floor(75 * opacity_factor)
+                        -- Check if this is the default placeholder image (always scale to predicted width)
+                        if icon == imgCoverTmp or not file.precomputed_width then
+                            -- Scale to predicted width for uncomputed covers or default placeholder
+                            Graphics.drawScaleImage(cover_x, fv_cover_y, icon, render_width / Graphics.getImageWidth(icon), fv_cover_height / Graphics.getImageHeight(icon))
+                        else
+                            -- Use actual scale for computed covers
+                            local cover_height = Graphics.getImageHeight(icon)
+                            local cover_scale = fv_cover_height / cover_height
+                            Graphics.drawScaleImage(cover_x, fv_cover_y, icon, cover_scale, fv_cover_height / cover_height)
+                        end
+
+                        -- Add dark overlay to cover left of current with very subtle fade-in
+                        if l == p - 1 then
+                            local distance = math.abs(flat_view_target_x - flat_view_scroll_x)
+                            local fade_start_distance = 20  -- Start fading in when 20 pixels away
                             
-                            if overlay_opacity > 2 then  -- Draw even very faint overlays
-                                Graphics.fillRect(cover_x, cover_x + render_width, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,overlay_opacity))
+                            if distance < fade_start_distance then
+                                -- Calculate opacity with slower, more subtle progression
+                                local opacity_factor = 1 - (distance / fade_start_distance)
+                                -- Use quadratic easing for slower start
+                                opacity_factor = opacity_factor * opacity_factor
+                                local overlay_opacity = math.floor(75 * opacity_factor)
+                                
+                                if overlay_opacity > 2 then  -- Draw even very faint overlays
+                                    Graphics.fillRect(cover_x, cover_x + render_width, fv_cover_y, fv_cover_y + fv_cover_height, Color.new(0,0,0,overlay_opacity))
+                                end
                             end
                         end
-                    end
 
-                    -- Draw category icons for current cover
-                    if l == p then
-                        drawCategory_icons(def)
+                        -- Draw category icons for current cover
+                        if l == p then
+                            drawCategory_icons(def)
+                        end
+                    end
+                end
+            end
+
+        else
+            -- Non-smooth scrolling mode - original rendering logic
+            base_y = fv_left_margin
+            base_y_left = 0
+            cover_widths_x_bonus = 0
+
+            for l, file in pairs((def)) do
+                if (l >= master_index) then
+                    base_x = base_x + space
+                end
+
+                -- Draw covers, next and one to left of current
+                if (l >= master_index) or (l == master_index -1) then
+
+                    if l > p-render_distance and l < p+render_distance+2 or l == master_index -1 then -- Credit BlackSheepBoy69 - Experimental fix.
+                        if FileLoad[file] == nil then --add a new check here
+                            FileLoad[file] = true
+                            Threads.addTask(file, {
+                                Type = "ImageLoad",
+                                Path = file.icon_path,
+                                Table = file,
+                                Index = "ricon"
+                            })
+                        end
+
+                        -- Draw covers to right
+                        if (l >= master_index) then
+                            if file.ricon ~= nil then
+                                get_cover_scale(file.ricon)
+                                DrawCover_Flat(base_y,152,file.name,color, file.ricon, l)
+
+                                if fv_cover_scale_px ~= nil then
+                                    base_y = base_y + fv_cover_scale_px + fv_gutter
+                                end
+
+                                drawCategory_icons((def))
+                            else
+                                get_cover_scale(file.icon)
+                                DrawCover_Flat(base_y,152,file.name,color, file.icon, l)
+                                if fv_cover_scale_px ~= nil then
+                                    base_y = base_y + fv_cover_scale_px + fv_gutter
+                                end
+                                
+                                drawCategory_icons((def))
+                            end
+
+                        -- Draw one previous cover to left
+                        elseif (l == master_index -1) then
+                            if file.ricon ~= nil then
+                                get_cover_scale(file.ricon)
+                                if fv_cover_scale_px ~= nil then
+                                    base_y_left = 0 - fv_cover_scale_px + fv_left_margin - fv_gutter
+                                    DrawCover_Flat(base_y_left,152,file.name,color, file.ricon, l)
+                                end
+                            else
+                                get_cover_scale(file.icon)
+                                if fv_cover_scale_px ~= nil then
+                                    base_y_left = 0 - fv_cover_scale_px + fv_left_margin - fv_gutter
+                                    DrawCover_Flat(base_y_left,152,file.name,color, file.icon, l)
+                                end
+                            end
+                        end
+
+                    else
+                        if FileLoad[file] == true then
+                            FileLoad[file] = nil
+                            Threads.remove(file)
+                        end
+                        if file.ricon then
+                            Graphics.freeImage(file.ricon)
+                            file.ricon = nil
+                        end
                     end
                 end
             end
         end
 
-        -- Clean up unused images
+        -- Common cleanup for both modes - only clean up images outside render distance
+        local cleanup_start, cleanup_end
+        if smoothScrolling == 1 then
+            cleanup_start = math.max(1, p - 20)
+            cleanup_end = math.min(#def, p + 20)
+        else
+            cleanup_start = math.max(1, p - render_distance)
+            cleanup_end = math.min(#def, p + render_distance + 2)
+        end
+
         for k, v in pairs(def) do
-            if k < visible_start or k > visible_end then
+            if k < cleanup_start or k > cleanup_end then
                 if FileLoad[v] == true then
                     FileLoad[v] = nil
                     Threads.remove(v)
