@@ -4955,6 +4955,8 @@ function count_loading_tasks()
                             loading_tasks = loading_tasks + 1
                         end
                     end
+                else
+                    scan_scummvm_db = {}
                 end
 
 
