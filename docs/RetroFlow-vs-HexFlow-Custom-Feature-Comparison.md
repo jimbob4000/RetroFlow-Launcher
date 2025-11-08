@@ -12,7 +12,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | **🚀 Startup** |
 | Cache system | ✅ | ✅ |
 | Automatic game scanning | ❌ | ✅ |
-| Fast startup | ✅ When scanning is turned off | ✅ |
+| Fast startup | ✅ <br> Faster than HexFlow Custom when startup scan is off | ✅ |
 | Create rom/artwork directories | ✅ | ❌ Requires RetroFlow  |
 | **🕹️ Emulator Support** |
 | Adrenaline | ✅ | ✅ |
