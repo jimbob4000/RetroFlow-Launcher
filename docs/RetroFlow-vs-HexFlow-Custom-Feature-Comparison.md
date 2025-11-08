@@ -53,7 +53,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Search for games | ✅ | ❌|
 | Swap X and O buttons | ✅ | ✅|
 | Hold D-pad for fast scrolling | ✅ | ❌|
-| Smooth Scrolling | ✅<br><br> | ⚠️ In some views|
+| Smooth Scrolling | ✅ | ⚠️ In some views|
 | Alphabetical Skipping | ✅ | ✅ |
 | **🎮 Game Views** |
 | 3D Coverflow View | ✅ | ✅ |
@@ -62,7 +62,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | 2D Xmb View | ❌ | ✅ |
 | 2D Grid View | ❌ | ✅ |
 | **🌄 Artwork & Backgrounds** |
-| Add your own wallpaper | ✅<br>Unlimited | ⚠️ One|
+| Add your own wallpaper | ✅ Unlimited | ⚠️ One|
 | CRC for better artwork matching | ✅ | ❌ |
 | Batch download game backgrounds | ✅ | ❌ |
 | PSP: Extract game backgrounds from game | ✅ | ❌|
