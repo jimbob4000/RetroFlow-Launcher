@@ -345,6 +345,6 @@ HexFlow Custom is also a fork of HexFlow, which can be confusing. I've created a
 [RetroFlow vs HexFlow Custom - Feature Comparison](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/RetroFlow-vs-HexFlow-Custom-Feature-Comparison.md)
 <br><br>
 
----
 
-[Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)
+
+[< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)

@@ -84,6 +84,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | **📝 Filename cleanup** |
 | Strip region from game name (USA, etc.) | ✅ | ❌|
 
-<br>
+
+
 
 [< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)

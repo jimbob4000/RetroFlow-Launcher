@@ -25,3 +25,6 @@
 
 * Duplicate PS1 games installed? <br>This tool will help you find where they are. PS1 which are generally stored in folders using the title ID only which can be make if harder to find otherwise.
 * Want to export your library? <br>This is a quick way to get a list of all the games you have in RetroFlow.
+
+
+[< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)
