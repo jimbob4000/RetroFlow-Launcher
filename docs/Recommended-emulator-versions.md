@@ -10,7 +10,7 @@ For the best experience, I recommend these specific versions.
 * Versions 1.11 onward fail to launch games with '&' in the filename
 
 [Download link](https://buildbot.libretro.com/stable/1.9.4/playstation/vita/)
-
+<br><br>
 
 ## ScummVM: 
 **Version 2.6.1**
@@ -19,7 +19,7 @@ For the best experience, I recommend these specific versions.
 * 2.6.1 works for me.
 
 [Download link](https://downloads.scummvm.org/frs/scummvm/2.6.1/scummvm-2.6.1-vita.vpk)
-
+<br><br>
 
 ## Adrenaline
 **6.61 Adrenaline-7**
@@ -29,3 +29,4 @@ For the best experience, I recommend these specific versions.
 * Unofficial forks of Adrenaline are not supported.
 
 [Download link](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7)
+<br><br>
