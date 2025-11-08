@@ -30,3 +30,6 @@ For the best experience, I recommend these specific versions.
 
 [Download link](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7)
 <br><br>
+
+<br>
+[< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)

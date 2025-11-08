@@ -11,7 +11,7 @@ This is a modded version of [HexFlow Launcher](https://github.com/VitaHEX-Games/
 With RetroFlow you can also integrate retro games without the need to create bubbles for Adrenaline, RetroArch, DaedalusX64 and Flycast.
 
 **Supported systems:**
-PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, Game Boy Advance, Game Boy Color, Game Boy, Sega Dreamcast, Sega CD, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD, Commodore Amiga, Commodore 64, WonderSwan, WonderSwan Color, MSX, MSX2, ZX Spectrum, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), Neo Geo Pocket Color, ScummVM and PICO-8.
+PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, NDS, Game Boy Advance, Game Boy Color, Game Boy, Sega Dreamcast, Sega CD, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD, Commodore Amiga, Commodore 64, WonderSwan, WonderSwan Color, MSX, MSX2, ZX Spectrum, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), Neo Geo Pocket Color, ScummVM and PICO-8.
 
 **Main features added since forking from HexFlow:**
 
@@ -50,10 +50,11 @@ RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called A
 
 ## 2. Install any other necessary apps
 * [DaedalusX64](https://github.com/Rinnegatamante/DaedalusX64-vitaGL/releases) is required for N64 games. 
-* [RetroArch](https://www.retroarch.com/index.php?page=platforms) is required for other retro systems.  
+* [RetroArch](https://www.retroarch.com/index.php?page=platforms) is required for other retro systems. Recommended version: [1.9.4](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
 * [Flycast](https://www.psx-place.com/threads/release-flycast-vita-v-1-0-3-sega-dreamcast-emulator-for-psvita-pstv.38180/) is required to play Dreamcast games. Also see the [compatibility list](https://newflycast.rinnegatamante.it/)  as not all games are playable yet.
 * [FAKE-08](https://github.com/jtothebell/fake-08/releases) is required for PICO-8 games.
-* [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.
+* [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.  Recommended version: [2.6.1](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
+* [DSVita](https://github.com/Grarak/DSVita) is required for NDS games.
 
 
 **Important:** If Adrenaline games aren't launching after you have finished the setup, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). Or try installing [AdrBubbleBooterInstaller](https://vitadb.rinnegatamante.it/#/info/307).
@@ -89,6 +90,9 @@ For best results it's recommended that your games are named using the **no-intro
  * Dreamcast:  '.gdi' and '.cdi' games are supported.
  * PS1 using RetroArch - They will use the 'PCSX ReARMed' core, more information on supported extensions here: [https://docs.libretro.com/library/pcsx_rearmed/](https://docs.libretro.com/library/pcsx_rearmed/)
 
+#### DSVita
+* The default and recommended ROM directory is `ux0:data/dsvita`. If you use a different directory you may not be able to fully configure the game settings in DSVita.
+
 
 ## 5. Rescan to find your games
 
@@ -111,7 +115,7 @@ Please see the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/mai
 
 Navigate your library using the **DPad** or the **Left Stick** or with the **Touch Screen**.
 
-**DPad Up**: Jump to the recently played / favourites category, or filter categories to only show collections. (DPad Right when viewing games in list view)
+**D-Pad Up**: Jump to the recently played / favourites category / select a random game, or filter categories to only show collections. (DPad Right when viewing games in list view)
 
 **R/L triggers**: Skip 5 items
 
@@ -127,10 +131,11 @@ Navigate your library using the **DPad** or the **Left Stick** or with the **Tou
 
 **Select**: Search
 
-**DPad Down + Square**: Go back one category
+**D-Pad Down + Square**: Go back one category
 
-**DPad Down + L/R triggers**: Skip games alphabetically
+**D-Pad Down + L/R triggers**: Skip games alphabetically
 
+**Hold D-Pad Left/Right/Up/Down**: Scroll quickly through games/menus.
 
 
 # Customisation
@@ -173,20 +178,18 @@ You can change your background within the app by going to the settings menu > th
 
 
 
-## Known issues
-
-* PSP background extraction: May need to be run more than once, after around 150 games it skips the rest. 
-
-
 # Credits
 
 * Original [HexFlow](https://github.com/VitaHEX-Games/HexFlow-Launcher) app by: VitaHex Games.
 * Programming/UI: Sakis RG.
-* Developed with [Lua Player Plus](http://rinnegatamante.github.io/lpp-vita/) by Rinnegatamante.
-* Scanning PSP and PSX games, and CRC checks made possible by using [ONELua](http://onelua.x10.mx/) by Team ONElua.
-* Extracting Vita backgrounds is an integrated version of [copyicons](https://github.com/cy33hc/copyicons) by cy33hc.
+* Rinnegatamante and all the contributors to [Lua Player Plus Vita](http://rinnegatamante.github.io/lpp-vita/).
+* [cy33hc](https://github.com/cy33hc) for vita launcher and copyicons, his work has been inspiring.
 * Aurora wallpaper: Photo by [Maria Vojtovicova](https://unsplash.com/@maripopeo).
 * Blur 2 and Blur 3 wallpaper by [Tech & ALL](https://techandall.com/10-blur-wallpapers-backgrounds-for-your-website/).
+
+### Source
+The lua code is all contained within this repository.
+The lua code is interpreted by RetroFlow's [custom build of Lua Player Plus](https://github.com/jimbob4000/lpp-vita) for PSVITA. Thanks and credit to the Lua Player Plus Vita plus team, Rinnegatamante, and also cy33hc for vita launcher and copyicons. See the repo link above for full credits.
 
 ### Special thanks
 
@@ -212,20 +215,22 @@ You can change your background within the app by going to the settings menu > th
 * Polish - @SK00RUPA
 
 
-
 # Support
 
 **Help and FAQ's:**
 For help and answers to frequent questions please visit the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page.
 
 **Feature requests:** 
-Please note that I'm not a developer, this mod started as a personal project, please be mindful that there may be some redundant code, or some requests that will be beyond my knowledge to implement.
+Please note that I'm not a developer by trade, this mod started as a personal project, some requests that will be beyond my knowledge to implement.
 Please feel free to build upon the mod as long as you provide credit to the original HexFlow developer and the people who contributed to the project.
+<br><br>
 
 **Supporting developers:** 
 I don't accept donations or payment for this project, however if you would like to support VitaHex; the developer of the original HexFlow app you can support their work by becoming a [Patron](https://www.patreon.com/vitahex).
 
 You can also donate to them using [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RM8ECMVYMTXGJ&source=url). If you would like to follow them, you can find VitaHex on [Twitter](https://twitter.com/VitaHex), or their website [vitahex.weebly.com](https://vitahex.weebly.com/).
+
+
 
 **Disclaimer:**
 <br>
