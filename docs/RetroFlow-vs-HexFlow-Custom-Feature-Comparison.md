@@ -82,7 +82,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | PSTV tailored UI | ✅ | ❌ |
 | Localised logos & naming Mega Drive/Genesis and Dreamcast | ✅ | ❌ |
 | **📝 Filename cleanup** |
-| Hide region from game name (USA, etc.) | ✅ | ❌|
+| Strip region from game name (USA, etc.) | ✅ | ❌|
 
 <br>
 
