@@ -32,10 +32,10 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Favourites | ✅ | ❌|
 | System apps | ✅ | ❌ Some apps available through menu|
 | Random game | ✅ | ❌|
-| Custom game categories | ✅ Unlimited; create from within app. | ⚠️ One (requires PC to edit).|
+| Custom game categories | ✅ Unlimited; create from within app | ⚠️ One (requires PC to edit)|
 | **🎮 Platform-Specific Features** |
 | **Adrenaline** |
-| Install dependencies for launching without bubbles | ✅ | ❌ Requires RetroFlow.|
+| Install dependencies for launching without bubbles | ✅ | ❌ Requires RetroFlow|
 | Customise game boot settings | ✅ | ❌|
 | Customise PS button control | ✅ | ❌|
 | CSO game support | ✅ | ❌|
@@ -67,7 +67,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Batch download game backgrounds | ✅ | ❌ |
 | PSP: Extract game backgrounds from game | ✅ | ❌|
 | Pico-8: Create game backgrounds | ✅ | ❌|
-| Vita/Homebrew: Find missing icons and backgrounds | ✅ Perfomed when scanning| ⚠️ In tools section.|
+| Vita/Homebrew: Find missing icons and backgrounds | ✅ Perfomed when scanning| ⚠️ In tools section|
 | **🎵 Music** |
 | Music supported | ✅ | ✅ |
 | Multiple tracks | ✅ | ❌ |
