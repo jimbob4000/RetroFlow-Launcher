@@ -1,4 +1,4 @@
-# Recommended emulator versions
+# Recommended emulator versions for RetroFlow
 
 For the best experience, I recommend these specific versions.
 
