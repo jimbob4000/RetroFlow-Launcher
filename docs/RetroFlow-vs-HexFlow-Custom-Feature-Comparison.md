@@ -83,6 +83,8 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Localised logos & naming Mega Drive/Genesis and Dreamcast | ✅ | ❌ |
 | **📝 Filename cleanup** |
 | Strip region from game name (USA, etc.) | ✅ | ❌|
+| Clean Amiga WHDload game names | ✅ | ❌|
+| Clean ScummVM game names | ✅ | ❌|
 
 
 
