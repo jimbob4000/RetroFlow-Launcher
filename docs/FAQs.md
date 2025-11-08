@@ -184,13 +184,13 @@ Uninstall Adrenaline and reinstall it.
 ### RetroArch games don't load
 
 Older versions of RetroArch don't support launchers. 
-See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/Recommended-emulator-versions.md) page for version which will work. 
+See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work. 
 Or update to version 1.9.4 or newer, see the [RetroArch buildbot](https://buildbot.libretro.com/stable/) for available versions.
 <br><br>
 
 ### RetroArch fails to load games with "&" symbol in the game name
 
-This is an issue with RetroArch version 1.11 onwards. Install an older version of RetroArch until the issue is resolved. See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/Recommended-emulator-versions.md) page for version which will work.
+This is an issue with RetroArch version 1.11 onwards. Install an older version of RetroArch until the issue is resolved. See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work.
 <br><br>
 
 ### Can I change a core for RetroArch?
@@ -212,7 +212,7 @@ Support for launchers was added after July 5, 2021. Update to a more current ver
 
 ### ScummVM some games won't launch
 
-Some games don't launch on ScummVM version 2.7.0. See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/Recommended-emulator-versions.md) page for version which will work.
+Some games don't launch on ScummVM version 2.7.0. See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work.
 <br><br>
 
 ### Atari 5200 loads the memopad in RetroArch?
@@ -342,7 +342,7 @@ Yes. Change your language to 'English - American' and the 'Mega Drive' name and 
 
 HexFlow Custom is also a fork of HexFlow, which can be confusing. I've created a detailed comparison table:
 
-[RetroFlow vs HexFlow Custom - Feature Comparison](https://github.com/jimbob4000/RetroFlow-Launcher/RetroFlow-vs-HexFlow-Custom-Feature-Comparison.md)
+[RetroFlow vs HexFlow Custom - Feature Comparison](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/RetroFlow-vs-HexFlow-Custom-Feature-Comparison.md)
 <br><br>
 
 ---

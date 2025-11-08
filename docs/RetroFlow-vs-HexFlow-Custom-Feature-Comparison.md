@@ -12,8 +12,8 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | **🚀 Startup** |
 | Cache system | ✅ | ✅ |
 | Automatic game scanning | ❌ | ✅ |
-| Fast startup | ✅ <br> When scanning is turned off | ✅ |
-| Create rom/artwork directories | ✅ | ❌<br> Requires RetroFlow  |
+| Fast startup | ✅ When scanning is turned off | ✅ |
+| Create rom/artwork directories | ✅ | ❌ Requires RetroFlow  |
 | **🕹️ Emulator Support** |
 | Adrenaline | ✅ | ✅ |
 | RetroArch   | ✅ | ✅ |
@@ -30,17 +30,17 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Neo Geo | ✅ | ❌|
 | Recently played | ✅ | ✅|
 | Favourites | ✅ | ❌|
-| System apps | ✅ | ❌<br>Some apps available through menu|
+| System apps | ✅ | ❌ Some apps available through menu|
 | Random game | ✅ | ❌|
-| Custom game categories | ✅ <br>Unlimited; create from within app. | ⚠️<br> One (requires PC to edit).|
+| Custom game categories | ✅ Unlimited; create from within app. | ⚠️ One (requires PC to edit).|
 | **🎮 Platform-Specific Features** |
 | **Adrenaline** |
-| Install dependencies for launching without bubbles | ✅ | ❌<br> Requires RetroFlow.|
+| Install dependencies for launching without bubbles | ✅ | ❌ Requires RetroFlow.|
 | Customise game boot settings | ✅ | ❌|
 | Customise PS button control | ✅ | ❌|
 | CSO game support | ✅ | ❌|
 | **DSVita** |
-| Configure games | ❌ | ⚠️<br> Partial settings |
+| Configure games | ❌ | ⚠️ Partial settings |
 | **📝 Game Management** |
 | Custom Game Directories | ✅ | ❌ |
 | Rename games in app | ✅ | ✅ |
@@ -53,21 +53,21 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Search for games | ✅ | ❌|
 | Swap X and O buttons | ✅ | ✅|
 | Hold D-pad for fast scrolling | ✅ | ❌|
-| Smooth Scrolling | ✅<br><br> | ⚠️<br> In some views|
+| Smooth Scrolling | ✅<br><br> | ⚠️ In some views|
 | Alphabetical Skipping | ✅ | ✅ |
 | **🎮 Game Views** |
 | 3D Coverflow View | ✅ | ✅ |
 | 2D List View | ✅ | ❌ |
-| 2D Side Scrolling View | ✅ | ⚠️<br> Currently disabled |
+| 2D Side Scrolling View | ✅ | ⚠️ Currently disabled |
 | 2D Xmb View | ❌ | ✅ |
 | 2D Grid View | ❌ | ✅ |
 | **🌄 Artwork & Backgrounds** |
-| Add your own wallpaper | ✅<br>Unlimited | ⚠️<br> One|
+| Add your own wallpaper | ✅<br>Unlimited | ⚠️ One|
 | CRC for better artwork matching | ✅ | ❌ |
 | Batch download game backgrounds | ✅ | ❌ |
 | PSP: Extract game backgrounds from game | ✅ | ❌|
 | Pico-8: Create game backgrounds | ✅ | ❌|
-| Vita/Homebrew: Find missing icons and backgrounds | ✅ <br> Perfomed when scanning| ⚠️<br> In tools section.|
+| Vita/Homebrew: Find missing icons and backgrounds | ✅ Perfomed when scanning| ⚠️ In tools section.|
 | **🎵 Music** |
 | Music supported | ✅ | ✅ |
 | Multiple tracks | ✅ | ❌ |
