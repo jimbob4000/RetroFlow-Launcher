@@ -1,11 +1,14 @@
 # RetroFlow vs HexFlow Custom: Feature Comparison
 
+<br>
+
 RetroFlow and [HexFlow custom](https://github.com/BlackSheepBoy69/HexFlow-Launcher-Unofficial-Custom) are both forks of the same app ([Hexflow](https://github.com/VitaHEX-Games/HexFlow-Launcher)).
 
 There are a lot of similarities, but both have been developed with different goals and approaches. The comparison table below highlights some of the differences.
 
 The comparison may be biased towards RetroFlow, if in doubt, try them both.
 
+<br>
 
 | Feature | RetroFlow v8.0 | HexFlow Custom v2.9 |
 |---------|-----------|----------------|
