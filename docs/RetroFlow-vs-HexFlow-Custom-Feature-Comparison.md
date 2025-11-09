@@ -41,7 +41,6 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Install dependencies for launching without bubbles | ✅ | ❌ Requires RetroFlow|
 | Customise game boot settings | ✅ | ❌|
 | Customise PS button control | ✅ | ❌|
-| CSO game support | ✅ | ❌|
 | **DSVita** |
 | Configure games | ❌ | ⚠️ Partial settings |
 | **📝 Game Management** |
