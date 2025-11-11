@@ -17,7 +17,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.0.0"
+local appversion = "8.0.1"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -2893,12 +2893,12 @@ end
 
                     if not System.doesFileExist(ADRENALINE.."/adrenaline.bin") then
                         oncopy = true
-                        System.copyFile("app0:payloads/abm/bubbles/adrenaline.bin", ADRENALINE)
+                        System.copyFile("app0:payloads/abm/bubbles/adrenaline.bin", ADRENALINE.."/adrenaline.bin")
                     end
 
                     if not System.doesFileExist(ADRENALINE.."/menucolor.bin") then
                         oncopy = true
-                        System.copyFile("app0:payloads/abm/bubbles/menucolor.bin", ADRENALINE)
+                        System.copyFile("app0:payloads/abm/bubbles/menucolor.bin", ADRENALINE.."/menucolor.bin")
                     end
 
                     for i=1,#MODULES do
