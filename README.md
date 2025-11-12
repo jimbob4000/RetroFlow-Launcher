@@ -57,7 +57,7 @@ RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called A
 * [DSVita](https://github.com/Grarak/DSVita) is required for NDS games.
 
 
-**Important:** If Adrenaline games aren't launching after you have finished the setup, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). Or try installing [AdrBubbleBooterInstaller](https://vitadb.rinnegatamante.it/#/info/307).
+**Important:** If Adrenaline games aren't launching after you have finished the setup, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). Or try installing [AdrBubbleBooterInstaller](https://www.rinnegatamante.eu/vitadb/#/info/307).
 
 
 ## 3. Check your PS1 and PSP are in the right Adrenaline folders
@@ -205,7 +205,7 @@ The lua code is interpreted by RetroFlow's [custom build of Lua Player Plus](htt
 * French - @chronoss and @Axce
 * German - @stuermerandreas
 * Hungarian - @dagadtwok
-* Spanish - @kodyna91
+* Spanish - @kodyna91 and @Johnepo
 * Italian - @TheheroGAC
 * Russian - @\_novff
 * Portuguese - @nighto
