@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "Spilmapper: \nPlacer dine spil i 'ux0:/data/RetroFlow/ROMS/', eller for at bruge dine egne filmapper, gå til 'Scanningsindstillinger' og derefter 'Rediger spilmapper'. \n\nNår du har tilføjet dine spil, skal du vælge 'Scan igen' for at tilføje dem til RetroFlow. \n\nFilnavne: \nDet er vigtigt, at dine spil navngives ved hjælp af 'no-intro' filnavnekonventionen, f.eks. 'Sonic (USA)', ellers downloades billeder ikke.",
 
 ["guide_2_heading"] = "Adrenaline spil indlæses ikke?",
-["guide_2_content"] = "Hvis Adrenaline-spil ikke indlæses, og du har installeret RetroFlow Adrenaline Launcher, skal du installere AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nEller prøv at installere Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "Hvis Adrenaline-spil ikke indlæses, og du har installeret RetroFlow Adrenaline Launcher, skal du installere AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nEller prøv at installere Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Tilpassede spilcovers og baggrunde",
 ["guide_3_content"] = "Covers: \nTilpassede covers kan gemmes i spilmapperne her: 'ux0:/data/RetroFlow/COVERS/'. \n\nBaggrunde: \nTilpassede spilbaggrunde kan gemmes i spilmapperne her: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilnavne:\nFilnavnet skal matche app-id'et, eller appnavne-billederne skal være i .png-format.",

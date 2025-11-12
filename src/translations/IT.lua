@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "Directory di gioco: \nPosiziona i tuoi giochi in 'ux0:/data/RetroFlow/ROMS/', o per utilizzare le tue directory di file, vai su 'Impostazioni di scansione' e poi su 'Modifica le directory di gioco'. \n\nDopo aver aggiunto i tuoi giochi, seleziona 'Ricaricare' per aggiungerli a RetroFlow. \n\nNomi dei file: \nÈ importante che i tuoi giochi siano nominati utilizzando la convenzione di denominazione dei file 'no-intro', ad es. 'Sonic (USA)', altrimenti le immagini non verranno scaricate.",
 
 ["guide_2_heading"] = "I giochi di Adrenaline non si caricano?",
-["guide_2_content"] = "Se i giochi Adrenaline non si caricano e hai installato RetroFlow Adrenaline Launcher, installa AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nOppure prova a installare Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "Se i giochi Adrenaline non si caricano e hai installato RetroFlow Adrenaline Launcher, installa AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOppure prova a installare Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Copertine e sfondi di gioco personalizzati",
 ["guide_3_content"] = "Copertine: \nLe copertine personalizzate possono essere salvate nelle cartelle di gioco qui: 'ux0:/data/RetroFlow/COVERS/'. \n\nSfondi: \nGli sfondi di gioco personalizzati possono essere salvati nelle cartelle di gioco qui: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNomi file:\nIl nome file deve corrispondere all'ID app o le immagini del nome app devono essere in formato .png.",

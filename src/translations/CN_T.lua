@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "遊戲目錄：\n將您的遊戲放在「ux0:/data/RetroFlow/ROMS/」中，\n或使用您自己的文件目錄，轉到「掃描設置」，然後「編輯遊戲目錄」。 \n\n添加遊戲後，選擇「重新掃描」將它們添加到 RetroFlow。 \n\n文件名：\n請務必使用「no-intro」文件命名約定命名您的遊戲，例如 「Sonic (USA)」，\n否則不會下載圖像。",
 
 ["guide_2_heading"] = "Adrenaline 遊戲沒有加載",
-["guide_2_content"] = "如果 Adrenaline 遊戲未加載且您已安裝 RetroFlow Adrenaline Launcher，\n請安裝 AdrBubbleBooterInstaller：\nhttps://vitadb.rinnegatamante.it/#/info/307。 \n\n或者嘗試安裝 Adrenaline Bubble Manager：\nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "如果 Adrenaline 遊戲未加載且您已安裝 RetroFlow Adrenaline Launcher，\n請安裝 AdrBubbleBooterInstaller：\nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\n或者嘗試安裝 Adrenaline Bubble Manager：\nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "自定義遊戲封面和背景",
 ["guide_3_content"] = "封面：\n自定義封面可以保存在此處的遊戲文件夾中：「ux0:/data/RetroFlow/COVERS/」。 \n\n背景：\n自定義遊戲背景可以保存在此處的遊戲文件夾中：\n「ux0:/data/RetroFlow/BACKGROUNDS/」。 \n\n文件名：\n文件名必須與應用 ID 匹配，或者應用名稱圖像必須為 .png 格式。",

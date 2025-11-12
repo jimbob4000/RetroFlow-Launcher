@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "Pelihakemistot: \nAseta pelisi kansioon 'ux0:/data/RetroFlow/ROMS/' tai jos haluat käyttää omia tiedostohakemistojasi, siirry kohtaan 'Skannausasetukset' ja sitten 'Muokkaa pelihakemistoja'. \n\nKun olet lisännyt pelisi, lisää ne RetroFlow hun valitsemalla 'Skannaa uudelleen'. \n\nTiedostonimet: \nOn tärkeää, että pelisi nimetään käyttämällä tiedostojen nimeämiskäytäntöä 'no-intro', esim. 'Sonic (USA)', muuten kuvia ei ladata.",
 
 ["guide_2_heading"] = "Adrenaline pelit eivät lataudu?",
-["guide_2_content"] = "Jos Adrenaline-pelit eivät lataudu ja olet asentanut RetroFlow Adrenaline Launcherin, asenna AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nTai yritä asentaa Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "Jos Adrenaline-pelit eivät lataudu ja olet asentanut RetroFlow Adrenaline Launcherin, asenna AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nTai yritä asentaa Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Mukautetut pelin kannet ja pelin taustat",
 ["guide_3_content"] = "Kannet: \nMukautetut kannet voidaan tallentaa pelikansioihin täällä: 'ux0:/data/RetroFlow/COVERS/'. \n\nTaustat: \nMukautetut pelin taustat voidaan tallentaa pelikansioihin täällä: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nTiedostonimet:\nTiedostonimen on vastattava sovellustunnusta tai sovelluksen nimikuvien on oltava .png-muodossa.",

@@ -218,7 +218,7 @@ return {
 ["guide_1_content"] = "Spielverzeichnisse: \nPlatzieren Sie Ihre Spiele in 'ux0:/data/RetroFlow/ROMS/', oder um Ihre eigenen Dateiverzeichnisse zu verwenden, gehen Sie zu 'Scaneinstellungen' und dann zu 'Spielverzeichnisse festlegen'. \n\nSobald Sie Ihre Spiele hinzugefügt haben, wählen Sie 'Neu laden', um sie zu RetroFlow hinzuzufügen. \n\nDateinamen: \nEs ist wichtig, dass Ihre Spiele nach der Dateinamenskonvention 'no-intro' benannt werden, z. 'Sonic (USA)', sonst werden keine Bilder heruntergeladen.",
 
 ["guide_2_heading"] = "Adrenaline Spiele werden nicht geladen?",
-["guide_2_content"] = "Wenn Adrenaline-Spiele nicht geladen werden und Sie den RetroFlow Adrenaline Launcher installiert haben, installieren Sie bitte AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nOder versuche Adrenaline Bubble Manager zu installieren: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "Wenn Adrenaline-Spiele nicht geladen werden und Sie den RetroFlow Adrenaline Launcher installiert haben, installieren Sie bitte AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOder versuche Adrenaline Bubble Manager zu installieren: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Benutzerdefinierte Spielcover und Spielhintergründe",
 ["guide_3_content"] = "Cover: \nBenutzerdefinierte Cover können hier in den Spielordnern gespeichert werden: 'ux0:/data/RetroFlow/COVERS/'. \n\nHintergründe: \nBenutzerdefinierte Spielhintergründe können hier in den Spielordnern gespeichert werden: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nDateinamen:\nDer Dateiname muss mit der App-ID übereinstimmen oder die App-Namensbilder müssen im .png-Format vorliegen.",

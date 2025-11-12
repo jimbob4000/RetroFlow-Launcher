@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "Spillmapper: \nPlasser spillene dine i 'ux0:/data/RetroFlow/ROMS/', eller for å bruke dine egne filkataloger, gå til 'Skanneinnstillinger' og deretter 'Rediger spillmapper'. \n\nNår du har lagt til spillene dine, velg 'Skann på nytt' for å legge dem til i RetroFlow. \n\nFilnavn: \nDet er viktig at spillene dine navngis ved å bruke 'no-intro' filnavnkonvensjonen, f.eks. 'Sonic (USA)', ellers vil ikke bilder bli lastet ned.",
 
 ["guide_2_heading"] = "Adrenaline spill lastes ikke inn?",
-["guide_2_content"] = "Hvis Adrenaline-spill ikke lastes inn og du har installert RetroFlow Adrenaline Launcher, installer AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nEller prøv å installere Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "Hvis Adrenaline-spill ikke lastes inn og du har installert RetroFlow Adrenaline Launcher, installer AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nEller prøv å installere Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Tilpass spillomslag og spillbakgrunner",
 ["guide_3_content"] = "Omslag: \nEgendefinerte omslag kan lagres i spillmappene her: 'ux0:/data/RetroFlow/COVERS/'. \n\nBakgrunner: \nEgendefinerte spillbakgrunner kan lagres i spillmappene her: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilnavn:\nFilnavnet må samsvare med app-ID-en eller appnavnbildene må være i .png-format.",

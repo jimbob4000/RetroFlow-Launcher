@@ -2405,7 +2405,7 @@ local lang_default =
 ["guide_1_content"] = "Game directories: \nPlace your games in 'ux0:/data/RetroFlow/ROMS/', or to use your own file directories, go to 'Scan Settings' then 'Edit game directories'. \n\nOnce you have added your games, select 'Rescan' to add them to RetroFlow. \n\nFilenames: \nIt's important that your games are named using the 'no-intro' file naming convention, e.g. 'Sonic (USA)', otherwise images won't be downloaded.",
 
 ["guide_2_heading"] = "Adrenaline games not loading?",
-["guide_2_content"] = "If Adrenaline games aren't loading and you have installed the RetroFlow Adrenaline Launcher, please install AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nOr try installing Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "If Adrenaline games aren't loading and you have installed the RetroFlow Adrenaline Launcher, please install AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOr try installing Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "Custom game covers & backgrounds",
 ["guide_3_content"] = "Covers: \nCustom covers can be saved in the game folders here: 'ux0:/data/RetroFlow/COVERS/'. \n\nBackgounds: \nCustom game backgrounds can be saved in the game folders here: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilenames:\nThe filename must match the App ID or the App Name Images must be in .png format.",
@@ -17787,7 +17787,8 @@ while true do
         -- Footer buttons and icons
         -- Get text widths for positioning
         label1 = Font.getTextWidth(fnt20, lang_lines.Close)--Close
-        label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
+        label2 = Font.getTextWidth(fnt20, lang_lines.Default)--Default
+        label3 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
 
         Graphics.drawImage(900-label1, 510, btnO)
         Font.print(fnt20, 900+28-label1, 508, lang_lines.Close, white)--Close

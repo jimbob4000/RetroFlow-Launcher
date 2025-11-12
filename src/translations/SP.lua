@@ -2,9 +2,9 @@ return {
 
 -- Footer
 ["Settings"] = "Opciones",
-["Launch"] = "Ejecutar",
+["Launch"] = "Iniciar",
 ["Details"] = "Detalles",
-["Category"] = "Categorías",
+["Category"] = "Categoría",
 ["View"] = "Vista",
 ["Close"] = "Cerrar",
 ["Select"] = "Seleccionar",
@@ -14,13 +14,13 @@ return {
 ["Language_colon"] = "Idioma: ",
 ["Homebrews_Category_colon"] = "Categoría de Homebrews: ",
 ["System_Apps_colon"] = "Aplicaciones del Sistema: ",
-["Recently_Played_colon"] = "Recientemente jugado: ",
-["Startup_scan_colon"] = "Escaneo de inicio: ",
+["Recently_Played_colon"] = "Recientemente Jugado: ",
+["Startup_scan_colon"] = "Escanear al iniciar: ",
 ["On"] = "Encendido",
 ["Off"] = "Apagado",
 
 -- Appearance
-["Custom_Background_colon"] = "Fondos personalizados: ",
+["Custom_Background_colon"] = "Fondo: ",
 ["Reflection_Effect_colon"] = "Efecto reflejo: ",
 ["Smooth_Scrolling_colon"] = "Desplazamiento suave: ",
 ["Theme_Color_colon"] = "Color de Estilo: ",
@@ -28,10 +28,10 @@ return {
 ["Yellow"] = "Amarillo",
 ["Green"] = "Verde",
 ["Grey"] = "Gris",
-["Dark_Grey"] = "Gris oscuro",
+["Dark_Grey"] = "Gris Oscuro",
 ["Black"] = "Negro",
 ["Purple"] = "Morado",
-["Dark_Purple"] = "Morado oscuro",
+["Dark_Purple"] = "Morado Oscuro",
 ["Orange"] = "Naranja",
 ["Blue"] = "Azul",
 ["Views_2D_colon"] = "Vistas 2D: ",
@@ -42,12 +42,12 @@ return {
 ["Sounds_colon"] = "Sonidos: ",
 ["Music_colon"] = "Música: ",
 ["Shuffle_music_colon"] = "Música aleatoria: ",
-["Skip_track"] = "Saltar pista",
+["Skip_track"] = "Siguiente canción",
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Categoría de Inicio: ",
 ["Favorites"] = "Favoritos",
-["Recently_Played"] = "Recientemente jugado",
+["Recently_Played"] = "Recientemente Jugado",
 ["PS_Vita"] = "PS Vita",
 ["Homebrews"] = "Homebrews",
 ["PSP"] = "PSP",
@@ -111,7 +111,7 @@ return {
 ["Background_not_found"] = "Fondo no encontrado",
 ["of"] = " de ",
 
-["Downloading_covers"] = "Descarga de portadas",
+["Downloading_covers"] = "Descargando portadas",
 ["Downloading_backgrounds"] = "Descargando fondos",
 
 ["No_missing_artwork"] = "No faltan imágenes",
@@ -123,11 +123,11 @@ return {
 ["Download_Cover"] = "Descargar portada",
 ["Download_Background"] = "Descargar fondo",
 ["Override_Category_colon"] = "Cambiar categoria: ",
-["Press_X_to_apply_Category"] = "Presione X para aplicar la categoría",
-["Press_O_to_apply_Category"] = "Presione O para aplicar la categoría",
-["Default"] = "Predeterminada",
+["Press_X_to_apply_Category"] = "Presiona X para aplicar la categoría",
+["Press_O_to_apply_Category"] = "Presiona O para aplicar la categoría",
+["Default"] = "Por defecto",
 ["Favorite"] = "Favorito",
-["Rename"] = "Rebautizar",
+["Rename"] = "Renombrar",
 ["PS_Vita_Game"] = "Juego de PS Vita",
 ["Homebrew"] = "Homebrew",
 ["PSP_Game"] = "Juego de PSP",
@@ -174,15 +174,15 @@ return {
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Instale RetroFlow Adrenaline Launcher.",
-["The_VPK_is_saved_here"] = "El archivo se guarda aquí",
+["The_VPK_is_saved_here"] = "El VPK está guardado aquí",
 
 -- Search
-["Search"] = "Búsqueda",
+["Search"] = "Buscar",
 ["Search_Results"] = "Resultados de la búsqueda",
-["Search_No_Results"] = "Presiona seleccionar para buscar de nuevo",
+["Search_No_Results"] = "Sin resultados",
 
 -- Random game
-["Random_Game"] = "Juego aleatorio",
+["Random_Game"] = "Juego Aleatorio",
 
 -- Settings Menu
 ["Categories"] = "Categorías",
@@ -190,7 +190,7 @@ return {
 ["Artwork"] = "Imágenes",
 ["Scan_Settings"] = "Configuración de escaneo",
 ["Adrenaline_roms"] = "Juegos de Adrenaline: ",
-["All_Category"] = "Toda la categoría: ",
+["All_Category"] = "Categoría Todos: ",
 ["Back_Chevron"] = "<  Atrás",
 ["Theme"] = "Tema",
 ["Game_backgounds_colon"] = "Fondos del juego: ",
@@ -200,48 +200,48 @@ return {
 ["Directory_not_found"] = "Directorio no encontrado",
 ["Edit_game_directories"] = "Editar directorios de juegos...",
 ["Game_directories"] = "Directorios de juegos",
-["Use_this_directory"] = "Usa este directorio",
-["Rescan"] = "Actualizar",
+["Use_this_directory"] = "Usar este directorio",
+["Rescan"] = "Escanear",
 ["Back"] = "Atrás",
 
 -- Scan progress
 ["Scanning_titles"] = "Escaneando títulos...",
 ["Scanning_games_ellipsis"] = "Escaneando juegos...",
-["Scan_complete"] = "Escaneando completo",
+["Scan_complete"] = "Completado",
 ["Reloading_ellipsis"] = "Recargando...",
 
 -- Guides
-["Help_and_Guides"] = "Ayudar",
+["Help_and_Guides"] = "Ayuda",
 
 ["guide_1_heading"] = "Como agregar juegos",
-["guide_1_content"] = "Directorios de juegos: \nColoque sus juegos en 'ux0:/data/RetroFlow/ROMS/', o para usar sus propios directorios de archivos, vaya a 'Configuración de escaneo' y luego a 'Editar directorios de juegos'. \n\nUna vez que haya agregado sus juegos, seleccione 'Actualizar' para agregarlos a RetroFlow. \n\nNombres de archivos: \nEs importante que sus juegos se nombren usando la convención de nomenclatura de archivos 'no-intro', p. 'Sonic (USA)'; de lo contrario, las imágenes no se descargarán.",
+["guide_1_content"] = "Directorios de juegos: \nLos juegos están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/ROMS/', o para usar tus propios directorios de archivos, ve a 'Configuración de escaneo' y luego a 'Editar directorios de juegos'. \nUna vez que hayas agregado tus juegos, selecciona 'Escanear' para agregarlos a RetroFlow. \n\nNombres de archivos: \nEs importante que tus juegos tengan el mismo nombre que el de las recopilaciones 'no-intro'. Ejemplo: Sonic (USA); de lo contrario, las imágenes no se descargarán.",
 
-["guide_2_heading"] = "¿Los juegos de Adrenaline no cargan?",
-["guide_2_content"] = "Si los juegos de Adrenaline no se cargan y ha instalado RetroFlow Adrenaline Launcher, instale AdrBubbleBooterInstaller: https://vitadb.rinnegatamante.it/#/info/307. \n\nO intente instalar Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Los juegos de Adrenaline no inician",
+["guide_2_content"] = "Si los juegos de Adrenaline no se cargan y se ha instalado RetroFlow Adrenaline Launcher, instala AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nO instala Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
-["guide_3_heading"] = "Personaliza portadas y fondos de juegos",
-["guide_3_content"] = "Carátulas: \nLas carátulas personalizadas se pueden guardar en las carpetas del juego aquí: 'ux0:/data/RetroFlow/COVERS/'. \n\nFondos: \nLos fondos personalizados del juego se pueden guardar en las carpetas del juego aquí: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNombres de archivo:\nEl nombre de archivo debe coincidir con el ID de la aplicación o las imágenes del nombre de la aplicación deben estar en formato .png.",
+["guide_3_heading"] = "Personalizar portadas y fondos de juegos",
+["guide_3_content"] = "Carátulas: \nLas carátulas personalizadas están separadas por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/COVERS/'. \n\nFondos: \nLos fondos personalizados de los juegos, están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNombre de las ROMs:\nEl nombre de las ROMs debe ser el mismo que el de su ID. Por ejemplo, el juego 'Retro City Rampage DX' tiene de ID 'PCSE00546' entonces su carátula debe de llevar ese mismo nombre; además las imágenes de las carátulas deben de estar en formato .png y de preferencia en modo de color indexado (para no sobrecargar la memoria RAM de la consola).",
 
-["guide_4_heading"] = "Personaliza el fondo de pantalla y la música",
-["guide_4_content"] = "Fondo de pantalla: \nPuede agregar tantos fondos de pantalla como desee guardándolos aquí: 'ux0:/data/RetroFlow/WALLPAPER/'. \nLas imágenes deben estar en formato .jpg o .png y el tamaño debe ser de 960 px x 544 px. \n\nMúsica: \nSe pueden agregar canciones a 'ux0:/data/RetroFlow/MUSIC/'. \nLa música debe estar en formato .ogg.",
+["guide_4_heading"] = "Personalizar el fondo de pantalla y la música",
+["guide_4_content"] = "Fondo de pantalla: \nPuedes agregar tantos fondos de pantalla como desees, solo debes de guardarlos aquí: 'ux0:/data/RetroFlow/WALLPAPER/'. \nLas imágenes deben estar en formato .jpg o .png y el tamaño debe ser de 960 px x 544 px. \n\nMúsica: \nSe puede agregar música personalizada, solo debes de guardarla en: 'ux0:/data/RetroFlow/MUSIC/'. \nLa música debe estar en formato .ogg y puedes escoger en la opción 'Audio' si quieres que se reproduzca aleatoriamente.",
 
 ["guide_5_heading"] = "Combinaciones de botones",
-["guide_5_content"] = "Tecla de flecha hacia arriba: salta a la categoría de favoritos \n\nTecla de flecha hacia abajo + cuadrado: retrocede una categoría \n\nTecla de flecha hacia abajo + disparadores L/R: salta juegos alfabéticamente",
+["guide_5_content"] = "Menú rápido de categorías: \nFlecha hacia arriba. \n\nRetroceder una categoría: \nFlecha hacia abajo + cuadrado. \n\nMoverse por orden alfabético: \nFlecha hacia abajo + gatillo L o R.",
 
 ["guide_6_heading"] = "Acerca de la aplicación",
-["guide_6_content"] = "RetroFlow de jimbob4000 es una versión modificada de la aplicación HexFlow. \n\nLa aplicación HexFlow original es de VitaHex. Apoye los proyectos de VitaHex en patreon.com/vitahex \n\nMás información:\nPara más información y créditos completos, visite: https://github.com/jimbob4000/RetroFlow-Launcher",
+["guide_6_content"] = "RetroFlow de jimbob4000 es una versión modificada de la aplicación HexFlow. \n\nLa aplicación HexFlow original es de VitaHex. Apoya a los desarrolladores de VitaHex en: \nhttps://www.patreon.com/vitahex \n\nMás información:\nPara más información y créditos completos, visite: https://github.com/jimbob4000/RetroFlow-Launcher",
 
 -- Other Settings
 ["Other_Settings"] = "Otros ajustes",
 ["Swap_X_and_O_buttons_colon"] = "Intercambiar botones X y O: ",
-["Adrenaline_PS_button_colon"] = "Adrenaline botón PS: ",
+["Adrenaline_PS_button_colon"] = "Botón PS en Adrenaline: ",
 ["Menu"] = "Menú",
 ["LiveArea"] = "LiveArea",
 ["Standard"] = "Estándar",
 ["Show_missing_covers_colon"] = "Mostrar portadas faltantes:",
-["Time_colon"] = "Tiempo:",
-["Time_12hr"] = "Reloj de 12 horas",
-["Time_24hr"] = "Reloj de 24 horas",
+["Time_colon"] = "Formato de reloj:",
+["Time_12hr"] = "12 horas",
+["Time_24hr"] = "24 horas",
 
 -- Game options
 ["Options"] = "Opciones",
@@ -250,20 +250,20 @@ return {
 ["Execute_colon"] = "Ejecutar: ",
 ["Plugins_colon"] = "Complementos: ",
 ["CPU_speed_colon"] = "Velocidad de CPU: ",
-["High_memory_colon"] = "Alta memoria: ",
+["High_memory_colon"] = "Memoria alta: ",
 ["NoDRM_engine_colon"] = "Motor de NoDRM: ",
 ["Suspend_threads_colon"] = "Suspender hilos: ",
-["Enable"] = "Permitir",
-["Disable"] = "Inhabilitar",
+["Enable"] = "Activar",
+["Disable"] = "Desactivar",
 ["Yes"] = "Sí",
 ["No"] = "No",
 
 ["Save"] = "Guardar",
-["Add_to_favorites"] = "Agregar a los favoritos",
+["Add_to_favorites"] = "Agregar a favoritos",
 ["Remove_from_favorites"] = "Quitar de favoritos",
-["Show_hidden_games_colon"] = "Mostrar juegos ocultos:",
-["Hide_game"] = "Ocultar el juego",
-["Unhide_game"] = "Mostrar el juego",
+["Show_hidden_games_colon"] = "Mostrar Juegos Ocultos:",
+["Hide_game"] = "Ocultar",
+["Unhide_game"] = "Mostrar",
 ["Remove_from_recently_played"] = "Quitar de jugado recientemente",
 ["Retroarch_options"] = "Opciones de RetroArch",
 ["Core_colon"] = "Core:",
@@ -272,15 +272,15 @@ return {
 -- Collections
 ["Collections"] = "Colecciones",
 ["Collections_colon"] = "Colecciones:",
-["Add_to_collection"] = "Añadir a la colección",
+["Add_to_collection"] = "Añadir a colección",
 ["New_collection"] = "Nueva colección",
-["New_collection_name"] = "Nombre de la nueva colección",
+["New_collection_name"] = "Escribe el nombre",
 ["Create"] = "Crear",
 ["Remove_from_collection"] = "Eliminar de la colección",
 ["No_collections"] = "Sin colecciones",
 ["Delete"] = "Borrar",
 ["Edit_collections"] = "Editar colecciones",
-["Show_collections_colon"] = "Mostrar colecciones:",
+["Show_collections_colon"] = "Mostrar Colecciones:",
 ["Customise_game_order"] = "Personalizar orden de los juegos",
 
 -- Adrenaline install assets
@@ -288,7 +288,7 @@ return {
 ["RETROLNCR_Installed"] = "RetroFlow Adrenaline Launcher ha sido instalado.",
 ["ABB_Install"] = "Instalando el plugin AdrBubbleBooter...",
 ["ABB_Installed"] = "El plugin AdrBubbleBooter ha sido instalado...",
-["ABB_Restart"] = "Necesitamos reiniciar tu PSVita.",
+["ABB_Restart"] = "Reiniciar para aplicar cambios.",
 ["Restart_Now"] = "Reiniciar ahora",
 ["Restart_Later"] = "Reiniciar más tarde",
 
@@ -300,6 +300,6 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "Necesitas instalar DaedalusX64 para jugar a este juego.",
 ["Emulator_not_installed_Flycast"] = "Necesitas instalar Flycast para jugar a este juego.",
 ["Emulator_not_installed_DSVita"] = "Necesitas instalar DSVita para jugar a este juego.",
-["Game_not_installed_rescan"] = "Este juego no está instalado, por favor, vuelve a escanear tus juegos.",
+["Game_not_installed_rescan"] = "Esto no está instalado, por favor, vuelve a escanear.",
 
 }

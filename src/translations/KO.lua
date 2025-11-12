@@ -217,7 +217,7 @@ return {
 ["guide_1_content"] = "게임 디렉토리: \n게임을 'ux0:/data/RetroFlow/ROMS/' 에 두거나 자신의 파일 디렉토리를 사용하려면 \n'스캔 설정' 로 이동한 다음 '게임 디렉토리 편집' 로 이동하세요. \n\n게임을 추가했으면 '다시 스캔' 을 선택하여 RetroFlow에 추가하세요. \n\n파일 이름: \n'no-intro' 파일 명명 규칙을 사용하여 게임 이름을 지정하는 것이 중요합니다. 'Sonic (USA)' , \n그렇지 않으면 이미지가 다운로드되지 않습니다.",
 
 ["guide_2_heading"] = "Adrenaline 게임이 로드되지 않습니까?",
-["guide_2_content"] = "아드레날린 게임이 로드되지 않고 RetroFlow Adrenaline Launcher\n를 설치했다면 AdrBubbleBooterInstaller를 설치하십시오: \nhttps://vitadb.rinnegatamante.it/#/info/307. \n\n또는 Adrenaline Bubble Manager를 설치해 보십시오: \nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_content"] = "아드레날린 게임이 로드되지 않고 RetroFlow Adrenaline Launcher\n를 설치했다면 AdrBubbleBooterInstaller를 설치하십시오: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\n또는 Adrenaline Bubble Manager를 설치해 보십시오: \nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
 
 ["guide_3_heading"] = "게임 표지 및 배경 사용자 정의",
 ["guide_3_content"] = "표지: \n커스텀 표지는 게임 폴더 'ux0:/data/RetroFlow/COVERS/'\n에 저장할 수 있습니다. \n\n배경: \n사용자 지정 게임 배경은 'ux0:/data/RetroFlow/BACKGROUNDS/'\n의 게임 폴더에 저장할 수 있습니다. \n\n파일 이름:\n파일 이름은 앱 ID와 일치하거나 앱 이름 이미지는 .png 형식이어야 합니다.",
