@@ -2830,36 +2830,19 @@ end
 
         -- Install RetroFlow Adrenaline Launcher if needed
             if not System.doesAppExist("RETROLNCR") then
+ 
+                RETROLNCR_VPK = "app0:payloads/RetroFlow Adrenaline Launcher.vpk"
 
-                if Adrenaline_roms == 1 then
-                    adr_partition = "ux0"
-                elseif Adrenaline_roms == 2 then
-                    adr_partition = "ur0"
-                elseif Adrenaline_roms == 3 then
-                    adr_partition = "imc0"
-                elseif Adrenaline_roms == 4 then
-                    adr_partition = "xmc0"
-                else 
-                    adr_partition = "uma0"
-                end
-            
-                if System.doesDirExist(adr_partition  .. ":/pspemu") then
-                
-                    RETROLNCR_VPK = "app0:payloads/RetroFlow Adrenaline Launcher.vpk"
+                if System.doesAppExist("PSPEMUCFW") then
+                    if System.doesFileExist(RETROLNCR_VPK) then
+                        
+                        install_message(lang_lines.RETROLNCR_Install) -- Installing RetroFlow Adrenaline Launcher...
 
-                    if System.doesAppExist("PSPEMUCFW") then
-                        if not System.doesAppExist("RETROLNCR") and System.doesFileExist(RETROLNCR_VPK) then
-                            
-                            install_message(lang_lines.RETROLNCR_Install) -- Installing RetroFlow Adrenaline Launcher...
+                        System.installVpk(RETROLNCR_VPK)
 
-                            System.installVpk(RETROLNCR_VPK)
-
-                            install_message(lang_lines.RETROLNCR_Installed) -- RetroFlow Adrenaline Launcher has been installed...
-                            System.wait(2500000) -- Wait for 2.5 seconds
-                        end
+                        install_message(lang_lines.RETROLNCR_Installed) -- RetroFlow Adrenaline Launcher has been installed...
+                        System.wait(2500000) -- Wait for 2.5 seconds
                     end
-
-                else
                 end
 
             end
@@ -3734,11 +3717,20 @@ end
 
 function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
 
+    check_app_installed("RETROLNCR", lang_lines.Please_install_RetroFlow_Adrenaline_Launcher .. "\n" .. lang_lines.The_VPK_is_saved_here .. "\n\nux0:/app/RETROFLOW/payloads/\nRetroFlow Adrenaline Launcher.vpk")
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     -- Launch preflight check
     check_app_installed("PSPEMUCFW", lang_lines.Emulator_not_installed_Adrenaline)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         
         -- Check if game has custom launch overrides
@@ -3803,78 +3795,109 @@ function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
         AutoMakeBootBin((def_rom_location), driver, bin, plugins, speed, hm, nonpdrm, suspend)
 
     end
+    ::continue::
 end
 
 function launch_scummvm()
     -- Launch preflight check
     check_app_installed("VSCU00001", lang_lines.Emulator_not_installed_ScummVM)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=VSCU00001" .. "&path=" .. rom_location .. "&game_id=" .. rom_title_id)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_pico8()
     -- Launch preflight check
     check_app_installed("FAKE00008", lang_lines.Emulator_not_installed_Pico8)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=FAKE00008" .. "&param=" .. rom_location)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_retroarch(def_core_name)
     -- Launch preflight check
     check_app_installed("RETROVITA", lang_lines.Emulator_not_installed_Retroarch)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_DaedalusX64()
     -- Launch preflight check
     check_app_installed("DEDALOX64", lang_lines.Emulator_not_installed_DaedalusX64)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=DEDALOX64" .. "&param=" .. rom_location)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_Flycast()
     -- Launch preflight check
     check_app_installed("FLYCASTDC", lang_lines.Emulator_not_installed_Flycast)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=FLYCASTDC" .. "&param=" .. rom_location)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_DSVita()
     -- Launch preflight check
     check_app_installed("DSVITA000", lang_lines.Emulator_not_installed_DSVita)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
     check_game_available(rom_location)
 
-    if launch_check_app_installed and launch_check_game_available == true then
+    if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=DSVITA000" .. "&param=" .. rom_location)
         System.exit()
     end
+    ::continue::
 end
 
 function launch_psmobile(def_titleid)
