@@ -17,7 +17,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.0.1"
+local appversion = "8.0.2"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -4475,34 +4475,46 @@ function import_recently_played()
                 for k, v in ipairs(db_recently_played) do
 
                     -- Various fixes on import
-                    local key = find_game_table_pos_key(xAppNumTableLookup(v.app_type), v.name)
+                    local app_table = xAppNumTableLookup(v.app_type)
+                    local key = find_game_table_pos_key(app_table, v.name)
+
                     if key ~= nil then
+
+                        local cached_table_entry = app_table[key]
 
                         -- Legacy fix - Add default app type to recently played table
                         if v.app_type_default ~= nil then
-                            v.app_type_default = xAppNumTableLookup(v.app_type)[key].app_type_default
+                            v.app_type_default = cached_table_entry.app_type_default
                         end
 
                         -- Legacy fix - Add hidden to recently played table
                         if v.hidden ~= nil then
-                            v.hidden = xAppNumTableLookup(v.app_type)[key].hidden
+                            v.hidden = cached_table_entry.hidden
                         end
 
                         -- Sync hidden with cached files
-                        cached_hidden = xAppNumTableLookup(v.app_type)[key].hidden
+                        local cached_hidden = cached_table_entry.hidden
                         if cached_hidden == true and v.hidden == false then
                             v.hidden = true
                         end
 
                         -- Sync favourites with cached files
-                        cached_fav = xAppNumTableLookup(v.app_type)[key].favourite
+                        local cached_fav = cached_table_entry.favourite
                         if cached_fav == true and v.favourite == false then
                             v.favourite = true
                         end
 
                         -- Sync cover found with cached files
-                        cached_cover = xAppNumTableLookup(v.app_type)[key].cover
-                        v.cover = cached_cover
+                        local cached_cover = cached_table_entry.cover
+                        if cached_cover then
+                            v.cover = cached_cover
+                        end
+
+                        -- Sync icon path with cached files
+                        local cached_icon_path = cached_table_entry.icon_path
+                        if cached_icon_path then
+                            v.icon_path = cached_icon_path
+                        end
 
                     else
                     end
@@ -4880,7 +4892,7 @@ function count_loading_tasks()
                 QuickGameList.sms_table =               quickScanGames(SystemsToScan[15].romFolder, 0)
                 QuickGameList.gg_table =                quickScanGames(SystemsToScan[16].romFolder, 0)
                 QuickGameList.tg16_table =              quickScanGames(SystemsToScan[17].romFolder, 0)
-                QuickGameList.tgcd_table =              quickScanGames(SystemsToScan[18].romFolder, 0)
+                QuickGameList.tgcd_table =              quickScanGames(SystemsToScan[18].romFolder, 1, true, ".chd", ".cue")
                 QuickGameList.pce_table =               quickScanGames(SystemsToScan[19].romFolder, 0)
                 QuickGameList.pcecd_table =             quickScanGames(SystemsToScan[20].romFolder, 1, true, ".chd", ".cue")
                 QuickGameList.amiga_table =             quickScanGames(SystemsToScan[21].romFolder, 0)
@@ -7121,7 +7133,7 @@ function Full_Game_Scan()
                         end
                     end
 
-                    file.game_path = ((SystemsToScan[(def)].romFolder) .. "/" .. file.name)
+                    file.game_path = file.path
 
                     romname_withExtension = file.name
                     cleanRomNames()
@@ -7244,7 +7256,7 @@ function Full_Game_Scan()
                         end
                     end
 
-                    file.game_path = ((SystemsToScan[(def)].romFolder) .. "/" .. file.name)
+                    file.game_path = file.path
 
                     romname_withExtension = file.name
                     cleanRomNames()
@@ -9236,7 +9248,7 @@ function AddOrRemoveFavorite()
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Recent
-        elseif showCat == 44 then
+        elseif showCat == 45 then
             -- Find game in other tables and update
             update_favorites_table_recent(xAppNumTableLookup(apptype))
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
@@ -11008,7 +11020,7 @@ function DownloadSingleCover()
                 -- Favourites
                 update_cvrfound_showcats(fav_count, "db_files.lua")
 
-            elseif showCat == 44 then 
+            elseif showCat == 45 then 
                 -- Recent
                 update_cvrfound_showcats_recent()
 
@@ -11967,6 +11979,19 @@ while true do
                             -- Yes - Found in files table
                             fav_count[key].title = ret_rename
                             fav_count[key].apptitle = ret_rename
+                        else
+                            -- No
+                        end
+                    else
+                    end
+
+                    -- If on recent category, then rename game in native category
+                    if showCat == 45 then
+                        local key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
+                        if key ~= nil then
+                            -- Yes - Found in files table
+                            xAppNumTableLookup(apptype)[key].title = ret_rename
+                            xAppNumTableLookup(apptype)[key].apptitle = ret_rename
                         else
                             -- No
                         end
