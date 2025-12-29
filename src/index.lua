@@ -107,6 +107,8 @@ System.createDirectory(romsMainDir)
 -- Create directory: Icons
 System.createDirectory(iconDir)
 System.createDirectory(iconDir .. "Sony - PlayStation Vita/")
+System.createDirectory(iconDir .. "Sony - PlayStation Portable/")
+System.createDirectory(iconDir .. "Sony - PlayStation/")
 
 -- Create default rom sub folders
 for k, v in pairs(romDir_Default) do
@@ -8954,8 +8956,28 @@ function xAppIconPathLookup(AppTypeNum)
         else
             return "app0:/DATA/icon_psv.png"
         end
-    elseif apptype==2   then return "app0:/DATA/icon_psp.png"
-    elseif apptype==3   then return "app0:/DATA/icon_psx.png"
+    elseif apptype == 2 then
+    -- PSP Custom Icons
+        local titleid = xCatLookup(showCat)[p].titleid
+
+        if titleid and System.doesFileExist(
+            iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png"
+        ) then
+            return iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png"
+        else
+            return "app0:/DATA/icon_psp.png"
+        end
+    elseif apptype == 3 then
+    -- PSX Custom Icons
+        local titleid = xCatLookup(showCat)[p].titleid
+
+        if titleid and System.doesFileExist(
+            iconDir .. "Sony - PlayStation/" .. titleid .. ".png"
+        ) then
+            return iconDir .. "Sony - PlayStation/" .. titleid .. ".png"
+        else
+            return "app0:/DATA/icon_psx.png"
+        end
     elseif apptype==5   then return "app0:/DATA/icon_n64.png"
     elseif apptype==6   then return "app0:/DATA/icon_snes.png"
     elseif apptype==7   then return "app0:/DATA/icon_nes.png"
