@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "時間：",
 ["Time_12hr"] = "12 小時制",
 ["Time_24hr"] = "24 小時制",
+["Show_RetroArch_cores_colon"] = "顯示 RetroArch 核心：",
 
 -- Game options
 ["Options"] = "選項",

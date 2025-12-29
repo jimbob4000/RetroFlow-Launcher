@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "시간:",
 ["Time_12hr"] = "12시간제 시계",
 ["Time_24hr"] = "24시간제 시계",
+["Show_RetroArch_cores_colon"] = "RetroArch 코어 표시:",
 
 -- Game options
 ["Options"] = "옵션",

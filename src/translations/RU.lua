@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Время:",
 ["Time_12hr"] = "12-часовой формат",
 ["Time_24hr"] = "24-часовой формат",
+["Show_RetroArch_cores_colon"] = "Показать ядра RetroArch:",
 
 -- Game options
 ["Options"] = "Параметры",

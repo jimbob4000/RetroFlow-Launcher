@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Tijd:",
 ["Time_12hr"] = "12-uurs klok",
 ["Time_24hr"] = "24-uurs klok",
+["Show_RetroArch_cores_colon"] = "RetroArch-cores tonen:",
 
 -- Game options
 ["Options"] = "Opties",

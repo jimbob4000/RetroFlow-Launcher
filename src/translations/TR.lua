@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Zaman:",
 ["Time_12hr"] = "12 Saatlik Saat",
 ["Time_24hr"] = "24 Saatlik Saat",
+["Show_RetroArch_cores_colon"] = "RetroArch çekirdeklerini göster:",
 
 -- Game options
 ["Options"] = "Seçenekler",

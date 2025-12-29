@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Tempo:",
 ["Time_12hr"] = "Orologio 12 ore",
 ["Time_24hr"] = "Orologio 24 ore",
+["Show_RetroArch_cores_colon"] = "Mostra i core RetroArch:",
 
 -- Game options
 ["Options"] = "Opzioni",

@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Idő:",
 ["Time_12hr"] = "12 órás óra",
 ["Time_24hr"] = "24 órás óra",
+["Show_RetroArch_cores_colon"] = "RetroArch magok megjelenítése:",
 
 -- Game options
 ["Options"] = "Beállítások",

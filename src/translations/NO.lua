@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Tid:",
 ["Time_12hr"] = "12-timers klokke",
 ["Time_24hr"] = "24-timers klokke",
+["Show_RetroArch_cores_colon"] = "Vis RetroArch-kjerner:",
 
 -- Game options
 ["Options"] = "Alternativer",

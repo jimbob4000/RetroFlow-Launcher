@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "時間：",
 ["Time_12hr"] = "12時間時計",
 ["Time_24hr"] = "24時間時計",
+["Show_RetroArch_cores_colon"] = "RetroArchコア表示するん：",
 
 -- Game options
 ["Options"] = "オプション",

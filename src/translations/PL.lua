@@ -244,6 +244,7 @@ return {
 ["Time_colon"] = "Czas:",
 ["Time_12hr"] = "Zegar 12-godzinny",
 ["Time_24hr"] = "Zegar 24-godzinny",
+["Show_RetroArch_cores_colon"] = "Pokaż rdzenie RetroArch:",
 
 -- Game options
 ["Options"] = "Opcje",

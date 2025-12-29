@@ -17,7 +17,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.0.2"
+local appversion = "8.1.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -107,6 +107,8 @@ System.createDirectory(romsMainDir)
 -- Create directory: Icons
 System.createDirectory(iconDir)
 System.createDirectory(iconDir .. "Sony - PlayStation Vita/")
+System.createDirectory(iconDir .. "Sony - PlayStation Portable/")
+System.createDirectory(iconDir .. "Sony - PlayStation/")
 
 -- Create default rom sub folders
 for k, v in pairs(romDir_Default) do
@@ -1335,6 +1337,91 @@ NGPC = "app0:/mednafen_ngp_libretro.self",
 PS1 = "app0:/pcsx_rearmed_libretro.self",
 }
 
+
+-- Alternative RetroArch cores
+core_overrides = {
+
+    [6] = {
+        [0] = { core_path = core.SNES,                                  core_name = "Snes9x 2005" },
+        [1] = { core_path = "app0:/snes9x2002_libretro.self",           core_name = "Snes9x 2002" },
+        [2] = { core_path = "app0:/snes9x2005_plus_libretro.self",      core_name = "Snes9x 2005 Plus" },
+        [3] = { core_path = "app0:/snes9x2010_libretro.self",           core_name = "Snes9x 2010" },
+
+    },
+    [7] = {
+        [0] = { core_path = core.NES,                                   core_name = "QuickNES" },
+        [1] = { core_path = "app0:/fceumm_libretro.self",               core_name = "FCEUmm" },
+        [2] = { core_path = "app0:/nestopia_libretro.self",             core_name = "Nestopia" },
+    },
+    [8] = {
+        [0] = { core_path = core.GBA,                                   core_name = "gpSP" },
+        [1] = { core_path = "app0:/vba_next_libretro.self",             core_name = "VBA Next" },
+    },
+    [9] = {
+        [0] = { core_path = core.GBC,                                   core_name = "Gambatte" },
+        [1] = { core_path = "app0:/tgbdual_libretro.self",              core_name = "TGB Dual" },
+    },
+    [10] = {
+        [0] = { core_path = core.GB,                                    core_name = "Gambatte" },
+        [1] = { core_path = "app0:/gearboy_libretro.self",              core_name = "Gearboy" },
+        [2] = { core_path = "app0:/tgbdual_libretro.self",              core_name = "TGB Dual" },
+    },
+    [12] = {
+        [0] = { core_path = core.SEGA_CD,                               core_name = "Genesis Plus GX" },
+        [1] = { core_path = "app0:/picodrive_libretro.self",            core_name = "PicoDrive" },
+    },
+    [14] = {
+        [0] = { core_path = core.MD,                                    core_name = "Genesis Plus GX" },
+        [1] = { core_path = "app0:/picodrive_libretro.self",            core_name = "PicoDrive" },
+    },
+    [15] = {
+        [0] = { core_path = core.SMS,                                   core_name = "SMS Plus GX" },
+        [1] = { core_path = "app0:/genesis_plus_gx_libretro.self",      core_name = "Genesis Plus GX" },
+    },
+    [16] = {
+        [0] = { core_path = core.GG,                                    core_name = "SMS Plus GX" },
+        [1] = { core_path = "app0:/genesis_plus_gx_libretro.self",      core_name = "Genesis Plus GX" },
+    },
+    [17] = {
+        [0] = { core_path = core.TG16,                                  core_name = "Beetle PCE FAST" },
+        [1] = { core_path = "app0:/mednafen_supergrafx_libretro.self",  core_name = "Beetle SuperGrafx" },
+    },
+    [18] = {
+        [0] = { core_path = core.TGCD,                                  core_name = "Beetle PCE FAST" },
+        [1] = { core_path = "app0:/mednafen_supergrafx_libretro.self",  core_name = "Beetle SuperGrafx" },
+    },
+    [19] = {
+        [0] = { core_path = core.PCE,                                   core_name = "Beetle PCE FAST" },
+        [1] = { core_path = "app0:/mednafen_supergrafx_libretro.self",  core_name = "Beetle SuperGrafx" },
+    },
+    [20] = {
+        [0] = { core_path = core.PCECD,                                 core_name = "Beetle PCE FAST" },
+        [1] = { core_path = "app0:/mednafen_supergrafx_libretro.self",  core_name = "Beetle SuperGrafx" },
+    },
+    [22] = {
+        [0] = { core_path = core.C64,                                   core_name = "VICE x64" },
+        [1] = { core_path = "app0:/frodo_libretro.self",                core_name = "Frodo" },
+    },
+    [30] = {
+        [0] = { core_path = core.ATARI_2600,                            core_name = "Stella 2014" },
+        [1] = { core_path = "app0:/stella_libretro.self",               core_name = "Stella" },
+    },
+    [34] = {
+        [0] = { core_path = core.FBA,                                   core_name = "FB Alpha 2012" },
+        [1] = { core_path = "app0:/fbalpha2012_cps1_libretro.self",     core_name = "FB Alpha 2012 CPS-1" },
+        [2] = { core_path = "app0:/fbalpha2012_cps2_libretro.self",     core_name = "FB Alpha 2012 CPS-2" },
+        [3] = { core_path = "app0:/fbalpha2012_neogeo_libretro.self",   core_name = "FB Alpha 2012 Neo Geo" },
+    },
+    [37] = {
+        [0] = { core_path = core.NEOGEO,                                core_name = "FB Alpha 2012 Neo Geo" },
+        [1] = { core_path = "app0:/fbneo_libretro.self",                core_name = "FinalBurn Neo" },
+    },
+    [38] = {
+        [0] = { core_path = core.NGPC,                                  core_name = "Beetle NeoPop" },
+        [1] = { core_path = "app0:/race_libretro.self",                 core_name = "RACE" },
+    },
+}
+
 -- Launcher App Directory
 -- local launch_dir_adr = "ux0:/app/RETROLNCR/"
 -- local launch_app_adr = "RETROLNCR"
@@ -1797,7 +1884,7 @@ startCategory_collection = "not_set"
 setTime = 0 -- 24 hour
 
 local filterGames = 0 -- All
-local showMissingCovers = 1 -- On
+showMissingCovers = 1 -- On
 local smoothScrolling = 1 -- On
 
 set2DViews = 1 -- On
@@ -1805,6 +1892,8 @@ setChangeViews = 1 -- On
 
 setCRCScan = 1 -- On
 setPSPExtractBG = 0 -- 0 Off
+
+setShowCores = 0 -- 0 Off
 
 download_artwork_type = 0 -- Covers
 showSysApps = 1 -- On
@@ -1865,6 +1954,7 @@ function SaveSettings()
         "\nCRC=" .. setCRCScan .. " " .. 
         "\nShow_System_Apps=" .. showSysApps .. " " .. 
         "\nExtract_PSP_backgrounds=" .. setPSPExtractBG .. " " .. 
+        "\nShow_cores=" .. setShowCores .. " " .. 
         "\nStartup_Collection=" .. startCategory_collection -- MUST ALWAYS BE LAST -- the config is split into a table using number values which this setting does not have. Need to add proper ini file reading
 
         file_config:write(settings)
@@ -1917,6 +2007,7 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
     local getCRCScan = settingValue[26]; if getCRCScan ~= nil then setCRCScan = getCRCScan end
     local getShowSysApps = settingValue[27]; if getShowSysApps ~= nil then showSysApps = getShowSysApps end
     local getPSPExtractBG = settingValue[28]; if getPSPExtractBG ~= nil then setPSPExtractBG = getPSPExtractBG end
+    local getShowCores = settingValue[29]; if getShowCores ~= nil then setShowCores = getShowCores end
     -- settingValue[26] is startup collection 
 
     selectedwall = setBackground
@@ -2430,6 +2521,7 @@ local lang_default =
 ["Time_colon"] = "Time:",
 ["Time_12hr"] = "12-Hour Clock",
 ["Time_24hr"] = "24-Hour Clock",
+["Show_RetroArch_cores_colon"] = "Show RetroArch cores:",
 
 -- Game options
 ["Options"] = "Options",
@@ -2681,8 +2773,8 @@ function ChangeLanguage(def)
         lang_lines = lang_default
     end
 
-    if setLanguage == 2 or setLanguage == 3 or setLanguage == 6 or setLanguage == 8 or setLanguage == 9 or setLanguage == 12 or setLanguage == 16 or setLanguage == 19 or setLanguage == 21 then
-    -- German, French, Portugeuse, Russian, Japanese, Turkish, Dutch, Japanese (Ryukyuan) language fix, Portuguese (Brasil)
+    if setLanguage == 2 or setLanguage == 3 or setLanguage == 6 or setLanguage == 8 or setLanguage == 9 or setLanguage == 12 or setLanguage == 16 or setLanguage == 19 or setLanguage == 20 or setLanguage == 21 then
+    -- German, French, Portugeuse, Russian, Japanese, Turkish, Dutch, Japanese (Ryukyuan) Hungarian, Portuguese (Brasil)
         setting_x_offset = 460
     else
         -- setting_x_offset = 365
@@ -2764,8 +2856,8 @@ Swap_X_O_buttons()
     mini_menu_x_margin = 60
 
     
-    if setLanguage == 2 or setLanguage == 3 or setLanguage == 6 or setLanguage == 8 or setLanguage == 9 or setLanguage == 12 or setLanguage == 16 or setLanguage == 19 or setLanguage == 21 then
-    -- German, French, Portugeuse, Russian, Japanese, Turkish, Dutch, Japanese (Ryukyuan) language fix, Portugeuse (Brasil)
+    if setLanguage == 2 or setLanguage == 3 or setLanguage == 6 or setLanguage == 8 or setLanguage == 9 or setLanguage == 12 or setLanguage == 16 or setLanguage == 19 or setLanguage == 20 or setLanguage == 21 then
+    -- German, French, Portugeuse, Russian, Japanese, Turkish, Dutch, Japanese (Ryukyuan) Hungarian, Portuguese (Brasil)
         setting_x_offset = 460
     else
         -- setting_x_offset = 365
@@ -3615,32 +3707,41 @@ function import_launch_overrides()
             -- File is corrupt, don't import it
         else
 
-            for k, v in ipairs(db_launch_overrides) do
+            for i = #db_launch_overrides, 1, -1 do
+                local v = db_launch_overrides[i]
 
-                -- If queries are a legacy fix for new settings that were added
-                if v.plugins == nil then
-                    v.plugins = game_adr_plugins
+                if v.driver ~= nil then
+                    -- If queries are a legacy fix for new settings that were added
+                    if v.plugins == nil then
+                        v.plugins = game_adr_plugins
+                    end
+                    if v.speed == nil then
+                        v.speed = game_adr_speed
+                    end
+                    if v.hm == nil then
+                        v.hm = game_adr_hm
+                    end
+                    if v.nonpdrm == nil then
+                        v.nonpdrm = game_adr_nonpdrm
+                    end
+                    if v.suspend == nil then
+                        v.suspend = game_adr_suspend
+                    end
+                else
+                    if v.core == 0 then
+                        -- Remove retroarch entries with no overrides
+                        table.remove(db_launch_overrides, i)
+                        goto continue
+                    end
                 end
-                if v.speed == nil then
-                    v.speed = game_adr_speed
-                end
-                if v.hm == nil then
-                    v.hm = game_adr_hm
-                end
-                if v.nonpdrm == nil then
-                    v.nonpdrm = game_adr_nonpdrm
-                end
-                if v.speed == nil then
-                    v.suspend = game_adr_suspend
-                end
-
 
                 table.insert(launch_overrides_table, v)
+
+                ::continue::
             end
 
         end
 
-        
     end
 end
 
@@ -3843,8 +3944,36 @@ function launch_retroarch(def_core_name)
 
     if launch_check_game_available == true then
         prepare_for_launch()
-        System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
-        System.exit()
+
+        if core_overrides[apptype] and setShowCores == 1 then
+            if #launch_overrides_table ~= nil then
+                -- Search by game_path instead of name
+                local key = nil
+                for k, data in pairs(launch_overrides_table) do
+                    if data.game_path == rom_location then
+                        key = k
+                        break
+                    end
+                end
+                
+                if key ~= nil then
+                    -- Overrides found
+                    override_core_path = launch_overrides_table[key].core_path
+                    System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. override_core_path .. "&param2=" .. rom_location)
+                    System.exit()
+                else
+                    -- Overrides not found, use default
+                    System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
+                    System.exit()
+                end
+            else
+                System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
+                System.exit()
+            end
+        else
+            System.executeUri("psgm:play?titleid=RETROVITA" .. "&param=" .. (def_core_name) .. "&param2=" .. rom_location)
+            System.exit()
+        end
     end
     ::continue::
 end
@@ -8941,8 +9070,7 @@ function GetPicPath(def_table_name)
 end
 
 function xAppIconPathLookup(AppTypeNum)
-    if     apptype==1   then 
-
+    if apptype==1 then 
         -- Vita
         -- Check appmeta first
         if System.doesFileExist(working_dir .. "/" .. xCatLookup(showCat)[p].name .. "/sce_sys/param.sfo") then
@@ -8954,8 +9082,23 @@ function xAppIconPathLookup(AppTypeNum)
         else
             return "app0:/DATA/icon_psv.png"
         end
-    elseif apptype==2   then return "app0:/DATA/icon_psp.png"
-    elseif apptype==3   then return "app0:/DATA/icon_psx.png"
+    elseif apptype == 2 then
+        -- PSP Custom Icons
+        local titleid = xCatLookup(showCat)[p].titleid
+        if titleid and System.doesFileExist(iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png") then
+            return iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png"
+        else
+            return "app0:/DATA/icon_psp.png"
+        end
+    elseif apptype == 3 then
+        -- PSX Custom Icons
+        local titleid = xCatLookup(showCat)[p].titleid
+        if titleid and System.doesFileExist(iconDir .. "Sony - PlayStation/" .. titleid .. ".png") then
+            return iconDir .. "Sony - PlayStation/" .. titleid .. ".png"
+        else
+            return "app0:/DATA/icon_psx.png"
+        end
+
     elseif apptype==5   then return "app0:/DATA/icon_n64.png"
     elseif apptype==6   then return "app0:/DATA/icon_snes.png"
     elseif apptype==7   then return "app0:/DATA/icon_nes.png"
@@ -15872,7 +16015,7 @@ while true do
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
 
-        menuItems = 5
+        menuItems = 6
 
         -- MENU 19 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -15911,8 +16054,16 @@ while true do
             Font.print(fnt22, setting_x_offset, setting_y4, lang_lines.Time_24hr, white)--12-Hour Clock
         end
 
-        -- MENU 19 / #5 Edit collections
-        Font.print(fnt22, setting_x, setting_y5, lang_lines.Edit_collections, white)--Edit collections
+        -- MENU 19 / #5 RetroArch game options
+        Font.print(fnt22, setting_x, setting_y5, lang_lines.Show_RetroArch_cores_colon, white)--Show RetroArch cores:
+        if setShowCores == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.On, white)--ON
+        else
+            Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.Off, white)--OFF
+        end
+
+        -- MENU 19 / #6 Edit collections
+        Font.print(fnt22, setting_x, setting_y6, lang_lines.Edit_collections, white)--Edit collections
 
         -- MENU 19 - FUNCTIONS
         status = System.getMessageState()
@@ -15985,7 +16136,13 @@ while true do
                         setTime = 1
                         time24_offset = 25 -- Updates positioning of clock in UI
                     end
-                elseif menuY == 5 then -- #5 Edit collections
+                elseif menuY == 5 then -- #5 RetroArch game options
+                    if setShowCores == 1 then
+                        setShowCores = 0
+                    else
+                        setShowCores = 1
+                    end
+                elseif menuY == 6 then -- #6 Edit collections
                     showMenu = 24 
                     menuY = 0
                 end
@@ -16084,7 +16241,8 @@ while true do
                 menuItems = menuItems + 1
             end
 
-            if apptype == 43 then
+            if apptype == 43 or (setShowCores == 1 and core_overrides[apptype]) then
+                -- Alternative RetroArch cores, DSVita
                 menuItems = menuItems + 1
             end
 
@@ -16152,6 +16310,10 @@ while true do
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
                     Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
+                elseif core_overrides[apptype] and setShowCores == 1 then
+                    -- Alternative RetroArch cores
+                    Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Retroarch_options, white)-- RetroArch options
+                    Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
                 elseif apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                     Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
@@ -16161,6 +16323,9 @@ while true do
             else
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
+                elseif core_overrides[apptype] and setShowCores == 1 then
+                    -- Alternative RetroArch cores
+                    Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Retroarch_options, white)-- RetroArch options
                 elseif apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                 end
@@ -16172,6 +16337,10 @@ while true do
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
+                elseif core_overrides[apptype] and setShowCores == 1 then
+                    -- Alternative RetroArch cores
+                    Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Retroarch_options, white)-- RetroArch options
+                    Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
                 elseif apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
@@ -16181,6 +16350,9 @@ while true do
             else
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
+                elseif core_overrides[apptype] and setShowCores == 1 then
+                    -- Alternative RetroArch cores
+                    Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Retroarch_options, white)-- RetroArch options
                 elseif apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                 end
@@ -16228,6 +16400,20 @@ while true do
                         end
 
                         showMenu = 21
+                        menuY = 0
+                    end
+
+                    function dynamic_menu_retroarch_core()
+                        game_core = 0
+
+                        -- Get existing settings
+                        local key = find_game_table_pos_key(launch_overrides_table, app_titleid)
+                        if key ~= nil then
+                            -- Yes - it's already in the launch override list, update it.
+                            game_core = launch_overrides_table[key].core
+                        end
+
+                        showMenu = 27
                         menuY = 0
                     end
 
@@ -16493,6 +16679,9 @@ while true do
                     else
                         if adrenaline_flag == true then
                             dynamic_menu_adrenaline_menu()
+                        elseif core_overrides[apptype] and setShowCores == 1 then
+                            -- Alternative RetroArch cores
+                            dynamic_menu_retroarch_core()
                         elseif apptype == 43 then
                             dynamic_menu_dsvita_config()
                         else
@@ -16506,6 +16695,9 @@ while true do
                     if remove_from_collection_flag == true then
                         if adrenaline_flag == true then
                             dynamic_menu_adrenaline_menu()
+                        elseif core_overrides[apptype] and setShowCores == 1 then
+                            -- Alternative RetroArch cores
+                            dynamic_menu_retroarch_core()
                         elseif apptype == 43 then
                             dynamic_menu_dsvita_config()
                         else
@@ -17455,7 +17647,7 @@ while true do
                 -- MENU 2
                 if menuY == 0 then -- #0 Back
                     showMenu = 19  -- Other settings
-                    menuY = 5
+                    menuY = 6
 
                 elseif menuY == 2 then -- #2 Custom sort order
 
@@ -17827,7 +18019,6 @@ while true do
         end
 
 
-
 -- MENU 26 - COLLECTION CUSTOM SORT ORDER
     elseif showMenu == 26 then
         
@@ -18161,6 +18352,176 @@ while true do
 
             oldpad = pad
 
+        end
+
+
+-- MENU 27 - RETROARCH CORE OPTIONS
+    elseif showMenu == 27 then
+        
+        -- SETTINGS
+        -- Footer buttons and icons
+        -- Get text widths for positioning
+        label1 = Font.getTextWidth(fnt20, lang_lines.Close)--Close
+        label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
+
+
+        -- GET MENU ITEM COUNT
+            
+            menuItems = 2
+
+            core_total = #core_overrides[apptype]
+            
+        -- Calculate vertical centre
+            vertically_centre_mini_menu(menuItems)
+
+        -- GRAPHIC SETUP
+        
+            -- Apply mini menu margins
+            local setting_x = setting_x + mini_menu_x_margin
+
+            -- Draw black overlay
+            Graphics.fillRect(0, 960, 0, 540, blackalpha)
+
+            -- Draw footer
+            Graphics.fillRect(0, 960, 496, 544, themeCol)
+
+            Graphics.drawImage(900-label1, 510, btnO)
+            Font.print(fnt20, 900+28-label1, 508, lang_lines.Close, white)--Close
+
+            Graphics.drawImage(900-(btnMargin * 2)-label1-label2, 510, btnX)
+            Font.print(fnt20, 900+28-(btnMargin * 2)-label1-label2, 508, lang_lines.Select, white)--Select
+            
+            -- Draw dark overlay
+            Graphics.fillRect(60 + mini_menu_x_margin, 900 - mini_menu_x_margin, y_centre_top_margin, y_centre_top_margin + y_centre_box_height, dark)
+
+            -- Draw white line
+            Graphics.fillRect(60 + mini_menu_x_margin, 900 - mini_menu_x_margin, y_centre_white_line_start, y_centre_white_line_start + 3, white)
+            
+            -- Draw selection
+            Graphics.fillRect(60 + mini_menu_x_margin, 900 - mini_menu_x_margin, y_centre_selection_start + (menuY * 47), y_centre_selection_end + (menuY * 47), themeCol)-- selection
+
+
+        -- MENU 21 / Heading
+        Font.print(fnt22, setting_x, setting_yh + y_centre_text_offset, lang_lines.Retroarch_options, white)--Adrenaline options
+
+        -- MENU 21 / #0 Back
+        Font.print(fnt22, setting_x, setting_y0 + y_centre_text_offset, lang_lines.Back_Chevron, white)--Back
+
+        -- MENU 21 / #1 Core
+        Font.print(fnt22, setting_x, setting_y1 + y_centre_text_offset, lang_lines.Core_colon, white)--core
+
+        
+
+        -- Menu
+        if game_core >= 1 then
+            Font.print(fnt22, setting_x_offset, setting_y1 + y_centre_text_offset, "<  " .. core_overrides[apptype][game_core].core_name .. "  >", white)
+        else
+            if setLanguage == 11 then
+                -- Use alternate translation for Polish
+                Font.print(fnt22, setting_x_offset, setting_y1 + y_centre_text_offset, "<  " .. lang_lines.Default_alt_translation_2 .. ": " .. core_overrides[apptype][game_core].core_name .. "  >", white)
+            else
+                Font.print(fnt22, setting_x_offset, setting_y1 + y_centre_text_offset, "<  " .. lang_lines.Default .. ": " .. core_overrides[apptype][game_core].core_name .. "  >", white)
+            end
+        end
+
+        -- MENU 27 / #2 Save
+        Font.print(fnt22, setting_x, setting_y2 + y_centre_text_offset, lang_lines.Save, white)--Save
+
+        
+        -- MENU 27 - FUNCTIONS
+        status = System.getMessageState()
+        if status ~= RUNNING then
+            
+            if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
+
+                -- MENU 27
+                if menuY == 0 then -- #0 Back
+                    showMenu = 20
+                    if remove_from_collection_flag == true then
+                        menuY=5
+                    else
+                        menuY=4
+                    end
+
+                elseif menuY == 2 then -- #2 Save the setting
+                    
+                    if #launch_overrides_table ~= nil then
+                        local key = find_game_table_pos_key(launch_overrides_table, app_titleid)
+                        if key ~= nil then
+                            -- Yes - it's already in the launch override list, update it.
+                            launch_overrides_table[key].core = game_core
+                            launch_overrides_table[key].core_path = core_overrides[apptype][game_core].core_path
+
+                        else
+                            -- No, it's new, add it to the launch override list
+                            launch_overrides_temp = {}
+                            table.insert(launch_overrides_temp, {
+                                name = app_titleid, 
+                                core = game_core, 
+                                core_path = core_overrides[apptype][game_core].core_path,
+                                apptitle = app_title, 
+                                app_type = apptype,
+                                game_path = game_path,
+                            })
+
+                            for i, file in ipairs(launch_overrides_temp) do
+                                table.insert(launch_overrides_table, file)
+                            end
+                        end
+                        -- Save the renamed table for importing on restart
+                        update_cached_table_launch_overrides()
+                        showMenu = 20
+                        if remove_from_collection_flag == true then
+                            menuY=5
+                        else
+                            menuY=4
+                        end
+                    else
+                    end
+
+                    -- Save the setting
+                else
+                end
+            elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+                if menuY > 0 then
+                    menuY = menuY - 1
+                    else
+                    menuY=menuItems
+                end
+            elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
+                if menuY < menuItems then
+                    menuY = menuY + 1
+                    else
+                    menuY=0
+                end
+            elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
+                if menuY == 1 then -- #1 core
+                    if game_core > 0 then
+                        game_core = game_core - 1
+                    else
+                        game_core = core_total
+                    end
+                end
+            elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
+                if menuY == 1 then -- #1 core
+                    if game_core < core_total then
+                        game_core = game_core + 1
+                    else
+                        game_core = 0
+                    end
+                end
+
+
+            elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
+                oldpad = pad
+                GetInfoSelected()
+                showMenu = 20
+                if remove_from_collection_flag == true then
+                    menuY=5
+                else
+                    menuY=4
+                end
+            end
         end
 
 

@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Tid:",
 ["Time_12hr"] = "12-timers ur",
 ["Time_24hr"] = "24-timers ur",
+["Show_RetroArch_cores_colon"] = "Vis RetroArch-kerner:",
 
 -- Game options
 ["Options"] = "Muligheder",

@@ -242,6 +242,7 @@ return {
 ["Time_colon"] = "Aika:",
 ["Time_12hr"] = "12 tunnin kello",
 ["Time_24hr"] = "24 tunnin kello",
+["Show_RetroArch_cores_colon"] = "Näytä RetroArch-ytimet:",
 
 -- Game options
 ["Options"] = "Vaihtoehdot",
