@@ -104,12 +104,6 @@ end
 -- Create directory: Roms
 System.createDirectory(romsMainDir)
 
--- Create directory: Icons
-System.createDirectory(iconDir)
-System.createDirectory(iconDir .. "Sony - PlayStation Vita/")
-System.createDirectory(iconDir .. "Sony - PlayStation Portable/")
-System.createDirectory(iconDir .. "Sony - PlayStation/")
-
 -- Create default rom sub folders
 for k, v in pairs(romDir_Default) do
     System.createDirectory(tostring(v))
@@ -194,9 +188,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "Sony - PlayStation Vita" .. "/",
         ["localSnapPath"] = snapDir .. "Sony - PlayStation Vita" .. "/",
+        ["localIconPath"] = iconDir .. "Sony - PlayStation Vita" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSVita/",
         ["onlineSnapPathSystem"] = "",
         ["Missing_Cover"] = "missing_cover_psv.png",
+        ["icon"] = "icon_psv.png",
     },
     [2] = 
     {
@@ -206,9 +202,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "Homebrew" .. "/",
         ["localSnapPath"] = snapDir .. "Homebrew" .. "/",
+        ["localIconPath"] = iconDir .. "Homebrew" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/HOMEBREW/",
         ["onlineSnapPathSystem"] = "",
         ["Missing_Cover"] = "missing_cover_homebrew.png",
+        ["icon"] = "icon_homebrew.png",
     },
     [3] = 
     {
@@ -218,9 +216,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "Sony - PlayStation Portable" .. "/",
         ["localSnapPath"] = snapDir .. "Sony - PlayStation Portable" .. "/",
+        ["localIconPath"] = iconDir .. "Sony - PlayStation Portable" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PSP/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/PSP/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_psp.png",
+        ["icon"] = "icon_psp.png",
     },
     [4] = 
     {
@@ -230,9 +230,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.PlayStation,
         ["localCoverPath"] = covDir .. "Sony - PlayStation" .. "/",
         ["localSnapPath"] = snapDir .. "Sony - PlayStation" .. "/",
+        ["localIconPath"] = iconDir .. "Sony - PlayStation" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/PS1/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/PS1/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_psx.png",
+        ["icon"] = "icon_psx.png",
     },
     [5] = 
     {
@@ -242,9 +244,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Nintendo_64,
         ["localCoverPath"] = covDir .. "Nintendo - Nintendo 64" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Nintendo 64" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Nintendo 64" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/N64/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/ec7430189022b591a8fb0fa16101201f861363f8/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_n64.png",
+        ["icon"] = "icon_n64.png",
     },
     [6] = 
     {
@@ -254,9 +258,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Super_Nintendo,
         ["localCoverPath"] = covDir .. "Nintendo - Super Nintendo Entertainment System" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Super Nintendo Entertainment System" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Super Nintendo Entertainment System" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/SNES/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/5c469e48755fec26b4b9d651b6962a2cdea3133d/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_snes.png",
+        ["icon"] = "icon_snes.png",
     },
     [7] = 
     {
@@ -266,9 +272,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Nintendo_Entertainment_System,
         ["localCoverPath"] = covDir .. "Nintendo - Nintendo Entertainment System" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Nintendo Entertainment System" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Nintendo Entertainment System" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NES/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_Entertainment_System/f4415b21a256bcbe7b30a9d71a571d6ba4815c71/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_nes.png",
+        ["icon"] = "icon_nes.png",
     },
     [8] = 
     {
@@ -278,9 +286,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Game_Boy_Advance,
         ["localCoverPath"] = covDir .. "Nintendo - Game Boy Advance" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Game Boy Advance" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Game Boy Advance" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/GBA/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/fd58a8fae1cec5857393c0405c3d0514c7fdf6cf/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_gba.png",
+        ["icon"] = "icon_gba.png",
     },
     [9] = 
     {
@@ -290,9 +300,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Game_Boy_Color,
         ["localCoverPath"] = covDir .. "Nintendo - Game Boy Color" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Game Boy Color" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Game Boy Color" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/GBC/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Color/a0cc546d2b4e2eebefdcf91b90ae3601c377c3ce/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_gbc.png",
+        ["icon"] = "icon_gbc.png",
     },
     [10] = 
     {
@@ -302,9 +314,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Game_Boy,
         ["localCoverPath"] = covDir .. "Nintendo - Game Boy" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Game Boy" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Game Boy" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/GB/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy/d5ad94ba8c5159381d7f618ec987e609d23ae203/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_gb.png",
+        ["icon"] = "icon_gb.png",
     },
     [11] = 
     {
@@ -314,9 +328,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_Dreamcast,
         ["localCoverPath"] = covDir .. "Sega - Dreamcast" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - Dreamcast" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - Dreamcast" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/DC/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/DC/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_dreamcast_eur.png",
+        ["icon"] = "icon_dreamcast_eur.png",
     },
     [12] = 
     {
@@ -326,9 +342,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_CD,
         ["localCoverPath"] = covDir .. "Sega - Mega-CD - Sega CD" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - Mega-CD - Sega CD" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - Mega-CD - Sega CD" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/SEGA_CD/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega-CD_-_Sega_CD/a8737a2a394645f27415f7346ac2ceb0cfcd0942/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_sega_cd.png",
+        ["icon"] = "icon_sega_cd.png",
     },
     [13] = 
     {
@@ -338,9 +356,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_32X,
         ["localCoverPath"] = covDir .. "Sega - 32X" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - 32X" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - 32X" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/32X/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_32X/4deb45e651e29506a7bfc440408b3343f0e1a3ae/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_32x.png",
+        ["icon"] = "icon_32x.png",
     },
     [14] = 
     {
@@ -350,9 +370,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_Mega_Drive,
         ["localCoverPath"] = covDir .. "Sega - Mega Drive - Genesis" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - Mega Drive - Genesis" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - Mega Drive - Genesis" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MD/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/6ac232741f979a6f0aa54d077ff392fe170f4725/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_md.png",
+        ["icon"] = "icon_md.png",
     },
     [15] = 
     {
@@ -362,9 +384,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_Master_System,
         ["localCoverPath"] = covDir .. "Sega - Master System - Mark III" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - Master System - Mark III" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - Master System - Mark III" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/SMS/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Master_System_-_Mark_III/02f8c7f989db6124475b7e0978c27af8534655eb/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_sms.png",
+        ["icon"] = "icon_sms.png",
     },
     [16] = 
     {
@@ -374,9 +398,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Sega_Game_Gear,
         ["localCoverPath"] = covDir .. "Sega - Game Gear" .. "/",
         ["localSnapPath"] = snapDir .. "Sega - Game Gear" .. "/",
+        ["localIconPath"] = iconDir .. "Sega - Game Gear" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/GG/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Game_Gear/b99b424d2adcf5ccd45c372db2c15f01653f2b92/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_gg.png",
+        ["icon"] = "icon_gg.png",
     },
     [17] = 
     {
@@ -386,9 +412,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.TurboGrafx_16,
         ["localCoverPath"] = covDir .. "NEC - TurboGrafx 16" .. "/",
         ["localSnapPath"] = snapDir .. "NEC - TurboGrafx 16" .. "/",
+        ["localIconPath"] = iconDir .. "NEC - TurboGrafx 16" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/TG16/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/NEC_-_PC_Engine_-_TurboGrafx_16/d0d6e27f84d757416799e432154e0adcadb154c9/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_tg16.png",
+        ["icon"] = "icon_tg16.png",
     },
     [18] = 
     {
@@ -398,9 +426,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.TurboGrafx_CD,
         ["localCoverPath"] = covDir .. "NEC - TurboGrafx CD" .. "/",
         ["localSnapPath"] = snapDir .. "NEC - TurboGrafx CD" .. "/",
+        ["localIconPath"] = iconDir .. "NEC - TurboGrafx CD" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/TG_CD/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/NEC_-_PC_Engine_CD_-_TurboGrafx-CD/cd554a5cdca862f090e6c3f9510a3b1b6c2d5b38/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_tgcd.png",
+        ["icon"] = "icon_tgcd.png",
     },
     [19] = 
     {
@@ -410,9 +440,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.PC_Engine,
         ["localCoverPath"] = covDir .. "NEC - PC Engine" .. "/",
         ["localSnapPath"] = snapDir .. "NEC - PC Engine" .. "/",
+        ["localIconPath"] = iconDir .. "NEC - PC Engine" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/PCE/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/NEC_-_PC_Engine_-_TurboGrafx_16/d0d6e27f84d757416799e432154e0adcadb154c9/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_pce.png",
+        ["icon"] = "icon_pce.png",
     },
     [20] = 
     {
@@ -422,9 +454,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.PC_Engine_CD,
         ["localCoverPath"] = covDir .. "NEC - PC Engine CD" .. "/",
         ["localSnapPath"] = snapDir .. "NEC - PC Engine CD" .. "/",
+        ["localIconPath"] = iconDir .. "NEC - PC Engine CD" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/PCE_CD/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/NEC_-_PC_Engine_CD_-_TurboGrafx-CD/cd554a5cdca862f090e6c3f9510a3b1b6c2d5b38/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_pcecd.png",
+        ["icon"] = "icon_pcecd.png",
     },
     [21] = 
     {
@@ -434,9 +468,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Amiga,
         ["localCoverPath"] = covDir .. "Commodore - Amiga" .. "/",
         ["localSnapPath"] = snapDir .. "Commodore - Amiga" .. "/",
+        ["localIconPath"] = iconDir .. "Commodore - Amiga" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/AMIGA/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Commodore_-_Amiga/b6446e83b3dc93446371a5dbfb0f24574eb56461/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_amiga.png",
+        ["icon"] = "icon_amiga.png",
     },
     [22] = 
     {
@@ -446,9 +482,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Commodore_64,
         ["localCoverPath"] = covDir .. "Commodore - 64" .. "/",
         ["localSnapPath"] = snapDir .. "Commodore - 64" .. "/",
+        ["localIconPath"] = iconDir .. "Commodore - 64" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/C64/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Commodore_-_64/df90042ef9823d1b0b9d3ec303051f555dca2246/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_c64.png",
+        ["icon"] = "icon_c64.png",
     },
     [23] = 
     {
@@ -458,9 +496,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.WonderSwan_Color,
         ["localCoverPath"] = covDir .. "Bandai - WonderSwan Color" .. "/",
         ["localSnapPath"] = snapDir .. "Bandai - WonderSwan Color" .. "/",
+        ["localIconPath"] = iconDir .. "Bandai - WonderSwan Color" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/WSWAN_COL/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Bandai_-_WonderSwan_Color/5b57a78fafa4acb8590444c15c116998fcea9dce/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_wswan_col.png",
+        ["icon"] = "icon_wswan_col.png",
     },
     [24] = 
     {
@@ -470,9 +510,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.WonderSwan,
         ["localCoverPath"] = covDir .. "Bandai - WonderSwan" .. "/",
         ["localSnapPath"] = snapDir .. "Bandai - WonderSwan" .. "/",
+        ["localIconPath"] = iconDir .. "Bandai - WonderSwan" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/WSWAN/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Bandai_-_WonderSwan/3913706e173ec5f8c0cdeebd225b16f4dc3dd6c6/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_wswan.png",
+        ["icon"] = "icon_wswan.png",
     },
     [25] = 
     {
@@ -482,9 +524,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.MSX2,
         ["localCoverPath"] = covDir .. "Microsoft - MSX2" .. "/",
         ["localSnapPath"] = snapDir .. "Microsoft - MSX2" .. "/",
+        ["localIconPath"] = iconDir .. "Microsoft - MSX2" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MSX2/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Microsoft_-_MSX2/12d7e10728cc4c3314b8b14b5a9b1892a886d2ab/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_msx2.png",
+        ["icon"] = "icon_msx2.png",
     },
     [26] = 
     {
@@ -494,9 +538,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.MSX,
         ["localCoverPath"] = covDir .. "Microsoft - MSX" .. "/",
         ["localSnapPath"] = snapDir .. "Microsoft - MSX" .. "/",
+        ["localIconPath"] = iconDir .. "Microsoft - MSX" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MSX/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Microsoft_-_MSX/ed54675a51597fd5bf66a45318a273f330b7662f/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_msx1.png",
+        ["icon"] = "icon_msx1.png",
     },
     [27] = 
     {
@@ -506,9 +552,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.ZX_Spectrum,
         ["localCoverPath"] = covDir .. "Sinclair - ZX Spectrum" .. "/",
         ["localSnapPath"] = snapDir .. "Sinclair - ZX Spectrum" .. "/",
+        ["localIconPath"] = iconDir .. "Sinclair - ZX Spectrum" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/ZXS/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Sinclair_-_ZX_Spectrum/d23c953dc9853983fb2fce2b8e96a1ccc08b70e8/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_zxs.png",
+        ["icon"] = "icon_zxs.png",
     },
     [28] = 
     {
@@ -518,9 +566,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Atari_7800,
         ["localCoverPath"] = covDir .. "Atari - 7800" .. "/",
         ["localSnapPath"] = snapDir .. "Atari - 7800" .. "/",
+        ["localIconPath"] = iconDir .. "Atari - 7800" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/ATARI_7800/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Atari_-_7800/eff4d49a71a62764dd66d414b1bf7a843f85f7ae/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_atari_7800.png",
+        ["icon"] = "icon_atari_7800.png",
     },
     [29] = 
     {
@@ -530,9 +580,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Atari_5200,
         ["localCoverPath"] = covDir .. "Atari - 5200" .. "/",
         ["localSnapPath"] = snapDir .. "Atari - 5200" .. "/",
+        ["localIconPath"] = iconDir .. "Atari - 5200" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/ATARI_5200/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Atari_-_5200/793489381646954046dd1767a1af0fa4f6b86c24/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_atari_5200.png",
+        ["icon"] = "icon_atari_5200.png",
     },
     [30] = 
     {
@@ -542,9 +594,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Atari_2600,
         ["localCoverPath"] = covDir .. "Atari - 2600" .. "/",
         ["localSnapPath"] = snapDir .. "Atari - 2600" .. "/",
+        ["localIconPath"] = iconDir .. "Atari - 2600" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/ATARI_2600/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Atari_-_2600/ea2ba38f9bace8e85539d12e2f65e31c797c6585/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_atari_2600.png",
+        ["icon"] = "icon_atari_2600.png",
     },
     [31] = 
     {
@@ -554,9 +608,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Atari_Lynx,
         ["localCoverPath"] = covDir .. "Atari - Lynx" .. "/",
         ["localSnapPath"] = snapDir .. "Atari - Lynx" .. "/",
+        ["localIconPath"] = iconDir .. "Atari - Lynx" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/ATARI_LYNX/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Atari_-_Lynx/91278444136e9c19f89331421ffe84cce6f82fb9/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_atari_lynx.png",
+        ["icon"] = "icon_atari_lynx.png",
     },
     [32] = 
     {
@@ -566,9 +622,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.ColecoVision,
         ["localCoverPath"] = covDir .. "Coleco - ColecoVision" .. "/",
         ["localSnapPath"] = snapDir .. "Coleco - ColecoVision" .. "/",
+        ["localIconPath"] = iconDir .. "Coleco - ColecoVision" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/COLECOVISION/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/Coleco_-_ColecoVision/332c63436431ea5fceedf50b94447bb6e7a8e1f5/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_colecovision.png",
+        ["icon"] = "icon_colecovision.png",
     },
     [33] = 
     {
@@ -578,9 +636,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Vectrex,
         ["localCoverPath"] = covDir .. "GCE - Vectrex" .. "/",
         ["localSnapPath"] = snapDir .. "GCE - Vectrex" .. "/",
+        ["localIconPath"] = iconDir .. "GCE - Vectrex" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/VECTREX/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/GCE_-_Vectrex/ed03e5d1214399d2f4429109874b2ad3d8a18709/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_vectrex.png",
+        ["icon"] = "icon_vectrex.png",
     },
     [34] = 
     {
@@ -590,9 +650,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.FBA_2012,
         ["localCoverPath"] = covDir .. "FBA 2012" .. "/",
         ["localSnapPath"] = snapDir .. "FBA 2012" .. "/",
+        ["localIconPath"] = iconDir .. "FBA 2012" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_fba.png",
+        ["icon"] = "icon_fba.png",
     },
     [35] = 
     {
@@ -602,9 +664,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.MAME_2003Plus,
         ["localCoverPath"] = covDir .. "MAME 2003 Plus" .. "/",
         ["localSnapPath"] = snapDir .. "MAME 2003 Plus" .. "/",
+        ["localIconPath"] = iconDir .. "MAME 2003 Plus" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_mame.png",
+        ["icon"] = "icon_mame.png",
     },
     [36] = 
     {
@@ -614,9 +678,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.MAME_2000,
         ["localCoverPath"] = covDir .. "MAME 2000" .. "/",
         ["localSnapPath"] = snapDir .. "MAME 2000" .. "/",
+        ["localIconPath"] = iconDir .. "MAME 2000" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/MAME/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_mame.png",
+        ["icon"] = "icon_mame.png",
     },
     [37] = 
     {
@@ -626,9 +692,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Neo_Geo,
         ["localCoverPath"] = covDir .. "SNK - Neo Geo - FBA 2012" .. "/",
         ["localSnapPath"] = snapDir .. "SNK - Neo Geo - FBA 2012" .. "/",
+        ["localIconPath"] = iconDir .. "SNK - Neo Geo - FBA 2012" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NEOGEO/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NEOGEO/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_neogeo.png",
+        ["icon"] = "icon_neogeo.png",
     },
     [38] = 
     {
@@ -638,9 +706,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Neo_Geo_Pocket_Color,
         ["localCoverPath"] = covDir .. "SNK - Neo Geo Pocket Color" .. "/",
         ["localSnapPath"] = snapDir .. "SNK - Neo Geo Pocket Color" .. "/",
+        ["localIconPath"] = iconDir .. "SNK - Neo Geo Pocket Color" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NEOGEO_PC/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/libretro-thumbnails/SNK_-_Neo_Geo_Pocket_Color/f940bd5da36105397897c093dda77ef06d51cbcf/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_ngpc.png",
+        ["icon"] = "icon_ngpc.png",
     },
     [39] = 
     {
@@ -650,9 +720,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "Sony - PlayStation Mobile" .. "/",
         ["localSnapPath"] = snapDir .. "Sony - PlayStation Mobile" .. "/",
+        ["localIconPath"] = iconDir .. "Sony - PlayStation Mobile" .. "/",
         ["onlineCoverPathSystem"] = "",
         ["onlineSnapPathSystem"] = "",
         ["Missing_Cover"] = "missing_cover_psm.png",
+        ["icon"] = "missing_cover_psm.png",
     },
     [40] = 
     {
@@ -662,9 +734,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "ScummVM" .. "/",
         ["localSnapPath"] = snapDir .. "ScummVM" .. "/",
+        ["localIconPath"] = iconDir .. "ScummVM" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/SCUMMVM/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/SCUMMVM/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_scummvm.png",
+        ["icon"] = "icon_scummvm.png",
     },
     [41] = 
     {
@@ -674,9 +748,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Pico8,
         ["localCoverPath"] = covDir .. "Lexaloffle Games - Pico-8" .. "/",
         ["localSnapPath"] = snapDir .. "Lexaloffle Games - Pico-8" .. "/",
+        ["localIconPath"] = iconDir .. "Lexaloffle Games - Pico-8" .. "/",
         ["onlineCoverPathSystem"] = "",
         ["onlineSnapPathSystem"] = "",
         ["Missing_Cover"] = "missing_cover_pico8.png",
+        ["icon"] = "icon_pico8.png",
     },
     [42] = 
     {
@@ -686,9 +762,11 @@ SystemsToScan =
         -- ["romFolder"] = "",
         ["localCoverPath"] = covDir .. "System apps" .. "/",
         ["localSnapPath"] = snapDir .. "System apps" .. "/",
+        ["localIconPath"] = iconDir .. "System apps" .. "/",
         ["onlineCoverPathSystem"] = "",
         ["onlineSnapPathSystem"] = "",
         ["Missing_Cover"] = "icon_psv.png",
+        ["icon"] = "icon_psv.png",
     },
     [43] = 
     {
@@ -698,9 +776,11 @@ SystemsToScan =
         ["romFolder"] = romUserDir.Nintendo_DS,
         ["localCoverPath"] = covDir .. "Nintendo - Nintendo DS" .. "/",
         ["localSnapPath"] = snapDir .. "Nintendo - Nintendo DS" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Nintendo DS" .. "/",
         ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NDS/Covers/",
         ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/NDS/Named_Snaps/",
         ["Missing_Cover"] = "missing_cover_nds.png",
+        ["icon"] = "icon_nds.png",
     },
     [44] = 
     {
@@ -1258,6 +1338,12 @@ for k, v in pairs(SystemsToScan) do
     System.createDirectory(tostring(v.localSnapPath))
 end
 
+-- Create directory: Icon Folders
+System.createDirectory(iconDir)
+for k, v in pairs(SystemsToScan) do
+    System.createDirectory(tostring(v.localIconPath))
+end
+
 -- Create directory: User Database
 local user_DB_Folder = "ux0:/data/RetroFlow/TITLES/"
 System.createDirectory(user_DB_Folder)
@@ -1338,7 +1424,7 @@ PS1 = "app0:/pcsx_rearmed_libretro.self",
 }
 
 
--- Alternative RetroArch cores
+-- Alternative RetroArch cores, key number corresponds to SystemsToScan table
 core_overrides = {
 
     [6] = {
@@ -9070,92 +9156,161 @@ function GetPicPath(def_table_name)
 end
 
 function xAppIconPathLookup(AppTypeNum)
-    if apptype==1 then 
-        -- Vita
-        -- Check appmeta first
-        if System.doesFileExist(working_dir .. "/" .. xCatLookup(showCat)[p].name .. "/sce_sys/param.sfo") then
-            return "ur0:/appmeta/" .. xCatLookup(showCat)[p].name .. "/icon0.png"
-        -- If not found, check icons dir
-        elseif System.doesFileExist(iconDir .. "Sony - PlayStation Vita/" .. xCatLookup(showCat)[p].name .. ".png") then
-            return iconDir .. "Sony - PlayStation Vita/" .. xCatLookup(showCat)[p].name .. ".png"
-        -- Still not found, use placeholder icon
+
+
+    if apptype==0 then 
+        -- Homebrew
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        if icon_filename then
+
+            -- Check icons dir
+            if System.doesFileExist(SystemsToScan[2].localIconPath .. icon_filename .. ".png") then
+                return SystemsToScan[2].localIconPath .. icon_filename .. ".png"
+
+            -- Check covers dir
+            elseif System.doesFileExist(SystemsToScan[2].localCoverPath .. icon_filename .. ".png") then
+                return SystemsToScan[2].localCoverPath .. icon_filename .. ".png"
+
+            -- Then check appmeta
+            elseif System.doesFileExist("ur0:/appmeta/" .. icon_filename .. "/icon0.png") then
+                return "ur0:/appmeta/" .. icon_filename .. "/icon0.png"
+
+            -- Still not found, use placeholder icon
+            else
+                return "app0:/DATA/" .. SystemsToScan[2].icon
+            end
+            
         else
-            return "app0:/DATA/icon_psv.png"
-        end
-    elseif apptype == 2 then
-        -- PSP Custom Icons
-        local titleid = xCatLookup(showCat)[p].titleid
-        if titleid and System.doesFileExist(iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png") then
-            return iconDir .. "Sony - PlayStation Portable/" .. titleid .. ".png"
-        else
-            return "app0:/DATA/icon_psp.png"
-        end
-    elseif apptype == 3 then
-        -- PSX Custom Icons
-        local titleid = xCatLookup(showCat)[p].titleid
-        if titleid and System.doesFileExist(iconDir .. "Sony - PlayStation/" .. titleid .. ".png") then
-            return iconDir .. "Sony - PlayStation/" .. titleid .. ".png"
-        else
-            return "app0:/DATA/icon_psx.png"
+            return "app0:/DATA/" .. SystemsToScan[2].icon
         end
 
-    elseif apptype==5   then return "app0:/DATA/icon_n64.png"
-    elseif apptype==6   then return "app0:/DATA/icon_snes.png"
-    elseif apptype==7   then return "app0:/DATA/icon_nes.png"
-    elseif apptype==8   then return "app0:/DATA/icon_gba.png"
-    elseif apptype==9   then return "app0:/DATA/icon_gbc.png"
-    elseif apptype==10  then return "app0:/DATA/icon_gb.png"
-    elseif apptype==11  then
-        -- Dreamcast
-        if setLanguage == 0 then -- EN - Blue logo
-            return "app0:/DATA/icon_dreamcast_eur.png"
-        elseif setLanguage == 1 then -- USA - Red logo
-            return "app0:/DATA/icon_dreamcast_usa.png"
-        elseif setLanguage == 9 or setLanguage == 19 then -- Japan - Orange logo
-            return "app0:/DATA/icon_dreamcast_j.png"
-        else -- Blue logo
-            return "app0:/DATA/icon_dreamcast_eur.png"
-        end
-    elseif apptype==12  then return "app0:/DATA/icon_sega_cd.png"
-    elseif apptype==13  then return "app0:/DATA/icon_32x.png"
-    elseif apptype==14  then
-        -- MD
-        if setLanguage == 1 then
-            return "app0:/DATA/icon_md_usa.png"
+    elseif apptype==1 then 
+        -- Vita
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        if icon_filename then
+
+            -- Check icons dir
+            if System.doesFileExist(SystemsToScan[1].localIconPath .. icon_filename .. ".png") then
+                return SystemsToScan[1].localIconPath .. icon_filename .. ".png"
+
+            -- Then check appmeta
+            elseif System.doesFileExist("ur0:/appmeta/" .. icon_filename .. "/icon0.png") then
+                return "ur0:/appmeta/" .. icon_filename .. "/icon0.png"
+
+            -- Still not found, use placeholder icon
+            else
+                return "app0:/DATA/" .. SystemsToScan[1].icon
+            end
+
         else
-            return "app0:/DATA/icon_md.png"
+            return "app0:/DATA/" .. SystemsToScan[1].icon
         end
-    elseif apptype==15  then return "app0:/DATA/icon_sms.png"
-    elseif apptype==16  then return "app0:/DATA/icon_gg.png"
-    elseif apptype==17  then return "app0:/DATA/icon_tg16.png"
-    elseif apptype==18  then return "app0:/DATA/icon_tgcd.png"
-    elseif apptype==19  then return "app0:/DATA/icon_pce.png"
-    elseif apptype==20  then return "app0:/DATA/icon_pcecd.png"
-    elseif apptype==21  then return "app0:/DATA/icon_amiga.png"
-    elseif apptype==22  then return "app0:/DATA/icon_c64.png"
-    elseif apptype==23  then return "app0:/DATA/icon_wswan_col.png"
-    elseif apptype==24  then return "app0:/DATA/icon_wswan.png"
-    elseif apptype==25  then return "app0:/DATA/icon_msx2.png"
-    elseif apptype==26  then return "app0:/DATA/icon_msx1.png"
-    elseif apptype==27  then return "app0:/DATA/icon_zxs.png"
-    elseif apptype==28  then return "app0:/DATA/icon_atari_7800.png"
-    elseif apptype==29  then return "app0:/DATA/icon_atari_5200.png"
-    elseif apptype==30  then return "app0:/DATA/icon_atari_2600.png"
-    elseif apptype==31  then return "app0:/DATA/icon_atari_lynx.png"
-    elseif apptype==32  then return "app0:/DATA/icon_colecovision.png"
-    elseif apptype==33  then return "app0:/DATA/icon_vectrex.png"
-    elseif apptype==34  then return "app0:/DATA/icon_fba.png"
-    elseif apptype==35  then return "app0:/DATA/icon_mame.png"
-    elseif apptype==36  then return "app0:/DATA/icon_mame.png"
-    elseif apptype==37  then return "app0:/DATA/icon_neogeo.png"
-    elseif apptype==38  then return "app0:/DATA/icon_ngpc.png"
-    elseif apptype==40  then return "app0:/DATA/icon_scummvm.png"
-    elseif apptype==41  then return "app0:/DATA/icon_pico8.png"
-    elseif apptype==42  then return "app0:/DATA/icon_psv.png"
-    elseif apptype==43  then return "app0:/DATA/icon_nds.png"
-    else 
-        -- Homebrew 
-        return xCatLookup(showCat)[p].icon_path
+
+    elseif apptype == 2 then
+        -- PSP
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        -- Check icons dir, if not found use placeholder icon
+        if icon_filename and System.doesFileExist(SystemsToScan[3].localIconPath .. icon_filename .. ".png") then
+            return SystemsToScan[3].localIconPath .. icon_filename .. ".png"
+        else
+            return "app0:/DATA/" .. SystemsToScan[3].icon
+        end
+
+    elseif apptype == 3 then
+        -- PSX
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        -- Check icons dir, if not found use placeholder icon
+        if icon_filename and System.doesFileExist(SystemsToScan[4].localIconPath .. icon_filename .. ".png") then
+            return SystemsToScan[4].localIconPath .. icon_filename .. ".png"
+        else
+            return "app0:/DATA/" .. SystemsToScan[4].icon
+        end
+
+    elseif apptype == 39 then
+        -- PSM
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        if icon_filename then
+
+            -- Check icons dir
+            if System.doesFileExist(SystemsToScan[39].localIconPath .. icon_filename .. ".png") then
+                return SystemsToScan[39].localIconPath .. icon_filename .. ".png"
+
+            -- Then check appmeta
+            elseif System.doesFileExist("ur0:/appmeta/" .. icon_filename .. "/pic0.png") then
+                return "ur0:/appmeta/" .. icon_filename .. "/pic0.png"
+
+            -- Still not found, use placeholder icon
+            else
+                return "app0:/DATA/" .. SystemsToScan[39].icon
+            end
+
+        else
+            return "app0:/DATA/" .. SystemsToScan[39].icon
+        end
+
+    elseif apptype==42 then 
+        -- System apps
+        local icon_filename = xCatLookup(showCat)[p].titleid
+
+        if icon_filename then
+
+            -- Check icons dir
+            if System.doesFileExist(SystemsToScan[42].localIconPath .. icon_filename .. ".png") then
+                return SystemsToScan[42].localIconPath .. icon_filename .. ".png"
+
+            -- Check covers dir
+            elseif System.doesFileExist(SystemsToScan[42].localCoverPath .. icon_filename .. ".png") then
+                return SystemsToScan[42].localCoverPath .. icon_filename .. ".png"
+
+            -- Then check vs0
+            elseif System.doesFileExist("vs0:/app/" .. icon_filename .. "/sce_sys/icon0.png") then
+                return "vs0:/app/" .. icon_filename .. "/sce_sys/icon0.png"
+
+            -- Still not found, use placeholder icon
+            else
+                return "app0:/DATA/" .. SystemsToScan[42].icon
+            end
+            
+        else
+            return "app0:/DATA/" .. SystemsToScan[42].icon
+        end
+
+    else
+        -- Other systems
+        local icon_filename = xCatLookup(showCat)[p].name
+
+        -- Check icons dir, if not found use placeholder icon (regional specific based on language)
+        if icon_filename and System.doesFileExist(SystemsToScan[apptype].localIconPath .. icon_filename .. ".png") then
+            return SystemsToScan[apptype].localIconPath .. icon_filename .. ".png"
+        else
+            if apptype == 11 then
+                -- Dreamcast
+                if setLanguage == 0 then -- EN - Blue logo
+                    return "app0:/DATA/icon_dreamcast_eur.png"
+                elseif setLanguage == 1 then -- USA - Red logo
+                    return "app0:/DATA/icon_dreamcast_usa.png"
+                elseif setLanguage == 9 or setLanguage == 19 then -- Japan - Orange logo
+                    return "app0:/DATA/icon_dreamcast_j.png"
+                else -- Blue logo
+                    return "app0:/DATA/icon_dreamcast_eur.png"
+                end
+            elseif apptype == 14 then
+                -- MD
+                if setLanguage == 1 then
+                    return "app0:/DATA/icon_md_usa.png"
+                else
+                    return "app0:/DATA/icon_md.png"
+                end
+            else
+                return "app0:/DATA/" .. SystemsToScan[apptype].icon
+            end
+        end
+
     end
 end
 
