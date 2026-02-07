@@ -91,6 +91,9 @@ return {
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
 ["System_Apps"] = "Järjestelmäsovellukset",
+["Atari_ST"] = "Atari ST",
+["MS_DOS"] = "MS-DOS",
+["EasyRPG"] = "EasyRPG",
 
 -- Download
 ["Download_colon"] = "Lataa:",
@@ -171,6 +174,9 @@ return {
 ["ScummVM_Game"] = "ScummVM peli",
 ["PICO8_Game"] = "PICO-8 peli",
 ["System_App"] = "Järjestelmäsovellus",
+["Atari_ST_Game"] = "Atari ST peli",
+["MS_DOS_Game"] = "MS-DOS peli",
+["EasyRPG_Game"] = "EasyRPG peli",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Ole hyvä ja asenna RetroFlow Adrenaline Launcher.",
@@ -301,6 +307,7 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "Sinun on asennettava DaedalusX64 pelataksesi tätä peliä.",
 ["Emulator_not_installed_Flycast"] = "Sinun on asennettava Flycast pelataksesi tätä peliä.",
 ["Emulator_not_installed_DSVita"] = "Sinun on asennettava DSVita pelataksesi tätä peliä.",
+["Emulator_not_installed_EasyRPG"] = "Sinun on asennettava EasyRPG pelataksesi tätä peliä.",
 ["Game_not_installed_rescan"] = "Tätä peliä ei ole asennettu, ole hyvä ja skannaa pelisi uudelleen.",
 
 }

@@ -91,6 +91,9 @@ return {
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
 ["System_Apps"] = "Rendszeralkalmazások",
+["Atari_ST"] = "Atari ST",
+["MS_DOS"] = "MS-DOS",
+["EasyRPG"] = "EasyRPG",
 
 -- Download
 ["Download_colon"] = "Letöltés:",
@@ -171,6 +174,9 @@ return {
 ["ScummVM_Game"] = "ScummVM Játék",
 ["PICO8_Game"] = "PICO-8 Játék",
 ["System_App"] = "Rendszeralkalmazás",
+["Atari_ST_Game"] = "Atari ST Játék",
+["MS_DOS_Game"] = "MS-DOS Játék",
+["EasyRPG_Game"] = "EasyRPG Játék",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Kérlek telepítsd RetroFlow Adrenaline Launcher.",
@@ -301,6 +307,7 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "A DaedalusX64 telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_Flycast"] = "A Flycast telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_DSVita"] = "A DSVita telepítése szükséges a játékhoz.",
+["Emulator_not_installed_EasyRPG"] = "A EasyRPG telepítése szükséges a játékhoz.",
 ["Game_not_installed_rescan"] = "Ez a játék nincs telepítve, kérem, szkennelje újra a játékait.",
 
 }

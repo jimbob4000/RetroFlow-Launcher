@@ -91,6 +91,9 @@ return {
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
 ["System_Apps"] = "システムアプリ",
+["Atari_ST"] = "Atari ST",
+["MS_DOS"] = "MS-DOS",
+["EasyRPG"] = "EasyRPG",
 
 -- Download
 ["Download_colon"] = "ダウンロード：",
@@ -159,7 +162,7 @@ return {
 ["MSX2_Game"] = "MSX2のゲーム",
 ["MSX_Game"] = "MSXのゲーム",
 ["ZXS_Game"] = "ZX Spectrumのゲーム",
-["A7800_Game"] = "Atari 7800ゲーム",
+["A7800_Game"] = "Atari 7800のゲーム",
 ["A5200_Game"] = "Atari 5200のゲーム",
 ["A600_Game"] = "Atari 600のゲーム",
 ["LYNX_Game"] = "Atari Lynxのゲーム",
@@ -171,6 +174,9 @@ return {
 ["ScummVM_Game"] = "ScummVMのゲーム",
 ["PICO8_Game"] = "PICO-8のゲーム",
 ["System_App"] = "システムアプリ",
+["Atari_ST_Game"] = "Atari STのゲーム",
+["MS_DOS_Game"] = "MS-DOSのゲーム",
+["EasyRPG_Game"] = "EasyRPGのゲーム",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "RetroFlowアドレナリンランチャーをインストールします。",
@@ -301,6 +307,7 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "このゲームを遊ぶにはDaedalusX64をインストールする必要があります。",
 ["Emulator_not_installed_Flycast"] = "このゲームを遊ぶにはFlycastをインストールする必要があります。",
 ["Emulator_not_installed_DSVita"] = "このゲームを遊ぶにはDSVitaをインストールする必要があります。",
+["Emulator_not_installed_EasyRPG"] = "このゲームを遊ぶにはEasyRPGをインストールする必要があります。",
 ["Game_not_installed_rescan"] = "このゲームはインストールされていません。ゲームを再スキャンしてください。",
 
 }

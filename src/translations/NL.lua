@@ -91,6 +91,9 @@ return {
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
 ["System_Apps"] = "Systeemapps",
+["Atari_ST"] = "Atari ST",
+["MS_DOS"] = "MS-DOS",
+["EasyRPG"] = "EasyRPG",
 
 -- Download
 ["Download_colon"] = "Download:",
@@ -171,6 +174,9 @@ return {
 ["ScummVM_Game"] = "ScummVM spel",
 ["PICO8_Game"] = "PICO-8 spel",
 ["System_App"] = "Systeemapp",
+["Atari_ST_Game"] = "Atari ST spel",
+["MS_DOS_Game"] = "MS-DOS spel",
+["EasyRPG_Game"] = "EasyRPG spel",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "Installeer RetroFlow Adrenaline Launcher alstublieft.",
@@ -301,6 +307,7 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "Je moet DaedalusX64 installeren om dit spel te spelen.",
 ["Emulator_not_installed_Flycast"] = "Je moet Flycast installeren om dit spel te spelen.",
 ["Emulator_not_installed_DSVita"] = "Je moet DSVita installeren om dit spel te spelen.",
+["Emulator_not_installed_EasyRPG"] = "Je moet EasyRPG installeren om dit spel te spelen.",
 ["Game_not_installed_rescan"] = "Dit spel is niet geïnstalleerd, scan je spellen opnieuw.",
 
 }

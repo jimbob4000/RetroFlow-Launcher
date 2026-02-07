@@ -46,6 +46,9 @@ local db_Cached_File_ngpc = (db_Cache_Folder .. "db_ngpc.lua")
 local db_Cached_File_psm = (db_Cache_Folder .. "db_psm.lua")
 local db_Cached_File_scummvm = (db_Cache_Folder .. "db_scummvm.lua")
 local db_Cached_File_pico8 = (db_Cache_Folder .. "db_pico8.lua")
+local db_Cached_File_atari_st = (db_Cache_Folder .. "db_atari_st.lua")
+local db_Cached_File_dos = (db_Cache_Folder .. "db_dos.lua")
+local db_Cached_File_easyrpg = (db_Cache_Folder .. "db_easyrpg.lua")
 local db_Cached_File_sysapps = (db_Cache_Folder .. "db_sysapps.lua")
 -- local db_Cached_File_favorites = (db_Cache_Folder .. "db_favorites.lua")
 
@@ -250,6 +253,18 @@ function print_tables()
     local db_pico8 = assert(io.open(db_Cached_File_pico8, "w"))
     printTable(pico8_table, db_pico8)
     db_pico8:close()
+
+    local db_atari_st = assert(io.open(db_Cached_File_atari_st, "w"))
+    printTable(atari_st_table, db_atari_st)
+    db_atari_st:close()
+
+    local db_dos = assert(io.open(db_Cached_File_dos, "w"))
+    printTable(dos_table, db_dos)
+    db_dos:close()
+
+    local db_easyrpg = assert(io.open(db_Cached_File_easyrpg, "w"))
+    printTable(easyrpg_table, db_easyrpg)
+    db_easyrpg:close()
 
     local db_sysapps = assert(io.open(db_Cached_File_sysapps, "w"))
     printTable(sysapps_table, db_sysapps)

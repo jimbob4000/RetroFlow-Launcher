@@ -91,6 +91,9 @@ return {
 ["ScummVM"] = "ScummVM",
 ["PICO8"] = "PICO-8",
 ["System_Apps"] = "システムユーティリティ",
+["Atari_ST"] = "Atari ST",
+["MS_DOS"] = "MS-DOS",
+["EasyRPG"] = "EasyRPG",
 
 -- Download
 ["Download_colon"] = "ダウンロード：",
@@ -171,6 +174,9 @@ return {
 ["ScummVM_Game"] = "ScummVMぬゲーム",
 ["PICO8_Game"] = "PICO-8ぬゲーム",
 ["System_App"] = "システムユーティリティ",
+["Atari_ST_Game"] = "Atari STぬゲーム",
+["MS_DOS_Game"] = "MS-DOSぬゲーム",
+["EasyRPG_Game"] = "EasyRPGぬゲーム",
 
 -- Missing launcher message
 ["Please_install_RetroFlow_Adrenaline_Launcher"] = "RetroFlowアドレナリンランチャーインストールさびーん。",
@@ -301,6 +307,7 @@ return {
 ["Emulator_not_installed_DaedalusX64"] = "DaedalusX64ぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_Flycast"] = "Flycastぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_DSVita"] = "DSVitaぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_EasyRPG"] = "EasyRPGぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Game_not_installed_rescan"] = "ゲームや、インストールさりぬくとぅ、ゲームや再スキャンしみそーり。",
 
 }
