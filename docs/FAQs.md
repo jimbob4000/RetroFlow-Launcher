@@ -273,6 +273,14 @@ Homebrew folder: Flappy Bird
 Cover name: Flappy Bird.png
 ```
 
+**ScummVM:**
+```
+Game folder: Beavis and Butt-head in Virtual Stupidity
+App ID: bbvs
+Normal cover: bbvs.png
+Custom cover: Beavis and Butt-head in Virtual Stupidity.png
+```
+
 **Location:** Save custom covers in the appropriate subfolder:
 `ux0:/data/RetroFlow/COVERS/[System Name]/`
 
