@@ -275,10 +275,10 @@ Cover name: Flappy Bird.png
 
 **ScummVM:**
 ```
-Game folder: Beavis and Butt-head in Virtual Stupidity
-App ID: bbvs
-Normal cover: bbvs.png
-Custom cover: Beavis and Butt-head in Virtual Stupidity.png
+Game folder: Jimbobs Adventure
+App ID: jbadv
+Normal cover: jbadv.png
+Custom cover: Jimbobs Adventure.png
 ```
 
 **Location:** Save custom covers in the appropriate subfolder:
