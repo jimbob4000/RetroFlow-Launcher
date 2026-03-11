@@ -8198,118 +8198,123 @@ function Full_Game_Scan()
 
                 for i, file in pairs(scan_scummvm_db) do
 
-                    local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
+                    if System.doesDirExist(file.path) then
 
-                    -- check if game is in the favorites list
-                    if System.doesFileExist(cur_dir .. "/favorites.dat") then
-                        if string.find(strFav, file.gameid,1,true) ~= nil then
-                            file.favourite = true
-                        else
-                            file.favourite = false
+                        local custom_path, custom_path_id, app_type, name, title, name_online, version, name_title_search = nil, nil, nil, nil, nil, nil, nil, nil
+
+                        -- check if game is in the favorites list
+                        if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                            if string.find(strFav, file.gameid,1,true) ~= nil then
+                                file.favourite = true
+                            else
+                                file.favourite = false
+                            end
                         end
-                    end
 
-                    file.game_path = file.path
+                        file.game_path = file.path
 
-                    file.titleid = file.gameid
+                        file.titleid = file.gameid
 
-                    if System.doesFileExist(cur_dir .. "/DATABASES/" .. (def_sql_db_file)) then
-                        db = Database.open(cur_dir .. "/DATABASES/" .. (def_sql_db_file))
+                        if System.doesFileExist(cur_dir .. "/DATABASES/" .. (def_sql_db_file)) then
+                            db = Database.open(cur_dir .. "/DATABASES/" .. (def_sql_db_file))
 
-                        sql_db_search_mame = "\"" .. file.gameid .. "\""
-                        search_term = "SELECT title FROM games where filename is "  .. sql_db_search_mame
-                        sql_db_search_result = Database.execQuery(db, search_term)
+                            sql_db_search_mame = "\"" .. file.gameid .. "\""
+                            search_term = "SELECT title FROM games where filename is "  .. sql_db_search_mame
+                            sql_db_search_result = Database.execQuery(db, search_term)
 
-                        if next(sql_db_search_result) == nil then
-                            -- Not found; use the name without adding a game name
+                            if next(sql_db_search_result) == nil then
+                                -- Not found; use the name without adding a game name
+                                title = file.gameid
+                            else
+                                -- Found; use the game name from the full database
+                                title = sql_db_search_result[1].title
+                            end
+                            Database.close(db)
+
+                        else
                             title = file.gameid
-                        else
-                            -- Found; use the game name from the full database
-                            title = sql_db_search_result[1].title
                         end
-                        Database.close(db)
+                        
+                        table.insert(folders_table, file)
 
-                    else
-                        title = file.gameid
-                    end
-                    
-                    table.insert(folders_table, file)
+                        -- file.filename = file.name
+                        file.game_path_folder = file.game_path:gsub(".*:.*/+", '') -- Name of folder in game path - scummvm game folder name
+                        file.directory = true
+                        file.filename = file.gameid
+                        file.name = file.gameid
+                        file.title = title
+                        file.name_online = file.gameid
+                        -- file.version = scummvm_version
+                        file.version = ""
+                        file.name_title_search = file.gameid
+                        file.apptitle = title
+                        file.date_played = 0
+                        file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
+                        file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
+                        file.app_type=((def))
+                        file.app_type_default=((def))
 
-                    -- file.filename = file.name
-                    file.game_path_folder = file.game_path:gsub(".*:.*/+", '') -- Name of folder in game path - scummvm game folder name
-                    file.directory = true
-                    file.filename = file.gameid
-                    file.name = file.gameid
-                    file.title = title
-                    file.name_online = file.gameid
-                    -- file.version = scummvm_version
-                    file.version = ""
-                    file.name_title_search = file.gameid
-                    file.apptitle = title
-                    file.date_played = 0
-                    file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
-                    file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
-                    file.app_type=((def))
-                    file.app_type_default=((def))
+                        custom_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png"
+                        custom_path_game_path_folder = (SystemsToScan[(def)].localCoverPath) .. file.game_path_folder .. ".png"
+                        custom_path_id = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png"
 
-                    custom_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png"
-                    custom_path_game_path_folder = (SystemsToScan[(def)].localCoverPath) .. file.game_path_folder .. ".png"
-                    custom_path_id = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png"
-
-                    -- Check for renamed game names
-                    if renamed_games_table and #renamed_games_table > 0 then
-                        local key = find_game_table_pos_key(renamed_games_table, file.name)
-                        if key ~= nil then
-                          -- Yes - Found in files table
-                          file.title = renamed_games_table[key].title
-                          file.apptitle = renamed_games_table[key].title
+                        -- Check for renamed game names
+                        if renamed_games_table and #renamed_games_table > 0 then
+                            local key = find_game_table_pos_key(renamed_games_table, file.name)
+                            if key ~= nil then
+                              -- Yes - Found in files table
+                              file.title = renamed_games_table[key].title
+                              file.apptitle = renamed_games_table[key].title
+                            else
+                              -- No
+                            end
                         else
-                          -- No
                         end
-                    else
-                    end
 
-                    -- Check for hidden game names
-                    file.hidden = check_for_hidden_tag_on_scan(file.name, file.app_type)
+                        -- Check for hidden game names
+                        file.hidden = check_for_hidden_tag_on_scan(file.name, file.app_type)
 
-                    table.insert((def_table_name), file)
-                    update_loading_screen_progress((def))
+                        table.insert((def_table_name), file)
+                        update_loading_screen_progress((def))
 
-                    if custom_path and QuickDoesFileExist.covDir[custom_path] then
-                        img_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png" --custom cover by app name
-                    elseif custom_path_game_path_folder and System.doesFileExist(custom_path_game_path_folder) then
-                        img_path = (SystemsToScan[(def)].localCoverPath) .. file.game_path_folder .. ".png" --custom cover by scummvm game folder name
-                        file.cover = true
-                    elseif custom_path_id and QuickDoesFileExist.covDir[custom_path_id] then
-                        img_path = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png" --custom cover by app id
-                        file.cover = true
-                    else
-                        if System.doesFileExist("app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)) then
-                            img_path = "app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)  --app icon
-                            file.cover = false
+                        if custom_path and QuickDoesFileExist.covDir[custom_path] then
+                            img_path = (SystemsToScan[(def)].localCoverPath) .. file.title .. ".png" --custom cover by app name
+                        elseif custom_path_game_path_folder and System.doesFileExist(custom_path_game_path_folder) then
+                            img_path = (SystemsToScan[(def)].localCoverPath) .. file.game_path_folder .. ".png" --custom cover by scummvm game folder name
+                            file.cover = true
+                        elseif custom_path_id and QuickDoesFileExist.covDir[custom_path_id] then
+                            img_path = (SystemsToScan[(def)].localCoverPath) .. file.name .. ".png" --custom cover by app id
+                            file.cover = true
                         else
-                            img_path = "app0:/DATA/noimg.png" --blank grey
-                            file.cover = false
+                            if System.doesFileExist("app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)) then
+                                img_path = "app0:/DATA/" .. (SystemsToScan[(def)].Missing_Cover)  --app icon
+                                file.cover = false
+                            else
+                                img_path = "app0:/DATA/noimg.png" --blank grey
+                                file.cover = false
+                            end
                         end
+                        
+                        file.app_type=((def))
+                        file.app_type_default=((def))
+
+                        -- file.filename = file.name 
+                        file.filename = file.titleid
+                        file.name = file.titleid
+                        file.cover_path_online = (SystemsToScan[(def)].onlineCoverPathSystem)
+                        file.cover_path_local = (SystemsToScan[(def)].localCoverPath)
+                        file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
+                        file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
+
+                        --add blank icon to all
+                        file.icon = imgCoverTmp
+                        file.icon_path = img_path
+                        
+                        table.insert(files_table, count_of_systems, file.icon) 
+                        table.insert(files_table, count_of_systems, file.apptitle)
+                        
+                    else
                     end
-                    
-                    file.app_type=((def))
-                    file.app_type_default=((def))
-
-                    -- file.filename = file.name 
-                    file.filename = file.titleid
-                    file.name = file.titleid
-                    file.cover_path_online = (SystemsToScan[(def)].onlineCoverPathSystem)
-                    file.cover_path_local = (SystemsToScan[(def)].localCoverPath)
-                    file.snap_path_local = (SystemsToScan[(def)].localSnapPath)
-                    file.snap_path_online = (SystemsToScan[(def)].onlineSnapPathSystem)
-
-                    --add blank icon to all
-                    file.icon = imgCoverTmp
-                    file.icon_path = img_path
-                    
-                    table.insert(files_table, count_of_systems, file.icon) 
-                    table.insert(files_table, count_of_systems, file.apptitle)
 
                 end
 
