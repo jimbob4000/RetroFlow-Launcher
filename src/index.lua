@@ -1423,8 +1423,8 @@ end
 if not System.doesFileExist(db_Folder .. "/fba_2012.db") then
     System.copyFile("app0:/addons/fba_2012.db", db_Folder .. "/fba_2012.db")
 end
-if not System.doesFileExist(db_Folder .. "/scummvm.db") then
-    System.copyFile("app0:/addons/scummvm.db", db_Folder .. "/scummvm.db")
+if not System.doesFileExist(db_Folder .. "/scummvm_2026_03.db") then
+    System.copyFile("app0:/addons/scummvm_2026_03.db", db_Folder .. "/scummvm_2026_03.db")
 end
 if not System.doesFileExist(db_Folder .. "/amiga.db") then
     System.copyFile("app0:/addons/amiga.db", db_Folder .. "/amiga.db")
@@ -8552,7 +8552,7 @@ function Full_Game_Scan()
             Scan_Rom_DB_Lookup      (37, QuickGameList.neogeo_table,                neogeo_table, "neogeo.lua", "neogeo.db")
             Scan_Rom_Simple         (38, QuickGameList.ngpc_table,                  ngpc_table)
             Scan_PSM_DB_Lookup      (39, QuickGameList.psm_table,                   psm_table, "psm.lua")
-            Scan_Scummvm_DB_Lookup  (40, scummvm_table,                             "scummvm.lua", "scummvm.db")
+            Scan_Scummvm_DB_Lookup  (40, scummvm_table,                             "scummvm.lua", "scummvm_2026_03.db")
             Scan_Rom_Filter_Pico8   (41, QuickGameList.pico8_table,                 pico8_table)
             Scan_Sys_App_DB_Lookup  (42, QuickGameList.sysapps_table,               sysapps_table)
             Scan_Rom_Simple         (43, QuickGameList.nds_table,                   nds_table)
