@@ -1502,6 +1502,7 @@ core_overrides = {
     [8] = {
         [0] = { core_path = core.GBA,                                   core_name = "gpSP" },
         [1] = { core_path = "app0:/vba_next_libretro.self",             core_name = "VBA Next" },
+        [2] = { core_path = "app0:/mgba_libretro.self",                 core_name = "mGBA" },
     },
     [9] = {
         [0] = { core_path = core.GBC,                                   core_name = "Gambatte" },
