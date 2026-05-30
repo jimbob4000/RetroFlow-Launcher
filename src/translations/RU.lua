@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Как добавить игры",
 ["guide_1_content"] = "Каталоги игр: \nПоместите свои игры в 'ux0:/data/RetroFlow/ROMS/' \nили, чтобы использовать свои собственные файловые каталоги, перейдите в \n'Настройки сканирования', а затем в 'Редактировать каталоги игр'. \n\nДобавив свои игры, выберите «Перезагрузка», чтобы добавить их в RetroFlow. \n\nИмена файлов: \nВажно, чтобы ваши игры назывались в соответствии с соглашением об именовании \nфайлов 'no-intro', например. «Sonic (USA)», иначе изображения не будут \nзагружены.",
 
-["guide_2_heading"] = "Игры Adrenaline не загружаются?",
-["guide_2_content"] = "Если игры Adrenaline не загружаются и вы установили программу запуска \nRetroFlow Adrenaline Launcher, установите AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nИли попробуйте установить Adrenaline Bubble Manager: \nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Почему игры PSP и PS1 не отображаются?",
+["guide_2_content"] = "Установите Adrenaline v7 от TheOfficialFloW, чтобы включить игры PSP и PS1.",
 
 ["guide_3_heading"] = "Настройка обложек и фонов для игр",
 ["guide_3_content"] = "Обложки: \nПользовательские обложки можно сохранить в папке с игрой здесь: \n'ux0:/data/RetroFlow/COVERS/'. \n\nФон: \nПользовательские игровые фоны можно сохранить в папке с игрой здесь: \n'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nИмена файлов:\nИмя файла должно соответствовать идентификатору приложения, \nили изображения имени приложения должны быть в формате .png.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Требуется выполнить перезагрузку PS Vita.",
 ["Restart_Now"] = "Перезагрузить сейчас",
 ["Restart_Later"] = "Перезагрузить позже",
+["Install_Official_Adrenaline"] = "Установите Adrenaline v7 от TheOfficialFloW, чтобы включить игры PSP и PS1.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Для игры необходимо установить Adrenaline.",

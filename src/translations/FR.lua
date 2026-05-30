@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Ajout de jeux",
 ["guide_1_content"] = "Répertoires de jeux : \nPlacez vos jeux dans 'ux0:/data/RetroFlow/ROMS/', ou pour utiliser vos propres répertoires de fichiers, allez dans 'Paramètres d'analyse' puis 'Modifier les répertoires de jeux'. \n\nUne fois que vous avez ajouté vos jeux, sélectionnez 'Rafraîchir' pour les ajouter à RetroFlow. \n\nNoms de fichiers : \nIl est important que vos jeux soient nommés en utilisant la convention de nommage des fichiers 'no-intro', par ex. 'Sonic (USA)', sinon les images ne seront pas téléchargées.",
 
-["guide_2_heading"] = "Les jeux Adrenaline ne se chargent pas ?",
-["guide_2_content"] = "Si les jeux Adrenaline ne se chargent pas et que vous avez installé RetroFlow Adrenaline Launcher, veuillez installer AdrBubbleBooterInstaller : \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOu essayez d'installer Adrenaline Bubble Manager : https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Pourquoi les jeux PSP et PS1 ne s'affichent-ils pas ?",
+["guide_2_content"] = "Installez Adrenaline v7 par TheOfficialFloW pour activer les jeux PSP et PS1.",
 
 ["guide_3_heading"] = "Jaquettes et arrière-plans de jeu personnalisés",
 ["guide_3_content"] = "Jaquettes : \nLes jaquettes personnalisées peuvent être enregistrées dans les dossiers des jeux ici: 'ux0:/data/RetroFlow/COVERS/'. \n\nArrière-plans : \nLes arrière-plans de jeu personnalisés peuvent être enregistrés dans les dossiers des jeux ici : 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNoms de fichiers :\nLe nom de fichier doit correspondre à l'ID ou au nom de l'application. Les images doivent être au format .png.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Nous devons redémarrer votre PS Vita.",
 ["Restart_Now"] = "Redémarrer maintenant",
 ["Restart_Later"] = "Redémarrer plus tard",
+["Install_Official_Adrenaline"] = "Installez Adrenaline v7 par TheOfficialFloW pour activer les jeux PSP et PS1.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Vous devez installer Adrenaline pour jouer à ce jeu.",

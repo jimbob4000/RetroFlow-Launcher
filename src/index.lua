@@ -2666,8 +2666,8 @@ local lang_default =
 ["guide_1_heading"] = "Adding games",
 ["guide_1_content"] = "Game directories: \nPlace your games in 'ux0:/data/RetroFlow/ROMS/', or to use your own file directories, go to 'Scan Settings' then 'Edit game directories'. \n\nOnce you have added your games, select 'Rescan' to add them to RetroFlow. \n\nFilenames: \nIt's important that your games are named using the 'no-intro' file naming convention, e.g. 'Sonic (USA)', otherwise images won't be downloaded.",
 
-["guide_2_heading"] = "Adrenaline games not loading?",
-["guide_2_content"] = "If Adrenaline games aren't loading and you have installed the RetroFlow Adrenaline Launcher, please install AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOr try installing Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Why are PSP and PS1 games not showing?",
+["guide_2_content"] = "Install Adrenaline v7 by TheOfficialFloW to enable PSP and PS1 games.",
 
 ["guide_3_heading"] = "Custom game covers & backgrounds",
 ["guide_3_content"] = "Covers: \nCustom covers can be saved in the game folders here: 'ux0:/data/RetroFlow/COVERS/'. \n\nBackgounds: \nCustom game backgrounds can be saved in the game folders here: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilenames:\nThe filename must match the App ID or the App Name Images must be in .png format.",
@@ -2741,6 +2741,7 @@ local lang_default =
 ["ABB_Restart"] = "We need to restart your PS Vita.",
 ["Restart_Now"] = "Restart Now",
 ["Restart_Later"] = "Restart Later",
+["Install_Official_Adrenaline"] = "Install Adrenaline v7 by TheOfficialFloW to enable PSP and PS1 games.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "You need to install Adrenaline to play this game.",
@@ -3090,6 +3091,91 @@ end
         Screen.clear()
     end
     
+
+    adrenaline_compatibilty = false
+
+    function Check_Adrenaline_Compatibility()
+        adrenaline_compatibilty = false
+
+        -- CRC values for Adrenaline modules
+
+            -- Official compatible Adrenaline by Flow - 6.61 Adrenaline-7
+            local __CRCKERNEL_OG    = "20f7c5cd"
+            local __CRCUSER_OG      = "5487a9c3"
+            local __CRCVSH_OG       = "fa85cd74"
+
+            -- Updated modules used by RetroFlow to launch games - Leecherman's versions
+            local __CRCKERNEL_RF    = "c9f84053"
+            local __CRCUSER_RF      = "f5116106"
+            local __CRCVSH_RF       = "485293a1"
+
+
+        ADRENALINE = "ux0:app/PSPEMUCFW"
+        
+        MODULES_TO_CHECK = {
+          { file_adr = ADRENALINE.."/sce_module/adrenaline_kernel.skprx", crc_official = __CRCKERNEL_OG,    crc_retroflow = __CRCKERNEL_RF  },
+          { file_adr = ADRENALINE.."/sce_module/adrenaline_user.suprx",   crc_official = __CRCUSER_OG,      crc_retroflow = __CRCUSER_RF  },
+          { file_adr = ADRENALINE.."/sce_module/adrenaline_vsh.suprx",    crc_official = __CRCVSH_OG,       crc_retroflow = __CRCVSH_RF  },
+        }
+
+        local all_modules_valid = true
+
+        if System.doesAppExist("PSPEMUCFW") then
+
+            for i=1,#MODULES_TO_CHECK do
+                -- Check CRC
+                local crc = Extended.crc32File(MODULES_TO_CHECK[i].file_adr)
+
+                if crc ~= MODULES_TO_CHECK[i].crc_official and crc ~= MODULES_TO_CHECK[i].crc_retroflow then
+                    all_modules_valid = false
+                end
+            end
+
+        else
+            all_modules_valid = false
+        end
+
+        adrenaline_compatibilty = all_modules_valid
+
+
+        -- NOTIFICATION ABOUT WRONG ADRENALINE VERSION
+
+            -- Create file to act as a flag for a one-time dialog message
+
+                local adr_notification_file = cur_dir .. "/adr_compatability.dat"
+                local adr_notification_file_exists = System.doesFileExist(adr_notification_file)
+
+                if adrenaline_compatibilty == false and adr_notification_file_exists == false then
+
+                    -- Notify that the wrong version of Adrenaline is installed
+                    if System.doesAppExist("PSPEMUCFW") then
+                        status = System.getMessageState()
+                        if status ~= RUNNING then
+                            System.setMessage(lang_lines.Install_Official_Adrenaline, false, BUTTON_OK)
+                        end
+                    end
+
+                    -- Create file
+                    local file_over = System.openFile(adr_notification_file, FCREATE)
+                    if file_over then
+                        System.closeFile(file_over)
+                    end
+                    adr_notification_file_exists = true
+
+                end
+
+            -- Remove notification file if adrenaline is compatible
+
+                if adrenaline_compatibilty == true and adr_notification_file_exists == true then
+                    -- Delete file
+                    if System.doesFileExist(adr_notification_file) then
+                        System.deleteFile(adr_notification_file)
+                        adr_notification_file_exists = false
+                    end
+                end
+
+    end
+
     function Setup_Adrenaline()
 
         -- Install RetroFlow Adrenaline Launcher if needed
@@ -3350,8 +3436,8 @@ end
         return _G[collection_files[Collection_CatNum].table_name]
     end
 
-    function check_if_game_is_in_collection_table(def_collection_number)
-        local key = find_game_table_pos_key(xCollectionTableLookup((def_collection_number)), xCatLookup(showCat)[p].name)
+    function check_if_game_is_in_collection_table(def_collection_number, def_name)
+        local key = find_game_table_pos_key(xCollectionTableLookup((def_collection_number)), (def_name))
         if key ~= nil then
             return true
         else
@@ -4680,6 +4766,14 @@ function check_for_hidden_tag_on_scan(def_file_name, def_app_type)
 end
 
 
+local fav_count_dirty = true
+-- fav_count is a cached filtered view of files_table.
+-- Set fav_count_dirty = true whenever something changes that could alter
+-- which games should appear in Favorites, or their order/content.
+-- refresh_fav_count_table() rebuilds the cache only when needed.
+
+
+
 function create_fav_count_table(def_table_input)
     -- Note: showHomebrews = 1 -- On
     -- Note: showHidden = 0 -- 0 Off
@@ -4730,6 +4824,13 @@ function create_fav_count_table(def_table_input)
             end
         else
         end
+    end
+    fav_count_dirty = false
+end
+
+function refresh_fav_count_table()
+    if fav_count_dirty == true then
+        create_fav_count_table(files_table)
     end
 end
 
@@ -5056,7 +5157,17 @@ end
                                 local key = find_game_table_pos_key(files_table, file.name)
                                 if key ~= nil then
                                     if files_table[key].app_type == file.app_type then
-                                        table.insert(_G[collection_file_num.table_name], files_table[key])
+                                        local collection_entry = {}
+                                        for entry_key, entry_value in pairs(files_table[key]) do
+                                            if entry_key ~= "ricon" then
+                                                collection_entry[entry_key] = entry_value
+                                            end
+                                        end
+                                        collection_entry.ricon = nil
+                                        if file.custom_sort_order ~= nil then
+                                            collection_entry.custom_sort_order = file.custom_sort_order
+                                        end
+                                        table.insert(_G[collection_file_num.table_name], collection_entry)
                                     end
                                 end
                             end
@@ -8550,7 +8661,7 @@ function Full_Game_Scan()
             Scan_Rom_Simple         (29, QuickGameList.atari_5200_table,            atari_5200_table)
             Scan_Rom_Simple         (30, QuickGameList.atari_2600_table,            atari_2600_table)
             Scan_Rom_Simple         (31, QuickGameList.atari_lynx_table,            atari_lynx_table)
-            Scan_Rom_Simple         (32, QuickGameList.colecovision_table,          sms_table)
+            Scan_Rom_Simple         (32, QuickGameList.colecovision_table,          colecovision_table)
             Scan_Rom_Simple         (33, QuickGameList.vectrex_table,               sms_table)
             Scan_Rom_DB_Lookup      (34, QuickGameList.fba_table,                   fba_table, "fba_2012.lua", "fba_2012.db")
             Scan_Rom_DB_Lookup      (35, QuickGameList.mame_2003_plus_table,        mame_2003_plus_table, "mame_2003_plus.lua", "mame_2003_plus.db")
@@ -9027,14 +9138,21 @@ function import_cached_DB()
     files_table_no_sysapps = {}
     
 
-    local file_over = System.openFile(cur_dir .. "/overrides.dat", FREAD)
-    local filesize = System.sizeFile(file_over)
-    local str = System.readFile(file_over, filesize)
-    System.closeFile(file_over)
+    local overrides_path = cur_dir .. "/overrides.dat"
+    if System.doesFileExist(overrides_path) then
+        local file_over = System.openFile(overrides_path, FREAD)
+        if file_over then
+            local filesize = System.sizeFile(file_over)
+            local str = System.readFile(file_over, filesize)
+            System.closeFile(file_over)
+        end
+    end
 
     import_renamed_games()
     import_hidden_games()
 
+    -- Check if Official Adrenaline is installed, if a fork is installed, then disable PSP and PSX as the games can't be launched
+    Check_Adrenaline_Compatibility()
 
     import_cached_DB_tables("db_games.lua", games_table)
     if showHomebrews == 1 then
@@ -9043,8 +9161,11 @@ function import_cached_DB()
         -- Show Homebrew is off - only import if in a collection
         import_cached_DB_homebrews_in_collections("db_homebrews.lua", homebrews_table)
     end
-    import_cached_DB_tables("db_psp.lua", psp_table)
-    import_cached_DB_tables("db_psx.lua", psx_table)
+
+    if adrenaline_compatibilty == true then
+        import_cached_DB_tables("db_psp.lua", psp_table)
+        import_cached_DB_tables("db_psx.lua", psx_table)
+    end
     import_cached_DB_tables("db_n64.lua", n64_table)
     import_cached_DB_tables("db_snes.lua", snes_table)
     import_cached_DB_tables("db_nes.lua", nes_table)
@@ -9161,8 +9282,10 @@ function import_cached_DB()
     total_homebrews = #homebrews_table
     total_recently_played = #recently_played_table
     
-    -- Setup Adrenaline (CRC validation and VPK installation) - moved here to only run during scanning
-    Setup_Adrenaline()
+    if adrenaline_compatibilty == true then
+        -- Setup Adrenaline (CRC validation and VPK installation) - moved here to only run during scanning
+        Setup_Adrenaline()
+    end
     
     return return_table
 
@@ -11336,6 +11459,13 @@ function FreeIcons()
     for k, v in pairs(recently_played_table)    do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(homebrews_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(search_results_table)     do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+
+    if collection_count > 0 then
+        for collection_showcat = 50, collection_syscount do
+            for k, v in pairs(xCatLookup(collection_showcat)) do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+        end
+    end
+
 end
 
 function DownloadSingleCover()
@@ -12691,29 +12821,102 @@ while true do
                     end
 
                     new_collection = {}
-                    new_collection = 
-                    { 
-                        [1] = 
-                        {
-                            ["apptitle"] = xCatLookup(showCat)[p].title,
-                            ["name"] = xCatLookup(showCat)[p].name,
-                            ["app_type"] = xCatLookup(showCat)[p].app_type,
-                        },
-                    }
+
+                    if next(search_results_table) ~= nil then
+
+                        -- Add search results table to collection
+                        local search_results_collection_info = {}
+                        for k, v in pairs(search_results_table) do
+                            local search_results_collection_info = {
+                                apptitle = v.title,
+                                name = v.name,
+                                app_type = v.app_type,
+                            }
+                            table.insert(new_collection, search_results_collection_info)
+                        end
+
+                    else
+
+                        -- Individual game to add to collection
+                        new_collection = 
+                        { 
+                            [1] = 
+                            {
+                                ["apptitle"] = xCatLookup(showCat)[p].title,
+                                ["name"] = xCatLookup(showCat)[p].name,
+                                ["app_type"] = xCatLookup(showCat)[p].app_type,
+                            },
+                        }
+
+                    end
 
                     update_cached_collection(ret_collection_filename, new_collection)
                     create_collections_list()
-                    -- import_collections()
-                    -- count_cache_and_reload()
+        
+                    if next(search_results_table) ~= nil then
 
-                    keyboard_collection_name_new = false
-                    -- Terminating keyboard
-                    Keyboard.clear()
+                        -- Reload collections and set current category to our new collection which has been created from the search table
 
-                    FreeIcons()
-                    FreeMemory()
-                    Network.term()
-                    dofile("app0:index.lua")
+                        table.sort(collection_files, function(a, b) return (a.filename:lower() < b.filename:lower()) end)
+                        collection_count = #collection_files
+                        collection_syscount = syscount + collection_count
+                        if collection_count == 0 then
+                            collection_count_of_start_categories = count_of_start_categories
+                        else
+                            collection_count_of_start_categories = collection_count + count_of_start_categories + 1
+                        end
+                        import_collections()
+
+                        keyboard_collection_name_new = false
+                        -- Terminating keyboard
+                        Keyboard.clear()
+
+                        local new_collection_table_name = ret_collection_filename:gsub(".lua", "")
+                        local new_collection_number = 0
+                        for i, file in pairs(collection_files) do
+                            if file.table_name == new_collection_table_name then
+                                new_collection_number = i
+                                break
+                            end
+                        end
+
+                        if new_collection_number > 0 then
+                            showCat = 49 + new_collection_number -- Collection showCat values start at 50
+                            p = 1
+                            master_index = p
+                            GetNameAndAppTypeSelected()
+                            GetInfoSelected()
+
+                            if xCatLookup(showCat) and xCatLookup(showCat)[p] then
+                                Threads.addTask(xCatLookup(showCat)[p], {
+                                Type = "ImageLoad",
+                                Path = xCatLookup(showCat)[p].icon_path,
+                                Table = xCatLookup(showCat)[p],
+                                Index = "ricon"
+                                })
+                            end
+                        end
+
+                        oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
+                        showMenu = 0
+                        Render.useTexture(modBackground, imgCustomBack)
+
+                        -- Empty the search results table
+                        for k in pairs(search_results_table) do
+                            search_results_table[k] = nil
+                        end
+                        mode_add_search_results = false
+
+                    else
+                        keyboard_collection_name_new = false
+                        -- Terminating keyboard
+                        Keyboard.clear()
+
+                        FreeIcons()
+                        FreeMemory()
+                        Network.term()
+                        dofile("app0:index.lua")
+                    end
 
                 end
 
@@ -12743,9 +12946,16 @@ while true do
                 else
 
                     ret_rename_collection_new_filename = "Collection_" .. ret_rename_collection:gsub(" ", "_") .. ".lua"
+
+                    local old_path = collections_dir .. keyboard_collection_rename_filename
+                    local new_path = collections_dir .. ret_rename_collection_new_filename
+                    local temp_path = collections_dir .. "__temp_collection.lua"
                 
-                    if System.doesFileExist(collections_dir .. keyboard_collection_rename_filename) then
-                        System.rename(collections_dir .. keyboard_collection_rename_filename, collections_dir .. ret_rename_collection_new_filename)
+                    if System.doesFileExist(old_path) then
+                        -- Step 1: rename to temp
+                        System.rename(old_path, temp_path)
+                        -- Step 2: rename to final (with correct case)
+                        System.rename(temp_path, new_path)
                     else
                     end
 
@@ -12983,8 +13193,7 @@ while true do
         base_x = 0
         
         if showCat == 47 then
-            -- count favorites
-            create_fav_count_table(files_table)
+            refresh_fav_count_table()
             
             drawCategory (fav_count)
             GetNameAndAppTypeSelected() -- Added to refresh names as games removed from fav cat whilst on fav cat
@@ -16636,7 +16845,7 @@ while true do
                 while check_collection_number < #collection_files do
                     check_collection_number = check_collection_number + 1
 
-                    found = check_if_game_is_in_collection_table(check_collection_number)
+                    found = check_if_game_is_in_collection_table(check_collection_number, xCatLookup(showCat)[p].name)
                     if found == true then
                         count_of_matches = count_of_matches + 1
                         matched_collection_num = check_collection_number
@@ -16652,6 +16861,12 @@ while true do
                 remove_from_collection_flag = false
             else
                 remove_from_collection_flag = true
+                if xcollection_number > #collection_removal_table then
+                    xcollection_number = #collection_removal_table
+                end
+                if xcollection_number < 1 then
+                    xcollection_number = 1
+                end
                 menuItems = menuItems + 1
             end
 
@@ -16873,14 +17088,15 @@ while true do
                     -- Favourites
                     AddOrRemoveFavorite()
 
-                    -- Update text
-                    if favourite_flag == true then
-                        favourite_flag = false
-                    else
-                        favourite_flag = true
-                    end
+                        -- Update text
+                        if favourite_flag == true then
+                            favourite_flag = false
+                        else
+                            favourite_flag = true
+                        end
+                        fav_count_dirty = true
 
-                    -- If on favorite category, go to main screen, otherwise the next fav game is shown
+                        -- If on favorite category, go to main screen, otherwise the next fav game is shown
                     if showCat == 47 then
                         check_for_out_of_bounds()
                         GetInfoSelected()
@@ -17536,6 +17752,12 @@ while true do
 -- MENU 22 - ADD TO COLLECTION
     elseif showMenu == 22 then
         
+        local mode_add_search_results = false
+
+        if next(search_results_table) ~= nil then
+            mode_add_search_results = true
+        end
+
         -- SETTINGS
         -- Footer buttons and icons
         -- Get text widths for positioning
@@ -17606,20 +17828,28 @@ while true do
 
                 -- MENU 22
                 if menuY == 0 then -- #0 Back
-                    showMenu = 20
-                    menuY=3
 
-                elseif menuY == 2 then -- #3 Add to collection
+                    if mode_add_search_results == false then
+                        showMenu = 20
+                        menuY=3
+                    else
+                        showMenu = 25
+                        menuY=5
+                    end
+
+                elseif menuY == 2 and mode_add_search_results == false then -- #3 Add individual game to collection
                     
                     -- Existing collection
                     if collection_number > 0 then
                         
                         -- Check if game is already in the collection list
-                        if check_if_game_is_in_collection_table(collection_number) == false then
+                        if check_if_game_is_in_collection_table(collection_number, xCatLookup(showCat)[p].name) == false then
 
 
                             if xCollectionTableLookup(collection_number)[1].custom_sort_order ~= nil then
                                 cc_already_custom = true
+                            else
+                                cc_already_custom = false
                             end
 
                             -- Create new table of basic info
@@ -17665,7 +17895,12 @@ while true do
                             end
 
                             -- Sort the table and cache
-                            table.sort(game_info_for_collection, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+                            if cc_already_custom == true then
+                                table.sort(game_info_for_collection, function(a, b) return (tonumber(a.custom_sort_order) < tonumber(b.custom_sort_order)) end)
+                            else
+                                table.sort(game_info_for_collection, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+                            end
+
                             update_cached_collection(collection_files[collection_number].filename, game_info_for_collection)
                         end
 
@@ -17678,6 +17913,101 @@ while true do
                         Render.useTexture(modBackground, imgCustomBack)
                         collection_number = 0
                         -- menuY=3
+
+                    else
+
+                        -- Keyboard input to create table
+                        if hasTyped==false then
+                            Keyboard.start(tostring(lang_lines.New_collection_name), "", 512, TYPE_LATIN, MODE_TEXT)
+                            hasTyped=true
+                            keyboard_collection_name_new=true
+                        end
+
+                    end
+
+                elseif menuY == 2 and mode_add_search_results == true then -- #3 Add search results to collection
+                    
+                    -- Existing collection
+                    if collection_number > 0 then
+                        
+                        -- Create new table of basic info
+                        local game_info_for_collection = {}
+
+                        -- Check if collection is using custom sort order
+                        if xCollectionTableLookup(collection_number)[1].custom_sort_order ~= nil then
+                            cc_already_custom = true
+                            cc_already_custom_count = #xCollectionTableLookup(collection_number)
+                        else
+                            cc_already_custom = false
+                        end
+
+                        for k, v in pairs(search_results_table) do
+
+                            local individual_game = {}
+
+                            -- Check if game is already in the collection list
+                            if check_if_game_is_in_collection_table(collection_number, v.name) == false then
+
+                                if cc_already_custom == true then
+
+                                    -- Target collection has custom sorting, include 'custom_sort_order' field and add to the end
+
+                                    cc_already_custom_count = cc_already_custom_count + 1
+                                    
+                                    individual_game = {
+                                        apptitle = v.title,
+                                        name = v.name,
+                                        app_type = v.app_type,
+                                        custom_sort_order = cc_already_custom_count,
+                                    }
+                                    table.insert(game_info_for_collection, individual_game)
+
+                                else
+
+                                    -- Target collection does not have custom sorting, exclude 'custom_sort_order' field
+                                    individual_game = {
+                                        apptitle = v.title,
+                                        name = v.name,
+                                        app_type = v.app_type,
+                                    }
+                                    table.insert(game_info_for_collection, individual_game)
+                                end
+                            end
+
+                        end
+
+                        -- Add basic info from games aleady in the collection to the table
+                        for i, file in pairs(xCollectionTableLookup(collection_number)) do
+                            existing_collection_info = {}
+                            existing_collection_info.apptitle = file.title
+                            existing_collection_info.name = file.name
+                            existing_collection_info.app_type = file.app_type
+                            if cc_already_custom == true then
+                                existing_collection_info.custom_sort_order = file.custom_sort_order
+                            end
+                            table.insert(game_info_for_collection, existing_collection_info)
+                        end
+
+                        -- Sort the table and cache
+                        if cc_already_custom == true then
+                            table.sort(game_info_for_collection, function(a, b) return (tonumber(a.custom_sort_order) < tonumber(b.custom_sort_order)) end)
+                        else
+                            table.sort(game_info_for_collection, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+                        end
+
+                        update_cached_collection(collection_files[collection_number].filename, game_info_for_collection)
+
+                        -- Import the cached tables
+                        import_collections()
+
+                        oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
+                        showCat = 49 + collection_number -- this number should correspond to the showcat number for the category the games were just added to
+                        p = 1
+                        master_index = p
+                        showMenu = 0
+                        GetNameAndAppTypeSelected()
+                        Render.useTexture(modBackground, imgCustomBack)
+                        collection_number = 0
 
                     else
 
@@ -17815,6 +18145,12 @@ while true do
         if remove_from_collection_flag == false then
             Font.print(fnt22, setting_x_offset, setting_y1 + y_centre_text_offset, lang_lines.No_collections, white) -- No collections
         else
+            if xcollection_number > #collection_removal_table then
+                xcollection_number = #collection_removal_table
+            end
+            if xcollection_number < 1 then
+                xcollection_number = 1
+            end
             -- xxxnum = collection_removal_table[xcollection_number].matched_collection_num
             Font.print(fnt22, setting_x_offset, setting_y1 + y_centre_text_offset, "<  " .. collection_files[collection_removal_table[xcollection_number].matched_collection_num].display_name .. "  >", white)
         end
@@ -17842,12 +18178,21 @@ while true do
                         
                     else
 
-                           -- Create new table of basic info
+                            if xcollection_number > #collection_removal_table then
+                                xcollection_number = #collection_removal_table
+                            end
+                            if xcollection_number < 1 then
+                                xcollection_number = 1
+                            end
+
+                            -- Create new table of basic info
                             game_info_for_collection = {}                            
 
                             -- Check if collection has custom sorting
                             if xCollectionTableLookup(collection_removal_table[xcollection_number].matched_collection_num)[1].custom_sort_order ~= nil then
                                 cc_already_custom = true
+                            else
+                                cc_already_custom = false
                             end
 
                             for i, file in pairs(xCollectionTableLookup(collection_removal_table[xcollection_number].matched_collection_num)) do
@@ -18003,7 +18348,7 @@ while true do
         --     while check_collection_number < #collection_files do
         --         check_collection_number = check_collection_number + 1
 
-        --         found = check_if_game_is_in_collection_table(check_collection_number)
+        --         found = check_if_game_is_in_collection_table(check_collection_number, xCatLookup(showCat)[p].name)
         --         if found == true then
         --             count_of_matches = count_of_matches + 1
         --             matched_collection_num = check_collection_number
@@ -18188,10 +18533,20 @@ while true do
         label1 = Font.getTextWidth(fnt20, lang_lines.Close)--Close
         label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
 
+        local mode_add_search_results = false
+
+        if next(search_results_table) ~= nil then
+            mode_add_search_results = true
+        end
+
 
         -- GET MENU ITEM COUNT (Some menus app type specific)
             
             menuItems = 4
+
+            if mode_add_search_results == true then
+                menuItems = menuItems + 1
+            end
         
             -- Calculate vertical centre
             vertically_centre_mini_menu(menuItems)
@@ -18251,8 +18606,11 @@ while true do
             Font.print(fnt22, setting_x_icon_offset + 70, setting_y4 + y_centre_text_offset, "<  " .. lang_lines.Collections .. "  >", white)
         end
 
-        
-
+        -- MENU 25 / #5 Dynamic - Add search results to collection
+        if mode_add_search_results == true then
+            Graphics.drawImage(setting_x, setting_y5 + y_centre_text_offset, setting_icon_categories)
+            Font.print(fnt22, setting_x_icon_offset + 70, setting_y5 + y_centre_text_offset, lang_lines.Add_to_collection, white)--Add to collection
+        end
 
         
         -- MENU 25 - FUNCTIONS
@@ -18391,11 +18749,14 @@ while true do
                         GetNameAndAppTypeSelected()
                     end
 
+                elseif menuY == 5 then -- #5 Save search results to collection
+
+                    showMenu = 22 -- Add to collection
+                    menuY = 0
+
                 SaveSettings()
                      
                 end
-
-
 
             elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
                 if menuY > 0 then
@@ -19430,7 +19791,7 @@ while true do
 
                     if showCat == 47 then
                         -- count favorites
-                        create_fav_count_table(files_table)
+                        refresh_fav_count_table()
 
                         curTotal = #fav_count
                         if #fav_count == 0 then 
@@ -19640,7 +20001,7 @@ while true do
                     if showCat == 46 then curTotal =    #sysapps_table          if      #sysapps_table == 0 then        showCat = 47 end end
                     if showCat == 47 then
                         -- count favorites
-                        create_fav_count_table(files_table)
+                        refresh_fav_count_table()
 
                         curTotal = #fav_count
                         if #fav_count == 0 then showCat = 48
@@ -20214,8 +20575,7 @@ while true do
 
 
     if showCat == 47 then
-        -- count favorites
-        create_fav_count_table(files_table)
+        refresh_fav_count_table()
         
         curTotal = #fav_count
         if #fav_count == 0 then

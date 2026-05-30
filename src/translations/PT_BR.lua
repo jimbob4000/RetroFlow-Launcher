@@ -222,9 +222,9 @@ return {
 ["guide_1_heading"] = "Como adicionar jogos",
 ["guide_1_content"] = "Diretórios dos jogos: \nColoque seus jogos em 'ux0:/data/RetroFlow/ROMS/', ou para usar seus próprios diretórios de arquivos, vá para 'Configurações de escaneamento' e depois 'Editar diretórios dos jogos'. \n\nDepois de adicionar seus jogos, selecione 'Reescanear' para adicioná-los ao RetroFlow. \n\nNomes de arquivos: \nÉ importante que seus jogos sejam nomeados usando a convenção de nomenclatura de arquivo 'no-intro', por exemplo, 'Sonic (USA)', caso contrário, as imagens não serão baixadas.",
 
-["guide_2_heading"] = "Jogos do Adrenaline não estão carregando?",
-["guide_2_content"] = "Se os jogos do Adrenaline não estiverem carregando e você instalou o RetroFlow Adrenaline Launcher, instale o AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOu tente instalar o Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
-
+["guide_2_heading"] = "Por que os jogos de PSP e PS1 não estão aparecendo?",
+["guide_2_content"] = "Instale o Adrenaline v7 do TheOfficialFloW para habilitar jogos de PSP e PS1.",
+	
 ["guide_3_heading"] = "Personalize capas e planos de fundo dos jogos",
 ["guide_3_content"] = "Capas: \nCapas personalizadas podem ser salvas nas pastas do jogo aqui: 'ux0:/data/RetroFlow/COVERS/'. \n\nPlanos de fundo: \nOs planos de fundo personaolizados dos jogos podem ser salvos nos diretório: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNomes dos arquivos:\nO nome do arquivo deve corresponder ao ID do aplicativo ou o Nome da Imagens do App deve estar no formato .png.", 
 
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Precisamos reiniciar seu PS Vita.",
 ["Restart_Now"] = "Reiniciar agora",
 ["Restart_Later"] = "Reiniciar mais tarde",
+["Install_Official_Adrenaline"] = "Instale o Adrenaline v7 do TheOfficialFloW para habilitar jogos de PSP e PS1.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Você precisa instalar o Adrenaline para jogar este jogo.",

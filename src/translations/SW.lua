@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Lägger till spel",
 ["guide_1_content"] = "Spelmappar: \nPlacera dina spel i 'ux0:/data/RetroFlow/ROMS/', eller för att använda dina egna filkataloger, gå till 'Skanningsinställningar' och sedan 'Redigera spelmappar'. \n\nNär du har lagt till dina spel, välj 'Ladda om' för att lägga till dem i RetroFlow. \n\nFilnamn: \nDet är viktigt att dina spel namnges med hjälp av 'no-intro' filnamnkonventionen, t.ex. 'Sonic (USA)', annars kommer bilder inte att laddas ner.",
 
-["guide_2_heading"] = "Adrenaline-spel laddas inte?",
-["guide_2_content"] = "Om Adrenaline-spel inte laddas och du har installerat RetroFlow Adrenaline Launcher, installera AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nEller testa att installera Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Varför visas inte PSP- och PS1-spel?",
+["guide_2_content"] = "Installera Adrenaline v7 av TheOfficialFloW för att aktivera PSP- och PS1-spel.",
 
 ["guide_3_heading"] = "Anpassade spelomslag och bakgrunder",
 ["guide_3_content"] = "Omslag: \nAnpassade omslag kan sparas i spelmapparna här: 'ux0:/data/RetroFlow/COVERS/'. \n\nBakgrunder: \nAnpassade spelbakgrunder kan sparas i spelmapparna här: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilnamn:\nFilnamnet måste stämma överens med app-ID eller så måste appnamnbilderna vara i .png-format.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Vi måste starta om din PS Vita.",
 ["Restart_Now"] = "Starta om nu",
 ["Restart_Later"] = "Starta om senare",
+["Install_Official_Adrenaline"] = "Installera Adrenaline v7 av TheOfficialFloW för att aktivera PSP- och PS1-spel.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Du behöver installera Adrenaline för att spela detta spel.",

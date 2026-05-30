@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Oyunlar nasıl eklenir",
 ["guide_1_content"] = "Oyun dizinleri: \nOyunlarınızı 'ux0:/data/RetroFlow/ROMS/' içine yerleştirin veya kendi dosya dizinlerinizi kullanmak için 'Tarama Ayarları' ve ardından 'Oyun dizinlerini düzenle' e gidin. \n\nOyunlarınızı ekledikten sonra RetroFlow'a eklemek için 'Yeniden tara' öğesini seçin. \n\nDosya adları: \nOyunlarınızın 'no-intro' dosya adlandırma kuralı kullanılarak adlandırılması önemlidir, örn. 'Sonic (USA)', aksi halde resimler indirilmeyecektir.",
 
-["guide_2_heading"] = "Adrenaline oyunları yüklenmiyor mu?",
-["guide_2_content"] = "Adrenaline oyunları yüklenmiyorsa ve RetroFlow Adrenaline Launcher'ı yüklediyseniz, lütfen AdrBubbleBooterInstaller'ı yükleyin: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nYa da Adrenaline Bubble Manager'ı yüklemeyi deneyin: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "PSP ve PS1 oyunları neden görünmüyor?",
+["guide_2_content"] = "PSP ve PS1 oyunlarını etkinleştirmek için TheOfficialFloW tarafından geliştirilen Adrenaline v7'yi yükleyin.",
 
 ["guide_3_heading"] = "Oyun kapaklarını ve arka planlarını özelleştirin",
 ["guide_3_content"] = "Kapaklar: \nÖzel kapaklar şuradaki oyun klasörlerine kaydedilebilir: 'ux0:/data/RetroFlow/COVERS/'. \n\nArka Planlar: \nÖzel oyun arka planları şuradaki oyun klasörlerine kaydedilebilir: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nDosya adları:\nDosya adı, Uygulama Kimliği ile eşleşmeli veya Uygulama Adı Görüntüleri .png biçiminde olmalıdır.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "PS Vita'nızı yeniden başlatmamız gerekiyor.",
 ["Restart_Now"] = "Şimdi yeniden başlat",
 ["Restart_Later"] = "Daha sonra yeniden başlat",
+["Install_Official_Adrenaline"] = "PSP ve PS1 oyunlarını etkinleştirmek için TheOfficialFloW tarafından geliştirilen Adrenaline v7'yi yükleyin.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Bu oyunu oynamak için Adrenaline'i kurmanız gerekiyor.",

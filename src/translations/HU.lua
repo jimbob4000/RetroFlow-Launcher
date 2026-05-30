@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Játék hozzáadás",
 ["guide_1_content"] = "Játék mappák: \nHelyezd el a játékaidat a 'ux0:/data/RetroFlow/ROMS/' mappába, vagy használd a saját mappádat, menj a 'Keresési beállítások'-ba, majd 'Játék mappák szerkesztése...'. \n\nMiután hozzáadtad a játékaidat, nyomj az 'Újra keresés'-re, hogy hozzáadd a RetroFlow-hoz. \n\nFájlnevek: \nFontos, hogy a játékaid a 'no-intro' elnevezést kövessék, mint pl.: 'Sonic (USA)', különben a képek nem töltődnek le.",
 
-["guide_2_heading"] = "Adrenaline játékok nem indulnak?",
-["guide_2_content"] = "Ha az Adrenaline játékok nem indulnak, és fel van telepítve a RetroFlow Adrenaline Launcher, akkor kérlek telepítsd fel a AdrBubbleBooterInstaller-t: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nVagy próbáld meg a Adrenaline Bubble Manager-t: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Miért nem jelennek meg a PSP és PS1 játékok?",
+["guide_2_content"] = "A PSP és PS1 játékok engedélyezéséhez telepítsd a TheOfficialFloW által készített Adrenaline v7-et.",
 
 ["guide_3_heading"] = "Saját játék borítók és hátterek",
 ["guide_3_content"] = "Borítók: \nSaját játék borítókat ebbe a mappába rakhatsz: 'ux0:/data/RetroFlow/COVERS/'. \n\nHátterek: \nSaját háttereket ebbe a mappába rakhatsz: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFájlnevek:\nA fájlnévnek egyeznie kell az App ID-vel vagy az App Name képeknek .png formátumban kell lennie.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Újra kell indítanunk a PS Vita.",
 ["Restart_Now"] = "Újraindítás most",
 ["Restart_Later"] = "Újraindítás később",
+["Install_Official_Adrenaline"] = "A PSP és PS1 játékok engedélyezéséhez telepítsd a TheOfficialFloW által készített Adrenaline v7-et.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Az Adrenaline telepítése szükséges a játékhoz.",

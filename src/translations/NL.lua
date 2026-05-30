@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Spelletjes toevoegen",
 ["guide_1_content"] = "Speldirectory's: \nPlaats je games in 'ux0:/data/RetroFlow/ROMS/', of om je eigen bestandsdirectories te gebruiken, ga naar 'Scaninstellingen' en vervolgens 'Speldirectory's bewerken'. \n\nZodra je je games hebt toegevoegd, selecteer je 'Opnieuw scannen' om ze toe te voegen aan RetroFlow. \n\nBestandsnamen: \nHet is belangrijk dat je games een naam krijgen volgens de 'no-intro' bestandsnaamgevingsconventie, b.v. 'Sonic (USA)', anders worden afbeeldingen niet gedownload.",
 
-["guide_2_heading"] = "Adrenaline-spellen worden niet geladen?",
-["guide_2_content"] = "Als Adrenaline-spellen niet worden geladen en je hebt de RetroFlow Adrenaline Launcher geïnstalleerd, installeer dan AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nOf probeer Adrenaline Bubble Manager te installeren: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Waarom worden PSP- en PS1-games niet weergegeven?",
+["guide_2_content"] = "Installeer Adrenaline v7 van TheOfficialFloW om PSP- en PS1-games te activeren.",
 
 ["guide_3_heading"] = "Pas spelomslagen en achtergronden aan",
 ["guide_3_content"] = "Hoezen: \nAangepaste hoezen kunnen hier in de spelmappen worden opgeslagen: 'ux0:/data/RetroFlow/COVERS/'. \n\nAchtergronden: \nAangepaste game-achtergronden kunnen hier worden opgeslagen in de gamemappen: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nBestandsnamen:\nDe bestandsnaam moet overeenkomen met de app-ID of de app-naamafbeeldingen moeten de .png-indeling hebben.",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "We moeten je PS Vita opnieuw opstarten.",
 ["Restart_Now"] = "Nu opnieuw opstarten",
 ["Restart_Later"] = "Later opnieuw opstarten",
+["Install_Official_Adrenaline"] = "Installeer Adrenaline v7 van TheOfficialFloW om PSP- en PS1-games te activeren.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Je moet Adrenaline installeren om dit spel te spelen.",

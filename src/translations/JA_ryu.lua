@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "ゲームぬ追加方法",
 ["guide_1_content"] = "ゲームディレクトリ: \nゲーム「ux0:/data/RetroFlow/ROMS/」 んかい配置すが、\n独自ぬファイルディレクトリ使用すんがー、\n「スキャン設定」 んかい移動しから 「ゲームディレクトリぬ編集」 んかい移動さびーん。 \n\nゲームいりしーいねー、「再スキャン」選択し RetroFlow んかいいりしーいびーん。 \n\nファイル名: \n「no-intro」ファイル命名規則使用しゲームんかいなめーちきーるくとぅが重要やいびーん。 \n「Sonic (USA)」、そうでぃねーんばー、画像ーダウンロードさりやびらん。",
 
-["guide_2_heading"] = "Adrenalineぬゲームがロードされませんか？",
-["guide_2_content"] = "Adrenalineぬゲームぬロードさりらじ、RetroFlow Adrenaline Launcher \nがインストールさりとーるばーや、AdrBubbleBooterInstaller \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 インストールしくぃみそーれー。 \n\nあらんでぃ、Adrenaline Bubble Manager インストールしんーちくぃみそーれー: \nhttps://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "なぜ PSP と PS1 のゲームが表示されないのですか？",
+["guide_2_content"] = "PSP と PS1 ゲームを有効にするには、TheOfficialFloW の Adrenaline v7 をインストールしてください。",
 
 ["guide_3_heading"] = "ゲームぬカバーとぅ背景ぬカスタマイズ方法",
 ["guide_3_content"] = "カバー: \nカスタム カバーや次ぬゲーム フォルダんかい保存なやびーん: \n「ux0:/data/RetroFlow/COVERS/」。 \n\n背景: \nカスタム ゲームぬ背景ー、「ux0:/data/RetroFlow/BACKGROUNDS/」\nぬゲーム フォルダんかい保存なやびーん。 \n\nファイル名:\nファイル名ーアプリ ID あらんでぃアプリ名とぅ一致するいりゆーぬあいびーん。\n画像ー .png 形式やんいりゆーぬあいびーん。",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "PS Vitaを再起動する必要があります。",
 ["Restart_Now"] = "今ちゅら再起動",
 ["Restart_Later"] = "後ちゅら再起動",
+["Install_Official_Adrenaline"] = "PSP と PS1 ゲームを有効にするには、TheOfficialFloW の Adrenaline v7 をインストールしてください。",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Adrenalineぬ、インストールせんと、このゲームんかい遊ばりん。",

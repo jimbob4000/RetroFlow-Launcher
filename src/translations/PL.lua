@@ -224,8 +224,8 @@ return {
 ["guide_1_heading"] = "Dodawanie gier",
 ["guide_1_content"] = "Katalogi gier: \nUmieść swoje gry w 'ux0:/data/RetroFlow/ROMS/', a by użyć własnych katalogów przejdź do 'Ustawienia skanowania', a następnie 'Edytuj katalogi gier'. \n\nPo umieszczeniu gier w folderach wybierz 'Skanuj ponownie', aby dodać je do RetroFlow. \n\nNazwy plików: \nWażne jest, aby Twoje gry były nazwane przy użyciu konwencji nazewnictwa plików 'no-intro', np. 'Sonic (USA)', w przeciwnym razie okładki i tła nie zostaną pobrane.",
 
-["guide_2_heading"] = "Gry Adrenaline nie ładują się?",
-["guide_2_content"] = "Jeśli gry Adrenaline nie ładują się i masz zainstalowany RetroFlow Adrenaline Launcher, zainstaluj AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nMożesz również spróbować zainstalować Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "Dlaczego gry PSP i PS1 się nie wyświetlają?",
+["guide_2_content"] = "Zainstaluj Adrenaline v7 od TheOfficialFloW, aby włączyć gry PSP i PS1.",
 
 ["guide_3_heading"] = "Niestandardowe okładki i tła do gier",
 ["guide_3_content"] = "Okładki: \nNiestandardowe okładki można zapisywać w folderach odpowiadających danej platformie tutaj: 'ux0:/data/RetroFlow/COVERS/'. \n\nTła: \nNiestandardowe tła gier można zapisywać w folderach odpowiadających danej platformie tutaj: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNazwy plików:\nNazwa pliku musi być zgodna z ID aplikacji lub Jej Nazwą co do litery. Okładki i tła muszą być w formacie .png.",
@@ -300,6 +300,7 @@ return {
 ["ABB_Restart"] = "Musimy ponownie uruchomić system PS Vita.",
 ["Restart_Now"] = "Uruchom ponownie teraz",
 ["Restart_Later"] = "Uruchom ponownie później",
+["Install_Official_Adrenaline"] = "Zainstaluj Adrenaline v7 od TheOfficialFloW, aby włączyć gry PSP i PS1.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Musisz zainstalować Adrenaline, aby zagrać w tę grę.",

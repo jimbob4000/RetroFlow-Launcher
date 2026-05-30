@@ -222,8 +222,8 @@ return {
 ["guide_1_heading"] = "Como agregar juegos",
 ["guide_1_content"] = "Directorios de juegos: \nLos juegos están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/ROMS/', o para usar tus propios directorios de archivos, ve a 'Configuración de escaneo' y luego a 'Editar directorios de juegos'. \nUna vez que hayas agregado tus juegos, selecciona 'Escanear' para agregarlos a RetroFlow. \n\nNombres de archivos: \nEs importante que tus juegos tengan el mismo nombre que el de las recopilaciones 'no-intro'. Ejemplo: Sonic (USA); de lo contrario, las imágenes no se descargarán.",
 
-["guide_2_heading"] = "Los juegos de Adrenaline no inician",
-["guide_2_content"] = "Si los juegos de Adrenaline no se cargan y se ha instalado RetroFlow Adrenaline Launcher, instala AdrBubbleBooterInstaller: \nhttps://www.rinnegatamante.eu/vitadb/#/info/307 \n\nO instala Adrenaline Bubble Manager: https://github.com/ONElua/AdrenalineBubbleManager/releases/",
+["guide_2_heading"] = "¿Por qué no se muestran los juegos de PSP y PS1?",
+["guide_2_content"] = "Instala Adrenaline v7 de TheOfficialFloW para habilitar juegos de PSP y PS1.",
 
 ["guide_3_heading"] = "Personalizar portadas y fondos de juegos",
 ["guide_3_content"] = "Carátulas: \nLas carátulas personalizadas están separadas por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/COVERS/'. \n\nFondos: \nLos fondos personalizados de los juegos, están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNombre de las ROMs:\nEl nombre de las ROMs debe ser el mismo que el de su ID. Por ejemplo, el juego 'Retro City Rampage DX' tiene de ID 'PCSE00546' entonces su carátula debe de llevar ese mismo nombre; además las imágenes de las carátulas deben de estar en formato .png y de preferencia en modo de color indexado (para no sobrecargar la memoria RAM de la consola).",
@@ -298,6 +298,7 @@ return {
 ["ABB_Restart"] = "Reiniciar para aplicar cambios.",
 ["Restart_Now"] = "Reiniciar ahora",
 ["Restart_Later"] = "Reiniciar más tarde",
+["Install_Official_Adrenaline"] = "Instala Adrenaline v7 de TheOfficialFloW para habilitar juegos de PSP y PS1.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Necesitas instalar Adrenaline para jugar a este juego.",
