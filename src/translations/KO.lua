@@ -310,5 +310,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "이 게임을 하려면 DSVita를 설치해야 합니다.",
 ["Emulator_not_installed_EasyRPG"] = "이 게임을 하려면 EasyRPG를 설치해야 합니다.",
 ["Game_not_installed_rescan"] = "이 게임이 설치되지 않았습니다. 게임을 다시 스캔해 주세요.",
+["Insert_cartridge_try_again"] = "게임 카트리지를 삽입한 후 다시 시도하세요.",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Vita 카트리지 스캔:",
 
 }

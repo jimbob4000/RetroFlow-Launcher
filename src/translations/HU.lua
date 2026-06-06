@@ -310,5 +310,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "A DSVita telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_EasyRPG"] = "A EasyRPG telepítése szükséges a játékhoz.",
 ["Game_not_installed_rescan"] = "Ez a játék nincs telepítve, kérem, szkennelje újra a játékait.",
+["Insert_cartridge_try_again"] = "Kérjük, helyezd be a játékkazettát, majd próbáld újra.",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Vita kazetták keresése:",
 
 }

@@ -1244,6 +1244,16 @@ imgFavorite_large_on = Graphics.loadImage("app0:/DATA/fav-large-on.png")
 imgFavorite_large_off = Graphics.loadImage("app0:/DATA/fav-large-off.png")
 imgHidden_small_on = Graphics.loadImage("app0:/DATA/hidden-small-on.png")
 imgHidden_large_on = Graphics.loadImage("app0:/DATA/hidden-large-on.png")
+Graphics.setImageFilters(imgFavorite_small_on, FILTER_LINEAR, FILTER_LINEAR)
+Graphics.setImageFilters(imgFavorite_large_on, FILTER_LINEAR, FILTER_LINEAR)
+Graphics.setImageFilters(imgFavorite_large_off, FILTER_LINEAR, FILTER_LINEAR)
+Graphics.setImageFilters(imgHidden_small_on, FILTER_LINEAR, FILTER_LINEAR)
+Graphics.setImageFilters(imgHidden_large_on, FILTER_LINEAR, FILTER_LINEAR)
+
+cart_icon_off = Graphics.loadImage("app0:/DATA/icon-cart.png")
+cart_icon_on = Graphics.loadImage("app0:/DATA/icon-cart-inserted.png")
+Graphics.setImageFilters(cart_icon_off, FILTER_LINEAR, FILTER_LINEAR)
+Graphics.setImageFilters(cart_icon_on, FILTER_LINEAR, FILTER_LINEAR)
 
 file_browser_folder_open = Graphics.loadImage("app0:/DATA/file-browser-folder-open.png")
 file_browser_folder_closed = Graphics.loadImage("app0:/DATA/file-browser-folder-closed.png")
@@ -1292,9 +1302,9 @@ end
 
 -- Start of ROM Browser setup
 
-    local grey_dir = Color.new(200, 200, 200)
-    local white_opaque = Color.new(255, 255, 255, 100)
-    local transparent = Color.new(255, 255, 255, 0)
+    grey_dir = Color.new(200, 200, 200)
+    white_opaque = Color.new(255, 255, 255, 100)
+    transparent = Color.new(255, 255, 255, 0)
 
     local scripts = System.listDirectory("ux0:/")
 
@@ -1907,6 +1917,12 @@ local showMenu = 0
 local showCat = 1 -- Category: 0 = all, 1 = games, 2 = homebrews, 3 = psp, 4 = psx, 5 = N64, 6 = SNES, 7 = NES, 8 = GBA, 9 = GBC, 10 = GB, 11 = MD, 12 = SMS, 13 = GG, 14 = MAME, 15 = AMIGA, 16 = TG16, 17 = TG CD, 18 = PCE, 19 = PCE CD, 20 = NGPC, 21 = Favorites
 local showView = 0
 
+-- Cartridge runtime polling state
+local last_inserted_titleid = nil
+local cartridge_state_initialized = false
+local cartridge_poll_frame = 0
+local cartridge_games = {}
+
 local info = System.extractSfo("app0:/sce_sys/param.sfo")
 local app_version = info.version
 local app_title = info.short_title
@@ -1949,8 +1965,8 @@ local transparent = Color.new(255, 255, 255, 0)
 local timercolor = transparent
 local darkgrey = Color.new(61, 68, 80)
  
-local img_loader_green = Color.new(0, 255, 0)
-local img_loader_blackalpha = Color.new(0, 0, 0, 150)
+img_loader_green = Color.new(0, 255, 0)
+img_loader_blackalpha = Color.new(0, 0, 0, 150)
 
 local targetX = 0
 local xstart = 0
@@ -2021,6 +2037,7 @@ local setLanguage = 0
 
 local showHomebrews = 1 -- On
 local startupScan = 0 -- 0 Off, 1 On
+setScanCartridges = 0 -- 0 Off, 1 On
 local showRecentlyPlayed = 1 -- On
 local showAll = 1 -- On
 local Adrenaline_roms = 5 -- All partitions
@@ -2106,6 +2123,7 @@ function SaveSettings()
         "\nShow_System_Apps=" .. showSysApps .. " " .. 
         "\nExtract_PSP_backgrounds=" .. setPSPExtractBG .. " " .. 
         "\nShow_cores=" .. setShowCores .. " " .. 
+        "\nScan_cartridges" .. setScanCartridges .. " " .. 
         "\nStartup_Collection=" .. startCategory_collection -- MUST ALWAYS BE LAST -- the config is split into a table using number values which this setting does not have. Need to add proper ini file reading
 
         file_config:write(settings)
@@ -2173,6 +2191,7 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
     local getShowSysApps = settingValue[27]; if getShowSysApps ~= nil then showSysApps = getShowSysApps end
     local getPSPExtractBG = settingValue[28]; if getPSPExtractBG ~= nil then setPSPExtractBG = getPSPExtractBG end
     local getShowCores = settingValue[29]; if getShowCores ~= nil then setShowCores = getShowCores end
+    local getScanCartridges = settingValue[30]; if getScanCartridges ~= nil then setScanCartridges = getScanCartridges end
     -- settingValue[26] is startup collection 
 
     selectedwall = setBackground
@@ -2753,6 +2772,10 @@ local lang_default =
 ["Emulator_not_installed_DSVita"] = "You need to install DSVita to play this game.",
 ["Emulator_not_installed_EasyRPG"] = "You need to install EasyRPG to play this game.",
 ["Game_not_installed_rescan"] = "This game is not installed, please rescan your games.",
+["Insert_cartridge_try_again"] = "Please insert the game cartridge and try again.",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Scan Vita cartridges:",
 
 }
 
@@ -3343,6 +3366,8 @@ function FreeMemory()
     Graphics.freeImage(imgFavorite_large_off)
     Graphics.freeImage(imgHidden_large_on)
     Graphics.freeImage(imgHidden_small_on)
+    Graphics.freeImage(cart_icon_on)
+    Graphics.freeImage(cart_icon_off)
     
     -- Only free setting icons if they were loaded
     if setting_icons_loaded then
@@ -4031,6 +4056,9 @@ function check_app_installed(def_title, def_message)
     if System.doesDirExist("ux0:/app/" .. def_title) then -- Check ux0 instead
         -- Emulator installed
         launch_check_app_installed = true
+    elseif System.doesDirExist("gro0:/app/" .. def_title) then -- Check gro0 instead
+        -- Emulator installed
+        launch_check_app_installed = true
     elseif System.doesDirExist("vs0:/app/" .. def_title) then
         -- System app installed
         launch_check_app_installed = true
@@ -4334,14 +4362,23 @@ function launch_psmobile(def_titleid)
 end
 
 function launch_vita_title(def_titleid)
+
+    -- Cartidge games
+    local cartridge_flag = xCatLookup(showCat)[p].cartridge
+
     -- Launch preflight check
-    check_app_installed(def_titleid, lang_lines.Game_not_installed_rescan)
+    if cartridge_flag == true then
+        check_app_installed(def_titleid, lang_lines.Insert_cartridge_try_again)
+    else
+        check_app_installed(def_titleid, lang_lines.Game_not_installed_rescan)
+    end
 
     if launch_check_app_installed == true then
         prepare_for_launch()
         System.launchApp(def_titleid)
         System.exit()
     end
+    
 end
 
 function launch_vita_sysapp(def_titleid)
@@ -4972,11 +5009,16 @@ function import_recently_played()
                         -- Not file, is folder
                         if System.doesDirExist(v.game_path) then
                             if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
-                                table.insert(recently_played_table, v)
-                                --add blank icon to all
-                                v.icon = imgCoverTmp
-                                v.icon_path = v.icon_path
-                                v.apptitle = v.apptitle
+
+                                if setScanCartridges == 0 and v.cartridge == true then
+                                    -- ignore cartidges if scan cartridges is off
+                                else
+                                    table.insert(recently_played_table, v)
+                                    --add blank icon to all
+                                    v.icon = imgCoverTmp
+                                    v.icon_path = v.icon_path
+                                    v.apptitle = v.apptitle
+                                end             
                             end
                         end
                     end
@@ -6248,6 +6290,171 @@ function Full_Game_Scan()
             end
 
         end
+
+        function scan_Vita_Cartridges (def_table_name)
+            if next(QuickGameList.games_table) == nil then
+                else
+
+                -- SCAN FOR INSERTED GAME CARTRIDGE
+                    function get_inserted_cartridge_titleId()
+                        local app_dir = "gro0:/app"
+                        if not System.doesDirExist(app_dir) then
+                            return nil
+                        end
+
+                        local entries = System.listDirectory(app_dir)
+                        if not entries then
+                            return nil
+                        end
+
+                        for _, entry in pairs(entries) do
+                            if entry.directory and entry.name ~= "." and entry.name ~= ".." and string.len(entry.name) == 9 then
+                                local game_path = app_dir .. "/" .. entry.name
+                                if System.doesFileExist(game_path .. "/eboot.bin") and System.doesFileExist(game_path .. "/sce_sys/param.sfo") then
+                                    return entry.name
+                                end
+                            end
+                        end
+
+                        return nil
+                    end
+
+                    local detected_titleId = get_inserted_cartridge_titleId()
+
+                -- SCAN APP.DB FOR VITA GAMES
+                    db = Database.open("ur0:shell/db/app.db")
+
+                    local query_string = "SELECT titleId, title FROM tbl_appinfo_icon WHERE titleId LIKE 'PCS%' AND titleId NOT LIKE 'PCSI%'"
+                    local appdb_vita_results = Database.execQueryExtended(db, query_string)
+
+                    Database.close(db)
+
+                -- CREATE TABLE OF LIKELY CARTRIDGES
+
+                    -- Compare Vita Games to "ux0:/app" folders to see in installed.
+                    -- If missing, then likey to be a physical game cartridge
+                    
+                    local scanned_cartridge_games = {}
+
+                    local installed_lookup = {}
+
+                    for _, dir in pairs(QuickGameList.games_table) do
+                        installed_lookup[dir.name] = true
+                    end
+
+                    for i, file in pairs(appdb_vita_results) do
+
+                        if not installed_lookup[file.titleId] then
+                            
+                            -- Clean up the title
+                            app_title = file.title:gsub("\n"," "):gsub("™",""):gsub(" ®",""):gsub("®","")
+
+                            scanned_cartridge_games[file.titleId] = {
+                                title = app_title,
+                                titleid = file.titleId,
+                                name = file.titleId,
+                                cartridge = true,
+                                cartridge_inserted = false
+                            }
+
+                            if file.titleId == detected_titleId then
+                                scanned_cartridge_games[file.titleId].cartridge_inserted = true
+                            end
+                        end
+                    end
+
+                for i, file in pairs(scanned_cartridge_games) do
+
+                    local custom_path, custom_path_id, app_type = nil, nil, nil
+
+                    -- check if game is in the favorites list
+                    if System.doesFileExist(cur_dir .. "/favorites.dat") then
+                        if string.find(strFav, file.name,1,true) ~= nil then
+                            file.favourite = true
+                        else
+                            file.favourite = false
+                        end
+                    end
+
+                    file.game_path = ("gro0:/app/" .. file.name)
+
+                    file.directory = true
+                    file.filename = file.name
+                    file.name = file.name
+                    file.title = file.title
+                    file.name_online = file.name
+                    file.version = "UNK"
+                    file.name_title_search = file.name
+                    file.apptitle = file.title
+                    file.date_played = 0
+                    -- file.directory = true
+
+                    -- Check for renamed game names
+                    if renamed_games_table and #renamed_games_table > 0 then
+                        local key = find_game_table_pos_key(renamed_games_table, file.titleId)
+                        if key ~= nil then
+                          -- Yes - Find in files table
+                          app_title = renamed_games_table[key].title
+                          file.title = renamed_games_table[key].title
+                          file.apptitle = renamed_games_table[key].title
+                        else
+                          -- No
+                        end
+                    else
+                    end
+                    
+
+                    -- Robust filtering: skip adrenaline bubbles early
+                    table.insert(games_table, file)
+
+                    table.insert(folders_table, file)
+                    file.app_type=1
+
+                    -- Check for hidden game names
+                    file.hidden = check_for_hidden_tag_on_scan(file.titleId, file.app_type)
+
+                    file.cover_path_online = SystemsToScan[1].onlineCoverPathSystem
+                    file.cover_path_local = SystemsToScan[1].localCoverPath
+                    file.snap_path_online = SystemsToScan[1].onlineSnapPathSystem
+                    file.snap_path_local = SystemsToScan[1].localSnapPath
+
+                    if SystemsToScan[1].localCoverPath .. app_title .. ".png" and QuickDoesFileExist.covDir[SystemsToScan[1].localCoverPath .. app_title .. ".png"] then
+                        img_path = SystemsToScan[1].localCoverPath .. app_title .. ".png" --custom cover by app name
+                        file.cover = true
+                    elseif SystemsToScan[1].localCoverPath .. file.name .. ".png" and QuickDoesFileExist.covDir[SystemsToScan[1].localCoverPath .. file.name .. ".png"] then
+                        img_path = SystemsToScan[1].localCoverPath .. file.name .. ".png" --custom cover by app id
+                        file.cover = true
+                    else
+                        if System.doesFileExist("ur0:/appmeta/" .. file.name .. "/icon0.png") then
+                            img_path = "ur0:/appmeta/" .. file.name .. "/icon0.png"  --app icon
+                        else
+                            img_path = "app0:/DATA/missing_cover_psv.png" --blank grey
+                            file.cover = false
+                        end
+                    end
+                                
+
+                    table.insert(files_table, count_of_systems, file.app_type)  
+
+                    update_loading_screen_progress(loading_progress)
+                    
+                    --add blank icon to all
+                    file.icon = imgCoverTmp
+                    file.icon_path = img_path
+                    
+                    table.insert(files_table, count_of_systems, file.icon)
+                    table.insert(files_table, count_of_systems, file.apptitle)
+                end
+
+                -- Store cartridge game references for runtime polling
+                for titleid, game in pairs(scanned_cartridge_games) do
+                    cartridge_games[titleid] = game
+                end
+
+            end
+
+        end
+        
 
         function scan_PSP_iso_folder (def_adrenaline_rom_location)
 
@@ -8604,6 +8811,8 @@ function Full_Game_Scan()
 
             scan_Vita()
 
+            scan_Vita_Cartridges()
+
         -- Adrenaline
         
             if Adrenaline_roms == 1 then
@@ -8796,6 +9005,23 @@ function import_cached_DB_tables(def_user_db_file, def_table_name)
                 --     end
                 -- end
 
+                -- Don't import Vita cartridges if scan cartidges is off.
+                if setScanCartridges == 0 then
+                    if v.cartridge == true then
+                        goto continue
+                    end
+                end
+
+                -- Initialize cartridge insertion state on import
+                if v.cartridge == true then
+                    if v.titleid == last_inserted_titleid then
+                        v.cartridge_inserted = true
+                    else
+                        v.cartridge_inserted = false
+                    end
+                    cartridge_games[v.titleid] = v
+                end
+
                 -- For each game to be imported, cross reference against then hidden games list
                 for l, file in ipairs(hidden_games_table) do
 
@@ -8913,8 +9139,10 @@ function import_cached_DB_tables(def_user_db_file, def_table_name)
                     end
                 end
 
+                ::continue::
+
             end
-        
+
         end
 
     end
@@ -11848,23 +12076,33 @@ end
 
 function drawCategory_icons (def)
 
-    -- Show fav icon if game if a favourite
-    favourite_flag = (def)[p].favourite
-    if (def)[p].favourite == true then
-        Graphics.drawImage(685 - time24_offset + pstv_offset + wifi_offset, 36, imgFavorite_small_on)
-    else
+    local icon_x = 685 - time24_offset + pstv_offset + wifi_offset
+    local icon_y = 36
+    local icon_space = 37
+
+    local function draw_next_icon(icon)
+        Graphics.drawImage(icon_x, icon_y, icon)
+        icon_x = icon_x - icon_space
     end
 
-    -- Show hidden icon if game is hidden
+    favourite_flag = (def)[p].favourite
+    cartridge_flag = (def)[p].cartridge
     hide_game_flag = (def)[p].hidden
-    if (def)[p].hidden == true then
-        favourite_flag = (def)[p].favourite
-        if (def)[p].favourite == true then
-            Graphics.drawImage(685 - time24_offset + pstv_offset + wifi_offset - 42, 36, imgHidden_small_on)
+    
+    if cartridge_flag == true then
+        if (def)[p].cartridge_inserted == true then
+            draw_next_icon(cart_icon_on)
         else
-            Graphics.drawImage(685 - time24_offset + pstv_offset + wifi_offset, 36, imgHidden_small_on)
+            draw_next_icon(cart_icon_off)
         end
-    else
+    end
+
+    if favourite_flag == true then
+        draw_next_icon(imgFavorite_small_on)
+    end
+
+    if hide_game_flag == true then
+        draw_next_icon(imgHidden_small_on)
     end
 
 end
@@ -12077,16 +12315,12 @@ function drawCategory (def)
                                 if fv_cover_scale_px ~= nil then
                                     base_y = base_y + fv_cover_scale_px + fv_gutter
                                 end
-
-                                drawCategory_icons((def))
                             else
                                 get_cover_scale(file.icon)
                                 DrawCover_Flat(base_y,152,file.name,color, file.icon, l)
                                 if fv_cover_scale_px ~= nil then
                                     base_y = base_y + fv_cover_scale_px + fv_gutter
                                 end
-                                
-                                drawCategory_icons((def))
                             end
 
                         -- Draw one previous cover to left
@@ -12186,10 +12420,8 @@ function drawCategory (def)
                     if (l == p) then
                         if file.ricon ~= nil then
                             DrawCover_List(file.ricon)
-                            drawCategory_icons((def))
                         else
                             DrawCover_List(file.icon)
-                            drawCategory_icons((def))
                         end
                     end
 
@@ -12276,8 +12508,6 @@ function drawCategory (def)
                         l
                     )
 
-                    drawCategory_icons((def))
-
                 else
                     --draw visible covers only
                     DrawCover(
@@ -12290,8 +12520,6 @@ function drawCategory (def)
                         l
                     )         
 
-                    drawCategory_icons((def))
-            
                 end
             else
                 if FileLoad[file] == true then
@@ -12307,6 +12535,11 @@ function drawCategory (def)
 
     end
         
+    -- Draw status icons for the selected game once per frame
+    if #def > 0 and p > 0 and p <= #def then
+        drawCategory_icons(def)
+    end
+
     if showView ~= 2 then
         if showView >= 5 then
             -- Font.print(fnt20, fv_left_margin - fv_border, fv_cover_height + fv_cover_y + 60, p .. lang_lines.of .. #(def), white_opaque)
@@ -12331,12 +12564,194 @@ function drawCategory (def)
     end
 end
 
+-- Function to detect inserted Vita cartridge
+function get_inserted_cartridge_titleid()
+    local app_dir = "gro0:/app"
+    if not System.doesDirExist(app_dir) then
+        return nil
+    end
+
+    local entries = System.listDirectory(app_dir)
+    if not entries then
+        return nil
+    end
+
+    for _, entry in pairs(entries) do
+        if entry.directory and entry.name ~= "." and entry.name ~= ".." and string.len(entry.name) == 9 then
+            local game_path = app_dir .. "/" .. entry.name
+            if System.doesFileExist(game_path .. "/eboot.bin") and System.doesFileExist(game_path .. "/sce_sys/param.sfo") then
+                return entry.name
+            end
+        end
+    end
+
+    return nil
+end
+
+function find_cartridge_in_table(def_table, def_titleid)
+    if not def_table or not def_titleid then
+        return nil
+    end
+
+    for idx = 1, #def_table do
+        local game = def_table[idx]
+        if game and (game.titleid == def_titleid or game.name == def_titleid or game.filename == def_titleid) then
+            return idx
+        end
+    end
+
+    return nil
+end
+
+function sync_cartridge_state_in_table(def_table, def_titleid, def_inserted)
+    if not def_table or not def_titleid then
+        return
+    end
+
+    for idx = 1, #def_table do
+        local game = def_table[idx]
+        if game and (game.titleid == def_titleid or game.name == def_titleid or game.filename == def_titleid) then
+            game.cartridge_inserted = def_inserted
+        end
+    end
+end
+
+function sync_cartridge_state(def_titleid, def_inserted)
+    if not def_titleid then
+        return
+    end
+
+    if cartridge_games[def_titleid] then
+        cartridge_games[def_titleid].cartridge_inserted = def_inserted
+    end
+
+    sync_cartridge_state_in_table(games_table, def_titleid, def_inserted)
+    sync_cartridge_state_in_table(files_table, def_titleid, def_inserted)
+    sync_cartridge_state_in_table(files_table_no_sysapps, def_titleid, def_inserted)
+    sync_cartridge_state_in_table(recently_played_table, def_titleid, def_inserted)
+    sync_cartridge_state_in_table(fav_count, def_titleid, def_inserted)
+
+    if collection_files and collection_syscount then
+        for collection_showcat = 50, collection_syscount do
+            sync_cartridge_state_in_table(xCatLookup(collection_showcat), def_titleid, def_inserted)
+        end
+    end
+end
+
+function current_category_supports_cartridge_jump()
+    return showCat == 0 or showCat == 1 or showCat == 47 or showCat == 48 or (showCat >= 50 and showCat <= collection_syscount)
+end
+
+-- Poll cartridge insertion state and handle state changes
+function poll_cartridge_state()
+    cartridge_poll_frame = cartridge_poll_frame + 1
+    if cartridge_poll_frame < 120 then
+        return
+    end
+
+    cartridge_poll_frame = 0
+    local detected_titleid = get_inserted_cartridge_titleid()
+
+    -- Check if the insertion state has actually changed
+    -- Either a different cartridge is inserted, or the same cartridge was removed and re-inserted
+    local state_changed = false
+
+    if detected_titleid ~= last_inserted_titleid then
+        state_changed = true
+    elseif detected_titleid and cartridge_games[detected_titleid] and not cartridge_games[detected_titleid].cartridge_inserted then
+        -- Same cartridge but it was removed and is now re-inserted
+        state_changed = true
+    end
+
+    if state_changed then
+        -- Cartridge state has changed
+
+        -- Step 1: Clear previous inserted state if it exists
+        sync_cartridge_state(last_inserted_titleid, false)
+
+        -- Step 2: Set newly inserted cartridge state if detected
+        if detected_titleid and cartridge_games[detected_titleid] then
+
+            -- Known cartridge in live cache
+            sync_cartridge_state(detected_titleid, true)
+
+        elseif detected_titleid then
+            
+            -- Cartridge not in live cache, may not be installed in app.db (only installed when returning to livearea), cleaner to get user to rescan
+            -- Do nothing
+            goto continue
+        end
+
+        -- Step 3: Update tracker
+        last_inserted_titleid = detected_titleid
+
+        -- Step 4: Trigger UI update - stay in current relevant category when possible
+        if detected_titleid then
+            local target_table = nil
+            local target_idx = nil
+
+            if current_category_supports_cartridge_jump() then
+                if showCat == 47 then
+                    refresh_fav_count_table()
+                end
+
+                target_table = xCatLookup(showCat)
+                target_idx = find_cartridge_in_table(target_table, detected_titleid)
+            end
+
+            -- If the inserted game is not in the current relevant category, jump to Vita.
+            if not target_idx then
+                showCat = 1
+                target_table = xCatLookup(1)
+                target_idx = find_cartridge_in_table(target_table, detected_titleid)
+            end
+
+            if target_table and #target_table > 0 then
+                -- If not found by titleid, try to find by matching the newly inserted state
+                if not target_idx then
+                    for idx = 1, #target_table do
+                        if target_table[idx] and target_table[idx].cartridge == true and target_table[idx].cartridge_inserted == true then
+                            target_idx = idx
+                            break
+                        end
+                    end
+                end
+
+                -- Last resort: just jump to end of list
+                p = target_idx or #target_table
+                master_index = p
+
+                GetNameAndAppTypeSelected()
+            end
+        end
+
+        ::continue::
+
+    end
+end
+
 -- Capture function load time before main loop starts (major performance optimization)
 functionTime = Timer.getTime(oneLoopTimer)
 
 -- Main loop
 while true do
-    
+
+    -- Initialize cartridge insertion state on first frame only
+    if cartridge_state_initialized == false then
+        last_inserted_titleid = get_inserted_cartridge_titleid()
+
+        -- Sync cartridge_inserted state for all known cartridges
+        for titleid, game in pairs(cartridge_games) do
+            if titleid == last_inserted_titleid then
+                sync_cartridge_state(titleid, true)
+            else
+                sync_cartridge_state(titleid, false)
+            end
+        end
+        cartridge_state_initialized = true
+        -- Do NOT jump on startup - only jump when new cartridge is inserted via polling
+    end
+
     -- Threads update
     Threads.update()
     
@@ -12358,7 +12773,12 @@ while true do
     end
     
     mx, my = Controls.readLeftAnalog()
-    
+
+    -- Vita Cartridge Runtime Polling
+    if setScanCartridges == 1 then
+        poll_cartridge_state()
+    end
+
     -- Idle detection for background precomputation (only for flat view)
     if showView == 5 then
         -- Initialize idle tracking variables
@@ -13816,30 +14236,37 @@ while true do
     
         Font.print(fnt22, 50, 190, txtname, white)-- app name
 
+        -- Draw conditional icons
 
-        -- Show fav icon if game if a favourite
-        if favourite_flag == true then
+            local icon_x = 420
             if wide_getinfoscreen == true then
-                Graphics.drawImage(420+24, 50, imgFavorite_large_on)
-            else
-                Graphics.drawImage(420, 50, imgFavorite_large_on)
+                icon_x = icon_x + 24
             end
-        else
-            if wide_getinfoscreen == true then
-                Graphics.drawImage(420+24, 50, imgFavorite_large_off)
-            else
-                Graphics.drawImage(420, 50, imgFavorite_large_off)
-            end
-        end
+            local icon_y = 50
+            local icon_space = 37
 
-        if hide_game_flag == true then
-            if wide_getinfoscreen == true then
-                Graphics.drawImage(380+24, 50, imgHidden_large_on)
-            else
-                Graphics.drawImage(380, 50, imgHidden_large_on)
+            local function draw_next_icon(icon)
+                Graphics.drawImage(icon_x, icon_y, icon)
+                icon_x = icon_x - icon_space
             end
-        else
-        end
+
+            if cartridge_flag == true then
+                if xCatLookup(showCat)[p].cartridge_inserted == true then
+                    draw_next_icon(cart_icon_on)
+                else
+                    draw_next_icon(cart_icon_off)
+                end
+            end
+
+            if favourite_flag == true then
+                draw_next_icon(imgFavorite_large_on)
+            else
+                draw_next_icon(imgFavorite_large_off)
+            end
+
+            if hide_game_flag == true then
+                draw_next_icon(imgHidden_small_on)
+            end
 
 
         -- 0 Homebrew, 1 vita, 2 psp, 3 psx, 5+ Retro, 34 FBA, 35 Mame 2003+, 36 Mame 2000, 37 NeoGeo, 39 ps mobile
@@ -13849,6 +14276,11 @@ while true do
             if string.match (game_path, "pspemu") or string.match (game_path, "ux0:/app/") or string.match (game_path, "ux0:/psm/") then
                 Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid .. "\n" .. lang_lines.Version_colon .. app_version .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                               App ID:                                           Version:                                           Size:
+            -- Vita cartridge
+            elseif string.match (game_path, "gro0:/app/") then
+                Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.App_ID_colon .. app_titleid .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
+                --                                               App ID:                                           Size:
+
             else
                 Font.print(fnt22, 50, 240, tmpapptype .. "\n" .. lang_lines.Version_colon .. app_version .. "\n" .. lang_lines.Size_colon .. game_size, white)-- Draw info
                 --                                               Version:                                           Size:
@@ -13910,9 +14342,17 @@ while true do
 
         -- Vita and Homebrew
         -- if folder == true then -- start Disable category override for retro
-        if apptype == 0 or apptype == 1 or apptype == 2 or apptype == 3 
-        and string.match (game_path, "pspemu") 
-        or string.match (game_path, "ux0:/app/") then
+        local valid_type =
+            apptype == 0
+            or apptype == 1
+            or apptype == 2
+            or apptype == 3
+
+        local valid_path =
+            string.match(game_path, "pspemu")
+            or string.match(game_path, "ux0:/app/")
+
+        if valid_type and valid_path then
              -- start Disable category override for retro
             if menuY==1 then
                 if wide_getinfoscreen == true then
@@ -15120,7 +15560,7 @@ while true do
 
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
-        menuItems = 4
+        menuItems = 5
 
         -- MENU 6 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -15137,25 +15577,34 @@ while true do
             Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 6 / #3 Adrenaline_roms
-        Font.print(fnt22, setting_x, setting_y3, lang_lines.Adrenaline_roms, white)--Adrenaline_roms 
+        -- MENU 6 / #3 Scan cartridges
+        Font.print(fnt22, setting_x, setting_y3, lang_lines.Scan_Vita_cartridges_colon, white)--Scan cartridges
 
-        if Adrenaline_roms == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. "ux0"  .. ":/pspemu" .. "  >", white)
-        elseif Adrenaline_roms == 2 then
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. "ur0"  .. ":/pspemu" .. "  >", white)
-        elseif Adrenaline_roms == 3 then
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. "imc0" .. ":/pspemu" .. "  >", white)
-        elseif Adrenaline_roms == 4 then
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. "xmc0" .. ":/pspemu" .. "  >", white)
-        elseif Adrenaline_roms == 5 then
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. lang_lines.All .. "  >", white)   
+        if setScanCartridges == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.On, white)--ON
         else
-            Font.print(fnt22, setting_x_offset, setting_y3, "<  " .. "uma0" .. ":/pspemu" .. "  >", white)
+            Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.Off, white)--OFF
         end
 
-        -- MENU 6 / #4 Rescan
-        Font.print(fnt22, setting_x, setting_y4, lang_lines.Rescan, white)--Rescan
+        -- MENU 6 / #4 Adrenaline_roms
+        Font.print(fnt22, setting_x, setting_y4, lang_lines.Adrenaline_roms, white)--Adrenaline_roms 
+
+        if Adrenaline_roms == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. "ux0"  .. ":/pspemu" .. "  >", white)
+        elseif Adrenaline_roms == 2 then
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. "ur0"  .. ":/pspemu" .. "  >", white)
+        elseif Adrenaline_roms == 3 then
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. "imc0" .. ":/pspemu" .. "  >", white)
+        elseif Adrenaline_roms == 4 then
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. "xmc0" .. ":/pspemu" .. "  >", white)
+        elseif Adrenaline_roms == 5 then
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. lang_lines.All .. "  >", white)   
+        else
+            Font.print(fnt22, setting_x_offset, setting_y4, "<  " .. "uma0" .. ":/pspemu" .. "  >", white)
+        end
+
+        -- MENU 6 / #5 Rescan
+        Font.print(fnt22, setting_x, setting_y5, lang_lines.Rescan, white)--Rescan
 
         
 
@@ -15186,7 +15635,27 @@ while true do
                         FreeIcons()
                         count_cache_and_reload()
                     end
-                elseif menuY == 4 then -- #4 Rescan
+                elseif menuY == 3 then -- #3 Scan Cartridges 
+                    if setScanCartridges == 1 then -- 0 Off, 1 On
+                        setScanCartridges = 0
+                        SaveSettings()
+                        FreeIcons()
+
+                        -- Reimport cache, cartidges will be skipped
+                        count_cache_and_reload()
+                        check_for_out_of_bounds()
+                        GetNameAndAppTypeSelected()
+                    else
+                        setScanCartridges = 1
+                        SaveSettings()
+                        FreeIcons()
+
+                        -- Reimport cache, cartidges will be included
+                        count_cache_and_reload()
+                        check_for_out_of_bounds()
+                        GetNameAndAppTypeSelected()
+                    end
+                elseif menuY == 5 then -- #4 Rescan
                         delete_cache()
                         FreeIcons()
                         FreeMemory()
@@ -15206,7 +15675,7 @@ while true do
                     menuY=0
                 end
             elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
-                if menuY==3 then -- #3 Adrenaline_roms selection
+                if menuY==4 then -- #3 Adrenaline_roms selection
                     if Adrenaline_roms > 0 then
                         Adrenaline_roms = Adrenaline_roms - 1
                     else
@@ -15215,7 +15684,7 @@ while true do
                     SaveSettings()
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
-                if menuY==3 then -- #3 Adrenaline_roms selection
+                if menuY==4 then -- #3 Adrenaline_roms selection
                     if Adrenaline_roms < 5 then
                         Adrenaline_roms = Adrenaline_roms + 1
                     else

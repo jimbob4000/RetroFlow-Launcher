@@ -273,7 +273,7 @@ return {
 ["Unhide_game"] = "取消隱藏遊戲",
 ["Remove_from_recently_played"] = "最近播放的中移除",
 ["Retroarch_options"] = "RetroArch 選項",
-["Core_colon"] = "Core:",
+["Core_colon"] = "Core：",
 ["Configure_game_in_DSVita"] = "在 DSVita 中設定遊戲",
 
 -- Collections
@@ -310,5 +310,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "你需要安裝 DSVita 才能玩這個遊戲。",
 ["Emulator_not_installed_EasyRPG"] = "你需要安裝 EasyRPG 才能玩這個遊戲。",
 ["Game_not_installed_rescan"] = "遊戲未安裝，請重新掃描遊戲。",
+["Insert_cartridge_try_again"] = "請插入遊戲卡帶後再試一次。",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "掃描 PS Vita 卡帶：",
 
 }

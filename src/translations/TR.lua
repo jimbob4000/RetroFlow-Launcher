@@ -310,5 +310,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "Bu oyunu oynamak için DSVita'ı kurmanız gerekiyor.",
 ["Emulator_not_installed_EasyRPG"] = "Bu oyunu oynamak için EasyRPG'ı kurmanız gerekiyor.",
 ["Game_not_installed_rescan"] = "Bu oyun yüklü değil, lütfen oyunlarınızı tekrar tarayın.",
+["Insert_cartridge_try_again"] = "Lütfen oyun kartuşunu takın ve tekrar deneyin.",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Vita kartuşlarını tara:",
 
 }

@@ -312,5 +312,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "You need to install DSVita to play this game.",
 ["Emulator_not_installed_EasyRPG"] = "You need to install EasyRPG to play this game.",
 ["Game_not_installed_rescan"] = "This game is not installed, please rescan your games.",
+["Insert_cartridge_try_again"] = "Please insert the game cartridge and try again.",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Scan Vita cartridges:",
 
 }

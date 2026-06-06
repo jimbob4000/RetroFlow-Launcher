@@ -273,7 +273,7 @@ return {
 ["Unhide_game"] = "ゲームを表示する",
 ["Remove_from_recently_played"] = "最近プレイしたものから削除",
 ["Retroarch_options"] = "RetroArch オプション",
-["Core_colon"] = "Core:",
+["Core_colon"] = "Core：",
 ["Configure_game_in_DSVita"] = "DSVitaウチにげーむ設定する",
 
 -- Collections
@@ -310,5 +310,9 @@ return {
 ["Emulator_not_installed_DSVita"] = "DSVitaぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_EasyRPG"] = "EasyRPGぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Game_not_installed_rescan"] = "ゲームや、インストールさりぬくとぅ、ゲームや再スキャンしみそーり。",
+["Insert_cartridge_try_again"] = "ゲームカードを挿入して、もう一度お試しください。",
+
+-- Cartridges
+["Scan_Vita_cartridges_colon"] = "Vitaゲームカードをスキャン中：",
 
 }
