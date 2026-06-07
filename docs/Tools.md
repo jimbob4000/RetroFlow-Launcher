@@ -9,7 +9,7 @@
 * Supported systems: Playstation Vita
 * Format: VPK 
 * Requirements: RetroFlow must be installed and setup on your Vita.
-* Download link: [RetroFlow_Export_Game_List_v1.vpk](https://github.com/jimbob4000/RetroFlow-Launcher/raw/refs/heads/main/Tools/RetroFlow_Export_Game_List_v1.vpk)
+* Download link: [RetroFlow_Export_Game_List_v2.vpk](https://github.com/jimbob4000/RetroFlow-Launcher/raw/refs/heads/main/Tools/RetroFlow_Export_Game_List_v2.vpk)
 
 
 **What does it do?**
@@ -26,5 +26,17 @@
 * Duplicate PS1 games installed? <br>This tool will help you find where they are. PS1 which are generally stored in folders using the title ID only which can be make if harder to find otherwise.
 * Want to export your library? <br>This is a quick way to get a list of all the games you have in RetroFlow.
 
+
+**VPK Changelog:**
+
+Version 2
+
+* Updated for RetroFlow version 8.1.1 - New systems: Atari ST, EasyRPG, MS-DOS, NDS.
+* Added a couple of extra fields: 'Name' and 'App Type', these fields could assist with creating custom collections (either manually, or automatically with AI, or with a desktop app if one is made).
+
+Version 1
+
+* Initial release
+<br><br><br>
 
 [< Back to main page](https://github.com/jimbob4000/RetroFlow-Launcher)
