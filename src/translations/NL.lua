@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Bevestigen",
+["Cancel"] = "Annuleren",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Herstelhulpmiddelen",
+["Recovery_Tools_Info"] = "Gebruik deze hulpmiddelen als RetroFlow niet meer correct start.",
+["Exit"] = "Afsluiten",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Cache verwijderen",
+["Info_Delete_Cache"] = "Verwijdert gecachte titels, databases en gegenereerde cachebestanden. Deze worden automatisch opnieuw opgebouwd.",
+["Confirm_Delete_Cache"] = "Alle cachebestanden worden verwijderd.",
+["Success_Delete_Cache"] = "Cache succesvol verwijderd.",
+["Failed_Delete_Cache"] = "Kan cache niet verwijderen.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Configuratie resetten",
+["Info_Config"] = "Verwijdert RetroFlow-instellingen en herstelt de standaardinstellingen bij de volgende start.",
+["Confirm_Config"] = "RetroFlow-instellingen worden gereset.",
+["Success_Config"] = "Configuratie succesvol gereset.",
+["Failed_Config"] = "Kan configuratie niet resetten.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Volledige reset",
+["Info_Full_Reset"] = "Herstel RetroFlow naar de standaardstatus.",
+["Confirm_Full_Reset"] = "Er wordt een back-up gemaakt van uw huidige gegevens. Uw ROM's en afbeeldingen worden niet verwijderd.",
+["Success_Full_Reset"] = "Uw vorige RetroFlow-gegevens zijn hier opgeslagen:",
+["Failed_Full_Reset"] = "Kan geen back-upmap maken.",
+["No_Data_Folder"] = "De RetroFlow-gegevensmap is niet gevonden.",
+
 }

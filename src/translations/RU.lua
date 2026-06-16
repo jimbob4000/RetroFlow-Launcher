@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Подтвердить",
+["Cancel"] = "Отмена",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Инструменты восстановления",
+["Recovery_Tools_Info"] = "Используйте эти инструменты, если RetroFlow больше не запускается правильно.",
+["Exit"] = "Выход",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Удалить кэш",
+["Info_Delete_Cache"] = "Удаляет кэшированные названия, базы данных и созданные файлы кэша. Они будут автоматически пересозданы.",
+["Confirm_Delete_Cache"] = "Все файлы кэша будут удалены.",
+["Success_Delete_Cache"] = "Кэш успешно удалён.",
+["Failed_Delete_Cache"] = "Не удалось удалить кэш.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Сбросить настройки",
+["Info_Config"] = "Удаляет настройки RetroFlow и восстанавливает значения по умолчанию при следующем запуске.",
+["Confirm_Config"] = "Настройки RetroFlow будут сброшены.",
+["Success_Config"] = "Настройки успешно сброшены.",
+["Failed_Config"] = "Не удалось сбросить настройки.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Полный сброс",
+["Info_Full_Reset"] = "Сбросить RetroFlow к состоянию по умолчанию.",
+["Confirm_Full_Reset"] = "Ваши текущие данные будут сохранены в резервной копии. Ваши ROM-файлы и изображения не будут удалены.",
+["Success_Full_Reset"] = "Ваши предыдущие данные RetroFlow сохранены здесь:",
+["Failed_Full_Reset"] = "Не удалось создать папку резервной копии.",
+["No_Data_Folder"] = "Папка данных RetroFlow не найдена.",
+
 }

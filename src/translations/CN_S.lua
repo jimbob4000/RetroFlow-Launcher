@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "确认",
+["Cancel"] = "取消",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "恢复工具",
+["Recovery_Tools_Info"] = "如果 RetroFlow 无法正常启动，请使用这些工具。",
+["Exit"] = "退出",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "删除缓存",
+["Info_Delete_Cache"] = "删除缓存的标题、数据库和生成的缓存文件。它们将自动重新生成。",
+["Confirm_Delete_Cache"] = "所有缓存文件将被删除。",
+["Success_Delete_Cache"] = "缓存已成功删除。",
+["Failed_Delete_Cache"] = "无法删除缓存。",
+
+-- Recovery Reset Config
+["Reset_Config"] = "重置配置",
+["Info_Config"] = "删除 RetroFlow 设置，并在下次启动时恢复默认设置。",
+["Confirm_Config"] = "RetroFlow 设置将被重置。",
+["Success_Config"] = "配置已成功重置。",
+["Failed_Config"] = "无法重置配置。",
+
+-- Recovery Full Reset
+["Full_Reset"] = "完全重置",
+["Info_Full_Reset"] = "将 RetroFlow 恢复为默认状态。",
+["Confirm_Full_Reset"] = "您当前的数据将被备份。您的 ROM 和图片不会被删除。",
+["Success_Full_Reset"] = "您之前的 RetroFlow 数据已保存至：",
+["Failed_Full_Reset"] = "无法创建备份文件夹。",
+["No_Data_Folder"] = "未找到 RetroFlow 数据文件夹。",
+
 }

@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Vahvista",
+["Cancel"] = "Peruuta",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Palautustyökalut",
+["Recovery_Tools_Info"] = "Käytä näitä työkaluja, jos RetroFlow ei enää käynnisty oikein.",
+["Exit"] = "Poistu",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Poista välimuisti",
+["Info_Delete_Cache"] = "Poistaa välimuistiin tallennetut nimet, tietokannat ja luodut välimuistitiedostot. Ne rakennetaan automaattisesti uudelleen.",
+["Confirm_Delete_Cache"] = "Kaikki välimuistitiedostot poistetaan.",
+["Success_Delete_Cache"] = "Välimuisti poistettu onnistuneesti.",
+["Failed_Delete_Cache"] = "Välimuistin poistaminen epäonnistui.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Palauta asetukset",
+["Info_Config"] = "Poistaa RetroFlow-asetukset ja palauttaa oletusasetukset seuraavalla käynnistyksellä.",
+["Confirm_Config"] = "RetroFlow-asetukset palautetaan.",
+["Success_Config"] = "Asetukset palautettu onnistuneesti.",
+["Failed_Config"] = "Asetusten palauttaminen epäonnistui.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Täysi palautus",
+["Info_Full_Reset"] = "Palauta RetroFlow oletustilaan.",
+["Confirm_Full_Reset"] = "Nykyisistä tiedoistasi luodaan varmuuskopio. ROM-tiedostoja ja kuvia ei poisteta.",
+["Success_Full_Reset"] = "Aiemmat RetroFlow-tietosi on tallennettu tähän:",
+["Failed_Full_Reset"] = "Varmuuskopiokansion luominen epäonnistui.",
+["No_Data_Folder"] = "RetroFlow-datakansiota ei löytynyt.",
+
 }

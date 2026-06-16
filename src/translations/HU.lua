@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Megerősítés",
+["Cancel"] = "Mégse",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Helyreállítási eszközök",
+["Recovery_Tools_Info"] = "Használja ezeket az eszközöket, ha a RetroFlow már nem indul el megfelelően.",
+["Exit"] = "Kilépés",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Gyorsítótár törlése",
+["Info_Delete_Cache"] = "Törli a gyorsítótárazott címeket, adatbázisokat és létrehozott gyorsítótár-fájlokat. Ezek automatikusan újraépülnek.",
+["Confirm_Delete_Cache"] = "Minden gyorsítótár-fájl törlésre kerül.",
+["Success_Delete_Cache"] = "A gyorsítótár sikeresen törölve.",
+["Failed_Delete_Cache"] = "Nem sikerült törölni a gyorsítótárat.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Beállítások visszaállítása",
+["Info_Config"] = "Törli a RetroFlow beállításait, és a következő indításkor visszaállítja az alapértelmezett beállításokat.",
+["Confirm_Config"] = "A RetroFlow beállításai visszaállításra kerülnek.",
+["Success_Config"] = "A beállítások sikeresen visszaállítva.",
+["Failed_Config"] = "Nem sikerült visszaállítani a beállításokat.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Teljes visszaállítás",
+["Info_Full_Reset"] = "A RetroFlow visszaállítása alapértelmezett állapotba.",
+["Confirm_Full_Reset"] = "A jelenlegi adatai biztonsági mentésre kerülnek. A ROM-ok és képek nem lesznek törölve.",
+["Success_Full_Reset"] = "A korábbi RetroFlow adatai itt lettek mentve:",
+["Failed_Full_Reset"] = "Nem sikerült létrehozni a biztonsági mentés mappáját.",
+["No_Data_Folder"] = "A RetroFlow adatmappája nem található.",
+
 }

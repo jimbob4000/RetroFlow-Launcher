@@ -330,4 +330,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Bestätigen",
+["Cancel"] = "Abbrechen",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Wiederherstellungstools",
+["Recovery_Tools_Info"] = "Verwenden Sie diese Werkzeuge, wenn RetroFlow nicht mehr korrekt startet.",
+["Exit"] = "Beenden",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Cache löschen",
+["Info_Delete_Cache"] = "Löscht zwischengespeicherte Titel, Datenbanken und erzeugte Cache-Dateien. Sie werden automatisch neu erstellt.",
+["Confirm_Delete_Cache"] = "Alle Cache-Dateien werden gelöscht.",
+["Success_Delete_Cache"] = "Cache erfolgreich gelöscht.",
+["Failed_Delete_Cache"] = "Cache konnte nicht gelöscht werden.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Konfiguration zurücksetzen",
+["Info_Config"] = "Löscht die RetroFlow-Einstellungen und stellt beim nächsten Start die Standardeinstellungen wieder her.",
+["Confirm_Config"] = "Die RetroFlow-Einstellungen werden zurückgesetzt.",
+["Success_Config"] = "Konfiguration erfolgreich zurückgesetzt.",
+["Failed_Config"] = "Konfiguration konnte nicht zurückgesetzt werden.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Vollständiges Zurücksetzen",
+["Info_Full_Reset"] = "Setzt RetroFlow auf den Standardzustand zurück.",
+["Confirm_Full_Reset"] = "Ihre aktuellen Daten werden gesichert. Ihre ROMs und Bilder werden nicht gelöscht.",
+["Success_Full_Reset"] = "Ihre vorherigen RetroFlow-Daten wurden hier gespeichert:",
+["Failed_Full_Reset"] = "Sicherungsordner konnte nicht erstellt werden.",
+["No_Data_Folder"] = "Der RetroFlow-Datenordner wurde nicht gefunden.",
+
 }

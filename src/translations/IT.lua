@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Conferma",
+["Cancel"] = "Annulla",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Strumenti di ripristino",
+["Recovery_Tools_Info"] = "Utilizza questi strumenti se RetroFlow non si avvia più correttamente.",
+["Exit"] = "Esci",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Elimina cache",
+["Info_Delete_Cache"] = "Elimina titoli memorizzati nella cache, database e file cache generati. Verranno ricreati automaticamente.",
+["Confirm_Delete_Cache"] = "Tutti i file della cache verranno eliminati.",
+["Success_Delete_Cache"] = "Cache eliminata con successo.",
+["Failed_Delete_Cache"] = "Impossibile eliminare la cache.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Reimposta configurazione",
+["Info_Config"] = "Elimina le impostazioni di RetroFlow e ripristina le impostazioni predefinite al prossimo avvio.",
+["Confirm_Config"] = "Le impostazioni di RetroFlow verranno reimpostate.",
+["Success_Config"] = "Configurazione reimpostata con successo.",
+["Failed_Config"] = "Impossibile reimpostare la configurazione.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Ripristino completo",
+["Info_Full_Reset"] = "Ripristina RetroFlow allo stato predefinito.",
+["Confirm_Full_Reset"] = "I dati attuali verranno salvati come backup. Le ROM e le immagini non verranno eliminate.",
+["Success_Full_Reset"] = "I dati precedenti di RetroFlow sono stati salvati qui:",
+["Failed_Full_Reset"] = "Impossibile creare la cartella di backup.",
+["No_Data_Folder"] = "La cartella dati di RetroFlow non è stata trovata.",
+
 }

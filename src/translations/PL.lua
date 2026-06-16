@@ -331,4 +331,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Potwierdź",
+["Cancel"] = "Anuluj",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Narzędzia odzyskiwania",
+["Recovery_Tools_Info"] = "Użyj tych narzędzi, jeśli RetroFlow nie uruchamia się poprawnie.",
+["Exit"] = "Wyjdź",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Usuń pamięć podręczną",
+["Info_Delete_Cache"] = "Usuwa zapisane w pamięci podręcznej tytuły, bazy danych i wygenerowane pliki pamięci podręcznej. Zostaną one automatycznie odbudowane.",
+["Confirm_Delete_Cache"] = "Wszystkie pliki pamięci podręcznej zostaną usunięte.",
+["Success_Delete_Cache"] = "Pamięć podręczna została usunięta.",
+["Failed_Delete_Cache"] = "Nie można usunąć pamięci podręcznej.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Resetuj konfigurację",
+["Info_Config"] = "Usuwa ustawienia RetroFlow i przywraca ustawienia domyślne przy następnym uruchomieniu.",
+["Confirm_Config"] = "Ustawienia RetroFlow zostaną zresetowane.",
+["Success_Config"] = "Konfiguracja została zresetowana.",
+["Failed_Config"] = "Nie można zresetować konfiguracji.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Pełny reset",
+["Info_Full_Reset"] = "Przywróć RetroFlow do stanu domyślnego.",
+["Confirm_Full_Reset"] = "Twoje obecne dane zostaną zapisane w kopii zapasowej. Twoje ROM-y i obrazy nie zostaną usunięte.",
+["Success_Full_Reset"] = "Poprzednie dane RetroFlow zostały zapisane tutaj:",
+["Failed_Full_Reset"] = "Nie można utworzyć folderu kopii zapasowej.",
+["No_Data_Folder"] = "Nie znaleziono folderu danych RetroFlow.",
+
 }

@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Bekreft",
+["Cancel"] = "Avbryt",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Gjenopprettingsverktøy",
+["Recovery_Tools_Info"] = "Bruk disse verktøyene hvis RetroFlow ikke lenger starter riktig.",
+["Exit"] = "Avslutt",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Slett hurtigbuffer",
+["Info_Delete_Cache"] = "Sletter hurtigbufrede titler, databaser og genererte hurtigbufferfiler. De bygges automatisk opp igjen.",
+["Confirm_Delete_Cache"] = "Alle hurtigbufferfiler vil bli slettet.",
+["Success_Delete_Cache"] = "Hurtigbuffer slettet.",
+["Failed_Delete_Cache"] = "Kunne ikke slette hurtigbuffer.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Tilbakestill konfigurasjon",
+["Info_Config"] = "Sletter RetroFlow-innstillinger og gjenoppretter standardinnstillingene ved neste oppstart.",
+["Confirm_Config"] = "RetroFlow-innstillingene vil bli tilbakestilt.",
+["Success_Config"] = "Konfigurasjonen ble tilbakestilt.",
+["Failed_Config"] = "Kunne ikke tilbakestille konfigurasjonen.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Full tilbakestilling",
+["Info_Full_Reset"] = "Tilbakestill RetroFlow til standardtilstanden.",
+["Confirm_Full_Reset"] = "Dine nåværende data vil bli sikkerhetskopiert. ROM-er og bilder vil ikke bli slettet.",
+["Success_Full_Reset"] = "Dine tidligere RetroFlow-data er lagret her:",
+["Failed_Full_Reset"] = "Kunne ikke opprette sikkerhetskopimappen.",
+["No_Data_Folder"] = "RetroFlow-datamappen ble ikke funnet.",
+
 }

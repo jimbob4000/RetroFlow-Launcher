@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Bekræft",
+["Cancel"] = "Annuller",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Gendannelsesværktøjer",
+["Recovery_Tools_Info"] = "Brug disse værktøjer, hvis RetroFlow ikke længere starter korrekt.",
+["Exit"] = "Afslut",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Slet cache",
+["Info_Delete_Cache"] = "Sletter cachelagrede titler, databaser og genererede cachefiler. De genopbygges automatisk.",
+["Confirm_Delete_Cache"] = "Alle cachefiler vil blive slettet.",
+["Success_Delete_Cache"] = "Cache slettet.",
+["Failed_Delete_Cache"] = "Kunne ikke slette cache.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Nulstil konfiguration",
+["Info_Config"] = "Sletter RetroFlow-indstillinger og gendanner standardindstillinger ved næste opstart.",
+["Confirm_Config"] = "RetroFlow-indstillinger vil blive nulstillet.",
+["Success_Config"] = "Konfiguration nulstillet.",
+["Failed_Config"] = "Kunne ikke nulstille konfiguration.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Fuld nulstilling",
+["Info_Full_Reset"] = "Nulstil RetroFlow til standardtilstanden.",
+["Confirm_Full_Reset"] = "Dine nuværende data vil blive sikkerhedskopieret. Dine ROM'er og billeder vil ikke blive slettet.",
+["Success_Full_Reset"] = "Dine tidligere RetroFlow-data er gemt her:",
+["Failed_Full_Reset"] = "Kunne ikke oprette sikkerhedskopimappe.",
+["No_Data_Folder"] = "RetroFlow-datamappen blev ikke fundet.",
+
 }

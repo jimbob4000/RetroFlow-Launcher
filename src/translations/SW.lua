@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Bekräfta",
+["Cancel"] = "Avbryt",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Återställningsverktyg",
+["Recovery_Tools_Info"] = "Använd dessa verktyg om RetroFlow inte längre startar korrekt.",
+["Exit"] = "Avsluta",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Rensa cache",
+["Info_Delete_Cache"] = "Tar bort cachade titlar, databaser och genererade cachefiler. De byggs upp automatiskt igen.",
+["Confirm_Delete_Cache"] = "Alla cachefiler kommer att raderas.",
+["Success_Delete_Cache"] = "Cachen har raderats.",
+["Failed_Delete_Cache"] = "Det gick inte att radera cachen.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Återställ konfiguration",
+["Info_Config"] = "Tar bort RetroFlow-inställningar och återställer standardinställningarna vid nästa start.",
+["Confirm_Config"] = "RetroFlow-inställningarna kommer att återställas.",
+["Success_Config"] = "Konfigurationen har återställts.",
+["Failed_Config"] = "Det gick inte att återställa konfigurationen.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Full återställning",
+["Info_Full_Reset"] = "Återställ RetroFlow till standardläget.",
+["Confirm_Full_Reset"] = "Dina nuvarande data kommer att säkerhetskopieras. Dina ROM-filer och bilder kommer inte att raderas.",
+["Success_Full_Reset"] = "Dina tidigare RetroFlow-data har sparats här:",
+["Failed_Full_Reset"] = "Det gick inte att skapa säkerhetskopieringsmappen.",
+["No_Data_Folder"] = "RetroFlows datamapp hittades inte.",
+
 }

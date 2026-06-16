@@ -2,6 +2,13 @@
 -- Based on HexFlow Launcher  version 0.5 by VitaHEX
 -- https://www.patreon.com/vitahex
 
+local bootparam = System.getBootParams() or ""
+
+if string.match(bootparam, "recovery") then
+    dofile("app0:/recovery.lua")
+    System.exit()
+end
+
 local oneLoopTimer = Timer.new()
 
 dofile("app0:addons/threads.lua")
@@ -2003,6 +2010,14 @@ if not System.doesFileExist(background_dir .. "Grey.png") then System.copyFile("
 
     }
 
+    if enableEmu4Vita ~= true then
+        for core_id, core_info in pairs(CoreDefinitions) do
+            if core_info.emulator == "emu4vita" then
+                CoreDefinitions[core_id] = nil
+            end
+        end
+    end
+
     CoreGroups = {}
 
     for core_id, core_info in pairs(CoreDefinitions) do
@@ -2883,7 +2898,7 @@ local darkpurple = Color.new(77, 4, 160)
 local orange = Color.new(220, 120, 0)
 local bg = Color.new(153, 217, 234)
 local themeCol = Color.new(2, 72, 158)
-local loading_bar_bg = Color.new(255,255,255,50)
+loading_bar_bg = Color.new(255,255,255,50)
 transparent = Color.new(255, 255, 255, 0)
 timercolor = transparent
 darkgrey = Color.new(61, 68, 80)

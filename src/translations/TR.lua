@@ -329,4 +329,35 @@ return {
 ["Core_source_retroarch"] = " (RetroArch)",
 ["Core_source_emu4vita"] = " (Emu4Vita++)",
 
+-- Recovery Footer
+["Confirm"] = "Onayla",
+["Cancel"] = "İptal",
+
+-- Recovery Main screen
+["Recovery_Tools"] = "Kurtarma araçları",
+["Recovery_Tools_Info"] = "RetroFlow artık düzgün başlamıyorsa bu araçları kullanın.",
+["Exit"] = "Çıkış",
+
+-- Recovery Delete Cache
+["Delete_Cache"] = "Önbelleği sil",
+["Info_Delete_Cache"] = "Önbelleğe alınmış başlıkları, veritabanlarını ve oluşturulan önbellek dosyalarını siler. Bunlar otomatik olarak yeniden oluşturulacaktır.",
+["Confirm_Delete_Cache"] = "Tüm önbellek dosyaları silinecek.",
+["Success_Delete_Cache"] = "Önbellek başarıyla silindi.",
+["Failed_Delete_Cache"] = "Önbellek silinemedi.",
+
+-- Recovery Reset Config
+["Reset_Config"] = "Yapılandırmayı sıfırla",
+["Info_Config"] = "RetroFlow ayarlarını siler ve bir sonraki başlatmada varsayılan ayarları geri yükler.",
+["Confirm_Config"] = "RetroFlow ayarları sıfırlanacak.",
+["Success_Config"] = "Yapılandırma başarıyla sıfırlandı.",
+["Failed_Config"] = "Yapılandırma sıfırlanamadı.",
+
+-- Recovery Full Reset
+["Full_Reset"] = "Tam sıfırlama",
+["Info_Full_Reset"] = "RetroFlow'u varsayılan durumuna geri yükle.",
+["Confirm_Full_Reset"] = "Mevcut verileriniz yedeklenecek. ROM'larınız ve resimleriniz silinmeyecek.",
+["Success_Full_Reset"] = "Önceki RetroFlow verileriniz buraya kaydedildi:",
+["Failed_Full_Reset"] = "Yedekleme klasörü oluşturulamadı.",
+["No_Data_Folder"] = "RetroFlow veri klasörü bulunamadı.",
+
 }
