@@ -6,49 +6,73 @@
 <!--- **Project archived:** RetroFlow is no longer in active development. --->
 
 ## About
-This is a modded version of [HexFlow Launcher](https://github.com/VitaHEX-Games/HexFlow-Launcher); a 3d coverflow like launcher for PS Vita. 
+RetroFlow Launcher is an expanded version of [HexFlow Launcher](https://github.com/VitaHEX-Games/HexFlow-Launcher); a 3D coverflow-style launcher for PS Vita. 
 
-With RetroFlow you can also integrate retro games without the need to create bubbles for Adrenaline, RetroArch, DaedalusX64 and Flycast.
+RetroFlow lets you integrate retro games into a single launcher without the need to create bubbles for each game.
 
 **Supported systems:**
-PS Vita, PSP, Playstation, Playstation Mobile, N64, SNES, NES, NDS, Game Boy Advance, Game Boy Color, Game Boy, Sega Dreamcast, Sega CD, Sega 32X, Sega Mega Drive / Genesis, Sega Master System, Sega Game Gear, PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD, Commodore Amiga, Commodore 64, WonderSwan, WonderSwan Color, MSX, MSX2, ZX Spectrum, Atari Lynx, Atari 600, Atari 5200, Atari 7800, ColecoVision, Vectrex, FBA 2012, MAME 2003 Plus, MAME 2000, Neo Geo (FBA 2012), Neo Geo Pocket Color, ScummVM and PICO-8.
 
-**Main features added since forking from HexFlow:**
+* **Sony**: PS Vita, PSP, PlayStation, PlayStation Mobile.
+* **Nintendo**: Nintendo 64, Nintendo DS, Super Nintendo (SNES), Nintendo Entertainment System (NES), Game Boy, Game Boy Color, Game Boy Advance.
+* **Sega**: Sega Dreamcast, Sega Mega Drive / Genesis, Sega CD, Sega 32X, Sega Master System, Sega Game Gear.
+* **NEC**: PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD.
+* **SNK**: Neo Geo (FBA 2012), Neo Geo Pocket Color.
+* **Atari**: Atari Lynx, Atari 2600, Atari 5200, Atari 7800, Atari ST.
+* **Commodore**: Commodore Amiga, Commodore 64.
+* **Bandai**: WonderSwan, WonderSwan Color.
+* **Microsoft**: MS-DOS.
+* **Arcade**: FBA 2012, MAME 2003 Plus, MAME 2000.
+* **Other systems**: MSX, MSX2, ZX Spectrum, ColecoVision, Vectrex, ScummVM, EasyRPG, PICO-8.
+
+
+**Main features added since forking HexFlow:**
 
 * No need to create bubbles for games
 * Retro game categories added
 * Create your own categories (Collections)
-* Favourite games category 
-* Recently played category
+* Favourite and Recently played categories
 * Ability to search for games
 * Ability to rename games
-* Support for game backgrounds images
+* Support for game background images
 * Support for multiple music tracks
 * Support for multiple wallpapers
 * Load from cache for faster startup
 * File browser added for setting up game directories
 * Smooth scrolling of game covers
 * Fully translated
-* Two more views added, a 2D list view and also a 2D side scrolling view
+* Additional 2D list and side-scrolling views
+* Physical Vita game cartridge support
 
+ 
 **Note:**
-RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called AutoBoot to open RetroFlow when the Vita boots up, but you will need to relaunch RetroFlow once you exit a game. See the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md#can-i-set-retroflow-to-launch-when-the-vita-boots-up) for more information on AutoBoot.
+RetroFlow is launched as a homebrew application and does not permanently replace the Vita LiveArea. To automatically open RetroFlow on boot, see the AutoBoot section in the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md#can-i-set-retroflow-to-launch-when-the-vita-boots-up).
 
 
-# Installation & setup
+# Quick Start
+
+1. Install RetroFlow.
+2. Install RetroArch and/or Adrenaline if required.
+3. Copy your games into the RetroFlow ROM folders or configure your own directories.
+4. Open RetroFlow and select Rescan.
+5. Download covers and enjoy your library.
+
+For full setup instructions, see the Installation & Setup section below.
+
+# Installation & Setup
 
 **Note:** Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline or a fork of Adrenaline, please install the one in the link above. 
 <br>Unofficial forks of Adrenaline are not supported.
 
-## 1. Install the RetroFlow VPK's.
+## 1. Install the RetroFlow VPK
 
 * Install the [latest version of RetroFlow](https://github.com/jimbob4000/RetroFlow-Launcher/releases) 
 * On the first run it will install some required files for Adrenaline if necessary.
-* Adrenaline Bubble Booter will be installed automatically if you haven't got it already, you will be prompted to restart the vita if this is installed. 
+* Adrenaline Bubble Booter will be installed automatically if you haven't got it already, you will be prompted to restart the Vita if this is installed. 
 * RetroFlow Adrenaline Launcher vpk will also be installed which is used for launching games with Adrenaline. You don't need to open this bubble, but keep it as RetroFlow uses it when launching games with Adrenaline.
 
 
 ## 2. Install any other necessary apps
+* [Adrenaline v7](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW for PSP and PS1 games. (Other versions unsupported).
 * [DaedalusX64](https://github.com/Rinnegatamante/DaedalusX64-vitaGL/releases) is required for N64 games. 
 * [RetroArch](https://www.retroarch.com/index.php?page=platforms) is required for other retro systems. Recommended version: [1.9.4](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
 * [Flycast](https://www.psx-place.com/threads/release-flycast-vita-v-1-0-3-sega-dreamcast-emulator-for-psvita-pstv.38180/) is required to play Dreamcast games. Also see the [compatibility list](https://newflycast.rinnegatamante.it/)  as not all games are playable yet.
@@ -56,8 +80,6 @@ RetroFlow does not replace the Vita's LiveArea UI. You can use a plugin called A
 * [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.  Recommended version: [2.6.1](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
 * [DSVita](https://github.com/Grarak/DSVita) is required for NDS games.
 
-
-**Important:** If Adrenaline games aren't launching after you have finished the setup, please install [Adrenaline Bubble Manager](https://github.com/ONElua/AdrenalineBubbleManager/releases). Or try installing [AdrBubbleBooterInstaller](https://www.rinnegatamante.eu/vitadb/#/info/307).
 
 
 ## 3. Check your PS1 and PSP are in the right Adrenaline folders
@@ -78,7 +100,7 @@ For best results it's recommended that your games are named using the **no-intro
 * Launch RetroFlow for the first time, RetroFlow will create the folders where you can save your games.
 * Once it's finished loading; close RetroFlow and copy or move your favourite retro games into the relevant game subfolders here: `ux0:/data/RetroFlow/ROMS/`
 
-#### Option 2 - Use your own  game folders
+#### Option 2 - Use your own game folders
 
 * If you don't want to save your games in the RetroFlow data folder, you can use your own directories.
 * Go to 'Scan settings' and then 'Edit game directories' to change the path to game folders.
@@ -86,7 +108,7 @@ For best results it's recommended that your games are named using the **no-intro
 
 #### Disc based games
 
- * PC Engine CD and TurboGrafx-CD: RetroFlow will look for '.cue' files for these CD systems. Please make sure all the games are loose with the system's rom folder with .cue files.
+ * PC Engine CD and TurboGrafx-CD: RetroFlow will look for '.cue' files for these CD systems. Please make sure all the games are loose with the system's ROM folder with .cue files.
  * Dreamcast:  '.gdi' and '.cdi' games are supported.
  * PS1 using RetroArch - They will use the 'PCSX ReARMed' core, more information on supported extensions here: [https://docs.libretro.com/library/pcsx_rearmed/](https://docs.libretro.com/library/pcsx_rearmed/)
 
@@ -98,7 +120,7 @@ For best results it's recommended that your games are named using the **no-intro
 
 * Press 'Start' and go to 'Scan Settings', select your Adrenaline location, and if you are using custom game folders, select those too, then select 'Rescan'.
 * Your retro games should now appear when you restart the app.
-* 'Startup scan' can be turned off once you have finished adding your games, the app will startup faster when it's turned off.
+* 'Startup scan' can be turned off once you have finished adding your games, the app will start faster when it's turned off.
 
 
 ## 6. Download covers & backgrounds
@@ -115,7 +137,7 @@ Please see the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/mai
 
 Navigate your library using the **DPad** or the **Left Stick** or with the **Touch Screen**.
 
-**D-Pad Up**: Jump to the recently played / favourites category / select a random game, or filter categories to only show collections. (DPad Right when viewing games in list view)
+**D-Pad Up**: Jump to the recently played / favourites category / select a random game, or filter categories to only show collections. (D-Pad Right when viewing games in list view)
 
 **R/L triggers**: Skip 5 items
 
@@ -165,14 +187,14 @@ Navigate your library using the **DPad** or the **Left Stick** or with the **Tou
 * You can add as many wallpapers as you like by saving them here: `ux0:/data/RetroFlow/WALLPAPER/`. 
 * Images must be in .jpg or .png format, the recommended size is 960px x 544px. 
 * Some custom backgrounds are available [HERE](https://github.com/andiweli/hexflow-covers/tree/main/Backgrounds)
-You can change your background within the app by going to the settings menu > theme > custom background.
+You can change your background within the app by going to Settings > Theme > Custom background.
 
 #### Custom  Music:
 * Songs can be added to `ux0:/data/RetroFlow/MUSIC/`. 
 * Music must be in **.ogg** format.
 
 #### Custom Music to get you started:
-* Check out the awesome 6 free-to-use loopable background music-tracks by andiweli (a key contributor to the HexFlow and RetroFlow projects).
+* Check out the awesome 6 free-to-use loopable background music tracks by andiweli (a key contributor to the HexFlow and RetroFlow projects).
 * You can download the tracks here: [https://github.com/andiweli/hexflow-covers/tree/main/Music](https://github.com/andiweli/hexflow-covers/tree/main/Music)
 * The music was taken from the never released Amiga game "PhaseOut" back in the 90s for which he did the music for. Years later a C64 version [became available](https://www.c64-wiki.de/wiki/Phase_Out).
 
@@ -221,7 +243,7 @@ The lua code is interpreted by RetroFlow's [custom build of Lua Player Plus](htt
 For help and answers to frequent questions please visit the [FAQ's](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/FAQs.md) page.
 
 **Feature requests:** 
-Please note that I'm not a developer by trade, this mod started as a personal project, some requests that will be beyond my knowledge to implement.
+Please note that I'm not a developer by trade, this mod started as a personal project, some requests will be beyond my knowledge to implement.
 Please feel free to build upon the mod as long as you provide credit to the original HexFlow developer and the people who contributed to the project.
 <br><br>
 
@@ -234,6 +256,6 @@ You can also donate to them using [PayPal](https://www.paypal.com/cgi-bin/webscr
 
 **Disclaimer:**
 <br>
-RetroFlow DOES NOT support or facilitate piracy in any way, on the contrary we are against it.
+RetroFlow does not support or facilitate piracy in any way. On the contrary, we are against it.
  
 RetroFlow and any individual software authors will not be held responsible for any damages or loss resulting from the use of the homebrew software, by downloading the application you are agreeing to these terms.

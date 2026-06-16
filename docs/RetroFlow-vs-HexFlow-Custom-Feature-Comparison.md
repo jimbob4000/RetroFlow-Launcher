@@ -10,7 +10,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 
 <br>
 
-| Feature | RetroFlow v8.0 | HexFlow Custom v2.9 |
+| Feature | RetroFlow (Current Release) | HexFlow Custom v2.9 |
 |---------|-----------|----------------|
 | **🚀 Startup** |
 | Cache system | ✅ | ✅ |
@@ -25,12 +25,15 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | FAKE-08 | ✅ | ✅ |
 | ScummVM | ✅ | ✅ |
 | DSVita | ✅ | ✅ |
+| EasyRPG | ✅ | ❌ |
 | mGBA | ❌ | ❌ |
 | Emu4Vita++ | ❌ | ❌ |
 | **🎮 Game Categories** |
-| PlayStation Mobile | ✅ | ❌|
+| Atari ST | ✅ | ❌|
 | MAME | ✅ | ❌|
+| MS-DOS | ✅ | ❌|
 | Neo Geo | ✅ | ❌|
+| PlayStation Mobile | ✅ | ❌|
 | Recently played | ✅ | ✅|
 | Favourites | ✅ | ❌|
 | System apps | ✅ | ❌ Some apps available through menu|
@@ -43,11 +46,14 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Customise PS button control | ✅ | ❌|
 | **DSVita** |
 | Configure games | ❌ | ⚠️ Partial settings |
+| **PS Vita** |
+| Game cartridge support | ✅ | ❌|
 | **📝 Game Management** |
 | Custom Game Directories | ✅ | ❌ |
 | Rename games in app | ✅ | ✅ |
 | Hide individual games | ✅ | ❌|
 | Override categories | ✅ | ✅|
+| Override RetroArch cores | ✅ | ❌|
 | Hide homebrew | ✅ | ✅|
 | Hide all games category | ✅ | ❌|
 | Hide games with missing artwork | ✅ | ❌|
@@ -64,12 +70,13 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | 2D Xmb View | ❌ | ✅ |
 | 2D Grid View | ❌ | ✅ |
 | **🌄 Artwork & Backgrounds** |
+| Customise game icons | ✅ | ❌ |
 | Add your own wallpaper | ✅ Unlimited | ⚠️ One|
 | CRC for better artwork matching | ✅ | ❌ |
 | Batch download game backgrounds | ✅ | ❌ |
 | PSP: Extract game backgrounds from game | ✅ | ❌|
 | Pico-8: Create game backgrounds | ✅ | ❌|
-| Vita/Homebrew: Find missing icons and backgrounds | ✅ Perfomed when scanning| ⚠️ In tools section|
+| Vita/Homebrew: Find missing icons and backgrounds | ✅ Performed when scanning| ⚠️ In tools section|
 | **🎵 Music** |
 | Music supported | ✅ | ✅ |
 | Multiple tracks | ✅ | ❌ |
