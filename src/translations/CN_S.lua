@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "隐藏游戏",
 ["Unhide_game"] = "取消隐藏游戏",
 ["Remove_from_recently_played"] = "最近播放的中移除",
-["Retroarch_options"] = "RetroArch 选项",
-["Core_colon"] = "Core：",
 ["Configure_game_in_DSVita"] = "在 DSVita 中设置游戏",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "你需要安装 Flycast 才能玩这个游戏。",
 ["Emulator_not_installed_DSVita"] = "你需要安装 DSVita 才能玩这个游戏。",
 ["Emulator_not_installed_EasyRPG"] = "你需要安装 EasyRPG 才能玩这个游戏。",
+["Emulator_not_installed_Emu4Vita"] = "您需要安装 Emu4Vita++ 才能运行此游戏。",
 ["Game_not_installed_rescan"] = "游戏未安装，请重新扫描游戏。",
 ["Insert_cartridge_try_again"] = "请插入游戏卡带后重试。",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "扫描 PS Vita 卡带：",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "显示游戏核心菜单：",
+["Global_core_settings"] = "全局核心设置",
+["Platform_colon"] = "平台：",
+["Emulator_core"] = "模拟器核心",
+["Core_colon"] = "核心：",
+["Global_core_colon"] = "全局核心：",
+["Reset_platform_core"] = "重置平台核心",
+["Reset_all_platform_cores"] = "重置所有平台核心",
+["Reset_all_game_overrides"] = "重置所有游戏覆盖",
+["Star_Recommended_core"] = "★ 推荐核心",
+["Use_Global"] = "使用全局设置",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

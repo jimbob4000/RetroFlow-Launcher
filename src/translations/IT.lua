@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Nascondi il gioco",
 ["Unhide_game"] = "Scopri il gioco",
 ["Remove_from_recently_played"] = "Rimuovi da giocato di recente",
-["Retroarch_options"] = "Opzioni di RetroArch",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Configura il gioco in DSVita",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Devi installare Flycast per giocare a questo gioco.",
 ["Emulator_not_installed_DSVita"] = "Devi installare DSVita per giocare a questo gioco.",
 ["Emulator_not_installed_EasyRPG"] = "Devi installare EasyRPG per giocare a questo gioco.",
+["Emulator_not_installed_Emu4Vita"] = "Devi installare Emu4Vita++ per giocare a questo gioco.",
 ["Game_not_installed_rescan"] = "Questo gioco non è installato, per favore scansiona nuovamente i tuoi giochi.",
 ["Insert_cartridge_try_again"] = "Inserisci la cartuccia di gioco e riprova.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Scansione cartucce Vita:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Mostra menu core gioco:",
+["Global_core_settings"] = "Impostazioni globali dei core",
+["Platform_colon"] = "Piattaforma:",
+["Emulator_core"] = "Core dell'emulatore",
+["Core_colon"] = "Core:",
+["Global_core_colon"] = "Core globale:",
+["Reset_platform_core"] = "Reimposta core piattaforma",
+["Reset_all_platform_cores"] = "Reimposta tutti i core piattaforma",
+["Reset_all_game_overrides"] = "Reimposta tutte le sostituzioni dei giochi",
+["Star_Recommended_core"] = "★ Core consigliato",
+["Use_Global"] = "Usa globale",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

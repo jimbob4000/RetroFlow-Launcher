@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Spel verbergen",
 ["Unhide_game"] = "Spel zichtbaar maken",
 ["Remove_from_recently_played"] = "Verwijderen uit recent afgespeeld",
-["Retroarch_options"] = "RetroArch-opties",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Spel configureren in DSVita",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Je moet Flycast installeren om dit spel te spelen.",
 ["Emulator_not_installed_DSVita"] = "Je moet DSVita installeren om dit spel te spelen.",
 ["Emulator_not_installed_EasyRPG"] = "Je moet EasyRPG installeren om dit spel te spelen.",
+["Emulator_not_installed_Emu4Vita"] = "Je moet Emu4Vita++ installeren om dit spel te spelen.",
 ["Game_not_installed_rescan"] = "Dit spel is niet geïnstalleerd, scan je spellen opnieuw.",
 ["Insert_cartridge_try_again"] = "Plaats de gamecartridge en probeer het opnieuw.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Vita-cartridges scannen:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Spelcoremenu tonen:",
+["Global_core_settings"] = "Globale core-instellingen",
+["Platform_colon"] = "Platform:",
+["Emulator_core"] = "Emulatorcore",
+["Core_colon"] = "Core:",
+["Global_core_colon"] = "Globale core:",
+["Reset_platform_core"] = "Platformcore resetten",
+["Reset_all_platform_cores"] = "Alle platformcores resetten",
+["Reset_all_game_overrides"] = "Alle speloverschrijvingen resetten",
+["Star_Recommended_core"] = "★ Aanbevolen core",
+["Use_Global"] = "Globaal gebruiken",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

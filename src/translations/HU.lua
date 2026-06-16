@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Játék elrejtése",
 ["Unhide_game"] = "Játék megjelenítése",
 ["Remove_from_recently_played"] = "Eltávolítás a nemrég játszottból",
-["Retroarch_options"] = "RetroArch beállítások",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Játék beállítása a DSVitában",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "A Flycast telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_DSVita"] = "A DSVita telepítése szükséges a játékhoz.",
 ["Emulator_not_installed_EasyRPG"] = "A EasyRPG telepítése szükséges a játékhoz.",
+["Emulator_not_installed_Emu4Vita"] = "A Emu4Vita++ telepítése szükséges a játékhoz.",
 ["Game_not_installed_rescan"] = "Ez a játék nincs telepítve, kérem, szkennelje újra a játékait.",
 ["Insert_cartridge_try_again"] = "Kérjük, helyezd be a játékkazettát, majd próbáld újra.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Vita kazetták keresése:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Játékmag menü megjelenítése:",
+["Global_core_settings"] = "Globális magbeállítások",
+["Platform_colon"] = "Platform:",
+["Emulator_core"] = "Emulátormag",
+["Core_colon"] = "Mag:",
+["Global_core_colon"] = "Globális mag:",
+["Reset_platform_core"] = "Platformmag visszaállítása",
+["Reset_all_platform_cores"] = "Összes platformmag visszaállítása",
+["Reset_all_game_overrides"] = "Összes játékfelülbírálás visszaállítása",
+["Star_Recommended_core"] = "★ Ajánlott mag",
+["Use_Global"] = "Globális használata",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

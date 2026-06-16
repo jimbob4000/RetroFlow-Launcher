@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Скрыть игру",
 ["Unhide_game"] = "Показать игру",
 ["Remove_from_recently_played"] = "Удалить из недавно сыграл",
-["Retroarch_options"] = "Параметры RetroArch",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Настроить игру в DSVita",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Для игры необходимо установить Flycast.",
 ["Emulator_not_installed_DSVita"] = "Для игры необходимо установить DSVita.",
 ["Emulator_not_installed_EasyRPG"] = "Для игры необходимо установить EasyRPG.",
+["Emulator_not_installed_Emu4Vita"] = "Для игры необходимо установить Emu4Vita++.",
 ["Game_not_installed_rescan"] = "Эта игра не установлена. Пожалуйста, повторно сканируйте игры.",
 ["Insert_cartridge_try_again"] = "Пожалуйста, вставьте игровой картридж и попробуйте снова.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Сканирование картриджей Vita:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Показывать меню игровых ядер:",
+["Global_core_settings"] = "Глобальные настройки ядер",
+["Platform_colon"] = "Платформа:",
+["Emulator_core"] = "Ядро эмулятора",
+["Core_colon"] = "Ядро:",
+["Global_core_colon"] = "Глобальное ядро:",
+["Reset_platform_core"] = "Сбросить ядро платформы",
+["Reset_all_platform_cores"] = "Сбросить все ядра платформ",
+["Reset_all_game_overrides"] = "Сбросить все переопределения игр",
+["Star_Recommended_core"] = "★ Рекомендуемое ядро",
+["Use_Global"] = "Использовать глобальный",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

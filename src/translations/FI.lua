@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Piilota peli",
 ["Unhide_game"] = "Näytä peli",
 ["Remove_from_recently_played"] = "Poista viimeaikaisista",
-["Retroarch_options"] = "RetroArch-vaihtoehdot",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Määritä peli DSVitassa",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Sinun on asennettava Flycast pelataksesi tätä peliä.",
 ["Emulator_not_installed_DSVita"] = "Sinun on asennettava DSVita pelataksesi tätä peliä.",
 ["Emulator_not_installed_EasyRPG"] = "Sinun on asennettava EasyRPG pelataksesi tätä peliä.",
+["Emulator_not_installed_Emu4Vita"] = "Sinun täytyy asentaa Emu4Vita++ pelataksesi tätä peliä.",
 ["Game_not_installed_rescan"] = "Tätä peliä ei ole asennettu, ole hyvä ja skannaa pelisi uudelleen.",
 ["Insert_cartridge_try_again"] = "Aseta pelikasetti ja yritä uudelleen.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Skannaa Vita-kasetit:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Näytä peliydinvalikko:",
+["Global_core_settings"] = "Globaalit ydinasetukset",
+["Platform_colon"] = "Alusta:",
+["Emulator_core"] = "Emulaattorin ydin",
+["Core_colon"] = "Ydin:",
+["Global_core_colon"] = "Globaali ydin:",
+["Reset_platform_core"] = "Palauta alustan ydin",
+["Reset_all_platform_cores"] = "Palauta kaikki alustojen ytimet",
+["Reset_all_game_overrides"] = "Palauta kaikki peliohitukset",
+["Star_Recommended_core"] = "★ Suositeltu ydin",
+["Use_Global"] = "Käytä globaalia",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

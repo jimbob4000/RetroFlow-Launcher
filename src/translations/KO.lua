@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "게임 숨기기",
 ["Unhide_game"] = "게임 숨기기 해제",
 ["Remove_from_recently_played"] = "최근 재생에서 제거",
-["Retroarch_options"] = "RetroArch 옵션",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "DSVita에서 게임 구성",
 
 -- Collections
@@ -309,10 +307,27 @@ return {
 ["Emulator_not_installed_Flycast"] = "이 게임을 하려면 Flycast를 설치해야 합니다.",
 ["Emulator_not_installed_DSVita"] = "이 게임을 하려면 DSVita를 설치해야 합니다.",
 ["Emulator_not_installed_EasyRPG"] = "이 게임을 하려면 EasyRPG를 설치해야 합니다.",
+["Emulator_not_installed_Emu4Vita"] = "이 게임을 하려면 Emu4Vita++를 설치해야 합니다.",
+
 ["Game_not_installed_rescan"] = "이 게임이 설치되지 않았습니다. 게임을 다시 스캔해 주세요.",
 ["Insert_cartridge_try_again"] = "게임 카트리지를 삽입한 후 다시 시도하세요.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Vita 카트리지 스캔:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "게임 코어 메뉴 표시:",
+["Global_core_settings"] = "전역 코어 설정",
+["Platform_colon"] = "플랫폼:",
+["Emulator_core"] = "에뮬레이터 코어",
+["Core_colon"] = "코어:",
+["Global_core_colon"] = "전역 코어:",
+["Reset_platform_core"] = "플랫폼 코어 재설정",
+["Reset_all_platform_cores"] = "모든 플랫폼 코어 재설정",
+["Reset_all_game_overrides"] = "모든 게임 재정의 재설정",
+["Star_Recommended_core"] = "★ 권장 코어",
+["Use_Global"] = "전역 설정 사용",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

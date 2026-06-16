@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "ゲームを隠す",
 ["Unhide_game"] = "ゲームを表示する",
 ["Remove_from_recently_played"] = "最近プレイしたものから削除",
-["Retroarch_options"] = "RetroArch オプション",
-["Core_colon"] = "Core：",
 ["Configure_game_in_DSVita"] = "DSVitaウチにげーむ設定する",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Flycastぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_DSVita"] = "DSVitaぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Emulator_not_installed_EasyRPG"] = "EasyRPGぬ、インストールせんと、このゲームんかい遊ばりん。",
+["Emulator_not_installed_Emu4Vita"] = "Emu4Vita++ぬ、インストールせんと、このゲームんかい遊ばりん。",
 ["Game_not_installed_rescan"] = "ゲームや、インストールさりぬくとぅ、ゲームや再スキャンしみそーり。",
 ["Insert_cartridge_try_again"] = "ゲームカードを挿入して、もう一度お試しください。",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Vitaゲームカードをスキャン中：",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "ゲームコアメニュー表示：",
+["Global_core_settings"] = "グローバルコア設定",
+["Platform_colon"] = "プラットフォーム：",
+["Emulator_core"] = "エミュレーターコア",
+["Core_colon"] = "コア：",
+["Global_core_colon"] = "グローバルコア：",
+["Reset_platform_core"] = "プラットフォームコアをリセット",
+["Reset_all_platform_cores"] = "すべてのプラットフォームコアをリセット",
+["Reset_all_game_overrides"] = "すべてのゲーム上書きをリセット",
+["Star_Recommended_core"] = "★ 推奨コア",
+["Use_Global"] = "グローバル設定を使用",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

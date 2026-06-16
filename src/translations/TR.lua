@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Oyunu gizle",
 ["Unhide_game"] = "Oyunu göster",
 ["Remove_from_recently_played"] = "Son oynananlardan kaldır",
-["Retroarch_options"] = "RetroArch seçenekler",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "DSVita’da oyunu yapılandır",
 
 -- Collections
@@ -307,12 +305,28 @@ return {
 ["Emulator_not_installed_Retroarch"] = "Bu oyunu oynamak için RetroArch'ı kurmanız gerekiyor.",
 ["Emulator_not_installed_DaedalusX64"] = "Bu oyunu oynamak için DaedalusX64'ü kurmanız gerekiyor.",
 ["Emulator_not_installed_Flycast"] = "Bu oyunu oynamak için Flycast'ı kurmanız gerekiyor.",
-["Emulator_not_installed_DSVita"] = "Bu oyunu oynamak için DSVita'ı kurmanız gerekiyor.",
-["Emulator_not_installed_EasyRPG"] = "Bu oyunu oynamak için EasyRPG'ı kurmanız gerekiyor.",
+["Emulator_not_installed_DSVita"] = "Bu oyunu oynamak için DSVita'yı kurmanız gerekiyor.",
+["Emulator_not_installed_EasyRPG"] = "Bu oyunu oynamak için EasyRPG'yi kurmanız gerekiyor.",
+["Emulator_not_installed_Emu4Vita"] = "Bu oyunu oynamak için Emu4Vita++'ı kurmanız gerekiyor.",
 ["Game_not_installed_rescan"] = "Bu oyun yüklü değil, lütfen oyunlarınızı tekrar tarayın.",
 ["Insert_cartridge_try_again"] = "Lütfen oyun kartuşunu takın ve tekrar deneyin.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Vita kartuşlarını tara:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Oyun çekirdeği menüsünü göster:",
+["Global_core_settings"] = "Genel çekirdek ayarları",
+["Platform_colon"] = "Platform:",
+["Emulator_core"] = "Emülatör çekirdeği",
+["Core_colon"] = "Çekirdek:",
+["Global_core_colon"] = "Genel çekirdek:",
+["Reset_platform_core"] = "Platform çekirdeğini sıfırla",
+["Reset_all_platform_cores"] = "Tüm platform çekirdeklerini sıfırla",
+["Reset_all_game_overrides"] = "Tüm oyun geçersiz kılmalarını sıfırla",
+["Star_Recommended_core"] = "★ Önerilen çekirdek",
+["Use_Global"] = "Geneli kullan",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }

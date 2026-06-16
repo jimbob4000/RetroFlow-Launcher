@@ -272,8 +272,6 @@ return {
 ["Hide_game"] = "Göm spelet",
 ["Unhide_game"] = "Visa spelet",
 ["Remove_from_recently_played"] = "Ta bort från nyligen spelade",
-["Retroarch_options"] = "RetroArch-alternativ",
-["Core_colon"] = "Core:",
 ["Configure_game_in_DSVita"] = "Konfigurera spelet i DSVita",
 
 -- Collections
@@ -309,10 +307,26 @@ return {
 ["Emulator_not_installed_Flycast"] = "Du behöver installera Flycast för att spela detta spel.",
 ["Emulator_not_installed_DSVita"] = "Du behöver installera DSVita för att spela detta spel.",
 ["Emulator_not_installed_EasyRPG"] = "Du behöver installera EasyRPG för att spela detta spel.",
+["Emulator_not_installed_Emu4Vita"] = "Du behöver installera Emu4Vita++ för att spela detta spel.",
 ["Game_not_installed_rescan"] = "Detta spel är inte installerat, vänligen skanna dina spel igen.",
 ["Insert_cartridge_try_again"] = "Sätt i spelkassetten och försök igen.",
 
 -- Cartridges
 ["Scan_Vita_cartridges_colon"] = "Skanna Vita-kassetter:",
+
+-- Emulator core strings
+["Show_game_core_menu_colon"] = "Visa spelkärnmeny:",
+["Global_core_settings"] = "Globala kärninställningar",
+["Platform_colon"] = "Plattform:",
+["Emulator_core"] = "Emulatorkärna",
+["Core_colon"] = "Kärna:",
+["Global_core_colon"] = "Global kärna:",
+["Reset_platform_core"] = "Återställ plattformskärna",
+["Reset_all_platform_cores"] = "Återställ alla plattformskärnor",
+["Reset_all_game_overrides"] = "Återställ alla spelöverskridningar",
+["Star_Recommended_core"] = "★ Rekommenderad kärna",
+["Use_Global"] = "Använd global",
+["Core_source_retroarch"] = " (RetroArch)",
+["Core_source_emu4vita"] = " (Emu4Vita++)",
 
 }
