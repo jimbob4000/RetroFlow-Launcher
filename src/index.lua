@@ -2,14 +2,17 @@
 -- Based on HexFlow Launcher  version 0.5 by VitaHEX
 -- https://www.patreon.com/vitahex
 
+local oneLoopTimer = Timer.new()
+
+-- Open recovery mode if selected from the livearea
 local bootparam = System.getBootParams() or ""
 
 if string.match(bootparam, "recovery") then
-    dofile("app0:/recovery.lua")
+    dofile("app0:addons/recovery.lua")
     System.exit()
 end
 
-local oneLoopTimer = Timer.new()
+-- Not in recovery mode - continue loading
 
 dofile("app0:addons/threads.lua")
 
@@ -107,8 +110,16 @@ adr_partition_table =
 local cur_dir = "ux0:/data/RetroFlow/"
 System.createDirectory("ux0:/data/RetroFlow/")
 
+print_table_loaded = false
+function ensure_print_table_loaded()
+    if print_table_loaded == false then
+        dofile("app0:addons/printTable.lua")
+        print_table_loaded = true
+    end
+end
+
 function print_table_rom_dirs(def_table_name)
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_rom_dirs((def_table_name))
 end
 
@@ -925,9 +936,9 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
             if type(extensions) == "string" then
                 -- Parse comma-separated string like ".png,.jpg,.gif"
                 for ext in extensions:gmatch("[^,]+") do
-                    ext = ext:match("^%s*(.-)%s*$") -- trim whitespace
-                    if ext:sub(1,1) == "." then
-                        ext_lookup[ext:lower()] = true
+                    local trimmed_ext = ext:match("^%s*(.-)%s*$") -- trim whitespace
+                    if trimmed_ext:sub(1,1) == "." then
+                        ext_lookup[trimmed_ext:lower()] = true
                     end
                 end
             elseif type(extensions) == "table" then
@@ -1177,12 +1188,12 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
 -- COLLECTIONS
 
     function print_table_collection_files(def_collection_files)
-        dofile("app0:addons/printTable.lua")
+        ensure_print_table_loaded()
         print_table_collection_files((def_collection_files))
     end
 
     function update_cached_collection(def_user_db_file, def_table_name)
-        dofile("app0:addons/printTable.lua")
+        ensure_print_table_loaded()
         print_table_collection((def_user_db_file), (def_table_name))
     end
 
@@ -1264,9 +1275,19 @@ cart_icon_on = Graphics.loadImage("app0:/DATA/icon-cart-inserted.png")
 Graphics.setImageFilters(cart_icon_off, FILTER_LINEAR, FILTER_LINEAR)
 Graphics.setImageFilters(cart_icon_on, FILTER_LINEAR, FILTER_LINEAR)
 
-file_browser_folder_open = Graphics.loadImage("app0:/DATA/file-browser-folder-open.png")
-file_browser_folder_closed = Graphics.loadImage("app0:/DATA/file-browser-folder-closed.png")
-file_browser_file = Graphics.loadImage("app0:/DATA/file-browser-file.png")
+file_browser_icons_loaded = false
+file_browser_folder_open = nil
+file_browser_folder_closed = nil
+file_browser_file = nil
+
+function load_file_browser_icons_if_needed()
+    if file_browser_icons_loaded == false then
+        file_browser_folder_open = Graphics.loadImage("app0:/DATA/file-browser-folder-open.png")
+        file_browser_folder_closed = Graphics.loadImage("app0:/DATA/file-browser-folder-closed.png")
+        file_browser_file = Graphics.loadImage("app0:/DATA/file-browser-file.png")
+        file_browser_icons_loaded = true
+    end
+end
 
 -- OPTIMIZATION: Lazy load setting icons (only when settings menu is accessed)
 -- This saves 0.5-1.0 seconds during startup
@@ -1406,19 +1427,25 @@ System.createDirectory(music_dir)
 -- Create directory: Cover Folders
 System.createDirectory(covDir)
 for k, v in pairs(SystemsToScan) do
-    System.createDirectory(tostring(v.localCoverPath))
+    if v.localCoverPath then
+        System.createDirectory(v.localCoverPath)
+    end
 end
 
 -- Create directory: Snap Folders
 System.createDirectory(snapDir)
 for k, v in pairs(SystemsToScan) do
-    System.createDirectory(tostring(v.localSnapPath))
+    if v.localSnapPath then
+        System.createDirectory(v.localSnapPath)
+    end
 end
 
 -- Create directory: Icon Folders
 System.createDirectory(iconDir)
 for k, v in pairs(SystemsToScan) do
-    System.createDirectory(tostring(v.localIconPath))
+    if v.localIconPath then
+        System.createDirectory(v.localIconPath)
+    end
 end
 
 -- Create directory: User Database
@@ -1453,6 +1480,24 @@ end
 -- Table Cache
 local db_Cache_Folder = "ux0:/data/RetroFlow/CACHE/"
 System.createDirectory(db_Cache_Folder)
+
+function cache_files_complete()
+    local cache_files = System.listDirectory(db_Cache_Folder) or {}
+    local cache_lookup = {}
+
+    for k, file in pairs(cache_files) do
+        if not file.directory then
+            cache_lookup[file.name] = true
+        end
+    end
+
+    for k, v in pairs(SystemsToScan) do
+        if v.user_db_file and not cache_lookup[v.user_db_file] then
+            return false
+        end
+    end
+    return true
+end
 
 -- Copy default backgrounds to wallpaper folder
 if not System.doesFileExist(background_dir .. "Aurora.png") then System.copyFile("app0:/DATA/Aurora.png", background_dir .. "Aurora.png") end
@@ -2541,61 +2586,188 @@ if not System.doesFileExist(cur_dir .. "/favorites.dat") then
     System.closeFile(file_favorites)
 end
 
--- load textures
-local imgBox = Graphics.loadImage("app0:/DATA/vita_cover.png")
-local imgBoxPSP = Graphics.loadImage("app0:/DATA/psp_cover.png")
-local imgBoxPSX = Graphics.loadImage("app0:/DATA/psx_cover.png")
-local imgBoxBLANK = Graphics.loadImage("app0:/DATA/blank_cover.png")
+imgBox = nil
+imgBoxPSP = nil
+imgBoxPSX = nil
+cover_models_base_loaded = false
+cover_models_psp_loaded = false
+cover_models_psx_loaded = false
+cover_models_n64_loaded = false
+cover_models_nes_loaded = false
+cover_models_gb_loaded = false
+cover_models_md_loaded = false
+cover_models_tape_loaded = false
+cover_models_atari_loaded = false
+cover_models_lynx_loaded = false
+cover_models_hbr_loaded = false
+cover_models_snes_japan_loaded = false
+cover_models_middle_loaded = false
 
--- Load models
-local modBox = Render.loadObject("app0:/DATA/box.obj", imgBox)
-local modCover = Render.loadObject("app0:/DATA/cover.obj", imgCoverTmp)
-local modBoxNoref = Render.loadObject("app0:/DATA/box_noreflx.obj", imgBox)
-local modCoverNoref = Render.loadObject("app0:/DATA/cover_noreflx.obj", imgCoverTmp)
+function load_base_cover_models_if_needed()
+    if cover_models_base_loaded == false then
+        imgBox = Graphics.loadImage("app0:/DATA/vita_cover.png")
+        modBox = Render.loadObject("app0:/DATA/box.obj", imgBox)
+        modCover = Render.loadObject("app0:/DATA/cover.obj", imgCoverTmp)
+        modBoxNoref = Render.loadObject("app0:/DATA/box_noreflx.obj", imgBox)
+        modCoverNoref = Render.loadObject("app0:/DATA/cover_noreflx.obj", imgCoverTmp)
+        cover_models_base_loaded = true
+    end
+end
 
-local modBoxPSP = Render.loadObject("app0:/DATA/boxpsp.obj", imgBoxPSP)
-local modCoverPSP = Render.loadObject("app0:/DATA/coverpsp.obj", imgCoverTmp)
-local modBoxPSPNoref = Render.loadObject("app0:/DATA/boxpsp_noreflx.obj", imgBoxPSP)
-local modCoverPSPNoref = Render.loadObject("app0:/DATA/coverpsp_noreflx.obj", imgCoverTmp)
+function load_psp_cover_models_if_needed()
+    if cover_models_psp_loaded == false then
+        imgBoxPSP = Graphics.loadImage("app0:/DATA/psp_cover.png")
+        modBoxPSP = Render.loadObject("app0:/DATA/boxpsp.obj", imgBoxPSP)
+        modCoverPSP = Render.loadObject("app0:/DATA/coverpsp.obj", imgCoverTmp)
+        modBoxPSPNoref = Render.loadObject("app0:/DATA/boxpsp_noreflx.obj", imgBoxPSP)
+        modCoverPSPNoref = Render.loadObject("app0:/DATA/coverpsp_noreflx.obj", imgCoverTmp)
+        cover_models_psp_loaded = true
+    end
+end
 
-local modBoxPSX = Render.loadObject("app0:/DATA/boxpsx.obj", imgBoxPSX)
-local modCoverPSX = Render.loadObject("app0:/DATA/coverpsx.obj", imgCoverTmp)
-local modBoxPSXNoref = Render.loadObject("app0:/DATA/boxpsx_noreflx.obj", imgBoxPSX)
-local modCoverPSXNoref = Render.loadObject("app0:/DATA/coverpsx_noreflx.obj", imgCoverTmp)
+function load_psx_cover_models_if_needed()
+    if cover_models_psx_loaded == false then
+        imgBoxPSX = Graphics.loadImage("app0:/DATA/psx_cover.png")
+        modBoxPSX = Render.loadObject("app0:/DATA/boxpsx.obj", imgBoxPSX)
+        modCoverPSX = Render.loadObject("app0:/DATA/coverpsx.obj", imgCoverTmp)
+        modBoxPSXNoref = Render.loadObject("app0:/DATA/boxpsx_noreflx.obj", imgBoxPSX)
+        modCoverPSXNoref = Render.loadObject("app0:/DATA/coverpsx_noreflx.obj", imgCoverTmp)
+        cover_models_psx_loaded = true
+    end
+end
 
-local modCoverN64 = Render.loadObject("app0:/DATA/covern64.obj", imgCoverTmp)
-local modCoverN64Noref = Render.loadObject("app0:/DATA/covern64_noreflx.obj", imgCoverTmp)
+function load_n64_cover_models_if_needed()
+    if cover_models_n64_loaded == false then
+        modCoverN64 = Render.loadObject("app0:/DATA/covern64.obj", imgCoverTmp)
+        modCoverN64Noref = Render.loadObject("app0:/DATA/covern64_noreflx.obj", imgCoverTmp)
+        cover_models_n64_loaded = true
+    end
+end
 
-local modCoverNES = Render.loadObject("app0:/DATA/covernes.obj", imgCoverTmp)
-local modCoverNESNoref = Render.loadObject("app0:/DATA/covernes_noreflx.obj", imgCoverTmp)
+function load_nes_cover_models_if_needed()
+    if cover_models_nes_loaded == false then
+        modCoverNES = Render.loadObject("app0:/DATA/covernes.obj", imgCoverTmp)
+        modCoverNESNoref = Render.loadObject("app0:/DATA/covernes_noreflx.obj", imgCoverTmp)
+        cover_models_nes_loaded = true
+    end
+end
 
-local modCoverGB = Render.loadObject("app0:/DATA/covergb.obj", imgCoverTmp)
-local modCoverGBNoref = Render.loadObject("app0:/DATA/covergb_noreflx.obj", imgCoverTmp)
+function load_gb_cover_models_if_needed()
+    if cover_models_gb_loaded == false then
+        modCoverGB = Render.loadObject("app0:/DATA/covergb.obj", imgCoverTmp)
+        modCoverGBNoref = Render.loadObject("app0:/DATA/covergb_noreflx.obj", imgCoverTmp)
+        cover_models_gb_loaded = true
+    end
+end
 
-local modCoverMD = Render.loadObject("app0:/DATA/covermd.obj", imgCoverTmp)
-local modCoverMDNoref = Render.loadObject("app0:/DATA/covermd_noreflx.obj", imgCoverTmp)
+function load_md_cover_models_if_needed()
+    if cover_models_md_loaded == false then
+        modCoverMD = Render.loadObject("app0:/DATA/covermd.obj", imgCoverTmp)
+        modCoverMDNoref = Render.loadObject("app0:/DATA/covermd_noreflx.obj", imgCoverTmp)
+        cover_models_md_loaded = true
+    end
+end
 
-local modCoverTAPE = Render.loadObject("app0:/DATA/covertape.obj", imgCoverTmp)
-local modCoverTAPENoref = Render.loadObject("app0:/DATA/covertape_noreflx.obj", imgCoverTmp)
+function load_tape_cover_models_if_needed()
+    if cover_models_tape_loaded == false then
+        modCoverTAPE = Render.loadObject("app0:/DATA/covertape.obj", imgCoverTmp)
+        modCoverTAPENoref = Render.loadObject("app0:/DATA/covertape_noreflx.obj", imgCoverTmp)
+        cover_models_tape_loaded = true
+    end
+end
 
-local modCoverATARI = Render.loadObject("app0:/DATA/coveratari.obj", imgCoverTmp)
-local modCoverATARINoref = Render.loadObject("app0:/DATA/coveratari_noreflx.obj", imgCoverTmp)
+function load_atari_cover_models_if_needed()
+    if cover_models_atari_loaded == false then
+        modCoverATARI = Render.loadObject("app0:/DATA/coveratari.obj", imgCoverTmp)
+        modCoverATARINoref = Render.loadObject("app0:/DATA/coveratari_noreflx.obj", imgCoverTmp)
+        cover_models_atari_loaded = true
+    end
+end
 
-local modCoverLYNX = Render.loadObject("app0:/DATA/coverlynx.obj", imgCoverTmp)
-local modCoverLYNXNoref = Render.loadObject("app0:/DATA/coverlynx_noreflx.obj", imgCoverTmp)
+function load_lynx_cover_models_if_needed()
+    if cover_models_lynx_loaded == false then
+        modCoverLYNX = Render.loadObject("app0:/DATA/coverlynx.obj", imgCoverTmp)
+        modCoverLYNXNoref = Render.loadObject("app0:/DATA/coverlynx_noreflx.obj", imgCoverTmp)
+        cover_models_lynx_loaded = true
+    end
+end
 
-local modCoverHbr = Render.loadObject("app0:/DATA/cover_square.obj", imgCoverTmp)
-local modCoverHbrNoref = Render.loadObject("app0:/DATA/cover_square_noreflx.obj", imgCoverTmp)
+function load_hbr_cover_models_if_needed()
+    if cover_models_hbr_loaded == false then
+        modCoverHbr = Render.loadObject("app0:/DATA/cover_square.obj", imgCoverTmp)
+        modCoverHbrNoref = Render.loadObject("app0:/DATA/cover_square_noreflx.obj", imgCoverTmp)
+        cover_models_hbr_loaded = true
+    end
+end
+
+function load_snes_japan_cover_models_if_needed()
+    if cover_models_snes_japan_loaded == false then
+        modCoverSNESJapan = Render.loadObject("app0:/DATA/covernsnesjapan.obj", imgCoverTmp)
+        modCoverSNESJapanNoref = Render.loadObject("app0:/DATA/covernsnesjapan_noreflx.obj", imgCoverTmp)
+        cover_models_snes_japan_loaded = true
+    end
+end
+
+function load_middle_cover_models_if_needed()
+    if cover_models_middle_loaded == false then
+        modCoverMiddle = Render.loadObject("app0:/DATA/covermiddle.obj", imgCoverTmp)
+        modCoverMiddleNoref = Render.loadObject("app0:/DATA/covermiddle_noreflix.obj", imgCoverTmp)
+        cover_models_middle_loaded = true
+    end
+end
+
+function load_variable_cover_models_if_needed()
+    load_snes_japan_cover_models_if_needed()
+    load_md_cover_models_if_needed()
+    load_nes_cover_models_if_needed()
+    load_atari_cover_models_if_needed()
+    load_lynx_cover_models_if_needed()
+    load_middle_cover_models_if_needed()
+    load_gb_cover_models_if_needed()
+    load_n64_cover_models_if_needed()
+end
+
+function load_cover_models_for_app_type(def_apptype)
+    if def_apptype == 1 then
+        load_base_cover_models_if_needed()
+    elseif def_apptype == 2 then
+        load_psp_cover_models_if_needed()
+    elseif def_apptype == 3 then
+        load_psx_cover_models_if_needed()
+    elseif def_apptype == 11 then
+        load_gb_cover_models_if_needed()
+    elseif def_apptype == 5 or def_apptype == 6 or def_apptype == 7 or def_apptype == 8 or def_apptype == 9 or def_apptype == 10 or def_apptype == 12 or def_apptype == 17 or def_apptype == 18 or def_apptype == 19 or def_apptype == 20 or def_apptype == 21 or def_apptype == 34 or def_apptype == 35 or def_apptype == 36 or def_apptype == 38 or def_apptype == 43 or def_apptype == 44 or def_apptype == 45 or def_apptype == 46 then
+        load_variable_cover_models_if_needed()
+    elseif def_apptype == 13 or def_apptype == 14 or def_apptype == 15 or def_apptype == 16 then
+        load_md_cover_models_if_needed()
+    elseif def_apptype == 22 or def_apptype == 25 or def_apptype == 26 or def_apptype == 27 then
+        load_md_cover_models_if_needed()
+        load_tape_cover_models_if_needed()
+    elseif def_apptype == 23 or def_apptype == 24 or def_apptype == 37 or def_apptype == 40 then
+        load_nes_cover_models_if_needed()
+    elseif def_apptype == 28 or def_apptype == 29 or def_apptype == 30 or def_apptype == 32 or def_apptype == 33 then
+        load_atari_cover_models_if_needed()
+    elseif def_apptype == 31 or def_apptype == 41 then
+        load_lynx_cover_models_if_needed()
+    elseif def_apptype == 39 or def_apptype == 42 then
+        load_hbr_cover_models_if_needed()
+    else
+        load_hbr_cover_models_if_needed()
+    end
+end
+
+function load_all_cover_models_if_needed()
+    load_base_cover_models_if_needed()
+    load_psp_cover_models_if_needed()
+    load_psx_cover_models_if_needed()
+    load_variable_cover_models_if_needed()
+    load_tape_cover_models_if_needed()
+    load_hbr_cover_models_if_needed()
+end
 
 local modBackground = Render.loadObject("app0:/DATA/planebg.obj", imgBack)
 local modDefaultBackground = Render.loadObject("app0:/DATA/planebg.obj", imgBack)
 local modFloor = Render.loadObject("app0:/DATA/planefloor.obj", imgFloor)
-
-local modCoverSNESJapan = Render.loadObject("app0:/DATA/covernsnesjapan.obj", imgCoverTmp)
-local modCoverSNESJapanNoref = Render.loadObject("app0:/DATA/covernsnesjapan_noreflx.obj", imgCoverTmp)
-
-local modCoverMiddle = Render.loadObject("app0:/DATA/covermiddle.obj", imgCoverTmp)
-local modCoverMiddleNoref = Render.loadObject("app0:/DATA/covermiddle_noreflix.obj", imgCoverTmp)
 
 
 local img_path = ""
@@ -2676,8 +2848,7 @@ end
 
 
 function count_cache_and_reload()
-    cache_file_count = System.listDirectory(db_Cache_Folder) or {}
-    if #cache_file_count ~= count_of_cache_files then
+    if cache_files_complete() == false then
         -- Files missing - rescan
         cache_all_tables()
         files_table = import_cached_DB()
@@ -2689,13 +2860,13 @@ function count_cache_and_reload()
 end
 
 function delete_cache()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     delete_tables()
 end
 
 -- Used for crc scan, can keep title files
 function delete_cache_keep_titles()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     delete_tables()
 end
 
@@ -2703,39 +2874,39 @@ end
 
 -- PRINT TABLE FUNCTIONS
 function cache_all_tables()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_tables()
 end
 function update_cached_table(def_user_db_file, def_table_name)
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_system((def_user_db_file), (def_table_name))
 end
 function update_cached_table_recently_played()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_recently_played()
 end
 function update_cached_table_recently_played_pre_launch()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_recently_played_pre_launch()
 end
 function update_cached_table_renamed_games()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_renamed_games()
 end
 function update_cached_table_hidden_games()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_hidden_games()
 end
 function update_cached_table_launch_overrides()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_table_launch_overrides()
 end
 function print_table_missing_covers()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_missing_covers()
 end
 function print_table_missing_snaps()
-    dofile("app0:addons/printTable.lua")
+    ensure_print_table_loaded()
     print_missing_snaps()
 end
 
@@ -3265,30 +3436,10 @@ else
     showCat = startCategory
 end
 
--- Music - Legacy Fix - Move music files from old directory to new
-if System.doesFileExist("ux0:/data/RetroFlow/Music.ogg") then System.rename("ux0:/data/RetroFlow/Music.ogg", "ux0:/data/RetroFlow/MUSIC/Music.ogg") end
-
--- Music - Scan Music Directory
-music_dir = System.listDirectory("ux0:/data/RetroFlow/MUSIC/") or {}
-
--- Music - Add to music tracks if ogg
 music_sequential = {}
-for i, file in pairs(music_dir) do
-    if not file.directory then
-        if string.match(file.name, "%.ogg") then
-            file.name = file.name
-            table.insert(music_sequential, file)
-        end
-    else
-    end
-end
-
--- Music - Shuffle
-
--- local track = 1
--- local music_shuffled = {}
-
-
+music_shuffled = {}
+music_initialized = false
+track = 1
 
 function Shuffle(music_sequential)
     math.randomseed( os.time() )
@@ -3346,14 +3497,38 @@ function PlayMusic()
 
 end
 
--- Music -  Play if enabled   
-if setMusic == 1 then
-    if setMusicShuffle == 1 then
-        Shuffle(music_sequential)
-    else
+function init_music_if_needed()
+    if music_initialized == false then
+        music_initialized = true
+
+        -- Music - Legacy Fix - Move music files from old directory to new
+        if System.doesFileExist("ux0:/data/RetroFlow/Music.ogg") then System.rename("ux0:/data/RetroFlow/Music.ogg", "ux0:/data/RetroFlow/MUSIC/Music.ogg") end
+
+        -- Music - Scan Music Directory
+        music_dir = System.listDirectory("ux0:/data/RetroFlow/MUSIC/") or {}
+
+        -- Music - Add to music tracks if ogg
+        music_sequential = {}
+        for i, file in pairs(music_dir) do
+            if not file.directory then
+                if string.match(file.name, "%.ogg") then
+                    file.name = file.name
+                    table.insert(music_sequential, file)
+                end
+            else
+            end
+        end
+
+        -- Music - Play if enabled
+        if setMusic == 1 then
+            if setMusicShuffle == 1 then
+                Shuffle(music_sequential)
+            else
+            end
+            track = 1
+            PlayMusic()
+        end
     end
-    track = 1
-    PlayMusic()
 end
 
 
@@ -4312,7 +4487,9 @@ function FreeMemory()
     Graphics.freeImage(imgBack)
     Graphics.freeImage(imgBattery)
     Graphics.freeImage(imgBatteryCharging)
-    Graphics.freeImage(imgBox)
+    if imgBox then Graphics.freeImage(imgBox) end
+    if imgBoxPSP then Graphics.freeImage(imgBoxPSP) end
+    if imgBoxPSX then Graphics.freeImage(imgBoxPSX) end
     Graphics.freeImage(imgFavorite_small_on)
     Graphics.freeImage(imgFavorite_large_on)
     Graphics.freeImage(imgFavorite_large_off)
@@ -4340,9 +4517,11 @@ function FreeMemory()
         Graphics.freeImage(setting_icon_sort_down)
     end
     
-    Graphics.freeImage(file_browser_folder_open)
-    Graphics.freeImage(file_browser_folder_closed)
-    Graphics.freeImage(file_browser_file)
+    if file_browser_icons_loaded == true then
+        Graphics.freeImage(file_browser_folder_open)
+        Graphics.freeImage(file_browser_folder_closed)
+        Graphics.freeImage(file_browser_file)
+    end
     Graphics.freeImage(footer_gradient)
 end
 
@@ -6164,6 +6343,18 @@ end
         
             if collection_count >= 1 then
 
+                local files_lookup = {}
+                for i, file in ipairs(files_table) do
+                    if file.name and file.app_type then
+                        if files_lookup[file.name] == nil then
+                            files_lookup[file.name] = {}
+                        end
+                        if files_lookup[file.name][file.app_type] == nil then
+                            files_lookup[file.name][file.app_type] = file
+                        end
+                    end
+                end
+
                 for z, collection_file_num in ipairs(collection_files) do
                     
                     -- Create empty table using custom cat filenames
@@ -6187,11 +6378,10 @@ end
                             end
 
                             for l, file in ipairs(db_import) do -- or xapptype lookup
-                                local key = find_game_table_pos_key(files_table, file.name)
-                                if key ~= nil then
-                                    if files_table[key].app_type == file.app_type then
+                                local matched_file = files_lookup[file.name] and files_lookup[file.name][file.app_type]
+                                if matched_file ~= nil then
                                         local collection_entry = {}
-                                        for entry_key, entry_value in pairs(files_table[key]) do
+                                        for entry_key, entry_value in pairs(matched_file) do
                                             if entry_key ~= "ricon" then
                                                 collection_entry[entry_key] = entry_value
                                             end
@@ -6201,7 +6391,6 @@ end
                                             collection_entry.custom_sort_order = file.custom_sort_order
                                         end
                                         table.insert(_G[collection_file_num.table_name], collection_entry)
-                                    end
                                 end
                             end
                         end
@@ -6603,6 +6792,7 @@ function Full_Game_Scan()
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
+    fav_count_dirty = true
     renamed_games_table = {}
     hidden_games_table = {}
     files_table_no_sysapps = {}
@@ -10357,16 +10547,6 @@ function import_cached_DB()
     files_table_no_sysapps = {}
     
 
-    local overrides_path = cur_dir .. "/overrides.dat"
-    if System.doesFileExist(overrides_path) then
-        local file_over = System.openFile(overrides_path, FREAD)
-        if file_over then
-            local filesize = System.sizeFile(file_over)
-            local str = System.readFile(file_over, filesize)
-            System.closeFile(file_over)
-        end
-    end
-
     import_renamed_games()
     import_hidden_games()
 
@@ -10533,8 +10713,7 @@ else
     if  System.doesDirExist(db_Cache_Folder) then
 
         -- Folder exists - Count files
-        cache_file_count = System.listDirectory(db_Cache_Folder) or {}
-        if #cache_file_count ~= count_of_cache_files then
+        if cache_files_complete() == false then
             -- Files missing - rescan
             count_loading_tasks()
             files_table = Full_Game_Scan()
@@ -11140,6 +11319,7 @@ function AddOrRemoveFavorite()
         end
         -- update_cached_table("db_files.lua", files_table)
         update_cached_table_recently_played()
+        fav_count_dirty = true
 
 
         temp_import_hidden_cats_cleanup(showHomebrews, homebrews_table, "db_homebrews.lua")
@@ -11159,6 +11339,7 @@ function AddOrRemoveHidden(def_hide_game_flag)
 
     temp_import_hidden_cats(showHomebrews, homebrews_table, "db_homebrews.lua")
     temp_import_hidden_cats(showSysApps, sysapps_table, "db_sysapps.lua")
+    fav_count_dirty = true
 
     -- Recent cat
     if showCat == 48 then
@@ -12245,6 +12426,8 @@ end
 
 
 local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
+    load_cover_models_for_app_type(apptype)
+
     rot = 0
     extraz = 0
     extrax = 0
@@ -12626,8 +12809,30 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
 end
 
 local FileLoad = {}
+flat_cleanup_table = nil
+flat_cleanup_start = nil
+flat_cleanup_end = nil
+
+function free_loaded_icon(file)
+    if file then
+        if FileLoad[file] == true then
+            FileLoad[file] = nil
+            Threads.remove(file)
+        end
+        if file.ricon then
+            Graphics.freeImage(file.ricon)
+            file.ricon = nil
+        end
+    end
+end
 
 function FreeIcons()
+    Threads.bumpGeneration()
+
+    flat_cleanup_table = nil
+    flat_cleanup_start = nil
+    flat_cleanup_end = nil
+
     for k, v in pairs(files_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(games_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
     for k, v in pairs(psp_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
@@ -13355,18 +13560,26 @@ function drawCategory (def)
             cleanup_end = math.min(#def, p + render_distance + 2)
         end
 
-        for k, v in pairs(def) do
-            if k < cleanup_start or k > cleanup_end then
-                if FileLoad[v] == true then
-                    FileLoad[v] = nil
-                    Threads.remove(v)
+        if flat_cleanup_table ~= def then
+            for k, v in pairs(def) do
+                if k < cleanup_start or k > cleanup_end then
+                    free_loaded_icon(v)
                 end
-                if v.ricon then
-                    Graphics.freeImage(v.ricon)
-                    v.ricon = nil
+            end
+        elseif flat_cleanup_start ~= cleanup_start or flat_cleanup_end ~= cleanup_end then
+            local old_start = flat_cleanup_start or cleanup_start
+            local old_end = flat_cleanup_end or cleanup_end
+
+            for k = old_start, old_end do
+                if k < cleanup_start or k > cleanup_end then
+                    free_loaded_icon(def[k])
                 end
             end
         end
+
+        flat_cleanup_table = def
+        flat_cleanup_start = cleanup_start
+        flat_cleanup_end = cleanup_end
 
 
     -- Game list view
@@ -13889,12 +14102,12 @@ while true do
                     for l, file in pairs(files_table) do
                         if string.match(file.apptitle, escape_pattern(ret_search)) or string.match(file.apptitle, escape_pattern(ret_search_lc)) or string.match(file.apptitle, escape_pattern(ret_search_uc)) or string.match(file.apptitle, escape_pattern(ret_search_pc)) then
                             table.insert(search_results_table, file)
-                            table.sort(search_results_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
                             local app_title = search_results_table[1].app_title
                         else
                             local app_title = lang_lines.Search_No_Results -- Workaround - hides last name shown before searching
                         end
                     end
+                    table.sort(search_results_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
                     showCat = 49
                     p = 1
@@ -14122,7 +14335,8 @@ while true do
                     import_collections()
 
                     -- Get favourites list - so can stay on favourites category if renaming from there
-                    create_fav_count_table(return_table)
+                    fav_count_dirty = true
+                    refresh_fav_count_table()
 
                     -- END updating other tables -- 
 
@@ -15054,6 +15268,7 @@ while true do
         end
         
         -- Set cover image
+        load_all_cover_models_if_needed()
         set_cover_image (xCatLookup(showCat))
 
         function closestBoxNoref_getinfo()
@@ -15851,7 +16066,7 @@ while true do
             if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
 
                 -- count favorites
-                create_fav_count_table(files_table)
+                refresh_fav_count_table()
 
                 if menuY == 0 then -- #0 Back
                     showMenu = 2
@@ -16030,7 +16245,8 @@ while true do
                         end
 
                         if showCat == 47 then 
-                            create_fav_count_table(files_table)
+                            fav_count_dirty = true
+                            refresh_fav_count_table()
                         end
                         check_for_out_of_bounds()
                         GetNameAndAppTypeSelected()
@@ -16057,7 +16273,8 @@ while true do
                         end
 
                         if showCat == 47 then 
-                            create_fav_count_table(files_table)
+                            fav_count_dirty = true
+                            refresh_fav_count_table()
                         end
                         check_for_out_of_bounds()
                         GetNameAndAppTypeSelected()
@@ -17308,6 +17525,7 @@ while true do
 
 -- MENU 11 - ROM BROWSER
     elseif showMenu == 11 then
+        load_file_browser_icons_if_needed()
         
         -- SETTINGS
         -- Footer buttons and icons
@@ -18706,7 +18924,8 @@ while true do
 
                         -- Rebuild favorites table if we're in favorites category
                         if showCat == 47 then
-                            create_fav_count_table(files_table)
+                            fav_count_dirty = true
+                            refresh_fav_count_table()
                         end
 
                         -- Handle both search results and random game in category 49
@@ -20151,7 +20370,7 @@ while true do
                 elseif menuY == 1 then -- #1 Favorites
 
                     -- Check if there are favourites first
-                    create_fav_count_table(files_table)
+                    refresh_fav_count_table()
 
                     -- Favourites found
                     if #fav_count > 0 then
@@ -21567,7 +21786,7 @@ while true do
 
                     if showCat == 47 then
                         -- count favorites
-                        create_fav_count_table(files_table)
+                        refresh_fav_count_table()
                     end
 
                     if filterGames == 1 then
@@ -22307,4 +22526,6 @@ while true do
         Timer.destroy(oneLoopTimer)
         oneLoopTimer = nil -- clear timer value - prevents frame-by-frame timer overhead
     end 
+
+    init_music_if_needed()
 end

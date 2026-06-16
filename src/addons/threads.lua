@@ -1,4 +1,5 @@
 Threads = {}
+Threads.Generation = 0
 
 local Queue = {}
 local Task = nil
@@ -9,6 +10,14 @@ local Trash = {
 }
 
 local uniques = {}
+
+function Threads.bumpGeneration()
+    Threads.Generation = Threads.Generation + 1
+end
+
+local function valid_image_handle(image)
+    return type(image) == "number" and image ~= 0 and image ~= 1
+end
 
 function Threads.update()
     if (#Queue == 0 and not Task) or System.getAsyncState() == 0 then
@@ -42,7 +51,12 @@ function Threads.update()
             Trash.Link = Task.Link
             if Task.Type == "ImageLoad" then
                 if System.doesFileExist(Task.Path) then
-                    Task.Table[Task.Index] = System.getAsyncResult()
+                    local result = System.getAsyncResult()
+                    if Task.Generation == Threads.Generation then
+                        Task.Table[Task.Index] = result
+                    elseif valid_image_handle(result) then
+                        Graphics.freeImage(result)
+                    end
                 else
                     error("File not found?")
                 end
@@ -72,13 +86,16 @@ function Threads.update()
     end
     if Trash.Garbadge then
         if Trash.Type == "ImageLoad" then
-            Graphics.freeImage(Trash.Garbadge)
+            if valid_image_handle(Trash.Garbadge) then
+                Graphics.freeImage(Trash.Garbadge)
+            end
         end
         Trash.Garbadge = nil
     end
 end
 
 function Threads.clear()
+    Threads.bumpGeneration()
     Queue = {}
     uniques = {}
     if Task ~= nil then
@@ -101,7 +118,8 @@ function Threads.addTask(UniqueKey, T)
         Index = T.Index,
         Path = T.Path,
         Retry = 1,
-        UniqueKey = UniqueKey
+        UniqueKey = UniqueKey,
+        Generation = T.Generation or Threads.Generation
     }
     Queue[#Queue + 1] = newTask
     uniques[UniqueKey] = newTask
