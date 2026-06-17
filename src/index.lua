@@ -1620,7 +1620,7 @@ if not System.doesFileExist(background_dir .. "Grey.png") then System.copyFile("
             hatari_libretro = {
                 display_name = "Hatari",
                 emulator = "retroarch",
-                core_file = "atari_libretro",
+                core_file = "hatari_libretro",
                 supported_systems = { "ATARI_ST" }
             },
             mame2000_libretro = {
