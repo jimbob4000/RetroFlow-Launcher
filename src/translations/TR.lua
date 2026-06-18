@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Oyun çekirdeği menüsünü göster:",
 ["Global_core_settings"] = "Genel çekirdek ayarları",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Platform:",
 ["Emulator_core"] = "Emülatör çekirdeği",
 ["Core_colon"] = "Çekirdek:",

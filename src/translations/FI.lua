@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Näytä peliydinvalikko:",
 ["Global_core_settings"] = "Globaalit ydinasetukset",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Alusta:",
 ["Emulator_core"] = "Emulaattorin ydin",
 ["Core_colon"] = "Ydin:",

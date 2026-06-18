@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Vis spillkjernemeny:",
 ["Global_core_settings"] = "Globale kjerneinnstillinger",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Plattform:",
 ["Emulator_core"] = "Emulatorkjerne",
 ["Core_colon"] = "Kjerne:",

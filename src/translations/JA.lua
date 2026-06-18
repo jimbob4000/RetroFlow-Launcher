@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "ゲームコアメニューを表示：",
 ["Global_core_settings"] = "グローバルコア設定",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "プラットフォーム：",
 ["Emulator_core"] = "エミュレーターコア",
 ["Core_colon"] = "コア：",

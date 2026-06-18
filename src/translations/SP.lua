@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Mostrar menú de núcleos de juegos:",
 ["Global_core_settings"] = "Configuración global de núcleos",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Plataforma:",
 ["Emulator_core"] = "Núcleo del emulador",
 ["Core_colon"] = "Núcleo:",

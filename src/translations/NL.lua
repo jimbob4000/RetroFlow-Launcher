@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Spelcoremenu tonen:",
 ["Global_core_settings"] = "Globale core-instellingen",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Platform:",
 ["Emulator_core"] = "Emulatorcore",
 ["Core_colon"] = "Core:",

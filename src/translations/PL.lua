@@ -319,6 +319,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Pokaż menu rdzeni gier:",
 ["Global_core_settings"] = "Globalne ustawienia rdzeni",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Platforma:",
 ["Emulator_core"] = "Rdzeń emulatora",
 ["Core_colon"] = "Rdzeń:",

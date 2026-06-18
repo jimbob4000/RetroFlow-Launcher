@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "顯示遊戲核心選單：",
 ["Global_core_settings"] = "全域核心設定",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "平台：",
 ["Emulator_core"] = "模擬器核心",
 ["Core_colon"] = "核心：",

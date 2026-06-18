@@ -319,6 +319,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Show game core menu:",
 ["Global_core_settings"] = "Global core settings",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Platform:",
 ["Emulator_core"] = "Emulator core",
 ["Core_colon"] = "Core:",

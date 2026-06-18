@@ -317,6 +317,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Показывать меню игровых ядер:",
 ["Global_core_settings"] = "Глобальные настройки ядер",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Платформа:",
 ["Emulator_core"] = "Ядро эмулятора",
 ["Core_colon"] = "Ядро:",

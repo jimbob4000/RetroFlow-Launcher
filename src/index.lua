@@ -27,7 +27,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.1.0"
+local appversion = "8.2.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -3163,6 +3163,7 @@ setTime = 0 -- 24 hour
 local filterGames = 0 -- All
 showMissingCovers = 1 -- On
 local smoothScrolling = 1 -- On
+local setResumePosition = 0 -- Off
 
 set2DViews = 1 -- On
 setChangeViews = 1 -- On
@@ -3232,13 +3233,56 @@ function SaveSettings()
         "\nShow_System_Apps=" .. showSysApps .. " " .. 
         "\nExtract_PSP_backgrounds=" .. setPSPExtractBG .. " " .. 
         "\nShow_cores=" .. setShowCores .. " " .. 
-        "\nScan_cartridges" .. setScanCartridges .. " " .. 
+        "\nScan_cartridges" .. setScanCartridges .. " " ..
+        "\nResume_position=" .. setResumePosition .. " " ..
         "\nStartup_Collection=" .. startCategory_collection -- MUST ALWAYS BE LAST -- the config is split into a table using number values which this setting does not have. Need to add proper ini file reading
 
         file_config:write(settings)
         file_config:close()
 
     else
+    end
+end
+
+function SaveLastPosition()
+    if setResumePosition == 1 then
+        local f = io.open(cur_dir .. "/last_position.dat", "w")
+        if f ~= nil then
+            f:write("Cat=" .. tostring(showCat) .. "\nPos=" .. tostring(p))
+            f:close()
+        end
+    end
+end
+
+function LoadLastPosition()
+    if setResumePosition == 1 and System.doesFileExist(cur_dir .. "/last_position.dat") then
+        local f = System.openFile(cur_dir .. "/last_position.dat", FREAD)
+        local size = System.sizeFile(f)
+        local str = System.readFile(f, size)
+        System.closeFile(f)
+        local savedCat = tonumber(str:match("Cat=(%d+)"))
+        local savedPos = tonumber(str:match("Pos=(%d+)"))
+        if savedCat ~= nil then
+            if savedCat >= 50 then
+                -- Validate the collection still exists
+                local collectionIdx = savedCat - 49
+                if collection_files and collection_files[collectionIdx] then
+                    showCat = savedCat
+                else
+                    showCat = startCategory
+                end
+            elseif savedCat == 49 then
+                -- Search results don't persist across launches
+                showCat = startCategory
+            else
+                showCat = savedCat
+            end
+        end
+        if savedPos ~= nil then
+            p = savedPos
+            master_index = p
+        end
+        check_for_out_of_bounds()
     end
 end
 
@@ -3301,7 +3345,8 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
     local getPSPExtractBG = settingValue[28]; if getPSPExtractBG ~= nil then setPSPExtractBG = getPSPExtractBG end
     local getShowCores = settingValue[29]; if getShowCores ~= nil then setShowCores = getShowCores end
     local getScanCartridges = settingValue[30]; if getScanCartridges ~= nil then setScanCartridges = getScanCartridges end
-    -- settingValue[26] is startup collection 
+    local getResumePosition = settingValue[31]; if getResumePosition ~= nil then setResumePosition = getResumePosition end
+    -- settingValue[31] is startup collection
 
     selectedwall = setBackground
 
@@ -3892,6 +3937,7 @@ local lang_default =
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Show game core menu:",
 ["Global_core_settings"] = "Global core settings",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Platform:",
 ["Emulator_core"] = "Emulator core",
 ["Core_colon"] = "Core:",
@@ -5245,8 +5291,9 @@ function check_game_available_appdb(def_titleid)
 end
 
 function prepare_for_launch()
+    SaveLastPosition()
     FreeMemory()
-    -- Add to recently played 
+    -- Add to recently played
     AddtoRecentlyPlayed()
     update_cached_table_recently_played_pre_launch()
 end
@@ -13937,6 +13984,8 @@ end
 -- Capture function load time before main loop starts (major performance optimization)
 functionTime = Timer.getTime(oneLoopTimer)
 
+LoadLastPosition()
+
 -- Main loop
 while true do
 
@@ -18316,7 +18365,7 @@ while true do
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
 
-        menuItems = 7
+        menuItems = 8
 
         -- MENU 19 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -18369,6 +18418,14 @@ while true do
         
         -- MENU 19 / #7 Global core settings
         Font.print(fnt22, setting_x, setting_y7, lang_lines.Global_core_settings, white)--Global core settings
+
+        -- MENU 19 / #8 Resume position
+        Font.print(fnt22, setting_x, setting_y8, lang_lines.Resume_position_colon, white)
+        if setResumePosition == 1 then
+            Font.print(fnt22, setting_x_offset, setting_y8, lang_lines.On, white)
+        else
+            Font.print(fnt22, setting_x_offset, setting_y8, lang_lines.Off, white)
+        end
 
         -- MENU 19 - FUNCTIONS
         status = System.getMessageState()
@@ -18454,8 +18511,15 @@ while true do
                     menuY = 0
                 
                 elseif menuY == 7 then -- #7 Change emulator cores
-                    showMenu = 28 
+                    showMenu = 28
                     menuY = 0
+
+                elseif menuY == 8 then -- #8 Resume position
+                    if setResumePosition == 1 then
+                        setResumePosition = 0
+                    else
+                        setResumePosition = 1
+                    end
                 end
 
                 --Save settings

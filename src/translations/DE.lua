@@ -318,6 +318,7 @@ return {
 -- Emulator core strings
 ["Show_game_core_menu_colon"] = "Spielkern-Menü anzeigen:",
 ["Global_core_settings"] = "Globale Kerneinstellungen",
+["Resume_position_colon"] = "Resume position:",
 ["Platform_colon"] = "Plattform:",
 ["Emulator_core"] = "Emulator-Kern",
 ["Core_colon"] = "Kern:",
