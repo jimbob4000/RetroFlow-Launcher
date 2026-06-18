@@ -12856,6 +12856,40 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
 end
 
 local FileLoad = {}
+
+function PreloadRestoredCovers()
+    if setResumePosition ~= 1 then return end
+    local def = xCatLookup(showCat)
+    local total = #def
+    if total == 0 then return end
+    -- Synchronously load the selected cover and its immediate neighbours so
+    -- they are ready on the first frame with no pop-in.
+    local sync_from = math.max(1, p - 2)
+    local sync_to   = math.min(total, p + 2)
+    for i = sync_from, sync_to do
+        local file = def[i]
+        if file and file.icon_path and FileLoad[file] == nil then
+            file.ricon   = Graphics.loadImage(file.icon_path)
+            FileLoad[file] = true
+        end
+    end
+    -- Async-queue the wider neighbourhood so scrolling away feels smooth.
+    local async_from = math.max(1, p - 5)
+    local async_to   = math.min(total, p + 5)
+    for i = async_from, async_to do
+        local file = def[i]
+        if file and file.icon_path and FileLoad[file] == nil then
+            FileLoad[file] = true
+            Threads.addTask(file, {
+                Type  = "ImageLoad",
+                Path  = file.icon_path,
+                Table = file,
+                Index = "ricon"
+            })
+        end
+    end
+end
+
 flat_cleanup_table = nil
 flat_cleanup_start = nil
 flat_cleanup_end = nil
@@ -13985,6 +14019,7 @@ end
 functionTime = Timer.getTime(oneLoopTimer)
 
 LoadLastPosition()
+PreloadRestoredCovers()
 
 -- Main loop
 while true do
@@ -18357,7 +18392,7 @@ while true do
         Graphics.drawImage(900-(btnMargin * 2)-label1-label2, 510, btnX)
         Font.print(fnt20, 900+28-(btnMargin * 2)-label1-label2, 508, lang_lines.Select, white)--Select
 
-        Graphics.fillRect(60, 900, 34, 460, darkalpha)
+        Graphics.fillRect(60, 900, 34, 515, darkalpha)
 
         Font.print(fnt22, setting_x, setting_yh, lang_lines.Other_Settings, white)--Other Settings
         Graphics.fillRect(60, 900, 78, 81, white)
