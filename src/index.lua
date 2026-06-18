@@ -12862,30 +12862,13 @@ function PreloadRestoredCovers()
     local def = xCatLookup(showCat)
     local total = #def
     if total == 0 then return end
-    -- Synchronously load the selected cover and its immediate neighbours so
-    -- they are ready on the first frame with no pop-in.
-    local sync_from = math.max(1, p - 2)
-    local sync_to   = math.min(total, p + 2)
-    for i = sync_from, sync_to do
+    local from = math.max(1, p - 5)
+    local to   = math.min(total, p + 5)
+    for i = from, to do
         local file = def[i]
         if file and file.icon_path and FileLoad[file] == nil then
-            file.ricon   = Graphics.loadImage(file.icon_path)
+            file.ricon    = Graphics.loadImage(file.icon_path)
             FileLoad[file] = true
-        end
-    end
-    -- Async-queue the wider neighbourhood so scrolling away feels smooth.
-    local async_from = math.max(1, p - 5)
-    local async_to   = math.min(total, p + 5)
-    for i = async_from, async_to do
-        local file = def[i]
-        if file and file.icon_path and FileLoad[file] == nil then
-            FileLoad[file] = true
-            Threads.addTask(file, {
-                Type  = "ImageLoad",
-                Path  = file.icon_path,
-                Table = file,
-                Index = "ricon"
-            })
         end
     end
 end
