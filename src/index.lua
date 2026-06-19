@@ -12862,14 +12862,18 @@ function PreloadRestoredCovers()
     local def = xCatLookup(showCat)
     local total = #def
     if total == 0 then return end
-    local from = math.max(1, p - 5)
-    local to   = math.min(total, p + 5)
-    for i = from, to do
+    local function preload(i)
+        if i < 1 or i > total then return end
         local file = def[i]
         if file and file.icon_path and FileLoad[file] == nil then
             file.ricon    = Graphics.loadImage(file.icon_path)
             FileLoad[file] = true
         end
+    end
+    preload(p)
+    for offset = 1, 5 do
+        preload(p - offset)
+        preload(p + offset)
     end
 end
 
@@ -13468,11 +13472,26 @@ function drawCategory (def)
                 flat_view_scroll_x = flat_view_target_x
             end
 
+            -- Pre-queue image loads outward from p so nearest covers load first
+            local function queue_cover(i)
+                if i < visible_start or i > visible_end then return end
+                local file = def[i]
+                if file and file.icon_path and FileLoad[file] == nil then
+                    FileLoad[file] = true
+                    Threads.addTask(file, {Type="ImageLoad", Path=file.icon_path, Table=file, Index="ricon"})
+                end
+            end
+            queue_cover(p)
+            for offset = 1, render_distance do
+                queue_cover(p + offset)
+                queue_cover(p - offset)
+            end
+
             -- Draw covers in visible range
             for l = visible_start, visible_end do
                 local file = def[l]
-                
-                -- Ensure image is loaded
+
+                -- Ensure image is loaded (no-op if already queued above)
                 if FileLoad[file] == nil then
                     FileLoad[file] = true
                     Threads.addTask(file, {
@@ -13546,6 +13565,23 @@ function drawCategory (def)
             base_y = fv_left_margin
             base_y_left = 0
             cover_widths_x_bonus = 0
+
+            -- Pre-queue image loads outward from p so nearest covers load first
+            local ns_total = #def
+            local function ns_queue_cover(i)
+                if i < 1 or i > ns_total then return end
+                local file = def[i]
+                if file and file.icon_path and FileLoad[file] == nil and
+                   (i > p - render_distance and i < p + render_distance + 2) then
+                    FileLoad[file] = true
+                    Threads.addTask(file, {Type="ImageLoad", Path=file.icon_path, Table=file, Index="ricon"})
+                end
+            end
+            ns_queue_cover(p)
+            for offset = 1, render_distance do
+                ns_queue_cover(p + offset)
+                ns_queue_cover(p - offset)
+            end
 
             for l, file in pairs((def)) do
                 if (l >= master_index) then
