@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Indítási Kategória: ",
+["Last_played_game"] = "Utoljára játszott játék",
 ["Favorites"] = "Kedvencek",
 ["Recently_Played"] = "Nemrég Játszott",
 ["PS_Vita"] = "PS Vita",

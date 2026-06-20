@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Opstartskategori: ",
+["Last_played_game"] = "Sidst spillede spil",
 ["Favorites"] = "Favoritter",
 ["Recently_Played"] = "For nylig spillet",
 ["PS_Vita"] = "PS Vita",

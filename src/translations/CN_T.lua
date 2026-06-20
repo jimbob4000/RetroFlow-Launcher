@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "啟動類別 : ",
+["Last_played_game"] = "上次遊玩的遊戲",
 ["Favorites"] = "收藏夾",
 ["Recently_Played"] = "最近玩過",
 ["PS_Vita"] = "PS Vita",

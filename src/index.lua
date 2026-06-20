@@ -27,7 +27,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.1.0"
+local appversion = "8.2.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -3135,6 +3135,7 @@ local curTotal = 1
 local temp_import = false
 
 -- Settings
+START_CATEGORY_LAST_PLAYED = 49
 local startCategory = 1
 local setReflections = 1
 local setSounds = 1
@@ -3275,7 +3276,7 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
         if collection_files == nil or collection_files[Collection_CatNum] == nil then
             startCategory = 0
         end
-    elseif startCategory > collection_count_of_start_categories then
+    elseif startCategory ~= START_CATEGORY_LAST_PLAYED and startCategory > collection_count_of_start_categories then
         -- If startCategory exceeds available categories, default to 0
         startCategory = 0
     end
@@ -3617,6 +3618,7 @@ local lang_default =
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Startup Category: ",
+["Last_played_game"] = "Last played game",
 ["Favorites"] = "Favorites",
 ["Recently_Played"] = "Recently Played",
 ["PS_Vita"] = "PS Vita",
@@ -4584,6 +4586,346 @@ function xCatLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showcat
 
     else             return files_table_no_sysapps -- Hide sys apps from all list
     end
+end
+
+function xCatTableNameLookup(CatNum)
+    if CatNum == 0 then
+        return "files_table_no_sysapps"
+    elseif CatNum >= 50 and CatNum <= collection_syscount then
+        local Collection_CatNum = CatNum - 49
+        if collection_files[Collection_CatNum] then
+            return collection_files[Collection_CatNum].table_name
+        end
+    elseif SystemsToScan[CatNum] and SystemsToScan[CatNum].table then
+        return SystemsToScan[CatNum].table
+    end
+
+    return nil
+end
+
+-- STARTUP CATEGORY - Keep the settings label in one place for both drawing and left/right changes.
+function startup_category_label(def_category)
+    local startup_category_labels = {
+        [0] = lang_lines.All,
+        [1] = lang_lines.PS_Vita,
+        [2] = lang_lines.Homebrews,
+        [3] = lang_lines.PSP,
+        [4] = lang_lines.PlayStation,
+        [5] = lang_lines.Playstation_Mobile,
+        [6] = lang_lines.Nintendo_64,
+        [7] = lang_lines.Super_Nintendo,
+        [8] = lang_lines.Nintendo_Entertainment_System,
+        [9] = lang_lines.Nintendo_DS,
+        [10] = lang_lines.Game_Boy_Advance,
+        [11] = lang_lines.Game_Boy_Color,
+        [12] = lang_lines.Game_Boy,
+        [13] = lang_lines.Sega_Dreamcast,
+        [14] = lang_lines.Sega_CD,
+        [15] = lang_lines.Sega_32X,
+        [16] = lang_lines.Sega_Mega_Drive,
+        [17] = lang_lines.Sega_Master_System,
+        [18] = lang_lines.Sega_Game_Gear,
+        [19] = lang_lines.TurboGrafx_16,
+        [20] = lang_lines.TurboGrafx_CD,
+        [21] = lang_lines.PC_Engine,
+        [22] = lang_lines.PC_Engine_CD,
+        [23] = lang_lines.Amiga,
+        [24] = lang_lines.ScummVM,
+        [25] = lang_lines.EasyRPG,
+        [26] = lang_lines.MS_DOS,
+        [27] = lang_lines.Commodore_64,
+        [28] = lang_lines.WonderSwan_Color,
+        [29] = lang_lines.WonderSwan,
+        [30] = lang_lines.PICO8,
+        [31] = lang_lines.MSX2,
+        [32] = lang_lines.MSX,
+        [33] = lang_lines.ZX_Spectrum,
+        [34] = lang_lines.Atari_ST,
+        [35] = lang_lines.Atari_7800,
+        [36] = lang_lines.Atari_5200,
+        [37] = lang_lines.Atari_2600,
+        [38] = lang_lines.Atari_Lynx,
+        [39] = lang_lines.ColecoVision,
+        [40] = lang_lines.Vectrex,
+        [41] = lang_lines.FBA_2012,
+        [42] = lang_lines.MAME_2003Plus,
+        [43] = lang_lines.MAME_2000,
+        [44] = lang_lines.Neo_Geo,
+        [45] = lang_lines.Neo_Geo_Pocket_Color,
+        [46] = lang_lines.System_Apps,
+        [47] = lang_lines.Favorites,
+        [48] = lang_lines.Recently_Played,
+        [START_CATEGORY_LAST_PLAYED] = lang_lines.Last_played_game,
+    }
+
+    if def_category >= 50 then
+        local Collection_CatNum = def_category - 49
+        if collection_files[Collection_CatNum] then
+            return collection_files[Collection_CatNum].display_name
+        end
+    end
+
+    return startup_category_labels[def_category] or lang_lines.PS_Vita
+end
+
+-- STARTUP CATEGORY - Build selectable startup categories, respecting category visibility settings.
+function startup_category_options()
+    local options = {}
+
+    refresh_fav_count_table()
+
+    if showAll == 1 then
+        table.insert(options, 0)
+    end
+
+    for cat_num = 1, count_of_start_categories do
+        local cat_table = xCatLookup(cat_num)
+
+        if cat_num == 2 then
+            if showHomebrews == 1 and cat_table and #cat_table > 0 then
+                table.insert(options, cat_num)
+            end
+        elseif cat_num == 46 then
+            if showSysApps == 1 and cat_table and #cat_table > 0 then
+                table.insert(options, cat_num)
+            end
+        elseif cat_num == 47 then
+            if #fav_count > 0 then
+                table.insert(options, cat_num)
+            end
+        elseif cat_num == 48 then
+            if showRecentlyPlayed == 1 then
+                table.insert(options, cat_num)
+            end
+        elseif cat_table and #cat_table > 0 then
+            table.insert(options, cat_num)
+        end
+    end
+
+    if #options == 0 then
+        table.insert(options, 1)
+    end
+
+    table.insert(options, START_CATEGORY_LAST_PLAYED)
+
+    if showCollections == 1 then
+        for collection_showcat = 50, collection_syscount do
+            local collection_table = xCatLookup(collection_showcat)
+            if collection_table and next(collection_table) ~= nil then
+                table.insert(options, collection_showcat)
+            end
+        end
+    end
+
+    return options
+end
+
+-- STARTUP CATEGORY - Fall back to PS Vita if the saved startup category is no longer selectable.
+function normalize_startup_category()
+    local options = startup_category_options()
+
+    for key, category in ipairs(options) do
+        if category == startCategory then
+            return startCategory
+        end
+    end
+
+    startCategory = 1
+    return startCategory
+end
+
+-- STARTUP CATEGORY - Move the setting with left/right controls instead of changing it on Cross.
+function change_startup_category(def_direction)
+    local options = startup_category_options()
+    local current_index = 1
+
+    for key, category in ipairs(options) do
+        if category == startCategory then
+            current_index = key
+            break
+        end
+    end
+
+    current_index = current_index + def_direction
+
+    if current_index < 1 then
+        current_index = #options
+    elseif current_index > #options then
+        current_index = 1
+    end
+
+    startCategory = options[current_index]
+end
+
+-- LAST PLAYED GAME - Convert a saved table name back to the live category number used by showCat.
+-- Collections are resolved by table name so startup survives collection reordering.
+function xCatNumFromTableName(def_table_name)
+    if def_table_name == "files_table_no_sysapps" or def_table_name == "files_table" then
+        return 0
+    end
+
+    for cat_num, system in pairs(SystemsToScan) do
+        if cat_num ~= START_CATEGORY_LAST_PLAYED and system.table == def_table_name then
+            return cat_num
+        end
+    end
+
+    if collection_files and collection_syscount then
+        for collection_showcat = 50, collection_syscount do
+            local Collection_CatNum = collection_showcat - 49
+            if collection_files[Collection_CatNum] and collection_files[Collection_CatNum].table_name == def_table_name then
+                return collection_showcat
+            end
+        end
+    end
+
+    return nil
+end
+
+-- LAST PLAYED GAME - Temporary categories such as search/random should restore to the game's real system table.
+-- xAppNumTableLookup already knows that mapping, so use it and then find the matching category.
+function xCatTableNameFromAppType(def_app_type)
+    local app_table = xAppNumTableLookup(def_app_type)
+
+    if app_table == nil then
+        return nil
+    end
+
+    for cat_num = 1, count_of_categories do
+        if cat_num ~= START_CATEGORY_LAST_PLAYED and xCatLookup(cat_num) == app_table then
+            return xCatTableNameLookup(cat_num)
+        end
+    end
+
+    return nil
+end
+
+-- LAST PLAYED GAME - Check if a restored category is currently allowed by category visibility settings.
+function last_played_showcat_is_visible(def_showcat, recent_game)
+    if recent_game and recent_game.hidden == true and showHidden == 0 then
+        return false
+    end
+
+    if def_showcat == nil then
+        return false
+    elseif def_showcat == 0 then
+        return showAll == 1
+    elseif def_showcat == 2 then
+        return showHomebrews == 1
+    elseif def_showcat == 46 then
+        return showSysApps == 1
+    elseif def_showcat == 48 then
+        return showRecentlyPlayed == 1
+    elseif def_showcat >= 50 then
+        return showCollections == 1
+    end
+
+    return true
+end
+
+-- LAST PLAYED GAME - Prefer the original launch category, but fall back to app type when that category is hidden.
+function resolve_last_played_showcat(recent_game)
+    if recent_game == nil then
+        return nil
+    end
+
+    local launch_table_name = recent_game.last_played_table
+    local launch_showcat = nil
+
+    if launch_table_name ~= nil and launch_table_name ~= "search_results_table" then
+        launch_showcat = xCatNumFromTableName(launch_table_name)
+    end
+
+    if last_played_showcat_is_visible(launch_showcat, recent_game) then
+        return launch_showcat
+    end
+
+    local app_type_table_name = xCatTableNameFromAppType(recent_game.app_type)
+    local app_type_showcat = app_type_table_name and xCatNumFromTableName(app_type_table_name)
+
+    if last_played_showcat_is_visible(app_type_showcat, recent_game) then
+        return app_type_showcat
+    end
+
+    return nil
+end
+
+-- LAST PLAYED GAME - Find a previously launched game in a rebuilt table without relying on one field only.
+-- Paths are best, with filename/name as fallbacks for older recently_played entries.
+function find_game_table_pos_key_by_recent(tbl, recent_game)
+    if not tbl or not recent_game then
+        return nil
+    end
+
+    for key, data in pairs(tbl) do
+        if (recent_game.game_path and data.game_path == recent_game.game_path)
+            or (recent_game.filename and data.filename == recent_game.filename)
+            or (recent_game.name and data.name == recent_game.name) then
+            return key
+        end
+    end
+
+    return nil
+end
+
+-- LAST PLAYED GAME - Apply a startup jump and reset cover scrolling so the first draw starts around that game.
+function set_startup_position(def_showcat, def_position)
+    showCat = def_showcat
+    p = def_position
+    master_index = p
+    startCovers = false
+    targetX = 0
+    quick_scrolling_factor = 0
+    quick_scrolling_factor_goal = 0
+    flat_view_scroll_x = 0
+    flat_view_target_x = 0
+    flat_cleanup_table = nil
+    flat_cleanup_start = nil
+    flat_cleanup_end = nil
+    startup_cover_prewarm_pending = true
+end
+
+-- LAST PLAYED GAME - Resolve the "Last Played Game" startup option after all regular/collection tables exist.
+function apply_last_played_startup_category()
+    if startCategory ~= START_CATEGORY_LAST_PLAYED then
+        return
+    end
+
+    local fallback_cat = 1 -- Vita
+    local fallback_pos = 1 -- First game in Vita table
+    local recently_played_was_hidden = showRecentlyPlayed == 0
+
+    if recently_played_was_hidden then
+        recently_played_table = {}
+        import_recently_played(true)
+        table.sort(recently_played_table, function(a, b) return (tonumber(a.date_played) > tonumber(b.date_played)) end)
+    end
+
+    local last_played = recently_played_table and recently_played_table[1]
+    local launch_showcat = resolve_last_played_showcat(last_played)
+
+    if launch_showcat == 47 then
+        refresh_fav_count_table()
+    end
+
+    if launch_showcat ~= nil then
+        local launch_table = xCatLookup(launch_showcat)
+        local launch_pos = find_game_table_pos_key_by_recent(launch_table, last_played)
+
+        if launch_pos ~= nil then
+            set_startup_position(launch_showcat, launch_pos)
+            if recently_played_was_hidden then
+                recently_played_table = {}
+            end
+            return
+        end
+    end
+
+    if recently_played_was_hidden then
+        recently_played_table = {}
+    end
+
+    set_startup_position(fallback_cat, fallback_pos)
 end
 
 -- COLLECTIONS
@@ -6097,7 +6439,11 @@ function include_game_in_recent(def_app_type, def_game_path, def_name)
 
 end
 
-function import_recently_played()
+function import_recently_played(def_force_import)
+
+    if showRecentlyPlayed ~= 1 and def_force_import ~= true then
+        return
+    end
 
     local file_over = System.openFile(cur_dir .. "/overrides.dat", FREAD)
     local filesize = System.sizeFile(file_over)
@@ -6105,9 +6451,9 @@ function import_recently_played()
     System.closeFile(file_over)
 
     -- RECENTLY PLAYED
-    if showRecentlyPlayed == 1 then
-        if System.doesFileExist("ux0:/data/RetroFlow/recently_played.lua") then
-            db_Cache_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
+    -- Forced imports are temporary/internal reads for Last Played startup and launch updates.
+    if System.doesFileExist("ux0:/data/RetroFlow/recently_played.lua") then
+        db_Cache_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
 
             local db_recently_played = {}
             local importLuaFileError = importLuaFile(db_Cache_recently_played, db_recently_played)
@@ -6295,8 +6641,6 @@ function import_recently_played()
 
             end
             
-        end
-    else
     end
 
     -- Remove hidden games from recent if necessary
@@ -10733,6 +11077,8 @@ else
     end
 end
 
+apply_last_played_startup_category()
+
 
 
 -- Get app and game sizes
@@ -11391,6 +11737,8 @@ end
 
 function AddtoRecentlyPlayed()
 
+    local recently_played_was_hidden = showRecentlyPlayed == 0
+
     -- Get system date and time
     day_num, dd, mm, yyyy = System.getDate()
     h,m,s = System.getTime()
@@ -11404,6 +11752,22 @@ function AddtoRecentlyPlayed()
 
     -- Create timestamp string
     timestamp = tonumber(yyyy .. mm .. dd .. h .. m .. s)
+    local last_played_table = xCatTableNameLookup(showCat)
+
+    -- LAST PLAYED GAME
+    if last_played_table == "search_results_table" then
+        local app_type_table_name = xCatTableNameFromAppType(apptype)
+        if app_type_table_name ~= nil then
+            last_played_table = app_type_table_name
+        end
+    end
+
+    -- LAST PLAYED GAME
+    -- If the visible Recently Played category is hidden, import the saved list temporarily so launch updates preserve it.
+    if recently_played_was_hidden then
+        recently_played_table = {}
+        import_recently_played(true)
+    end
     
     recently_played_new = {}
     already_played = false
@@ -11413,6 +11777,7 @@ function AddtoRecentlyPlayed()
         if v.filename==filename then
             already_played = true
             v.date_played=timestamp
+            v.last_played_table=last_played_table
         end
     end
 
@@ -11421,6 +11786,7 @@ function AddtoRecentlyPlayed()
         for k, v in pairs(xAppNumTableLookup(apptype)) do 
             if v.filename==filename and already_played == false then
                 v.date_played=timestamp
+                v.last_played_table=last_played_table
                 table.insert(recently_played_new, v)
             else
             end
@@ -11442,6 +11808,10 @@ function AddtoRecentlyPlayed()
         if k < 21 then -- Limit to 20 games
             table.insert(recently_played_pre_launch_table, v)
         end
+    end
+
+    if recently_played_was_hidden then
+        recently_played_table = {}
     end
 
 end
@@ -12826,6 +13196,45 @@ function free_loaded_icon(file)
     end
 end
 
+-- LAST PLAYED GAME - Queue a cover through the existing threaded image loader, but only once per file.
+function queue_cover_image_load(file)
+    if file and FileLoad[file] == nil then
+        FileLoad[file] = true
+        Threads.addTask(file, {
+            Type = "ImageLoad",
+            Path = file.icon_path,
+            Table = file,
+            Index = "ricon"
+        })
+    end
+end
+
+-- LAST PLAYED GAME - On a last-played startup jump, load the selected cover first, then nearby covers.
+-- The range is clamped so jumps near the start/end of a table do not overrun.
+function prewarm_covers_around_position(def)
+    if not startup_cover_prewarm_pending or not def or #def == 0 or p < 1 or p > #def then
+        return
+    end
+
+    startup_cover_prewarm_pending = false
+
+    local range = 8
+    queue_cover_image_load(def[p])
+
+    for offset = 1, range do
+        local right_idx = p + offset
+        local left_idx = p - offset
+
+        if right_idx <= #def then
+            queue_cover_image_load(def[right_idx])
+        end
+
+        if left_idx >= 1 then
+            queue_cover_image_load(def[left_idx])
+        end
+    end
+end
+
 function FreeIcons()
     Threads.bumpGeneration()
 
@@ -13305,6 +13714,7 @@ end
 
 
 function drawCategory (def)
+    prewarm_covers_around_position(def)
 
     -- Draw flat covers - SMART LAZY PRE-COMPUTATION
     if showView == 5 then
@@ -15955,61 +16365,8 @@ while true do
 
         -- MENU 3 / #1 Startup Category
         Font.print(fnt22, setting_x, setting_y1, lang_lines.Startup_Category_colon, white)--Startup Category
-
-        if startCategory == 0 then Font.print(fnt22, setting_x_offset, setting_y1,          lang_lines.All, white)--ALL
-        elseif startCategory == 1 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.PS_Vita, white)--GAMES
-        elseif startCategory == 2 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Homebrews, white)--HOMEBREWS
-        elseif startCategory == 3 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.PSP, white)--PSP
-        elseif startCategory == 4 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.PlayStation, white)--PSX
-        elseif startCategory == 5 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Playstation_Mobile, white)--Playstation_Mobile
-        elseif startCategory == 6 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Nintendo_64, white)--N64
-        elseif startCategory == 7 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Super_Nintendo, white)--SNES
-        elseif startCategory == 8 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Nintendo_Entertainment_System, white)--NES
-        elseif startCategory == 9 then Font.print(fnt22, setting_x_offset, setting_y1,      lang_lines.Nintendo_DS, white)--NDS
-        elseif startCategory == 10 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Game_Boy_Advance, white)--GBA
-        elseif startCategory == 11 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Game_Boy_Color, white)--GBC
-        elseif startCategory == 12 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Game_Boy, white)--GB
-        elseif startCategory == 13 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_Dreamcast, white)--Sega_Dreamcast
-        elseif startCategory == 14 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_CD, white)--Sega_CD
-        elseif startCategory == 15 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_32X, white)--Sega_32X
-        elseif startCategory == 16 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_Mega_Drive, white)--MD
-        elseif startCategory == 17 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_Master_System, white)--SMS
-        elseif startCategory == 18 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Sega_Game_Gear, white)--GG
-        elseif startCategory == 19 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.TurboGrafx_16, white)--TG16
-        elseif startCategory == 20 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.TurboGrafx_CD, white)--TGCD
-        elseif startCategory == 21 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.PC_Engine, white)--PCE
-        elseif startCategory == 22 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.PC_Engine_CD, white)--PCECD
-        elseif startCategory == 23 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Amiga, white)--AMIGA
-        elseif startCategory == 24 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.ScummVM, white)--ScummVM
-        elseif startCategory == 25 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.EasyRPG, white)--EasyRPG
-        elseif startCategory == 26 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MS_DOS, white)--MS_DOS
-        elseif startCategory == 27 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Commodore_64, white)--Commodore_64
-        elseif startCategory == 28 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.WonderSwan_Color, white)--WonderSwan_Color
-        elseif startCategory == 29 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.WonderSwan, white)--WonderSwan
-        elseif startCategory == 30 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.PICO8, white)--PICO8
-        elseif startCategory == 31 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MSX2, white)--MSX2
-        elseif startCategory == 32 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MSX, white)--MSX
-        elseif startCategory == 33 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.ZX_Spectrum, white)--ZX_Spectrum
-        elseif startCategory == 34 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Atari_ST, white)--Atari_ST
-        elseif startCategory == 35 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Atari_7800, white)--Atari_7800
-        elseif startCategory == 36 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Atari_5200, white)--Atari_5200
-        elseif startCategory == 37 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Atari_2600, white)--Atari_2600
-        elseif startCategory == 38 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Atari_Lynx, white)--Atari_Lynx
-        elseif startCategory == 39 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.ColecoVision, white)--ColecoVision
-        elseif startCategory == 40 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Vectrex, white)--Vectrex
-        elseif startCategory == 41 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.FBA_2012, white)--FBA_2012
-        elseif startCategory == 42 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MAME_2003Plus, white)--MAME_2003Plus
-        elseif startCategory == 43 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.MAME_2000, white)--MAME_2000
-        elseif startCategory == 44 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Neo_Geo, white)--Neo_Geo
-        elseif startCategory == 45 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Neo_Geo_Pocket_Color, white)--Neo_Geo_Pocket_Color
-        elseif startCategory == 46 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.System_Apps, white)--System Apps
-        elseif startCategory == 47 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Favorites, white)--Favorite
-        elseif startCategory == 48 then Font.print(fnt22, setting_x_offset, setting_y1,     lang_lines.Recently_Played, white)--Recently Played
-        
-        elseif startCategory >= 50 then
-            Collection_CatNum = startCategory - 49
-            Font.print(fnt22, setting_x_offset, setting_y1, collection_files[Collection_CatNum].display_name, white)--Collections
-        end
+        normalize_startup_category()
+        Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. startup_category_label(startCategory) .. "  >", white)
 
         -- MENU 3 / #2 Show Homebews
         Font.print(fnt22, setting_x, setting_y2, lang_lines.Homebrews_Category_colon, white)--Show Homebrews
@@ -16072,74 +16429,6 @@ while true do
                     showMenu = 2
                     menuY = 1 -- Categories
 
-                elseif menuY == 1 then -- #1 Startup Category
-                    if startCategory < collection_count_of_start_categories then
-                        startCategory = startCategory + 1
-                    else
-                        startCategory = 0
-                    end
-                    -- Skip empty categories
-                    if startCategory == 1 then if   #games_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 2 then if   #homebrews_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 3 then if   #psp_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 4 then if   #psx_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 5 then if   #psm_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 6 then if   #n64_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 7 then if   #snes_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 8 then if   #nes_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 9 then if   #nds_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 10 then if  #gba_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 11 then if  #gbc_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 12 then if  #gb_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 13 then if  #dreamcast_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 14 then if  #sega_cd_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 15 then if  #s32x_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 16 then if  #md_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 17 then if  #sms_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 18 then if  #gg_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 19 then if  #tg16_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 20 then if  #tgcd_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 21 then if  #pce_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 22 then if  #pcecd_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 23 then if  #amiga_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 24 then if  #scummvm_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 25 then if  #easyrpg_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 26 then if  #dos_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 27 then if  #c64_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 28 then if  #wswan_col_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 29 then if  #wswan_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 30 then if  #pico8_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 31 then if  #msx2_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 32 then if  #msx1_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 33 then if  #zxs_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 34 then if  #atari_st_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 35 then if  #atari_7800_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 36 then if  #atari_5200_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 37 then if  #atari_2600_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 38 then if  #atari_lynx_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 39 then if  #colecovision_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 40 then if  #vectrex_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 41 then if  #fba_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 42 then if  #mame_2003_plus_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 43 then if  #mame_2000_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 44 then if  #neogeo_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 45 then if  #ngpc_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 46 then if  #sysapps_table == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 47 then if  #fav_count == 0 then startCategory = startCategory + 1 end end
-                    if startCategory == 49 then startCategory = startCategory + 1 end
-                    -- if startCategory == 48 then if #recently_played_table == 0 then startCategory = startCategory + 1 end end
-
-  
-                    if startCategory >= 50 and startCategory < collection_count_of_start_categories then
-                        if next(xCatLookup(startCategory)) ~= nil then
-                        else
-                            -- empty
-                            startCategory = startCategory + 1
-                        end
-                    elseif startCategory > 50 and startCategory == collection_count_of_start_categories then
-                    else
-                    end
-
                 elseif menuY == 2 then -- #2 Show Homebrews
                     if showHomebrews == 1 then
                         showHomebrews = 0
@@ -16199,6 +16488,9 @@ while true do
                             curTotal = #recently_played_table
                             if #recently_played_table == 0 then
                                 showCat = 1
+                                p = 1
+                                master_index = p
+                                GetNameAndAppTypeSelected()
                             end
                         end
                     else
@@ -16216,6 +16508,9 @@ while true do
                         -- If currently on recent category view, move to Vita category to hide empty recent category
                         if showCat == 0 then
                             showCat = 1
+                            p = 1
+                            master_index = p
+                            GetNameAndAppTypeSelected()
                         end
                     else
                         showAll = 1
@@ -16287,8 +16582,12 @@ while true do
                         if showCat >= 50 and showCat <= collection_syscount then
                             if showAll==0 then
                                 showCat = 1
+                                p = 1
+                                master_index = p
                             else
                                 showCat = 0
+                                p = 1
+                                master_index = p
                             end
                             check_for_out_of_bounds()
                             GetNameAndAppTypeSelected()
@@ -16299,6 +16598,8 @@ while true do
                         showCollections = 1
                     end
                 end
+
+                normalize_startup_category()
 
                 --Save settings
                 SaveSettings()
@@ -16314,6 +16615,16 @@ while true do
                     menuY = menuY + 1
                     else
                     menuY=0
+                end
+            elseif (Controls.check(pad, SCE_CTRL_LEFT)) and not (Controls.check(oldpad, SCE_CTRL_LEFT)) then
+                if menuY == 1 then
+                    change_startup_category(-1)
+                    SaveSettings()
+                end
+            elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
+                if menuY == 1 then
+                    change_startup_category(1)
+                    SaveSettings()
                 end
             end
         end

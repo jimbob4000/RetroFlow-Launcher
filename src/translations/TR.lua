@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Başlangıç Kategori: ",
+["Last_played_game"] = "Son oynanan oyun",
 ["Favorites"] = "Favoriler",
 ["Recently_Played"] = "Son oynatılan",
 ["PS_Vita"] = "PS Vita",

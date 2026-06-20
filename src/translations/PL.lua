@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "Kategoria początkowa: ",
+["Last_played_game"] = "Ostatnio grana gra",
 ["Favorites"] = "Ulubione",
 ["Recently_Played"] = "Ostatnio grane",
 ["PS_Vita"] = "PS Vita",

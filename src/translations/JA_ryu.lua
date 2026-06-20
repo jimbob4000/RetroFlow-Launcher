@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "起動時ぬカテゴリー：",
+["Last_played_game"] = "最後んかい遊だるゲーム",
 ["Favorites"] = "う気に入り",
 ["Recently_Played"] = "いまめープレイさびたん",
 ["PS_Vita"] = "PS Vita",

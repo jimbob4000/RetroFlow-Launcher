@@ -46,6 +46,7 @@ return {
 
 -- Startup Categories
 ["Startup_Category_colon"] = "시작 카테고리: ",
+["Last_played_game"] = "마지막으로 플레이한 게임",
 ["Favorites"] = "즐겨찾기",
 ["Recently_Played"] = "최근에 재생 된",
 ["PS_Vita"] = "PS Vita",
