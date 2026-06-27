@@ -27,7 +27,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.2.0"
+local appversion = "8.3.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -13639,10 +13639,15 @@ function DownloadSingleSnap()
             end
 
             if System.doesFileExist(pic_path) and Game_Backgrounds >= 1 then
-                Graphics.freeImage(backTmp)
-                backTmp = Graphics.loadImage(pic_path)
-                Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
-                Render.useTexture(modBackground, backTmp)
+                local success, loadedImage = pcall(Graphics.loadImage, pic_path)
+                if success and loadedImage then
+                    Graphics.freeImage(backTmp)
+                    backTmp = loadedImage
+                    Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
+                    Render.useTexture(modBackground, backTmp)
+                else
+                    Render.useTexture(modBackground, imgCustomBack)
+                end
             else
                 Render.useTexture(modBackground, imgCustomBack)
             end
@@ -15424,10 +15429,15 @@ while true do
 
                 -- set pic0 as background
                 if System.doesFileExist(pic_path) then
-                    Graphics.freeImage(backTmp)
-                    backTmp = Graphics.loadImage(pic_path)
-                    Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
-                    Render.useTexture(modBackground, backTmp)
+                    local success, loadedImage = pcall(Graphics.loadImage, pic_path)
+                    if success and loadedImage then
+                        Graphics.freeImage(backTmp)
+                        backTmp = loadedImage
+                        Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
+                        Render.useTexture(modBackground, backTmp)
+                    else
+                        Render.useTexture(modBackground, imgCustomBack)
+                    end
 
                 elseif apptype == 41 then
                     -- Pico8 - try to crop the game cart to create a tenporary background image
@@ -18866,8 +18876,10 @@ while true do
                 menuItems = menuItems + 1
             end
 
-            if apptype == 43 or (setShowCores == 1 and core_overrides[apptype]) then
+            local core_options_flag = false
+            if adrenaline_flag == false and (apptype == 43 or (setShowCores == 1 and core_overrides[apptype])) then
                 -- Alternative RetroArch cores, DSVita
+                core_options_flag = true
                 menuItems = menuItems + 1
             end
 
@@ -18935,11 +18947,11 @@ while true do
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
                     Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
-                elseif core_overrides[apptype] and setShowCores == 1 then
+                elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                     -- Alternative RetroArch cores
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Emulator_core, white)-- Emulator core
                     Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
-                elseif apptype == 43 then
+                elseif core_options_flag == true and apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                     Font.print(fnt22, setting_x, setting_y6 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
                 else
@@ -18948,10 +18960,10 @@ while true do
             else
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
-                elseif core_overrides[apptype] and setShowCores == 1 then
+                elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                     -- Alternative RetroArch cores
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Emulator_core, white)-- Emulator core
-                elseif apptype == 43 then
+                elseif core_options_flag == true and apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                 end
             end
@@ -18962,11 +18974,11 @@ while true do
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
-                elseif core_overrides[apptype] and setShowCores == 1 then
+                elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                     -- Alternative RetroArch cores
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Emulator_core, white)-- Emulator core
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
-                elseif apptype == 43 then
+                elseif core_options_flag == true and apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                     Font.print(fnt22, setting_x, setting_y5 + y_centre_text_offset, lang_lines.Remove_from_recently_played, white)--Remove from recently played
                 else
@@ -18975,10 +18987,10 @@ while true do
             else
                 if adrenaline_flag == true then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Adrenaline_options, white)--Adrenaline options
-                elseif core_overrides[apptype] and setShowCores == 1 then
+                elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                     -- Alternative RetroArch cores
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Emulator_core, white)-- Emulator core
-                elseif apptype == 43 then
+                elseif core_options_flag == true and apptype == 43 then
                     Font.print(fnt22, setting_x, setting_y4 + y_centre_text_offset, lang_lines.Configure_game_in_DSVita, white)-- DSVita configuration
                 end
             end
@@ -19316,10 +19328,10 @@ while true do
                     else
                         if adrenaline_flag == true then
                             dynamic_menu_adrenaline_menu()
-                        elseif core_overrides[apptype] and setShowCores == 1 then
+                        elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                             -- Alternative RetroArch cores
                             dynamic_menu_retroarch_core()
-                        elseif apptype == 43 then
+                        elseif core_options_flag == true and apptype == 43 then
                             dynamic_menu_dsvita_config()
                         else
                             if recent_cat_flag == true then
@@ -19332,10 +19344,10 @@ while true do
                     if remove_from_collection_flag == true then
                         if adrenaline_flag == true then
                             dynamic_menu_adrenaline_menu()
-                        elseif core_overrides[apptype] and setShowCores == 1 then
+                        elseif core_options_flag == true and core_overrides[apptype] and setShowCores == 1 then
                             -- Alternative RetroArch cores
                             dynamic_menu_retroarch_core()
-                        elseif apptype == 43 then
+                        elseif core_options_flag == true and apptype == 43 then
                             dynamic_menu_dsvita_config()
                         else
                             if recent_cat_flag == true then
