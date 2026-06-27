@@ -3133,6 +3133,7 @@ local total_favorites = 0
 local curTotal = 1
 
 local temp_import = false
+local fav_count_dirty = true
 
 -- Settings
 START_CATEGORY_LAST_PLAYED = 49
@@ -4672,32 +4673,26 @@ end
 function startup_category_options()
     local options = {}
 
-    refresh_fav_count_table()
-
     if showAll == 1 then
         table.insert(options, 0)
     end
 
     for cat_num = 1, count_of_start_categories do
-        local cat_table = xCatLookup(cat_num)
-
         if cat_num == 2 then
-            if showHomebrews == 1 and cat_table and #cat_table > 0 then
+            if showHomebrews == 1 then
                 table.insert(options, cat_num)
             end
         elseif cat_num == 46 then
-            if showSysApps == 1 and cat_table and #cat_table > 0 then
+            if showSysApps == 1 then
                 table.insert(options, cat_num)
             end
         elseif cat_num == 47 then
-            if #fav_count > 0 then
-                table.insert(options, cat_num)
-            end
+            table.insert(options, cat_num)
         elseif cat_num == 48 then
             if showRecentlyPlayed == 1 then
                 table.insert(options, cat_num)
             end
-        elseif cat_table and #cat_table > 0 then
+        else
             table.insert(options, cat_num)
         end
     end
@@ -4709,28 +4704,30 @@ function startup_category_options()
     table.insert(options, START_CATEGORY_LAST_PLAYED)
 
     if showCollections == 1 then
-        for collection_showcat = 50, collection_syscount do
-            local collection_table = xCatLookup(collection_showcat)
-            if collection_table and next(collection_table) ~= nil then
-                table.insert(options, collection_showcat)
-            end
+        for Collection_CatNum = 1, #collection_files do
+            table.insert(options, 49 + Collection_CatNum)
         end
     end
 
     return options
 end
 
--- STARTUP CATEGORY - Fall back to PS Vita if the saved startup category is no longer selectable.
+-- STARTUP CATEGORY - Fall back to PS Vita only if the saved category is disabled by settings.
 function normalize_startup_category()
-    local options = startup_category_options()
-
-    for key, category in ipairs(options) do
-        if category == startCategory then
-            return startCategory
-        end
+    if startCategory == 0 and showAll == 0 then
+        startCategory = 1
+    elseif startCategory == 2 and showHomebrews == 0 then
+        startCategory = 1
+    elseif startCategory == 46 and showSysApps == 0 then
+        startCategory = 1
+    elseif startCategory == 48 and showRecentlyPlayed == 0 then
+        startCategory = 1
+    elseif startCategory >= 50 and (showCollections == 0 or collection_files[startCategory - 49] == nil) then
+        startCategory = 1
+    elseif startCategory ~= START_CATEGORY_LAST_PLAYED and startCategory > collection_syscount then
+        startCategory = 1
     end
 
-    startCategory = 1
     return startCategory
 end
 
@@ -6315,7 +6312,7 @@ function check_for_hidden_tag_on_scan(def_file_name, def_app_type)
 end
 
 
-local fav_count_dirty = true
+fav_count_dirty = true
 -- fav_count is a cached filtered view of files_table.
 -- Set fav_count_dirty = true whenever something changes that could alter
 -- which games should appear in Favorites, or their order/content.
@@ -10886,6 +10883,7 @@ function import_cached_DB()
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
+    fav_count_dirty = true
     renamed_games_table = {}
     hidden_games_table = {}
     files_table_no_sysapps = {}
@@ -16365,7 +16363,6 @@ while true do
 
         -- MENU 3 / #1 Startup Category
         Font.print(fnt22, setting_x, setting_y1, lang_lines.Startup_Category_colon, white)--Startup Category
-        normalize_startup_category()
         Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. startup_category_label(startCategory) .. "  >", white)
 
         -- MENU 3 / #2 Show Homebews
