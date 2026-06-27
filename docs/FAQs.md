@@ -33,8 +33,9 @@
 **🕹️ Emulator-Specific Issues:**
 
 * [RetroArch games don't load](#retroarch-games-dont-load)
-* [Can I change a core for RetroArch?](#can-i-change-a-core-for-retroarch)
-* [I changed a RetroArch core and my game no longer loads](#i-changed-a-retroarch-core-and-my-game-no-longer-loads)
+* [Emu4Vita++ games don't load](#emu4vita-games-dont-load)
+* [Can I change a core for RetroArch or Emu4Vita++?](#can-i-change-a-core-for-retroarch-or-emu4vita)
+* [I changed a core and my game no longer loads](#i-changed-a-core-and-my-game-no-longer-loads)
 * [RetroArch fails to load games with "&" symbol in the game name](#retroarch-fails-to-load-games-with--symbol-in-the-game-name)
 * [PICO-8 games won't launch](#pico-8-games-wont-launch)
 * [ScummVM some games won't launch](#scummvm-some-games-wont-launch)
@@ -228,13 +229,22 @@ Uninstall Adrenaline and reinstall it.
 ### RetroArch games don't load
 
 Older versions of RetroArch don't support launchers. 
-See the [recommeded emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work. 
+See the [recommended emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work. 
 Or update to version 1.9.4 or newer, see the [RetroArch buildbot](https://buildbot.libretro.com/stable/) for available versions.
 <br><br><br>
 
-### Can I change a core for RetroArch?
+### Emu4Vita++ games don't load
 
-Yes. From version 8.1.0 onwards, RetroFlow supports both global and per-game core overrides for RetroArch.
+Launching games with Emu4Vita++ from RetroFlow requires Emu4Vita++ version 0.71 or newer.
+
+If Emu4Vita++ opens but doesn't start the selected game, update to version 0.71 or newer.
+
+[Emu4VitaPlus GitHub releases](https://github.com/noword/Emu4VitaPlus/releases).
+<br><br><br>
+
+### Can I change a core for RetroArch or Emu4Vita++?
+
+Yes. From version 8.2.0 onwards, RetroFlow supports both global and per-game core overrides for RetroArch and Emu4Vita++.
 
 The global core is used by default unless a game-specific override has been configured.
 
@@ -250,16 +260,16 @@ The global core is used by default unless a game-specific override has been conf
 2. Turn on 'Show game core menu'.
 3. Navigate to the game.
 4. Press Triangle.
-5. Select 'RetroArch options'.
+5. Select 'Emulator core'.
 6. Change the core.
 7. Save your changes.
 
 The selected core will be remembered for that specific game.
 <br><br><br>
 
-### I changed a RetroArch core and my game no longer loads
+### I changed a core and my game no longer loads
 
-Some systems support multiple RetroArch cores, but not every core is compatible with every game.
+Some systems support multiple emulator cores, but not every core is compatible with every game.
 
 Try one of the following:
 

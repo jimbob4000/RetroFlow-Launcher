@@ -20,6 +20,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | **🕹️ Emulator Support** |
 | Adrenaline | ✅ | ✅ |
 | RetroArch   | ✅ | ✅ |
+| Emu4Vita++   | ✅ | ❌ |
 | DaedalusX64  | ✅ | ✅ |
 | Flycast | ✅ | ✅ |
 | FAKE-08 | ✅ | ✅ |
@@ -27,7 +28,6 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | DSVita | ✅ | ✅ |
 | EasyRPG | ✅ | ❌ |
 | mGBA | ❌ | ❌ |
-| Emu4Vita++ | ❌ | ❌ |
 | **🎮 Game Categories** |
 | Atari ST | ✅ | ❌|
 | MAME | ✅ | ❌|
@@ -53,7 +53,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Rename games in app | ✅ | ✅ |
 | Hide individual games | ✅ | ❌|
 | Override categories | ✅ | ✅|
-| Override RetroArch cores | ✅ | ❌|
+| Override emulator cores | ✅ | ❌ |
 | Hide homebrew | ✅ | ✅|
 | Hide all games category | ✅ | ❌|
 | Hide games with missing artwork | ✅ | ❌|

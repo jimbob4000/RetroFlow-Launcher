@@ -6,10 +6,20 @@ For the best experience, I recommend these specific versions.
 ## RetroArch
 **Version 1.9.4**
 
-* Older versions of RetroArch don't support launchers.
-* Versions 1.11 onward fail to launch games with '&' in the filename
+* Older versions of RetroArch don't support launching games from RetroFlow.
+* Versions 1.11 onward fail to launch games with '&' in the filename.
 
 [Download link](https://buildbot.libretro.com/stable/1.9.4/playstation/vita/)
+<br><br>
+
+## Emu4Vita++
+**Version 0.71 or newer**
+
+* Older versions of Emu4Vita++ don't support launching games from RetroFlow.
+
+[Download version 0.71](https://github.com/noword/Emu4VitaPlus/releases/download/v0.71/Emu4VitaPlus_v0.71.vpk)<br>
+[Download latest version](https://github.com/noword/Emu4VitaPlus)
+
 <br><br>
 
 ## ScummVM: 
@@ -24,8 +34,8 @@ For the best experience, I recommend these specific versions.
 ## Adrenaline
 **6.61 Adrenaline-7**
 
-* The official 6.61 Adrenaline-7 by TheOfficialFloW is required if you intend to use RetroFlow for PSP and PS1 games. 
-* If you are on a lower / higher version of Adrenaline or a fork of Adrenaline, please install the one in the link below.
+* The official 6.61 Adrenaline-7 by TheOfficialFloW is required to launch PSP and PS1 games from RetroFlow.
+* If you're using an older, newer, or forked version of Adrenaline, install the official version linked below.
 * Unofficial forks of Adrenaline are not supported.
 
 [Download link](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7)
