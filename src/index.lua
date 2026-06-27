@@ -1663,7 +1663,7 @@ if not System.doesFileExist(background_dir .. "Grey.png") then System.copyFile("
                 display_name = "mGBA",
                 emulator = "retroarch",
                 core_file = "mgba_libretro",
-                supported_systems = { "GBA" }
+                supported_systems = { "GBA", "GB", "GBC" }
             },
             nestopia_libretro = {
                 display_name = "Nestopia",
@@ -1954,7 +1954,7 @@ if not System.doesFileExist(background_dir .. "Grey.png") then System.copyFile("
                 display_name = "mGBA",
                 emulator = "emu4vita",
                 core_file = "eboot_mgba",
-                supported_systems = { "GBA" }
+                supported_systems = { "GBA", "GB", "GBC" }
             },
             -- nekop2 = {
             --     display_name = "Neko Project II",
