@@ -1509,7 +1509,7 @@ if not System.doesFileExist(background_dir .. "Grey.png") then System.copyFile("
 
 -- EMULATOR CORE MANAGEMENT
 
-    enableEmu4Vita = false
+    enableEmu4Vita = true -- Version v0.71 now supports launchers
 
     CoreDefinitions = {
 
