@@ -19,6 +19,7 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Create rom/artwork directories | ✅ | ❌ Requires RetroFlow  |
 | **🕹️ Emulator Support** |
 | Adrenaline | ✅ | ✅ |
+| Adrenaline fork by Isage | ❌ | ❌ |
 | RetroArch   | ✅ | ✅ |
 | Emu4Vita++   | ✅ | ❌ |
 | DaedalusX64  | ✅ | ✅ |

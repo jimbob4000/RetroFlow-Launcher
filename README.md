@@ -80,6 +80,7 @@ For full setup instructions, see the Installation & Setup section below.
 * [FAKE-08](https://github.com/jtothebell/fake-08/releases) is required for PICO-8 games.
 * [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.  Recommended version: [2.6.1](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
 * [DSVita](https://github.com/Grarak/DSVita) is required for NDS games.
+* [EasyRPG Player](https://www.rinnegatamante.eu/vitadb/#/info/5) is required for EasyRPG games.
 
 
 

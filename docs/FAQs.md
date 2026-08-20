@@ -64,6 +64,7 @@
 
 * [How do I add disc based games?](#how-do-i-add-disc-based-games)
 * [How do I add MS-DOS games?](#how-do-i-add-ms-dos-games)
+* [How do I add EasyPRG games?](#how-do-i-add-easyrpg-games)
 * [PS1 and RetroArch, how do I set it up?](#ps1-and-retroarch-how-do-i-set-it-up)
 * [Can I change the Mega Drive name to Genesis?](#can-i-change-the-mega-drive-name-to-genesis)
 * [Vita game cartridge support?](#vita-game-cartridge-support)
@@ -491,6 +492,14 @@ Uses the 'PCSX ReARMed' core. See [supported extensions and setup](https://docs.
 MS-DOS games should be saved in .zip format.
 
 Place the game zip files in your configured MS-DOS ROM folder and then rescan your games.
+
+<br><br><br>
+
+### How do I add EasyPRG games?
+
+EasyPRG games should be saved in .zip format.
+
+Place the game zip files in your configured EasyPRG ROM folder and then rescan your games.
 
 <br><br><br>
 
