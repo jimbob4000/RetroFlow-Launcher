@@ -14718,19 +14718,14 @@ while true do
 
                     -- Renamed
                     -- Has the game been renamed before?
-                    if renamed_games_table and #renamed_games_table > 0 then
+                    if renamed_games_table then
                         local key = find_game_table_pos_key(renamed_games_table, app_titleid)
                         if key ~= nil then
                             -- Yes - it's already in the rename list, update it.
                             renamed_games_table[key].title = ret_rename
                         else
                             -- No, it's new, add it to the rename list
-                            renamed_game_temp = {}
-                            table.insert(renamed_game_temp, {name = app_titleid, title = ret_rename})
-
-                            for i, file in pairs(renamed_game_temp) do
-                                table.insert(renamed_games_table, file)
-                            end
+                            table.insert(renamed_games_table, {name = app_titleid, title = ret_rename})
                         end
                         -- Save the renamed table for importing on restart
                         update_cached_table_renamed_games()
