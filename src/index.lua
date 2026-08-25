@@ -27,7 +27,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.3.0"
+local appversion = "8.4.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -11037,6 +11037,20 @@ function loadImage(img_path)
     imgTmp = Graphics.loadImage(img_path)
 end
 
+local function is_loadable_image(img_path)
+    if img_path == nil or img_path == "" or not System.doesFileExist(img_path) then
+        return false
+    end
+
+    local success, image = pcall(Graphics.loadImage, img_path)
+    if success and image then
+        Graphics.freeImage(image)
+        return true
+    end
+
+    return false
+end
+
 
 -- CHECK IF STARTUP SCAN IS ON
 -- 0 Off, 1 On
@@ -11192,7 +11206,7 @@ function GetPicPath(def_table_name)
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png"
 
         -- Not found? Then check ur0 pic
-        elseif System.doesFileExist("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
+        elseif is_loadable_image("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
             pic_path = "ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png"
 
         -- Not found? Check homebew snap folder
@@ -11219,7 +11233,7 @@ function GetPicPath(def_table_name)
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png"
 
         -- Not found? Then check ur0 pic
-        elseif System.doesFileExist("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
+        elseif is_loadable_image("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
             pic_path = "ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png"
 
         -- Not found? Then check vs0 pic
@@ -15398,23 +15412,23 @@ while true do
                     if not System.doesFileExist(pic_path) then
 
                         -- Try to decrypt and copy pic0
-                        local image_copied = Extended.copyPicToAppmeta(game_path)
-                        if image_copied == true then
-                            pic_path = "ur0:/appmeta/" .. app_titleid .. "/pic0.png"
+                        local copy_success, image_copied = pcall(Extended.copyPicToAppmeta, game_path)
+                        local copied_pic_path = "ur0:/appmeta/" .. app_titleid .. "/pic0.png"
+                        if copy_success and image_copied == true and is_loadable_image(copied_pic_path) then
+                            pic_path = copied_pic_path
                         else
+                            if System.doesFileExist(copied_pic_path) and not is_loadable_image(copied_pic_path) then
+                                pcall(System.deleteFile, copied_pic_path)
+                            end
 
                             -- Try safely loading the bg image from the ux0 app livearea
                             local pic_path_ux0_livearea_bg = "ux0:/app/" .. app_titleid .. "/sce_sys/livearea/contents/bg.png"
-                            local success, image = pcall(Graphics.loadImage, pic_path_ux0_livearea_bg)
-                            if success and image then
-                                Graphics.freeImage(image)
+                            if is_loadable_image(pic_path_ux0_livearea_bg) then
                                 pic_path = pic_path_ux0_livearea_bg
                             else
                                 -- Try safely loading the bg image from the ux0 app livearea
                                 local pic_path_ux0_livearea_bg = "ux0:/app/" .. app_titleid .. "/sce_sys/livearea/contents/bg0.png"
-                                local success, image = pcall(Graphics.loadImage, pic_path_ux0_livearea_bg)
-                                if success and image then
-                                    Graphics.freeImage(image)
+                                if is_loadable_image(pic_path_ux0_livearea_bg) then
                                     pic_path = pic_path_ux0_livearea_bg
                                 end
                             end
