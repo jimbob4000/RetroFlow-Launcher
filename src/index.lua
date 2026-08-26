@@ -1239,6 +1239,72 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
             collection_count_of_start_categories = collection_count + count_of_start_categories + 1
         end
 
+        function update_collections_count()
+            collection_count = #collection_files
+            collection_syscount = syscount + collection_count
+            if collection_count == 0 then
+                collection_count_of_start_categories = count_of_start_categories
+            else
+                collection_count_of_start_categories = collection_count + count_of_start_categories + 1
+            end
+        end
+
+        function add_new_collection_to_memory(def_collection_filename, def_collection_source)
+            local collection_file = {}
+            collection_file.filename = def_collection_filename
+            collection_file.table_name = def_collection_filename:gsub(".lua", "")
+            collection_file.display_name = def_collection_filename:gsub(".lua", ""):gsub("Collection_", ""):gsub("_", " ")
+            table.insert(collection_files, collection_file)
+            table.sort(collection_files, function(a, b) return (a.filename:lower() < b.filename:lower()) end)
+            update_collections_count()
+
+            local new_collection_number = 0
+            for i, file in ipairs(collection_files) do
+                if file.table_name == collection_file.table_name then
+                    new_collection_number = i
+                    break
+                end
+            end
+
+            if new_collection_number > 0 then
+                _G[collection_files[new_collection_number].table_name] = {}
+                for _, source_file in ipairs(def_collection_source) do
+                    local matched_file = nil
+                    for _, file in ipairs(files_table) do
+                        if file.name == source_file.name and file.app_type == source_file.app_type then
+                            matched_file = file
+                            break
+                        end
+                    end
+                    if matched_file ~= nil then
+                        local collection_entry = {}
+                        for entry_key, entry_value in pairs(matched_file) do
+                            if entry_key ~= "ricon" then
+                                collection_entry[entry_key] = entry_value
+                            end
+                        end
+                        if source_file.custom_sort_order ~= nil then
+                            collection_entry.custom_sort_order = source_file.custom_sort_order
+                        end
+                        table.insert(_G[collection_files[new_collection_number].table_name], collection_entry)
+                    elseif xCatLookup(showCat) and xCatLookup(showCat)[p] and xCatLookup(showCat)[p].name == source_file.name then
+                        local collection_entry = {}
+                        for entry_key, entry_value in pairs(xCatLookup(showCat)[p]) do
+                            if entry_key ~= "ricon" then
+                                collection_entry[entry_key] = entry_value
+                            end
+                        end
+                        if source_file.custom_sort_order ~= nil then
+                            collection_entry.custom_sort_order = source_file.custom_sort_order
+                        end
+                        table.insert(_G[collection_files[new_collection_number].table_name], collection_entry)
+                    end
+                end
+            end
+
+            return new_collection_number
+        end
+
 
 
 Network.init()
@@ -3051,6 +3117,7 @@ local gettingCovers = false
 local gettingBackgrounds = false
 local scanComplete = false
 local bgscanComplete = false
+local restart_after_frame = false
 
 -- Init Colors
 local black = Color.new(0, 0, 0)
@@ -11037,17 +11104,30 @@ function loadImage(img_path)
     imgTmp = Graphics.loadImage(img_path)
 end
 
+local image_loadable_cache = {}
+
 local function is_loadable_image(img_path)
-    if img_path == nil or img_path == "" or not System.doesFileExist(img_path) then
+    if img_path == nil or img_path == "" then
+        return false
+    end
+
+    if image_loadable_cache[img_path] ~= nil then
+        return image_loadable_cache[img_path]
+    end
+
+    if not System.doesFileExist(img_path) then
+        image_loadable_cache[img_path] = false
         return false
     end
 
     local success, image = pcall(Graphics.loadImage, img_path)
     if success and image then
         Graphics.freeImage(image)
+        image_loadable_cache[img_path] = true
         return true
     end
 
+    image_loadable_cache[img_path] = false
     return false
 end
 
@@ -11746,6 +11826,59 @@ function AddOrRemoveHidden(def_hide_game_flag)
 
 end
 
+function update_hidden_state_in_table(def_table, def_name, def_hide_game_flag, def_remove_hidden)
+    if def_table == nil then
+        return
+    end
+
+    local i = 1
+    while i <= #def_table do
+        local file = def_table[i]
+        if type(file) == "table" and file.name == def_name then
+            file.hidden = def_hide_game_flag
+            if def_remove_hidden == true and def_hide_game_flag == true then
+                table.remove(def_table, i)
+            else
+                i = i + 1
+            end
+        else
+            i = i + 1
+        end
+    end
+end
+
+function refresh_after_hide_unhide(def_name, def_app_type, def_hide_game_flag)
+    local remove_hidden = showHidden == 0 and def_hide_game_flag == true
+
+    update_hidden_state_in_table(xAppNumTableLookup(def_app_type), def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(files_table, def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(folders_table, def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(files_table_no_sysapps, def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(recently_played_table, def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(search_results_table, def_name, def_hide_game_flag, remove_hidden)
+
+    if collection_files ~= nil then
+        for _, collection_file in ipairs(collection_files) do
+            if collection_file.table_name ~= nil then
+                update_hidden_state_in_table(_G[collection_file.table_name], def_name, def_hide_game_flag, remove_hidden)
+            end
+        end
+    end
+
+    fav_count_dirty = true
+    if showCat == 47 then
+        refresh_fav_count_table()
+    end
+
+    check_for_out_of_bounds()
+    if p > 0 and xCatLookup(showCat)[p] ~= nil then
+        GetInfoSelected()
+        GetNameAndAppTypeSelected()
+    else
+        GetNameAndAppTypeSelected()
+    end
+end
+
 
 function AddtoRecentlyPlayed()
 
@@ -11836,6 +11969,121 @@ function QuickOverride_Remove_from_current_table()
             table.remove(xAppNumTableLookup(apptype), key)
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
         else
+        end
+    end
+end
+
+function QuickOverride_Update_recently_played(def_game)
+    if #recently_played_table ~= nil then
+        local key_recent = find_game_table_pos_key(recently_played_table, app_titleid)
+        if key_recent ~= nil then
+            QuickOverride_Sync_loaded_entry(recently_played_table, def_game)
+            update_cached_table_recently_played()
+        else
+        end
+    end
+end
+
+function QuickOverride_Sync_loaded_entry(def_table, def_game)
+    if def_table == nil or def_game == nil then
+        return
+    end
+
+    local key = find_game_table_pos_key(def_table, def_game.name)
+    if key ~= nil then
+        def_table[key].app_type = def_game.app_type
+        def_table[key].cover_path_online = def_game.cover_path_online
+        def_table[key].cover_path_local = def_game.cover_path_local
+        def_table[key].snap_path_online = def_game.snap_path_online
+        def_table[key].snap_path_local = def_game.snap_path_local
+        def_table[key].icon_path = def_game.icon_path
+        def_table[key].cover = def_game.cover
+    end
+end
+
+function QuickOverride_Remove_loaded_entry(def_table, def_name)
+    if def_table == nil then
+        return
+    end
+
+    local key = find_game_table_pos_key(def_table, def_name)
+    if key ~= nil then
+        table.remove(def_table, key)
+    end
+end
+
+function QuickOverride_Sync_loaded_views(def_game)
+    QuickOverride_Sync_loaded_entry(files_table, def_game)
+    QuickOverride_Sync_loaded_entry(folders_table, def_game)
+    QuickOverride_Sync_loaded_entry(files_table_no_sysapps, def_game)
+    QuickOverride_Sync_loaded_entry(fav_count, def_game)
+    QuickOverride_Sync_loaded_entry(recently_played_table, def_game)
+    QuickOverride_Sync_loaded_entry(search_results_table, def_game)
+
+    if collection_files ~= nil then
+        for _, collection_file in ipairs(collection_files) do
+            if collection_file.table_name ~= nil then
+                QuickOverride_Sync_loaded_entry(_G[collection_file.table_name], def_game)
+            end
+        end
+    end
+
+    fav_count_dirty = true
+end
+
+function QuickOverride_Save_collection_membership(def_collection_file, def_collection_table)
+    local collection_to_save = {}
+    if def_collection_file == nil or def_collection_table == nil then
+        return
+    end
+
+    for _, file in ipairs(def_collection_table) do
+        if type(file) == "table" then
+            local collection_entry = {}
+            collection_entry.apptitle = file.apptitle or file.title
+            collection_entry.name = file.name
+            collection_entry.app_type = file.app_type
+            if file.custom_sort_order ~= nil then
+                collection_entry.custom_sort_order = file.custom_sort_order
+            end
+            table.insert(collection_to_save, collection_entry)
+        end
+    end
+
+    update_cached_collection(def_collection_file, collection_to_save)
+end
+
+function QuickOverride_Save_loaded_collections(def_game)
+    if def_game == nil then
+        return
+    end
+
+    if collection_files ~= nil then
+        for _, collection_file in ipairs(collection_files) do
+            if collection_file.table_name ~= nil then
+                local collection_table = _G[collection_file.table_name]
+                if collection_table ~= nil and find_game_table_pos_key(collection_table, def_game.name) ~= nil then
+                    QuickOverride_Save_collection_membership(collection_file.filename, collection_table)
+                end
+            end
+        end
+    end
+end
+
+function QuickOverride_Remove_from_loaded_views(def_name)
+    QuickOverride_Remove_loaded_entry(files_table, def_name)
+    QuickOverride_Remove_loaded_entry(folders_table, def_name)
+    QuickOverride_Remove_loaded_entry(files_table_no_sysapps, def_name)
+    QuickOverride_Remove_loaded_entry(fav_count, def_name)
+    QuickOverride_Remove_loaded_entry(search_results_table, def_name)
+end
+
+function QuickOverride_Remove_from_loaded_collections(def_name)
+    if collection_files ~= nil then
+        for _, collection_file in ipairs(collection_files) do
+            if collection_file.table_name ~= nil then
+                QuickOverride_Remove_loaded_entry(_G[collection_file.table_name], def_name)
+            end
         end
     end
 end
@@ -11937,6 +12185,7 @@ end
 function QuickOverride_Category(tmpappcat)
 
     -- Remove current game from table
+    local overridden_game = nil
 
         if (tmpappcat)==1 then
             -- vita
@@ -11944,20 +12193,11 @@ function QuickOverride_Category(tmpappcat)
                 key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
                 if key ~= nil then
                     QuickOverride_Vita()
+                    overridden_game = xAppNumTableLookup(apptype)[key]
 
-                    if #recently_played_table ~= nil then
-                        key_recent = find_game_table_pos_key(recently_played_table, app_titleid)
-                        if key_recent ~= nil then
-                            table.remove(recently_played_table,key_recent)
-                            table.insert(recently_played_table, xAppNumTableLookup(apptype)[key])
-                            update_cached_table_recently_played()
-                            recently_played_table = {}
-                            import_recently_played()
-                        else
-                        end
-                    end
+                    QuickOverride_Update_recently_played(overridden_game)
 
-                    table.insert(games_table, xAppNumTableLookup(apptype)[key])
+                    table.insert(games_table, overridden_game)
                     table.sort(games_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
                     update_cached_table("db_games.lua", games_table)
                 else
@@ -11970,20 +12210,11 @@ function QuickOverride_Category(tmpappcat)
                 key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
                 if key ~= nil then
                     QuickOverride_PSP()
+                    overridden_game = xAppNumTableLookup(apptype)[key]
 
-                    if #recently_played_table ~= nil then
-                        key_recent = find_game_table_pos_key(recently_played_table, app_titleid)
-                        if key_recent ~= nil then
-                            table.remove(recently_played_table,key_recent)
-                            table.insert(recently_played_table, xAppNumTableLookup(apptype)[key])
-                            update_cached_table_recently_played()
-                            recently_played_table = {}
-                            import_recently_played()
-                        else
-                        end
-                    end
+                    QuickOverride_Update_recently_played(overridden_game)
 
-                    table.insert(psp_table, xAppNumTableLookup(apptype)[key])
+                    table.insert(psp_table, overridden_game)
                     table.sort(psp_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
                     update_cached_table("db_psp.lua", psp_table)
                 else
@@ -11996,20 +12227,11 @@ function QuickOverride_Category(tmpappcat)
                 key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
                 if key ~= nil then
                     QuickOverride_PSX()
+                    overridden_game = xAppNumTableLookup(apptype)[key]
 
-                    if #recently_played_table ~= nil then
-                        key_recent = find_game_table_pos_key(recently_played_table, app_titleid)
-                        if key_recent ~= nil then
-                            table.remove(recently_played_table,key_recent)
-                            table.insert(recently_played_table, xAppNumTableLookup(apptype)[key])
-                            update_cached_table_recently_played()
-                            recently_played_table = {}
-                            import_recently_played()
-                        else
-                        end
-                    end
+                    QuickOverride_Update_recently_played(overridden_game)
 
-                    table.insert(psx_table, xAppNumTableLookup(apptype)[key])
+                    table.insert(psx_table, overridden_game)
                     table.sort(psx_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
                     update_cached_table("db_psx.lua", psx_table)
                 else
@@ -12032,20 +12254,11 @@ function QuickOverride_Category(tmpappcat)
                 key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
                 if key ~= nil then
                     QuickOverride_Homebrew()
+                    overridden_game = xAppNumTableLookup(apptype)[key]
 
-                    if #recently_played_table ~= nil then
-                        key_recent = find_game_table_pos_key(recently_played_table, app_titleid)
-                        if key_recent ~= nil then
-                            table.remove(recently_played_table,key_recent)
-                            table.insert(recently_played_table, xAppNumTableLookup(apptype)[key])
-                            update_cached_table_recently_played()
-                            recently_played_table = {}
-                            import_recently_played()
-                        else
-                        end
-                    end
+                    QuickOverride_Update_recently_played(overridden_game)
 
-                    table.insert(homebrews_table, xAppNumTableLookup(apptype)[key])
+                    table.insert(homebrews_table, overridden_game)
                     table.sort(homebrews_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
                     update_cached_table("db_homebrews.lua", homebrews_table)
                 else
@@ -12078,6 +12291,8 @@ function QuickOverride_Category(tmpappcat)
         end
 
         QuickOverride_Remove_from_current_table()
+        QuickOverride_Sync_loaded_views(overridden_game)
+        QuickOverride_Save_loaded_collections(overridden_game)
 
     -- If the last game is overriden, move to 1st to prevent nil error
     if p == curTotal then
@@ -12090,8 +12305,13 @@ function QuickOverride_Category(tmpappcat)
 
     -- Error fix for when Homebrew is off, overriding game to homebrew, and on all category - then reload files
     if showHomebrews == 0 and (tmpappcat)==4 and showCat == 0 then
-        files_table = import_cached_DB()
-        GetInfoSelected()
+        QuickOverride_Remove_from_loaded_views(app_titleid)
+        check_for_out_of_bounds()
+    end
+
+    if showHomebrews == 0 and (tmpappcat)==4 then
+        QuickOverride_Remove_from_loaded_collections(app_titleid)
+        check_for_out_of_bounds()
     end
 
     GetInfoSelected()
@@ -12101,12 +12321,14 @@ function QuickOverride_Category(tmpappcat)
     Render.useTexture(modBackground, imgCustomBack)
 
     -- Instant cover update - Credit BlackSheepBoy69
-    Threads.addTask(xCatLookup(showCat)[p], {
-    Type = "ImageLoad",
-    Path = xCatLookup(showCat)[p].icon_path,
-    Table = xCatLookup(showCat)[p],
-    Index = "ricon"
-    })
+    if xCatLookup(showCat)[p] ~= nil then
+        Threads.addTask(xCatLookup(showCat)[p], {
+        Type = "ImageLoad",
+        Path = xCatLookup(showCat)[p].icon_path,
+        Table = xCatLookup(showCat)[p],
+        Index = "ricon"
+        })
+    end
 
 end
 
@@ -14273,6 +14495,47 @@ function current_category_supports_cartridge_jump()
     return showCat == 0 or showCat == 1 or showCat == 47 or showCat == 48 or (showCat >= 50 and showCat <= collection_syscount)
 end
 
+function skip_empty_collection_categories(def_direction)
+    if collection_count == 0 or showCat < 50 or showCat > collection_syscount then
+        return
+    end
+
+    local checked_collections = 0
+    local collection_table = xCatLookup(showCat)
+    while showCat >= 50 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) and checked_collections < collection_count do
+        if def_direction > 0 then
+            if showCat < collection_syscount then
+                showCat = showCat + 1
+            elseif filterGames == 1 then
+                showCat = 50
+            elseif showAll == 0 then
+                showCat = 1
+            else
+                showCat = 0
+            end
+        else
+            if showCat > 50 then
+                showCat = showCat - 1
+            elseif filterGames == 1 then
+                showCat = collection_syscount
+            else
+                showCat = 49
+            end
+        end
+
+        checked_collections = checked_collections + 1
+        collection_table = xCatLookup(showCat)
+    end
+
+    if showCat >= 50 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) then
+        if showAll == 0 then
+            showCat = 1
+        else
+            showCat = 0
+        end
+    end
+end
+
 -- Poll cartridge insertion state and handle state changes
 function poll_cartridge_state()
     cartridge_poll_frame = cartridge_poll_frame + 1
@@ -14684,17 +14947,14 @@ while true do
                     else
                     end
 
-                    -- If on recent category, then rename game in native category
-                    if showCat == 48 then
-                        local key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
-                        if key ~= nil then
-                            -- Yes - Found in files table
-                            xAppNumTableLookup(apptype)[key].title = ret_rename
-                            xAppNumTableLookup(apptype)[key].apptitle = ret_rename
-                        else
-                            -- No
-                        end
+                    -- Rename game in native category so rebuilt views inherit the change
+                    local key = find_game_table_pos_key(xAppNumTableLookup(apptype), app_titleid)
+                    if key ~= nil then
+                        -- Yes - Found in files table
+                        xAppNumTableLookup(apptype)[key].title = ret_rename
+                        xAppNumTableLookup(apptype)[key].apptitle = ret_rename
                     else
+                        -- No
                     end
                     
 
@@ -14898,20 +15158,14 @@ while true do
                     end
 
                     update_cached_collection(ret_collection_filename, new_collection)
-                    create_collections_list()
         
                     if next(search_results_table) ~= nil then
 
                         -- Reload collections and set current category to our new collection which has been created from the search table
+                        create_collections_list()
 
                         table.sort(collection_files, function(a, b) return (a.filename:lower() < b.filename:lower()) end)
-                        collection_count = #collection_files
-                        collection_syscount = syscount + collection_count
-                        if collection_count == 0 then
-                            collection_count_of_start_categories = count_of_start_categories
-                        else
-                            collection_count_of_start_categories = collection_count + count_of_start_categories + 1
-                        end
+                        update_collections_count()
                         import_collections()
 
                         keyboard_collection_name_new = false
@@ -14960,9 +15214,28 @@ while true do
                         Keyboard.clear()
 
                         FreeIcons()
-                        FreeMemory()
-                        Network.term()
-                        dofile("app0:index.lua")
+                        local new_collection_number = add_new_collection_to_memory(ret_collection_filename, new_collection)
+
+                        if new_collection_number > 0 then
+                            showCat = 49 + new_collection_number -- Collection showCat values start at 50
+                            p = 1
+                            master_index = p
+                            GetNameAndAppTypeSelected()
+                            GetInfoSelected()
+
+                            if xCatLookup(showCat) and xCatLookup(showCat)[p] then
+                                Threads.addTask(xCatLookup(showCat)[p], {
+                                Type = "ImageLoad",
+                                Path = xCatLookup(showCat)[p].icon_path,
+                                Table = xCatLookup(showCat)[p],
+                                Index = "ricon"
+                                })
+                            end
+                        end
+
+                        oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
+                        showMenu = 0
+                        Render.useTexture(modBackground, imgCustomBack)
                     end
 
                 end
@@ -19199,24 +19472,8 @@ while true do
                         update_cached_table_hidden_games()
 
 
-                    -- If show system apps if off and currently viewing system apps when renaming, must have used quick menu.
-                    -- Turn on system apps temporarily so can see the result of the rename.
-                    if showSysApps == 0 and showCat == 46 then
-                        -- Turn on temporarily
-                        showSysApps = 1
-
-                        -- Import and jump to menu
-                        FreeIcons()
-                        count_cache_and_reload()
-                        showCat = 46
-
-                        -- Turn off again, the table will be removed when the user changes category (see category controls, square)
-                        showSysApps = 0
-                    else
-                        FreeIcons()
-                        count_cache_and_reload()
-                        GetInfoSelected()
-                    end
+                    FreeIcons()
+                    refresh_after_hide_unhide(app_titleid, apptype, hide_game_flag)
 
                     if showHidden == 0 then
 
@@ -20251,11 +20508,7 @@ while true do
                                     System.deleteFile(collection_file_path_to_delete)
                                 end
 
-                                -- Reload
-                                FreeIcons()
-                                FreeMemory()
-                                Network.term()
-                                dofile("app0:index.lua")
+                                restart_after_frame = true
                                
                             else
 
@@ -20265,20 +20518,22 @@ while true do
                             end
                             
 
-                        import_collections()
+                        if restart_after_frame == false then
+                            import_collections()
 
-                        if next(xCatLookup(showCat)) ~= nil then
-                        else
-                            -- Empty
-                            showCat = 0
+                            if next(xCatLookup(showCat)) ~= nil then
+                            else
+                                -- Empty
+                                showCat = 0
+                            end
+
+                            check_for_out_of_bounds()
+                            GetInfoSelected()
+                            oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
+                            showMenu = 0
+                            Render.useTexture(modBackground, imgCustomBack)
+                            collection_number = 0
                         end
-
-                        check_for_out_of_bounds()
-                        GetInfoSelected()
-                        oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
-                        showMenu = 0
-                        Render.useTexture(modBackground, imgCustomBack)
-                        collection_number = 0
                     end
 
                 else
@@ -21989,6 +22244,8 @@ while true do
 
 
 
+                    skip_empty_collection_categories(-1)
+
                     if showCat == 49 then
                         curTotal = #search_results_table   
                         if #search_results_table == 0 then 
@@ -22227,52 +22484,32 @@ while true do
                         end
                     end
                     
-                    if showCat == 49 then
-                        curTotal = #search_results_table
-                        if #search_results_table == 0 then
-                            if collection_count ~= 0 then
-                                if showCollections == 0 then
-                                    if showAll==0 then
-                                        showCat = 1
-                                    else
-                                        showCat = 0
-                                    end
-                                else
-                                    showCat = 50
-                                end
-                            else
-                                if showAll==0 then
-                                    showCat = 1
-                                else
-                                    showCat = 0
-                                end
-                            end
-                        end
-                    end
+	                    if showCat == 49 then
+	                        curTotal = #search_results_table
+	                        if #search_results_table == 0 then
+	                            if collection_count ~= 0 then
+	                                if showCollections == 0 then
+	                                    if showAll==0 then
+	                                        showCat = 1
+	                                    else
+	                                        showCat = 0
+	                                    end
+	                                else
+	                                    showCat = 50
+	                                end
+	                            else
+	                                if showAll==0 then
+	                                    showCat = 1
+	                                else
+	                                    showCat = 0
+	                                end
+	                            end
+	                        end
+	                    end
 
-                    if showCat > 50 and showCat < collection_syscount then
-                        if next(xCatLookup(showCat)) ~= nil then
-                        else
-                            -- empty
-                            showCat = showCat + 1
-                        end
+	                    skip_empty_collection_categories(1)
 
-                    -- elseif showCat > 50 and showCat == collection_syscount then
-                    elseif showCat > 50 and showCat == collection_syscount then
-                        
-                        -- -- empty
-                        -- if showAll==0 then
-                        --     showCat = 1
-                        -- else
-                        --     showCat = 0
-                        -- end
-
-                    else
-
-                    end
-
-
-                    hideBoxes = 0.8 -- used to be 8
+	                    hideBoxes = 0.8 -- used to be 8
                     p = 1
                     master_index = p
                     startCovers = false
@@ -22849,6 +23086,14 @@ while true do
     Screen.waitVblankStart()
     Screen.flip()
     oldpad = pad
+
+    if restart_after_frame == true then
+        restart_after_frame = false
+        FreeIcons()
+        FreeMemory()
+        Network.term()
+        dofile("app0:index.lua")
+    end
 
     if oneLoopTimer then -- Only run timer check once at end of initialization
         oneLoopTime = Timer.getTime(oneLoopTimer) -- save the time
