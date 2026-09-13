@@ -27,6 +27,7 @@
 * [Adrenaline - My games aren't working?](#adrenaline---my-games-arent-working)
 * [Adrenaline opens then closes without loading the game?](#adrenaline-opens-then-closes-without-loading-the-game)
 * [Adrenaline - How do I customise the game's boot settings?](#adrenaline---how-do-i-customise-the-games-boot-settings)
+* [Adrenaline - My drivers changed when I updated?](#adrenaline---my-drivers-changed-when-i-updated)
 * [How do I uninstall Adrenaline Bubble Booter?](#how-do-i-uninstall-adrenaline-bubble-booter)
 <br><br>
 
@@ -164,14 +165,6 @@ Empty collections are hidden by default. Once you add games into the game folder
 * Go to 'Settings > Scan Settings > Adrenaline games'.
 * Select the path(s) to scan.
 * Then select 'Rescan' to check for games.
-
-**Still not showing?**
-
-Check you have the official version of Adrenaline installed [(6.61 Adrenaline-7 by TheOfficialFloW)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7).
-
-Forks or modified versions of Adrenaline are not supported.
-
-From version 8.1.0 onwards, RetroFlow performs a compatibility check. If an unsupported version is detected, the PSP and PS1 categories will be disabled.
 <br><br><br>
 
 ### Adrenaline - My games aren't working?
@@ -180,7 +173,7 @@ Please check:
 
 * Adrenaline works correctly outside of RetroFlow
 * RetroFlow Adrenaline Launcher is installed
-* Check you are using the official version of Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW. Forks of Adrenaline are not supported.
+* Check you are using a supported version of Adrenaline, see the [recommended emulator versions](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md) page for version which will work. 
 <br><br><br>
 
 ### Adrenaline opens then closes without loading the game?
@@ -203,22 +196,25 @@ To change boot settings for PSP games:
 **Note:** If you change settings while the game is running, RetroFlow won't remember them. Always configure in RetroFlow to save them permanently.
 <br><br><br>
 
+### Adrenaline - My drivers changed when I updated?
+
+Older versions of Adrenaline Bubble Booter used incorrect labels for the drivers.
+
+RetroFlow version 8.3.0 and higher use the correct driver names. Your existing selections have been migrated, so your games should continue to use the same drivers as before. RetroFlow now also displays the actual driver name being used.
+
+* **INFERNO**: Actually **NP9660**
+* **MARCH33**: Actually **INFERNO**
+* **NP9660**: Actually **MARCH33**
+<br><br><br>
+
 ### How do I uninstall Adrenaline Bubble Booter?
 
-If you followed the install guide you should be on Adrenaline version 7.
-
-**For Adrenaline v7:**
-
-1. Copy the 'sce_module' folder from: `ux0:app/RETROFLOW/payloads/adrenaline/sce_module`
-2. Paste it into the adrenaline directory: `ux0:app/PSPEMUCFW` (overwriting the old 'sce_module' folder)
-3. If you want a backup, rename the folder before pasting
-4. Restart the vita for changes to take effect
-
-**For other versions of Adrenaline:**
-
-Uninstall Adrenaline and reinstall it.
-
-**Note:** Uninstalling Adrenaline Bubble Booter will stop any custom PS1 or PSP bubbles created using Adrenaline Bubble Manager from working unless it is installed once again. Adrenaline Bubble Manager can reinstall it if needed.
+1. Download the VPK file for the version of Adrenaline you are using.
+2. Rename the file extension from .vpk to .zip.
+3. Extract the ZIP file.
+4. On your Vita, delete the files within this folder: `ux0:app/PSPEMUCFW/sce_module`.
+5. Copy the contents of the sce_module folder from the extracted ZIP file into `ux0:app/PSPEMUCFW/sce_module`.
+6. Restart your Vita for the changes to take effect.
 
 <br>
 
@@ -344,14 +340,14 @@ All current search results will be added to the selected collection.
 ### How do I rename a collection?
 
 To rename a collection:
-* Go to 'Other settings > Edit collections > Rename'.
+* Go to 'Categories > Edit collections > Rename'.
 * Then enter the new name for the collection
 <br><br><br>
 
 ### How to reorder games in a collection
 
 To change the order:
-* Go to 'Other settings > Edit collections > Customise game order'.
+* Go to 'Categories > Edit collections > Customise game order'.
 * Press 'X' on the game you would like to reorder and move it up or down, and press 'X' again once you are done.
 * Once you finished customising the order, press the circle button.
 

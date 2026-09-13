@@ -32,13 +32,24 @@ For the best experience, I recommend these specific versions.
 <br><br>
 
 ## Adrenaline
-**6.61 Adrenaline-7**
 
-* The official 6.61 Adrenaline-7 by TheOfficialFloW is required to launch PSP and PS1 games from RetroFlow.
-* If you're using an older, newer, or forked version of Adrenaline, install the official version linked below.
-* Unofficial forks of Adrenaline are not supported.
+Adrenaline is recommended for playing PSP and PS1 games. In order to launch Adrenaline, RetroFlow will look for particular versions. The versions below are supported.
+
+
+**Adrenaline 7 by TheOfficialFloW**
+
+* If you're using an older, version of Adrenaline, install the official version linked below.
 
 [Download link](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7)
+<br><br>
+
+**Adrenaline 8.0.2 by Isage**
+
+* This version of Adrenaline is currently in active development.
+* Version 8.02 is supported, if you are on a higher version and experience issues, please downgrade to 8.0.2, or wait for a RetroFlow compatability update.
+
+
+[Download link](https://github.com/isage/Adrenaline/releases/tag/v8.0.2)
 <br><br>
 
 

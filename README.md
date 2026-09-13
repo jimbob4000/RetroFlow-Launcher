@@ -31,6 +31,7 @@ RetroFlow lets you integrate retro games into a single launcher without the need
 * Retro game categories added
 * Create your own categories (Collections)
 * Favourite and Recently played categories
+* Ability to hide individual categories and collections.
 * Ability to search for games
 * Ability to rename games
 * Support for game background images
@@ -60,8 +61,8 @@ For full setup instructions, see the Installation & Setup section below.
 
 # Installation & Setup
 
-**Note:** Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline or a fork of Adrenaline, please install the one in the link above. 
-<br>Unofficial forks of Adrenaline are not supported.
+<!--**Note:** Adrenaline [(6.61 Adrenaline-7)](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW is required if you intend to use RetroFlow for PSP and PS1 games. If you are on a lower / higher version of Adrenaline or a fork of Adrenaline, please install the one in the link above. 
+<br>Unofficial forks of Adrenaline are not supported.-->
 
 ## 1. Install the RetroFlow VPK
 
@@ -72,7 +73,7 @@ For full setup instructions, see the Installation & Setup section below.
 
 
 ## 2. Install any other necessary apps
-* [Adrenaline v7](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW for PSP and PS1 games. (Other versions unsupported).
+* [Adrenaline v7](https://github.com/TheOfficialFloW/Adrenaline/releases/tag/v7) by TheOfficialFloW or [Adrenaline v8.0.2](https://github.com/isage/Adrenaline/releases/tag/v8.0.2) by Isage, for PSP and PS1 games. (Other versions unsupported).
 * [DaedalusX64](https://github.com/Rinnegatamante/DaedalusX64-vitaGL/releases) is required for N64 games. 
 * [RetroArch](https://www.retroarch.com/index.php?page=platforms) is supported for selected retro systems. Recommended version: [1.9.4](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
 * [Emu4Vita++](https://github.com/noword/Emu4VitaPlus) is supported for selected retro systems. Version 0.71 or newer is required.

@@ -18,8 +18,8 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Fast startup | ✅ <br> Faster than HexFlow Custom when startup scan is off | ✅ |
 | Create rom/artwork directories | ✅ | ❌ Requires RetroFlow  |
 | **🕹️ Emulator Support** |
-| Adrenaline | ✅ | ✅ |
-| Adrenaline fork by Isage | ❌ | ❌ |
+| Adrenaline 7 by TheOfficialFloW | ✅ | ✅ |
+| Adrenaline 8.0.2 by Isage | ✅ | ❌ |
 | RetroArch   | ✅ | ✅ |
 | Emu4Vita++   | ✅ | ❌ |
 | DaedalusX64  | ✅ | ✅ |
@@ -53,10 +53,9 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | Custom Game Directories | ✅ | ❌ |
 | Rename games in app | ✅ | ✅ |
 | Hide individual games | ✅ | ❌|
+| Hide any system or collection | ✅ | ❌|
 | Override categories | ✅ | ✅|
 | Override emulator cores | ✅ | ❌ |
-| Hide homebrew | ✅ | ✅|
-| Hide all games category | ✅ | ❌|
 | Hide games with missing artwork | ✅ | ❌|
 | **🔍 Navigation** |
 | Search for games | ✅ | ❌|
