@@ -2948,6 +2948,7 @@ function update_cached_table(def_user_db_file, def_table_name)
     print_table_system((def_user_db_file), (def_table_name))
 end
 function update_cached_table_recently_played()
+    sync_recently_played_full_from_visible()
     ensure_print_table_loaded()
     print_table_recently_played()
 end
@@ -3868,8 +3869,8 @@ local lang_default =
 ["guide_1_heading"] = "Adding games",
 ["guide_1_content"] = "Game directories: \nPlace your games in 'ux0:/data/RetroFlow/ROMS/', or to use your own file directories, go to 'Scan Settings' then 'Edit game directories'. \n\nOnce you have added your games, select 'Rescan' to add them to RetroFlow. \n\nFilenames: \nIt's important that your games are named using the 'no-intro' file naming convention, e.g. 'Sonic (USA)', otherwise images won't be downloaded.",
 
-["guide_2_heading"] = "Why are PSP and PS1 games not showing?",
-["guide_2_content"] = "Install Adrenaline v7 by TheOfficialFloW to enable PSP and PS1 games.",
+["guide_2_heading"] = "Why did I get an Adrenaline warning?",
+["guide_2_content"] = "RetroFlow did not recognise your installed Adrenaline module set. PSP and PS1 games will still be shown, but they may not launch correctly.\n\nIf games do not launch, update RetroFlow when a newer version is available.",
 
 ["guide_3_heading"] = "Custom game covers & backgrounds",
 ["guide_3_content"] = "Covers: \nCustom covers can be saved in the game folders here: 'ux0:/data/RetroFlow/COVERS/'. \n\nBackgounds: \nCustom game backgrounds can be saved in the game folders here: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilenames:\nThe filename must match the App ID or the App Name Images must be in .png format.",
@@ -3942,6 +3943,7 @@ local lang_default =
 ["Restart_Now"] = "Restart Now",
 ["Restart_Later"] = "Restart Later",
 ["Install_Official_Adrenaline"] = "Install Adrenaline v7 by TheOfficialFloW to enable PSP and PS1 games.",
+["Adrenaline_Unsupported"] = "Your Adrenaline module set is not recognised. PSP and PS1 games may not launch.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "You need to install Adrenaline to play this game.",
@@ -4313,50 +4315,177 @@ end
     
 
     adrenaline_compatibilty = false
+    adrenaline_family = nil
+    adrenaline_state = "unsupported"
+    adrenaline_target_module_source = nil
+    adrenaline_target_signature = nil
+
+    adrenaline_module_names = {
+        "adrbubblebooter.suprx",
+        "adrenaline_kernel.skprx",
+        "adrenaline_user.suprx",
+        "adrenaline_vsh.suprx",
+        "bootconv.suprx",
+    }
+
+    adrenaline_signature_theflow_v7 = {
+        ["adrenaline_kernel.skprx"] = "20f7c5cd",
+        ["adrenaline_user.suprx"]   = "5487a9c3",
+        ["adrenaline_vsh.suprx"]    = "fa85cd74",
+    }
+
+    adrenaline_signature_theflow_lman = {
+        ["adrbubblebooter.suprx"]   = "039095fd",
+        ["adrenaline_kernel.skprx"] = "c9f84053",
+        ["adrenaline_user.suprx"]   = "f5116106",
+        ["adrenaline_vsh.suprx"]    = "485293a1",
+        ["bootconv.suprx"]          = "d072fe17",
+    }
+    
+    -- ABM 6.20.1 shipped the menu-label fix before the direct-IFTU build. It is
+    -- accepted as a known legacy state and upgraded to the current fixed stack.
+    adrenaline_signature_theflow_menu_fix_legacy = {
+        ["adrbubblebooter.suprx"]   = "039095fd",
+        ["adrenaline_kernel.skprx"] = "c9f84053",
+        ["adrenaline_user.suprx"]   = "9e1b321a",
+        ["adrenaline_vsh.suprx"]    = "485293a1",
+        ["bootconv.suprx"]          = "d072fe17",
+    }
+
+    -- Default installation: TheOfficialFloW/Adrenaline v7 with the menu-label and
+    -- direct-IFTU fixes.
+    adrenaline_signature_theflow_menu_fix = {
+        ["adrbubblebooter.suprx"]   = "039095fd",
+        ["adrenaline_kernel.skprx"] = "21bd6d72",
+        ["adrenaline_user.suprx"]   = "2c6fb429",
+        ["adrenaline_vsh.suprx"]    = "485293a1",
+        ["bootconv.suprx"]          = "d072fe17",
+    }
+
+    adrenaline_signature_isage_802 = {
+        ["adrenaline_kernel.skprx"] = "3b998f83",
+        ["adrenaline_user.suprx"]   = "eddf100e",
+        ["adrenaline_vsh.suprx"]    = "cae14c01",
+    }
+
+    adrenaline_signature_isagecompat = {
+        ["adrbubblebooter.suprx"]   = "02c3104e",
+        ["adrenaline_kernel.skprx"] = "373bd9d6",
+        ["adrenaline_user.suprx"]   = "6c4b9257",
+        ["adrenaline_vsh.suprx"]    = "2a23114d",
+        ["bootconv.suprx"]          = "84bf1418",
+    }
+
+    -- Known per-family core values let Adrenaline bubble compatibility safely finish an interrupted update,
+    -- while still refusing arbitrary or cross-family module combinations.
+    adrenaline_known_theflow_core = {
+        ["adrenaline_kernel.skprx"] = { "20f7c5cd", "c9f84053", "21bd6d72" },
+        ["adrenaline_user.suprx"]   = { "5487a9c3", "f5116106", "9e1b321a", "2c6fb429" },
+        ["adrenaline_vsh.suprx"]    = { "fa85cd74", "485293a1" },
+    }
+
+    adrenaline_known_isage_core = {
+        ["adrenaline_kernel.skprx"] = { "3b998f83", "373bd9d6" },
+        ["adrenaline_user.suprx"]   = { "eddf100e", "cb75a035", "6c4b9257" },
+        ["adrenaline_vsh.suprx"]    = { "cae14c01", "2a23114d" },
+    }
+
+    function adrenaline_crc(path)
+        if not System.doesFileExist(path) then return nil end
+        local crc = Extended.crc32File(path)
+        if crc == nil then return nil end
+        return string.lower(tostring(crc))
+    end
+
+    function adrenaline_read_module_crcs()
+        local installed = {}
+        for i=1,#adrenaline_module_names do
+            local name = adrenaline_module_names[i]
+            installed[name] = adrenaline_crc(ADRENALINE.."/sce_module/"..name)
+        end
+        return installed
+    end
+
+    function adrenaline_matches_signature(installed, signature)
+        for name, crc in pairs(signature) do
+            if installed[name] ~= crc then
+                return false
+            end
+        end
+        return true
+    end
+
+    function adrenaline_contains_crc(values, crc)
+        if crc == nil then return false end
+        for i=1,#values do
+            if values[i] == crc then return true end
+        end
+        return false
+    end
+
+    function adrenaline_matches_known_core(installed, known)
+        for name, values in pairs(known) do
+            if not adrenaline_contains_crc(values, installed[name]) then
+                return false
+            end
+        end
+        return true
+    end
+
+    function Detect_Adrenaline_Family()
+        ADRENALINE = "ux0:app/PSPEMUCFW"
+
+        if not System.doesAppExist("PSPEMUCFW") then
+            return nil, "unsupported"
+        end
+
+        local installed = adrenaline_read_module_crcs()
+
+        if adrenaline_matches_signature(installed, adrenaline_signature_theflow_menu_fix) then
+            return "theflow", "theflow-menu-label-fix"
+        elseif adrenaline_matches_signature(installed, adrenaline_signature_theflow_lman) then
+            return "theflow", "theflow-lman"
+        elseif adrenaline_matches_signature(installed, adrenaline_signature_theflow_menu_fix_legacy) then
+            return "theflow", "theflow-menu-label-fix-legacy"
+        elseif adrenaline_matches_signature(installed, adrenaline_signature_isagecompat) then
+            return "isage", "isage-isagecompat"
+        elseif adrenaline_matches_signature(installed, adrenaline_signature_theflow_v7) then
+            return "theflow", "theflow-v7"
+        elseif adrenaline_matches_signature(installed, adrenaline_signature_isage_802) then
+            return "isage", "isage-v8.0.2"
+        elseif adrenaline_matches_known_core(installed, adrenaline_known_theflow_core) then
+            return "theflow", "theflow-incomplete"
+        elseif adrenaline_matches_known_core(installed, adrenaline_known_isage_core) then
+            return "isage", "isage-incomplete"
+        end
+
+        return nil, "unsupported"
+    end
+
+    function Set_Adrenaline_Target_Files()
+        adrenaline_target_module_source = nil
+        adrenaline_target_signature = nil
+
+        if adrenaline_family == "theflow" then
+            adrenaline_target_module_source = "app0:payloads/abm/modules/sce_module_abm_v7/"
+            adrenaline_target_signature = adrenaline_signature_theflow_menu_fix
+        elseif adrenaline_family == "isage" then
+            adrenaline_target_module_source = "app0:payloads/abm/modules/sce_module_abm_8.0.2/"
+            adrenaline_target_signature = adrenaline_signature_isagecompat
+        end
+    end
 
     function Check_Adrenaline_Compatibility()
         adrenaline_compatibilty = false
-
-        -- CRC values for Adrenaline modules
-
-            -- Official compatible Adrenaline by Flow - 6.61 Adrenaline-7
-            local __CRCKERNEL_OG    = "20f7c5cd"
-            local __CRCUSER_OG      = "5487a9c3"
-            local __CRCVSH_OG       = "fa85cd74"
-
-            -- Updated modules used by RetroFlow to launch games - Leecherman's versions
-            local __CRCKERNEL_RF    = "c9f84053"
-            local __CRCUSER_RF      = "f5116106"
-            local __CRCVSH_RF       = "485293a1"
-
-
         ADRENALINE = "ux0:app/PSPEMUCFW"
-        
-        MODULES_TO_CHECK = {
-          { file_adr = ADRENALINE.."/sce_module/adrenaline_kernel.skprx", crc_official = __CRCKERNEL_OG,    crc_retroflow = __CRCKERNEL_RF  },
-          { file_adr = ADRENALINE.."/sce_module/adrenaline_user.suprx",   crc_official = __CRCUSER_OG,      crc_retroflow = __CRCUSER_RF  },
-          { file_adr = ADRENALINE.."/sce_module/adrenaline_vsh.suprx",    crc_official = __CRCVSH_OG,       crc_retroflow = __CRCVSH_RF  },
-        }
 
-        local all_modules_valid = true
-
-        if System.doesAppExist("PSPEMUCFW") then
-
-            for i=1,#MODULES_TO_CHECK do
-                -- Check CRC
-                local crc = Extended.crc32File(MODULES_TO_CHECK[i].file_adr)
-
-                if crc ~= MODULES_TO_CHECK[i].crc_official and crc ~= MODULES_TO_CHECK[i].crc_retroflow then
-                    all_modules_valid = false
-                end
-            end
-
+        adrenaline_family, adrenaline_state = Detect_Adrenaline_Family()
+        if adrenaline_family ~= nil then
+            adrenaline_compatibilty = true
+            Set_Adrenaline_Target_Files()
         else
-            all_modules_valid = false
+            adrenaline_compatibilty = false
         end
-
-        adrenaline_compatibilty = all_modules_valid
-
 
         -- NOTIFICATION ABOUT WRONG ADRENALINE VERSION
 
@@ -4371,7 +4500,7 @@ end
                     if System.doesAppExist("PSPEMUCFW") then
                         status = System.getMessageState()
                         if status ~= RUNNING then
-                            System.setMessage(lang_lines.Install_Official_Adrenaline, false, BUTTON_OK)
+                            System.setMessage(lang_lines.Adrenaline_Unsupported, false, BUTTON_OK)
                         end
                     end
 
@@ -4421,21 +4550,23 @@ end
 
             -- CRC Checksums and assets
 
-                -- default values modules AdrenalineBooter v1.3 for adrenaline v7.0
-                __CRCADRBOOTER  = "039095fd"
-                __CRCKERNEL     = "c9f84053"
-                __CRCUSER       = "f5116106"
-                __CRCVSH        = "485293a1"
-                __CRCBOOTCONV   = "d072fe17"
-
                 ADRENALINE = "ux0:app/PSPEMUCFW"
-                MODULES = {
-                  { file_adr = ADRENALINE.."/sce_module/adrbubblebooter.suprx",   file_payload = "app0:payloads/abm/sce_module/adrbubblebooter.suprx",   crc = __CRCADRBOOTER },
-                  { file_adr = ADRENALINE.."/sce_module/adrenaline_kernel.skprx", file_payload = "app0:payloads/abm/sce_module/adrenaline_kernel.skprx", crc = __CRCKERNEL  },
-                  { file_adr = ADRENALINE.."/sce_module/adrenaline_user.suprx",   file_payload = "app0:payloads/abm/sce_module/adrenaline_user.suprx",   crc = __CRCUSER  },
-                  { file_adr = ADRENALINE.."/sce_module/adrenaline_vsh.suprx",    file_payload = "app0:payloads/abm/sce_module/adrenaline_vsh.suprx",    crc = __CRCVSH  },
-                  { file_adr = ADRENALINE.."/sce_module/bootconv.suprx",          file_payload = "app0:payloads/abm/sce_module/bootconv.suprx",          crc = __CRCBOOTCONV }
-                }
+                if adrenaline_target_module_source == nil or adrenaline_target_signature == nil then
+                    adrenaline_family, adrenaline_state = Detect_Adrenaline_Family()
+                    Set_Adrenaline_Target_Files()
+                end
+
+                MODULES = {}
+                if adrenaline_target_module_source ~= nil and adrenaline_target_signature ~= nil then
+                    for i=1,#adrenaline_module_names do
+                        local module_name = adrenaline_module_names[i]
+                        table.insert(MODULES, {
+                            file_adr = ADRENALINE.."/sce_module/"..module_name,
+                            file_payload = adrenaline_target_module_source..module_name,
+                            crc = adrenaline_target_signature[module_name],
+                        })
+                    end
+                end
             
             -- Copy assets if missing or CRC's are different, restart Vita
 
@@ -5382,10 +5513,36 @@ function cleanRomNames()
     end
 end
 
+-- Write a small Adrenaline boot.bin setting as a 32-bit little-endian integer.
+function AdrenalineBootInt32(value)
+    value = tonumber(value) or 0
+    return string.char(value, 0, 0, 0)
+end
+
+-- Boot values for both Adrenaline v7 (LMAN) and isage v8:
+
+adrenaline_driver_boot_values = {
+    ["NP9660"] = 0,
+    ["INFERNO"] = 1,
+    ["MARCH33"] = 2,
+}
+
+-- Convert RetroFlow's driver name to ABM's fixed raw boot.bin driver value.
+function AdrenalineDriverToBootValue(def_driver)
+    local driver = tostring(def_driver):upper()
+    return adrenaline_driver_boot_values[driver] or adrenaline_driver_boot_values["NP9660"]
+end
+
+-- Mark boot.bin as using ABM's fixed driver mapping so ABM will not treat it as a legacy LMAN bubble. Not required but done for completeness.
+function WriteAdrenalineBootDriverMarker(fp)
+    fp:seek("set", 0x2C)
+    fp:write("BBD1")
+end
+
 function AutoMakeBootBin(def_rom_location, def_driver, def_bin, def_plugins, def_speed, def_hm, def_nonpdrm, def_suspend)
 
     -- Driver and bin tables
-    local drivers = { "ENABLE", "INFERN0", "MARCH33", "NP9660" } -- 0,0,1,2
+    local drivers = { "ENABLE", "INFERNO", "MARCH33", "NP9660" } -- Default, INFERNO, MARCH33, NP9660
     local bins = { "ENABLE", "EBOOT.BIN", "EBOOT.OLD", "BOOT.BIN" } -- 0,0,1,2
 
     -- Cleanup game path for writing to bin (set to lowercase and gsub path)
@@ -5415,88 +5572,85 @@ function AutoMakeBootBin(def_rom_location, def_driver, def_bin, def_plugins, def
 
             local fp = io.open("ux0:/app/RETROLNCR/data/boot.bin", "r+")
             if fp then
-                local number = 0
-                                    
                 -- Driver 
                 fp:seek("set",0x04)
-                if driver == "INFERN0" then number_driver = "\x00\x00\x00\x00"
-                elseif driver == "MARCH33" then number_driver = "\x01\x00\x00\x00"
-                elseif driver == "NP9660" then number_driver = "\x02\x00\x00\x00"
-                end
-                fp:write(number_driver)
+                fp:write(AdrenalineBootInt32(AdrenalineDriverToBootValue(driver)))
+                WriteAdrenalineBootDriverMarker(fp)
 
                 -- Bin Execute
                 fp:seek("set",0x08)
-                if bin == "EBOOT.BIN" then number_bin = "\x00\x00\x00\x00"
-                elseif bin == "EBOOT.OLD" then number_bin = "\x01\x00\x00\x00"
-                elseif bin == "BOOT.BIN" then number_bin = "\x02\x00\x00\x00"
+                if bin == "EBOOT.BIN" then number_bin = 0
+                elseif bin == "EBOOT.OLD" then number_bin = 1
+                elseif bin == "BOOT.BIN" then number_bin = 2
+                else
+                    number_bin = 0
                 end
-                fp:write(number_bin)
+                fp:write(AdrenalineBootInt32(number_bin))
 
                 -- Suspend
                 if suspend ~= 0 then
                     fp:seek("set", 0x18)
-                    if suspend == 1 then number_suspend = "\x01\x00\x00\x00"        -- No
+                    if suspend == 1 then number_suspend = 1        -- No
                     else
-                        number_suspend = "\x00\x00\x00\x00"                         -- Yes
+                        number_suspend = 0                         -- Yes
                     end
-                    fp:write(number_suspend)
+                    fp:write(AdrenalineBootInt32(number_suspend))
                 end
 
                 -- cpuspeed
                 if speed ~= 0 then
                     fp:seek("set", 0x1C)
-                    if speed == 1      then number_speed = "\x01\x00\x00\x00"       -- 20/10
-                    elseif speed == 2  then number_speed = "\x02\x00\x00\x00"       -- 50/25
-                    elseif speed == 3  then number_speed = "\x03\x00\x00\x00"       -- 75/37
-                    elseif speed == 4  then number_speed = "\x04\x00\x00\x00"       -- 100/50
-                    elseif speed == 5  then number_speed = "\x05\x00\x00\x00"       -- 111/55
-                    elseif speed == 6  then number_speed = "\x06\x00\x00\x00"       -- 122/61
-                    elseif speed == 7  then number_speed = "\x07\x00\x00\x00"       -- 133/66
-                    elseif speed == 8  then number_speed = "\x08\x00\x00\x00"       -- 166/83
-                    elseif speed == 9  then number_speed = "\x09\x00\x00\x00"       -- 200/100
-                    elseif speed == 10 then number_speed = "\x0A\x00\x00\x00"       -- 222/111
-                    elseif speed == 11 then number_speed = "\x0B\x00\x00\x00"       -- 266/133
-                    elseif speed == 12 then number_speed = "\x0C\x00\x00\x00"       -- 288/144
-                    elseif speed == 13 then number_speed = "\x0D\x00\x00\x00"       -- 300/150
-                    elseif speed == 14 then number_speed = "\x0E\x00\x00\x00"       -- 333/166
+                    if speed == 1      then number_speed = 1       -- 20/10
+                    elseif speed == 2  then number_speed = 2       -- 50/25
+                    elseif speed == 3  then number_speed = 3       -- 75/37
+                    elseif speed == 4  then number_speed = 4       -- 100/50
+                    elseif speed == 5  then number_speed = 5       -- 111/55
+                    elseif speed == 6  then number_speed = 6       -- 122/61
+                    elseif speed == 7  then number_speed = 7       -- 133/66
+                    elseif speed == 8  then number_speed = 8       -- 166/83
+                    elseif speed == 9  then number_speed = 9       -- 200/100
+                    elseif speed == 10 then number_speed = 10      -- 222/111
+                    elseif speed == 11 then number_speed = 11      -- 266/133
+                    elseif speed == 12 then number_speed = 12      -- 288/144
+                    elseif speed == 13 then number_speed = 13      -- 300/150
+                    elseif speed == 14 then number_speed = 14      -- 333/166
                     else
-                        number_speed = "\x00\x00\x00\x00"                           -- Default
+                        number_speed = 0                           -- Default
                     end
-                    fp:write(number_speed)
+                    fp:write(AdrenalineBootInt32(number_speed))
                 end
 
                 -- Plugins
                 if plugins ~= 0 then
                     fp:seek("set", 0x20)
-                    if plugins == 1 then number_plugin = "\x01\x00\x00\x00"         -- Enable
-                    elseif plugins == 2 then number_plugin = "\x02\x00\x00\x00"     -- Disable
+                    if plugins == 1 then number_plugin = 1         -- Enable
+                    elseif plugins == 2 then number_plugin = 2     -- Disable
                     else
-                        number_plugin = "\x00\x00\x00\x00"                          -- Default
+                        number_plugin = 0                          -- Default
                     end
-                    fp:write(number_plugin)
+                    fp:write(AdrenalineBootInt32(number_plugin))
                 end
 
                 -- NonpDRM
                 if nonpdrm ~= 0 then
                     fp:seek("set", 0x24)
-                    if nonpdrm == 1 then number_nonpdrm = "\x01\x00\x00\x00"        -- Enable
-                    elseif nonpdrm == 2 then number_nonpdrm = "\x02\x00\x00\x00"    -- Disable
+                    if nonpdrm == 1 then number_nonpdrm = 1        -- Enable
+                    elseif nonpdrm == 2 then number_nonpdrm = 2    -- Disable
                     else
-                        number_nonpdrm = "\x00\x00\x00\x00"                         -- Default
+                        number_nonpdrm = 0                         -- Default
                     end
-                    fp:write(number_nonpdrm)
+                    fp:write(AdrenalineBootInt32(number_nonpdrm))
                 end
 
                 --HighMemory
                 if hm ~= 0 then
                     fp:seek("set", 0x28)
-                    if hm == 1 then number_hm = "\x01\x00\x00\x00"                  -- Enable
-                    elseif hm == 2 then number_hm = "\x02\x00\x00\x00"              -- Disable
+                    if hm == 1 then number_hm = 1                  -- Enable
+                    elseif hm == 2 then number_hm = 2              -- Disable
                     else
-                        number_hm = "\x00\x00\x00\x00"                              -- Default
+                        number_hm = 0                              -- Default
                     end
-                    fp:write(number_hm)
+                    fp:write(AdrenalineBootInt32(number_hm))
                 end
 
                 -- Path2game
@@ -5509,12 +5663,13 @@ function AutoMakeBootBin(def_rom_location, def_driver, def_bin, def_plugins, def
 
                 -- PSbutton 00 Menu 01 LiveArea 02 Standard
                 fp:seek("set",0x14)
-                if setAdrPSButton == 0 then psbutton_number = "\x00\x00\x00\x00"
-                elseif setAdrPSButton == 1 then psbutton_number = "\x01\x00\x00\x00"
-                elseif setAdrPSButton == 2 then psbutton_number = "\x02\x00\x00\x00"
+                if setAdrPSButton == 0 then psbutton_number = 0
+                elseif setAdrPSButton == 1 then psbutton_number = 1
+                elseif setAdrPSButton == 2 then psbutton_number = 2
                 else
+                    psbutton_number = 0
                 end
-                fp:write(psbutton_number)     
+                fp:write(AdrenalineBootInt32(psbutton_number))
 
                 --Close
                 fp:close()
@@ -5545,10 +5700,30 @@ function import_launch_overrides()
             -- File is corrupt, don't import it
         else
 
+            -- Older RetroFlow/LMAN bubbles used incorrect driver labels:
+            -- INFERNO launched NP9660, MARCH33 launched INFERNO, and NP9660 launched MARCH33.
+            -- Migrate old driver selections to reflect correct driver name.
+            -- Store a schema marker in launch_overrides.lua so this one-time migration cannot run again.
+            -- To aid downgrading RetroFlow: Old overrides will be preserved in the backup file 'launch_overrides_before_abm_driver_fix.lua'.
+
+            local schema = db_launch_overrides._schema or {}
+            local migrate_adrenaline_drivers = schema.adrenaline_driver_labels == nil
+
             for i = #db_launch_overrides, 1, -1 do
                 local v = db_launch_overrides[i]
 
                 if v.driver ~= nil then
+                    if migrate_adrenaline_drivers then
+                        -- Preserve the real driver used by old LMAN-labelled bubbles.
+                        if v.driver == 1 then
+                            v.driver = 3 -- Old INFERNO label was actually NP9660
+                        elseif v.driver == 2 then
+                            v.driver = 1 -- Old MARCH33 label was actually INFERNO
+                        elseif v.driver == 3 then
+                            v.driver = 2 -- Old NP9660 label was actually MARCH33
+                        end
+                    end
+
                     -- If queries are a legacy fix for new settings that were added
                     if v.plugins == nil then
                         v.plugins = game_adr_plugins
@@ -5576,6 +5751,18 @@ function import_launch_overrides()
                 table.insert(launch_overrides_table, v)
 
                 ::continue::
+            end
+
+            if migrate_adrenaline_drivers then
+                local backup_launch_overrides = "ux0:/data/RetroFlow/launch_overrides_before_abm_driver_fix.lua"
+                if not System.doesFileExist(backup_launch_overrides) then
+                    System.copyFile(db_Cache_launch_overrides, backup_launch_overrides)
+                end
+
+                launch_overrides_table._schema = schema
+                launch_overrides_table._schema.adrenaline_driver_labels = "abm_fixed_v1"
+
+                update_cached_table_launch_overrides()
             end
 
         end
@@ -5682,13 +5869,13 @@ function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
                 -- Overrides found
                 saved_driver = launch_overrides_table[key].driver
                 if saved_driver == 1 then 
-                    driver = "INFERN0"
+                    driver = "INFERNO"
                 elseif saved_driver == 2 then
                     driver = "MARCH33"
                 elseif saved_driver == 3 then
                     driver = "NP9660"
                 else
-                    driver = "INFERN0"
+                    driver = "NP9660"
                 end
 
                 saved_bin = launch_overrides_table[key].bin
@@ -5710,12 +5897,17 @@ function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
 
             else
                 -- Overrides not found, use default
-                driver = "INFERN0"
+                driver = "NP9660"
                 bin = "EBOOT.BIN"
+                plugins = 0
+                speed = 0
+                hm = 0
+                nonpdrm = 0
+                suspend = 0
             end
         else
             -- Table is empty, use default
-            driver = "INFERN0"
+            driver = "NP9660"
             bin = "EBOOT.BIN"
             plugins = 0
             speed = 0
@@ -5732,6 +5924,11 @@ function launch_Adrenaline(def_rom_location, def_rom_title_id, def_rom_filename)
         -- Delete the old Adrenaline bin file
         if  System.doesFileExist(launch_dir_adr .. "data/boot.bin") then
             System.deleteFile(launch_dir_adr .. "data/boot.bin")
+        end
+
+        -- Delete the old Adrenaline config file (isage config breaks adrenaline 7)
+        if  System.doesFileExist(launch_dir_adr .. "data/config.bin") then
+            System.deleteFile(launch_dir_adr .. "data/config.bin")
         end
 
         AutoMakeBootBin((def_rom_location), driver, bin, plugins, speed, hm, nonpdrm, suspend)
@@ -6503,11 +6700,69 @@ function include_game_in_recent(def_app_type, def_game_path, def_name)
 
 end
 
+function include_game_in_visible_recent(def_recent_game)
+    return true
+end
+
+function rebuild_visible_recently_played_table()
+    recently_played_table = {}
+
+    if recently_played_full_table == nil then
+        recently_played_full_table = {}
+    end
+
+    for k, v in ipairs(recently_played_full_table) do
+        if include_game_in_visible_recent(v) == true then
+            table.insert(recently_played_table, v)
+            v.icon = imgCoverTmp
+            v.icon_path = v.icon_path
+            v.apptitle = v.apptitle
+        end
+    end
+
+    -- Remove hidden games from visible recent if necessary, but keep them in the saved history.
+    if showHidden == 0 and #recently_played_table ~= nil then
+        for l = #recently_played_table, 1, -1 do
+            if recently_played_table[l].hidden == true then
+                table.remove(recently_played_table, l)
+            end
+        end
+    end
+end
+
+function sync_recently_played_full_from_visible()
+    if recently_played_full_table == nil then
+        recently_played_full_table = {}
+    end
+
+    for k, v in ipairs(recently_played_table) do
+        local key = find_game_table_pos_key(recently_played_full_table, v.name)
+        if key ~= nil then
+            recently_played_full_table[key] = v
+        else
+            table.insert(recently_played_full_table, v)
+        end
+    end
+end
+
+function remove_recently_played_full_entry(def_name)
+    if recently_played_full_table == nil then
+        return
+    end
+
+    local key = find_game_table_pos_key(recently_played_full_table, def_name)
+    if key ~= nil then
+        table.remove(recently_played_full_table, key)
+    end
+end
+
 function import_recently_played(def_force_import)
 
     if showRecentlyPlayed ~= 1 and def_force_import ~= true then
         return
     end
+
+    recently_played_full_table = {}
 
     local file_over = System.openFile(cur_dir .. "/overrides.dat", FREAD)
     local filesize = System.sizeFile(file_over)
@@ -6578,11 +6833,7 @@ function import_recently_played(def_force_import)
                     if v.directory == false then
                         if System.doesFileExist(v.game_path) then
                             if include_game_in_recent(v.app_type, v.game_path, v.name) == true then
-                                table.insert(recently_played_table, v)
-                                --add blank icon to all
-                                v.icon = imgCoverTmp
-                                v.icon_path = v.icon_path
-                                v.apptitle = v.apptitle
+                                table.insert(recently_played_full_table, v)
                             end
                         end
                     else
@@ -6593,11 +6844,7 @@ function import_recently_played(def_force_import)
                                 if setScanCartridges == 0 and v.cartridge == true then
                                     -- ignore cartidges if scan cartridges is off
                                 else
-                                    table.insert(recently_played_table, v)
-                                    --add blank icon to all
-                                    v.icon = imgCoverTmp
-                                    v.icon_path = v.icon_path
-                                    v.apptitle = v.apptitle
+                                    table.insert(recently_played_full_table, v)
                                 end             
                             end
                         end
@@ -6607,7 +6854,7 @@ function import_recently_played(def_force_import)
                 -- apply_overrides_to_recently_played
                 if System.doesFileExist(cur_dir .. "/overrides.dat") then
                     
-                    for k, v in pairs(recently_played_table) do
+                    for k, v in pairs(recently_played_full_table) do
 
                         if string.match(str, v.name .. "=1") then
                             v.app_type=1
@@ -6707,15 +6954,7 @@ function import_recently_played(def_force_import)
             
     end
 
-    -- Remove hidden games from recent if necessary
-    if showHidden == 0 and #recently_played_table ~= nil then
-        for l, file in pairs(recently_played_table) do
-            if file.hidden == true then
-                table.remove(recently_played_table,l)
-            else
-            end
-        end
-    end
+    rebuild_visible_recently_played_table()
 
 end
 
@@ -6926,7 +7165,7 @@ function count_loading_tasks()
                         if next(game_folder) then
                             add_to_table(game_folder, QuickGameList.adrenaline_games_folder)
                         end
-                        local iso_folder = quickScanGames(tostring(v)  .. ":/pspemu/ISO", 2, true, ".iso", ".cso")
+                        local iso_folder = quickScanGames(tostring(v)  .. ":/pspemu/ISO", 2, true, ".iso", ".cso", ".zso", ".dax")
                         if next(iso_folder) then
                             add_to_table(iso_folder, QuickGameList.adrenaline_iso_folder)
                         end
@@ -6938,7 +7177,7 @@ function count_loading_tasks()
                         add_to_table(game_folder, QuickGameList.adrenaline_games_folder)
                     end
 
-                    local iso_folder = quickScanGames(adr_partition  .. ":/pspemu/ISO", 2, true, ".iso", ".cso")
+                    local iso_folder = quickScanGames(adr_partition  .. ":/pspemu/ISO", 2, true, ".iso", ".cso", ".zso", ".dax")
                     if next(iso_folder) then
                         add_to_table(iso_folder, QuickGameList.adrenaline_iso_folder)
                     end
@@ -7197,6 +7436,7 @@ function Full_Game_Scan()
     dos_table = {}
     easyrpg_table = {}
     sysapps_table = {}
+    recently_played_full_table = {}
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
@@ -10947,6 +11187,7 @@ function import_cached_DB()
     dos_table = {}
     easyrpg_table = {}
     sysapps_table = {}
+    recently_played_full_table = {}
     recently_played_table = {}
     search_results_table = {}
     fav_count = {}
@@ -10959,7 +11200,7 @@ function import_cached_DB()
     import_renamed_games()
     import_hidden_games()
 
-    -- Check if Official Adrenaline is installed, if a fork is installed, then disable PSP and PSX as the games can't be launched
+    -- Check Adrenaline modules. Unknown sets are warned about but PSP/PS1 games remain visible.
     Check_Adrenaline_Compatibility()
 
     import_cached_DB_tables("db_games.lua", games_table)
@@ -10970,10 +11211,8 @@ function import_cached_DB()
         import_cached_DB_homebrews_in_collections("db_homebrews.lua", homebrews_table)
     end
 
-    if adrenaline_compatibilty == true then
-        import_cached_DB_tables("db_psp.lua", psp_table)
-        import_cached_DB_tables("db_psx.lua", psx_table)
-    end
+    import_cached_DB_tables("db_psp.lua", psp_table)
+    import_cached_DB_tables("db_psx.lua", psx_table)
     import_cached_DB_tables("db_n64.lua", n64_table)
     import_cached_DB_tables("db_snes.lua", snes_table)
     import_cached_DB_tables("db_nes.lua", nes_table)
@@ -11547,6 +11786,13 @@ function update_recently_played_table_favorite(def)
             v.favourite=(def)
         end
     end
+    if recently_played_full_table ~= nil then
+        for k, v in pairs(recently_played_full_table) do
+            if v.filename==filename then
+                v.favourite=(def)
+            end
+        end
+    end
 end
 
 function update_favorites_table_system(def_table_name)
@@ -11786,6 +12032,12 @@ function AddOrRemoveHidden(def_hide_game_flag)
         if #recently_played_table ~= nil then
             recently_played_table[p].hidden=(def_hide_game_flag)
         end
+        if recently_played_full_table ~= nil then
+            local key = find_game_table_pos_key(recently_played_full_table, app_titleid)
+            if key ~= nil then
+                recently_played_full_table[key].hidden=(def_hide_game_flag)
+            end
+        end
         update_cached_table_recently_played()
 
         -- Update app type table
@@ -11807,6 +12059,13 @@ function AddOrRemoveHidden(def_hide_game_flag)
         end
 
         update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
+
+        if recently_played_full_table ~= nil then
+            local key = find_game_table_pos_key(recently_played_full_table, app_titleid)
+            if key ~= nil then
+                recently_played_full_table[key].hidden=(def_hide_game_flag)
+            end
+        end
 
         -- Update recent table
         if #recently_played_table ~= nil then
@@ -11854,6 +12113,7 @@ function refresh_after_hide_unhide(def_name, def_app_type, def_hide_game_flag)
     update_hidden_state_in_table(files_table, def_name, def_hide_game_flag, remove_hidden)
     update_hidden_state_in_table(folders_table, def_name, def_hide_game_flag, remove_hidden)
     update_hidden_state_in_table(files_table_no_sysapps, def_name, def_hide_game_flag, remove_hidden)
+    update_hidden_state_in_table(recently_played_full_table, def_name, def_hide_game_flag, false)
     update_hidden_state_in_table(recently_played_table, def_name, def_hide_game_flag, remove_hidden)
     update_hidden_state_in_table(search_results_table, def_name, def_hide_game_flag, remove_hidden)
 
@@ -11913,12 +12173,16 @@ function AddtoRecentlyPlayed()
         recently_played_table = {}
         import_recently_played(true)
     end
+
+    if recently_played_full_table == nil then
+        recently_played_full_table = {}
+    end
     
     recently_played_new = {}
     already_played = false
 
     -- If game in Recently played list - Update timestamp
-    for k, v in pairs(recently_played_table) do
+    for k, v in pairs(recently_played_full_table) do
         if v.filename==filename then
             already_played = true
             v.date_played=timestamp
@@ -11939,7 +12203,7 @@ function AddtoRecentlyPlayed()
     end
 
     -- Copy the recently played table to a new table
-    for k, v in pairs(recently_played_table) do
+    for k, v in pairs(recently_played_full_table) do
         table.insert(recently_played_new, v)
     end
 
@@ -11954,6 +12218,9 @@ function AddtoRecentlyPlayed()
             table.insert(recently_played_pre_launch_table, v)
         end
     end
+
+    recently_played_full_table = recently_played_pre_launch_table
+    rebuild_visible_recently_played_table()
 
     if recently_played_was_hidden then
         recently_played_table = {}
@@ -11982,6 +12249,7 @@ function QuickOverride_Update_recently_played(def_game)
         else
         end
     end
+    QuickOverride_Sync_loaded_entry(recently_played_full_table, def_game)
 end
 
 function QuickOverride_Sync_loaded_entry(def_table, def_game)
@@ -12017,6 +12285,7 @@ function QuickOverride_Sync_loaded_views(def_game)
     QuickOverride_Sync_loaded_entry(folders_table, def_game)
     QuickOverride_Sync_loaded_entry(files_table_no_sysapps, def_game)
     QuickOverride_Sync_loaded_entry(fav_count, def_game)
+    QuickOverride_Sync_loaded_entry(recently_played_full_table, def_game)
     QuickOverride_Sync_loaded_entry(recently_played_table, def_game)
     QuickOverride_Sync_loaded_entry(search_results_table, def_game)
 
@@ -15665,7 +15934,7 @@ while true do
                         pic_path = pic1_path
                     else
 
-                        if string.match(game_path:lower(), "%.cso$") or string.match(game_path:lower(), "%.iso$") then
+                        if string.match(game_path:lower(), "%.iso$") or string.match(game_path:lower(), "%.cso$") or string.match(game_path:lower(), "%.zso$") or string.match(game_path:lower(), "%.dax$") then
 
                             -- Try to extract PIC1 from PSP game
                             local extracted_pic = Extended.pspGetPic1(game_path, pic1_path)
@@ -19362,6 +19631,7 @@ while true do
                         if #recently_played_table ~= nil then
                             if showCat == 48 then
                                 -- We are in the recent category, remove the game and save cache
+                                remove_recently_played_full_entry(app_titleid)
                                 table.remove(recently_played_table, p)
                                 update_cached_table_recently_played()
                                 oldpad = pad -- Prevents it from launching next game accidentally
@@ -19373,6 +19643,7 @@ while true do
                                 -- We are NOT the recent category, Find game in recent table and remove, then save cache
                                 key = find_game_table_pos_key(recently_played_table, app_titleid)
                                 if key ~= nil then
+                                    remove_recently_played_full_entry(app_titleid)
                                     table.remove(recently_played_table, key)
                                     update_cached_table_recently_played()
                                     GetInfoSelected()
@@ -22484,32 +22755,32 @@ while true do
                         end
                     end
                     
-	                    if showCat == 49 then
-	                        curTotal = #search_results_table
-	                        if #search_results_table == 0 then
-	                            if collection_count ~= 0 then
-	                                if showCollections == 0 then
-	                                    if showAll==0 then
-	                                        showCat = 1
-	                                    else
-	                                        showCat = 0
-	                                    end
-	                                else
-	                                    showCat = 50
-	                                end
-	                            else
-	                                if showAll==0 then
-	                                    showCat = 1
-	                                else
-	                                    showCat = 0
-	                                end
-	                            end
-	                        end
-	                    end
+                        if showCat == 49 then
+                            curTotal = #search_results_table
+                            if #search_results_table == 0 then
+                                if collection_count ~= 0 then
+                                    if showCollections == 0 then
+                                        if showAll==0 then
+                                            showCat = 1
+                                        else
+                                            showCat = 0
+                                        end
+                                    else
+                                        showCat = 50
+                                    end
+                                else
+                                    if showAll==0 then
+                                        showCat = 1
+                                    else
+                                        showCat = 0
+                                    end
+                                end
+                            end
+                        end
 
-	                    skip_empty_collection_categories(1)
+                        skip_empty_collection_categories(1)
 
-	                    hideBoxes = 0.8 -- used to be 8
+                        hideBoxes = 0.8 -- used to be 8
                     p = 1
                     master_index = p
                     startCovers = false

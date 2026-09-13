@@ -293,11 +293,12 @@ end
 
 function print_table_recently_played()
     local db_Cached_File_recently_played = "ux0:/data/RetroFlow/recently_played.lua"
+    local table_to_save = recently_played_full_table or recently_played_table
 
     -- Create directories - Database Cache
     if System.doesFileExist(db_Cached_File_recently_played) then System.deleteFile(db_Cached_File_recently_played) else end
     local db_recently_played = assert(io.open(db_Cached_File_recently_played, "w"))
-    printTable(recently_played_table, db_recently_played)
+    printTable(table_to_save, db_recently_played)
     db_recently_played:close()
 end
 
@@ -423,9 +424,7 @@ function printTable(t, f)
 
          for k,v in pairs(obj) do
 
-            if string.match(k, "ricon") then -- Custom edit - ricon removed (breaks single cover download)
-            k = nil -- removes table key and entry
-            else
+            if not (type(k) == "string" and string.match(k, "ricon")) then -- Custom edit - ricon removed (breaks single cover download)
                if type(k) == "string" then
                   io.write(string.rep("\t",cnt), '["'..k..'"]', ' = ')
                end
@@ -433,10 +432,10 @@ function printTable(t, f)
                if type(k) == "number" then
                   io.write(string.rep("\t",cnt), "["..k.."]", " = ")
                end
-            end
 
-            printTableHelper(v, cnt)
-            io.write(",\n")
+               printTableHelper(v, cnt)
+               io.write(",\n")
+            end
          end
 
          cnt = cnt-1
