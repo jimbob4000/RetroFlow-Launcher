@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Música aleatoria: ",
 ["Skip_track"] = "Siguiente canción",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Editar visibilidad de las categorías",
 ["Startup_Category_colon"] = "Categoría de Inicio: ",
 ["Last_played_game"] = "Último juego jugado",
 ["Favorites"] = "Favoritos",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Como agregar juegos",
 ["guide_1_content"] = "Directorios de juegos: \nLos juegos están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/ROMS/', o para usar tus propios directorios de archivos, ve a 'Configuración de escaneo' y luego a 'Editar directorios de juegos'. \nUna vez que hayas agregado tus juegos, selecciona 'Escanear' para agregarlos a RetroFlow. \n\nNombres de archivos: \nEs importante que tus juegos tengan el mismo nombre que el de las recopilaciones 'no-intro'. Ejemplo: Sonic (USA); de lo contrario, las imágenes no se descargarán.",
 
-["guide_2_heading"] = "¿Por qué no se muestran los juegos de PSP y PS1?",
-["guide_2_content"] = "Instala Adrenaline v7 de TheOfficialFloW para habilitar juegos de PSP y PS1.",
+["guide_2_heading"] = "¿Por qué he recibido una advertencia de Adrenaline?",
+["guide_2_content"] = "RetroFlow no reconoció el conjunto de módulos de Adrenaline instalado. Los juegos de PSP y PS1 seguirán mostrándose, pero es posible que no se inicien correctamente.\n\nSi los juegos no se inician, actualiza RetroFlow cuando haya una versión más reciente disponible.",
 
 ["guide_3_heading"] = "Personalizar portadas y fondos de juegos",
 ["guide_3_content"] = "Carátulas: \nLas carátulas personalizadas están separadas por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/COVERS/'. \n\nFondos: \nLos fondos personalizados de los juegos, están separados por sistema y se deben de guardar en: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNombre de las ROMs:\nEl nombre de las ROMs debe ser el mismo que el de su ID. Por ejemplo, el juego 'Retro City Rampage DX' tiene de ID 'PCSE00546' entonces su carátula debe de llevar ese mismo nombre; además las imágenes de las carátulas deben de estar en formato .png y de preferencia en modo de color indexado (para no sobrecargar la memoria RAM de la consola).",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Editar colecciones",
 ["Show_collections_colon"] = "Mostrar Colecciones:",
 ["Customise_game_order"] = "Personalizar orden de los juegos",
+["Edit_collection_visibility"] = "Editar visibilidad de las colecciones",
+["Show_all"] = "Mostrar todas",
+["Hide_all"] = "Ocultar todas",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Instalando RetroFlow Adrenaline Launcher vpk...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Reiniciar ahora",
 ["Restart_Later"] = "Reiniciar más tarde",
 ["Install_Official_Adrenaline"] = "Instala Adrenaline v7 de TheOfficialFloW para habilitar juegos de PSP y PS1.",
+["Adrenaline_Unsupported"] = "No se reconoce tu conjunto de módulos de Adrenaline. Es posible que los juegos de PSP y PS1 no se inicien.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Necesitas instalar Adrenaline para jugar a este juego.",

@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "音楽をシャッフルする：",
 ["Skip_track"] = "トラックをスキップ",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "カテゴリーの表示設定を編集",
 ["Startup_Category_colon"] = "起動時のカテゴリー：",
 ["Last_played_game"] = "最後に遊んだゲーム",
 ["Favorites"] = "お気に入り",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "ゲームの追加方法",
 ["guide_1_content"] = "ゲームディレクトリ: \nゲームを「ux0:/data/RetroFlow/ROMS/」 に配置するか、\n独自のファイルディレクトリを使用するには、\n「スキャン設定」 に移動してから 「ゲームディレクトリの編集」 に移動します。 \n\nゲームを追加したら、「再スキャン」を選択して RetroFlow に追加します。 \n\nファイル名: \n「no-intro」ファイル命名規則を使用してゲームに名前を付けることが重要です。 \n「Sonic (USA)」、そうでない場合、画像はダウンロードされません。",
 
-["guide_2_heading"] = "なぜ PSP と PS1 のゲームが表示されないのですか？",
-["guide_2_content"] = "PSPおよびPS1ゲームを有効にするには、TheOfficialFloW製 Adrenaline v7 をインストールしてください。",
+["guide_2_heading"] = "Adrenalineの警告が表示されたのはなぜですか？",
+["guide_2_content"] = "RetroFlowがインストールされている\nAdrenalineのモジュールセットを\n認識できませんでした。\n\nPSPおよびPS1のゲームは引き続き表示されますが、\n正しく起動しない可能性があります。\n\nゲームが起動しない場合は、\n新しいバージョンが利用可能になったら\nRetroFlowを更新してください。",
 
 ["guide_3_heading"] = "ゲームのカバーと背景のカスタマイズ方法",
 ["guide_3_content"] = "カバー: \nカスタム カバーは次のゲーム フォルダに保存できます: \n「ux0:/data/RetroFlow/COVERS/」。 \n\n背景: \nカスタム ゲームの背景は、「ux0:/data/RetroFlow/BACKGROUNDS/」\nのゲーム フォルダに保存できます。 \n\nファイル名:\nファイル名はアプリ ID またはアプリ名と一致する必要があります。\n画像は .png 形式である必要があります。",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "コレクションを編集する",
 ["Show_collections_colon"] = "コレクションを表示：",
 ["Customise_game_order"] = "ゲームの順番をカスタマイズする",
+["Edit_collection_visibility"] = "コレクションの表示設定を編集",
+["Show_all"] = "すべて表示",
+["Hide_all"] = "すべて非表示",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk をインストールしています...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "今すぐ再起動",
 ["Restart_Later"] = "後で再起動",
 ["Install_Official_Adrenaline"] = "PSPおよびPS1ゲームを有効にするには、TheOfficialFloW製 Adrenaline v7 をインストールしてください。",
+["Adrenaline_Unsupported"] = "お使いのAdrenalineモジュールセットが認識されません。PSPおよびPS1のゲームが起動しない可能性があります。",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "このゲームを遊ぶにはAdrenalineをインストールする必要があります。",

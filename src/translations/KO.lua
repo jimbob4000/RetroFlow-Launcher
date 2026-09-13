@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "음악 셔플: ",
 ["Skip_track"] = "트랙 건너뛰기",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "카테고리 표시 여부 편집",
 ["Startup_Category_colon"] = "시작 카테고리: ",
 ["Last_played_game"] = "마지막으로 플레이한 게임",
 ["Favorites"] = "즐겨찾기",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "게임 추가",
 ["guide_1_content"] = "게임 디렉토리: \n게임을 'ux0:/data/RetroFlow/ROMS/' 에 두거나 자신의 파일 디렉토리를 사용하려면 \n'스캔 설정' 로 이동한 다음 '게임 디렉토리 편집' 로 이동하세요. \n\n게임을 추가했으면 '다시 스캔' 을 선택하여 RetroFlow에 추가하세요. \n\n파일 이름: \n'no-intro' 파일 명명 규칙을 사용하여 게임 이름을 지정하는 것이 중요합니다. 'Sonic (USA)' , \n그렇지 않으면 이미지가 다운로드되지 않습니다.",
 
-["guide_2_heading"] = "왜 PSP 및 PS1 게임이 표시되지 않나요?",
-["guide_2_content"] = "PSP 및 PS1 게임을 활성화하려면 TheOfficialFloW의 Adrenaline v7을 설치하세요.",
+["guide_2_heading"] = "왜 Adrenaline 경고가 표시되나요?",
+["guide_2_content"] = "RetroFlow가 설치된 Adrenaline 모듈 세트를 인식하지 못했습니다. \nPSP 및 PS1 게임은 계속 표시되지만 정상적으로 실행되지 않을 수 있습니다.\n\n게임이 실행되지 않는 경우, \n새 버전이 제공되면 RetroFlow를 업데이트하세요.",
 
 ["guide_3_heading"] = "게임 표지 및 배경 사용자 정의",
 ["guide_3_content"] = "표지: \n커스텀 표지는 게임 폴더 'ux0:/data/RetroFlow/COVERS/'\n에 저장할 수 있습니다. \n\n배경: \n사용자 지정 게임 배경은 'ux0:/data/RetroFlow/BACKGROUNDS/'\n의 게임 폴더에 저장할 수 있습니다. \n\n파일 이름:\n파일 이름은 앱 ID와 일치하거나 앱 이름 이미지는 .png 형식이어야 합니다.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "컬렉션 편집",
 ["Show_collections_colon"] = "컬렉션 표시:",
 ["Customise_game_order"] = "게임 순서 사용자 지정",
+["Edit_collection_visibility"] = "컬렉션 표시 여부 편집",
+["Show_all"] = "모두 표시",
+["Hide_all"] = "모두 숨기기",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk 설치 중...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "지금 다시 시작",
 ["Restart_Later"] = "나중에 다시 시작",
 ["Install_Official_Adrenaline"] = "PSP 및 PS1 게임을 활성화하려면 TheOfficialFloW의 Adrenaline v7을 설치하세요.",
+["Adrenaline_Unsupported"] = "현재 사용 중인 Adrenaline 모듈 세트를 인식할 수 없습니다. PSP 및 PS1 게임이 실행되지 않을 수 있습니다.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "이 게임을 하려면 Adrenaline을 설치해야 합니다.",
@@ -309,7 +314,6 @@ return {
 ["Emulator_not_installed_DSVita"] = "이 게임을 하려면 DSVita를 설치해야 합니다.",
 ["Emulator_not_installed_EasyRPG"] = "이 게임을 하려면 EasyRPG를 설치해야 합니다.",
 ["Emulator_not_installed_Emu4Vita"] = "이 게임을 하려면 Emu4Vita++를 설치해야 합니다.",
-
 ["Game_not_installed_rescan"] = "이 게임이 설치되지 않았습니다. 게임을 다시 스캔해 주세요.",
 ["Insert_cartridge_try_again"] = "게임 카트리지를 삽입한 후 다시 시도하세요.",
 

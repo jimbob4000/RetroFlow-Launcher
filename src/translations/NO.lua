@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Shuffle-musikk: ",
 ["Skip_track"] = "Hopp over sangen",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Rediger synligheten til kategorier",
 ["Startup_Category_colon"] = "Oppstartskategori: ",
 ["Last_played_game"] = "Sist spilte spill",
 ["Favorites"] = "Favoritter",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Legg til spill",
 ["guide_1_content"] = "Spillmapper: \nPlasser spillene dine i 'ux0:/data/RetroFlow/ROMS/', eller for å bruke dine egne filkataloger, gå til 'Skanneinnstillinger' og deretter 'Rediger spillmapper'. \n\nNår du har lagt til spillene dine, velg 'Skann på nytt' for å legge dem til i RetroFlow. \n\nFilnavn: \nDet er viktig at spillene dine navngis ved å bruke 'no-intro' filnavnkonvensjonen, f.eks. 'Sonic (USA)', ellers vil ikke bilder bli lastet ned.",
 
-["guide_2_heading"] = "Hvorfor vises ikke PSP- og PS1-spill?",
-["guide_2_content"] = "Installer Adrenaline v7 av TheOfficialFloW for å aktivere PSP- og PS1-spill.",
+["guide_2_heading"] = "Hvorfor fikk jeg en Adrenaline-advarsel?",
+["guide_2_content"] = "RetroFlow gjenkjente ikke det installerte Adrenaline-modulsettet ditt. PSP- og PS1-spill vil fortsatt vises, men de starter kanskje ikke som de skal.\n\nHvis spillene ikke starter, oppdater RetroFlow når en nyere versjon er tilgjengelig.",
 
 ["guide_3_heading"] = "Tilpass spillomslag og spillbakgrunner",
 ["guide_3_content"] = "Omslag: \nEgendefinerte omslag kan lagres i spillmappene her: 'ux0:/data/RetroFlow/COVERS/'. \n\nBakgrunner: \nEgendefinerte spillbakgrunner kan lagres i spillmappene her: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFilnavn:\nFilnavnet må samsvare med app-ID-en eller appnavnbildene må være i .png-format.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Rediger samlinger",
 ["Show_collections_colon"] = "Vis samlinger:",
 ["Customise_game_order"] = "Tilpass spillrekkefølge",
+["Edit_collection_visibility"] = "Rediger synligheten til samlinger",
+["Show_all"] = "Vis alle",
+["Hide_all"] = "Skjul alle",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Installerer RetroFlow Adrenaline Launcher vpk...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Start på nytt nå",
 ["Restart_Later"] = "Start på nytt senere",
 ["Install_Official_Adrenaline"] = "Installer Adrenaline v7 av TheOfficialFloW for å aktivere PSP- og PS1-spill.",
+["Adrenaline_Unsupported"] = "Adrenaline-modulsettet ditt gjenkjennes ikke. PSP- og PS1-spill kan kanskje ikke starte.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Du må installere Adrenaline for å spille dette spillet.",

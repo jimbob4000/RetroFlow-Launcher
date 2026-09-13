@@ -1345,6 +1345,9 @@ file_browser_icons_loaded = false
 file_browser_folder_open = nil
 file_browser_folder_closed = nil
 file_browser_file = nil
+category_visibility_icons_loaded = false
+category_visibility_checked = nil
+category_visibility_unchecked = nil
 
 function load_file_browser_icons_if_needed()
     if file_browser_icons_loaded == false then
@@ -1352,6 +1355,16 @@ function load_file_browser_icons_if_needed()
         file_browser_folder_closed = Graphics.loadImage("app0:/DATA/file-browser-folder-closed.png")
         file_browser_file = Graphics.loadImage("app0:/DATA/file-browser-file.png")
         file_browser_icons_loaded = true
+    end
+end
+
+function load_category_visibility_icons_if_needed()
+    if category_visibility_icons_loaded == false then
+        category_visibility_checked = Graphics.loadImage("app0:/DATA/square-check.png")
+        category_visibility_unchecked = Graphics.loadImage("app0:/DATA/square.png")
+        Graphics.setImageFilters(category_visibility_checked, FILTER_LINEAR, FILTER_LINEAR)
+        Graphics.setImageFilters(category_visibility_unchecked, FILTER_LINEAR, FILTER_LINEAR)
+        category_visibility_icons_loaded = true
     end
 end
 
@@ -1464,8 +1477,26 @@ end
     cc_updated = false -- If changes made then set to true
     cc_reset = false -- If reset to alphabetical then set to true
     cc_already_custom = false -- If collection already has custom sorting
+    collection_edit_table = {}
 
 -- End of Custom Collection Sort Scroll list
+
+
+-- Start of Visible Categories Scroll list
+    visible_category_scrollPosition = 0
+    visible_category_maxVisibleItems = 8
+    visible_category_selected = 1
+    visible_category_options = {}
+    visible_categories_dirty = false
+    visible_categories_requires_reload = false
+    visible_collection_scrollPosition = 0
+    visible_collection_maxVisibleItems = 8
+    visible_collection_selected = 1
+    visible_collection_options = {}
+    visible_collections_dirty = false
+    FileLoad = {}
+
+-- End of Visible Categories Scroll list
 
 
 -- Start of Game list view setup
@@ -3413,6 +3444,470 @@ else
     SaveSettings()
 end
 
+local hidden_categories_file = cur_dir .. "/hidden_categories.lua"
+local hidden_collections_file = cur_dir .. "/hidden_collections.lua"
+HiddenCategories = {}
+HiddenCollections = {}
+
+CategoryVisibilityDefinitions = {
+    { showcat = 0, key = "All", label_key = "All" },
+    { showcat = 1, key = "PS_Vita", label_key = "PS_Vita", app_type = 1 },
+    { showcat = 2, key = "Homebrews", label_key = "Homebrews", app_type = 0 },
+    { showcat = 3, key = "PSP", label_key = "PSP", app_type = 2 },
+    { showcat = 4, key = "PlayStation", label_key = "PlayStation", app_type = 3 },
+    { showcat = 5, key = "Playstation_Mobile", label_key = "Playstation_Mobile", app_type = 39 },
+    { showcat = 6, key = "Nintendo_64", label_key = "Nintendo_64", app_type = 5 },
+    { showcat = 7, key = "Super_Nintendo", label_key = "Super_Nintendo", app_type = 6 },
+    { showcat = 8, key = "Nintendo_Entertainment_System", label_key = "Nintendo_Entertainment_System", app_type = 7 },
+    { showcat = 9, key = "Nintendo_DS", label_key = "Nintendo_DS", app_type = 43 },
+    { showcat = 10, key = "Game_Boy_Advance", label_key = "Game_Boy_Advance", app_type = 8 },
+    { showcat = 11, key = "Game_Boy_Color", label_key = "Game_Boy_Color", app_type = 9 },
+    { showcat = 12, key = "Game_Boy", label_key = "Game_Boy", app_type = 10 },
+    { showcat = 13, key = "Sega_Dreamcast", label_key = "Sega_Dreamcast", app_type = 11 },
+    { showcat = 14, key = "Sega_CD", label_key = "Sega_CD", app_type = 12 },
+    { showcat = 15, key = "Sega_32X", label_key = "Sega_32X", app_type = 13 },
+    { showcat = 16, key = "Sega_Mega_Drive", label_key = "Sega_Mega_Drive", app_type = 14 },
+    { showcat = 17, key = "Sega_Master_System", label_key = "Sega_Master_System", app_type = 15 },
+    { showcat = 18, key = "Sega_Game_Gear", label_key = "Sega_Game_Gear", app_type = 16 },
+    { showcat = 19, key = "TurboGrafx_16", label_key = "TurboGrafx_16", app_type = 17 },
+    { showcat = 20, key = "TurboGrafx_CD", label_key = "TurboGrafx_CD", app_type = 18 },
+    { showcat = 21, key = "PC_Engine", label_key = "PC_Engine", app_type = 19 },
+    { showcat = 22, key = "PC_Engine_CD", label_key = "PC_Engine_CD", app_type = 20 },
+    { showcat = 23, key = "Amiga", label_key = "Amiga", app_type = 21 },
+    { showcat = 24, key = "ScummVM", label_key = "ScummVM", app_type = 40 },
+    { showcat = 25, key = "EasyRPG", label_key = "EasyRPG", app_type = 46 },
+    { showcat = 26, key = "MS_DOS", label_key = "MS_DOS", app_type = 45 },
+    { showcat = 27, key = "Commodore_64", label_key = "Commodore_64", app_type = 22 },
+    { showcat = 28, key = "WonderSwan_Color", label_key = "WonderSwan_Color", app_type = 23 },
+    { showcat = 29, key = "WonderSwan", label_key = "WonderSwan", app_type = 24 },
+    { showcat = 30, key = "PICO8", label_key = "PICO8", app_type = 41 },
+    { showcat = 31, key = "MSX2", label_key = "MSX2", app_type = 25 },
+    { showcat = 32, key = "MSX", label_key = "MSX", app_type = 26 },
+    { showcat = 33, key = "ZX_Spectrum", label_key = "ZX_Spectrum", app_type = 27 },
+    { showcat = 34, key = "Atari_ST", label_key = "Atari_ST", app_type = 44 },
+    { showcat = 35, key = "Atari_7800", label_key = "Atari_7800", app_type = 28 },
+    { showcat = 36, key = "Atari_5200", label_key = "Atari_5200", app_type = 29 },
+    { showcat = 37, key = "Atari_2600", label_key = "Atari_2600", app_type = 30 },
+    { showcat = 38, key = "Atari_Lynx", label_key = "Atari_Lynx", app_type = 31 },
+    { showcat = 39, key = "ColecoVision", label_key = "ColecoVision", app_type = 32 },
+    { showcat = 40, key = "Vectrex", label_key = "Vectrex", app_type = 33 },
+    { showcat = 41, key = "FBA_2012", label_key = "FBA_2012", app_type = 34 },
+    { showcat = 42, key = "MAME_2003Plus", label_key = "MAME_2003Plus", app_type = 35 },
+    { showcat = 43, key = "MAME_2000", label_key = "MAME_2000", app_type = 36 },
+    { showcat = 44, key = "Neo_Geo", label_key = "Neo_Geo", app_type = 37 },
+    { showcat = 45, key = "Neo_Geo_Pocket_Color", label_key = "Neo_Geo_Pocket_Color", app_type = 38 },
+    { showcat = 46, key = "System_Apps", label_key = "System_Apps", app_type = 42 },
+    { showcat = 47, key = "Favorites", label_key = "Favorites" },
+    { showcat = 48, key = "Recently_Played", label_key = "Recently_Played" },
+}
+
+CategoryVisibilityByShowCat = {}
+AppTypeToShowCat = {}
+
+for _, category in pairs(CategoryVisibilityDefinitions) do
+    CategoryVisibilityByShowCat[category.showcat] = category
+    if category.app_type ~= nil then
+        AppTypeToShowCat[category.app_type] = category.showcat
+    end
+end
+
+function load_hidden_categories()
+    HiddenCategories = {}
+
+    if System.doesFileExist(hidden_categories_file) then
+        local success, result = pcall(dofile, hidden_categories_file)
+        if success and type(result) == "table" then
+            HiddenCategories = result
+        end
+    end
+end
+
+function save_hidden_categories()
+    local file = io.open(hidden_categories_file, "w+")
+    if not file then
+        return
+    end
+
+    local function lua_escape(value)
+        return tostring(value):gsub("\\", "\\\\"):gsub('"', '\\"')
+    end
+
+    file:write("return\n{\n")
+    for key, hidden in pairs(HiddenCategories) do
+        if hidden == true then
+            file:write('\t["' .. lua_escape(key) .. '"] = true,\n')
+        end
+    end
+    file:write("}")
+    file:close()
+end
+
+function load_hidden_collections()
+    HiddenCollections = {}
+
+    if System.doesFileExist(hidden_collections_file) then
+        local success, result = pcall(dofile, hidden_collections_file)
+        if success and type(result) == "table" then
+            HiddenCollections = result
+        end
+    end
+end
+
+function save_hidden_collections()
+    local file = io.open(hidden_collections_file, "w+")
+    if not file then
+        return
+    end
+
+    local function lua_escape(value)
+        return tostring(value):gsub("\\", "\\\\"):gsub('"', '\\"')
+    end
+
+    file:write("return\n{\n")
+    for key, hidden in pairs(HiddenCollections) do
+        if hidden == true then
+            file:write('\t["' .. lua_escape(key) .. '"] = true,\n')
+        end
+    end
+    file:write("}")
+    file:close()
+end
+
+function collection_visibility_key(def_collection_num)
+    if collection_files and collection_files[def_collection_num] then
+        return collection_files[def_collection_num].table_name
+    end
+    return nil
+end
+
+function is_collection_visible(def_collection_num)
+    local key = collection_visibility_key(def_collection_num)
+    return showCollections == 1 and key ~= nil and HiddenCollections[key] ~= true
+end
+
+function set_collection_visible(def_collection_num, def_visible)
+    local key = collection_visibility_key(def_collection_num)
+    if key then
+        if def_visible then
+            HiddenCollections[key] = nil
+        else
+            HiddenCollections[key] = true
+        end
+    end
+end
+
+function set_all_collections_visible(def_visible)
+    if collection_files then
+        for collection_num = 1, #collection_files do
+            set_collection_visible(collection_num, def_visible)
+        end
+    end
+    showCollections = def_visible and 1 or 0
+end
+
+function build_visible_collection_options()
+    visible_collection_options = {}
+
+    if collection_files and #collection_files > 0 then
+        table.insert(visible_collection_options, { action = "show_all", display_name = lang_lines.Show_all })
+        table.insert(visible_collection_options, { action = "hide_all", display_name = lang_lines.Hide_all })
+
+        for collection_num, collection_file in ipairs(collection_files) do
+            table.insert(visible_collection_options, {
+                collection_num = collection_num,
+                key = collection_file.table_name,
+                display_name = collection_file.display_name,
+            })
+        end
+    end
+end
+
+function move_visible_collection_selection(def_direction)
+    if #visible_collection_options == 0 then
+        visible_collection_selected = 1
+        return
+    end
+
+    visible_collection_selected = visible_collection_selected + def_direction
+
+    if visible_collection_selected < 1 then
+        visible_collection_selected = #visible_collection_options
+    elseif visible_collection_selected > #visible_collection_options then
+        visible_collection_selected = 1
+    end
+end
+
+function count_enabled_collections()
+    local total = 0
+    if collection_files then
+        for collection_num = 1, #collection_files do
+            local key = collection_visibility_key(collection_num)
+            if key ~= nil and HiddenCollections[key] ~= true then
+                total = total + 1
+            end
+        end
+    end
+    return total
+end
+
+function save_visible_collection_settings()
+    if count_enabled_collections() == 0 then
+        showCollections = 0
+    else
+        showCollections = 1
+    end
+
+    save_hidden_collections()
+    normalize_startup_category()
+    SaveSettings()
+    normalize_current_category(1)
+    check_for_out_of_bounds()
+    GetNameAndAppTypeSelected()
+end
+
+function category_visibility_key(def_showcat)
+    local category = CategoryVisibilityByShowCat[def_showcat]
+    return category and category.key or nil
+end
+
+function is_category_visible(def_showcat)
+    if def_showcat == nil then
+        return false
+    elseif def_showcat == 49 then
+        return false
+    elseif def_showcat == 0 then
+        return showAll == 1
+    elseif def_showcat == 2 then
+        return showHomebrews == 1
+    elseif def_showcat == 46 then
+        return showSysApps == 1
+    elseif def_showcat == 48 then
+        return showRecentlyPlayed == 1
+    elseif def_showcat >= 50 then
+        return is_collection_visible(def_showcat - 49)
+    end
+
+    local key = category_visibility_key(def_showcat)
+    return key ~= nil and HiddenCategories[key] ~= true
+end
+
+function set_category_visible(def_showcat, def_visible)
+    if def_showcat == 0 then
+        showAll = def_visible and 1 or 0
+    elseif def_showcat == 2 then
+        showHomebrews = def_visible and 1 or 0
+    elseif def_showcat == 46 then
+        showSysApps = def_visible and 1 or 0
+    elseif def_showcat == 48 then
+        showRecentlyPlayed = def_visible and 1 or 0
+    else
+        local key = category_visibility_key(def_showcat)
+        if key then
+            if def_visible then
+                HiddenCategories[key] = nil
+            else
+                HiddenCategories[key] = true
+            end
+        end
+    end
+end
+
+function get_category_label(def_category)
+    local category = CategoryVisibilityByShowCat[def_category]
+    if category and lang_lines and lang_lines[category.label_key] then
+        return lang_lines[category.label_key]
+    elseif category and category.label_key then
+        return category.label_key:gsub("_", " ")
+    end
+    return lang_lines.PS_Vita
+end
+
+function build_visible_category_options()
+    visible_category_options = {}
+    for _, category in pairs(CategoryVisibilityDefinitions) do
+        category.display_name = get_category_label(category.showcat)
+        table.insert(visible_category_options, category)
+    end
+    table.sort(visible_category_options, function(a, b)
+        local function sort_rank(category)
+            if category.showcat == 0 then
+                return 1
+            elseif category.showcat == 2 then
+                return 2
+            elseif category.showcat == 46 then
+                return 3
+            elseif category.showcat == 47 then
+                return 4
+            elseif category.showcat == 48 then
+                return 5
+            end
+            return 6
+        end
+
+        local rank_a = sort_rank(a)
+        local rank_b = sort_rank(b)
+        if rank_a ~= rank_b then
+            return rank_a < rank_b
+        end
+
+        local key_a = (a.label_key or a.key or ""):gsub("_", " "):lower()
+        local key_b = (b.label_key or b.key or ""):gsub("_", " "):lower()
+        return key_a < key_b
+    end)
+end
+
+function move_visible_category_selection(def_direction)
+    if #visible_category_options == 0 then
+        visible_category_selected = 1
+        return
+    end
+
+    visible_category_selected = visible_category_selected + def_direction
+
+    if visible_category_selected < 1 then
+        visible_category_selected = #visible_category_options
+    elseif visible_category_selected > #visible_category_options then
+        visible_category_selected = 1
+    end
+end
+
+function count_visible_base_categories()
+    local total = 0
+    for _, category in pairs(CategoryVisibilityDefinitions) do
+        if category.showcat ~= 0 and category.showcat ~= 47 and category.showcat ~= 48 and is_category_visible(category.showcat) == true then
+            total = total + 1
+        end
+    end
+    return total
+end
+
+function ensure_at_least_one_visible_category()
+    if count_visible_base_categories() == 0 then
+        set_category_visible(1, true)
+    end
+end
+
+function category_has_items(def_showcat)
+    if def_showcat == 47 then
+        refresh_fav_count_table()
+    end
+
+    local category_table = xCatLookup(def_showcat)
+    return category_table ~= nil and #category_table > 0
+end
+
+function is_category_selectable(def_showcat)
+    if is_category_visible(def_showcat) ~= true then
+        return false
+    elseif def_showcat == 0 then
+        return true
+    elseif def_showcat >= 50 then
+        return category_has_items(def_showcat)
+    end
+    return category_has_items(def_showcat)
+end
+
+function step_category(def_showcat, def_direction)
+    local max_category = collection_syscount or count_of_categories
+
+    if filterGames == 1 then
+        if collection_count == 0 then
+            return def_showcat
+        elseif def_direction > 0 then
+            if def_showcat >= 50 and def_showcat < max_category then
+                return def_showcat + 1
+            end
+            return 50
+        else
+            if def_showcat > 50 and def_showcat <= max_category then
+                return def_showcat - 1
+            end
+            return max_category
+        end
+    end
+
+    if def_direction > 0 then
+        if def_showcat == 0 then
+            return 1
+        elseif def_showcat < max_category then
+            return def_showcat + 1
+        elseif showAll == 1 then
+            return 0
+        end
+        return 1
+    else
+        if def_showcat == 0 then
+            return max_category
+        elseif def_showcat > 1 then
+            return def_showcat - 1
+        elseif showAll == 1 then
+            return 0
+        end
+        return max_category
+    end
+end
+
+function find_next_selectable_category(def_direction, def_start_showcat)
+    local current = def_start_showcat or showCat
+    local max_checks = (collection_syscount or count_of_categories) + 2
+
+    for checked = 1, max_checks do
+        if is_category_selectable(current) == true then
+            return current
+        end
+        current = step_category(current, def_direction)
+    end
+
+    return 1
+end
+
+function normalize_current_category(def_direction)
+    if is_category_selectable(showCat) ~= true then
+        showCat = find_next_selectable_category(def_direction or 1, step_category(showCat, def_direction or 1))
+    end
+end
+
+function change_category(def_direction)
+    search_results_table = {}
+
+    showCat = find_next_selectable_category(def_direction, step_category(showCat, def_direction))
+    normalize_current_category(def_direction)
+
+    hideBoxes = 0.8 -- used to be 8
+    p = 1
+    master_index = p
+    startCovers = false
+    quick_scrolling_factor = 0
+    quick_scrolling_factor_goal = 0
+    flat_view_scroll_x = 0
+    flat_view_target_x = 0
+    GetInfoSelected()
+    FreeIcons()
+end
+
+function save_visible_category_settings()
+    ensure_at_least_one_visible_category()
+    save_hidden_categories()
+    normalize_startup_category()
+    SaveSettings()
+
+    if visible_categories_dirty == true then
+        FreeIcons()
+        startCovers = false
+        startup_cover_prewarm_pending = true
+        flat_view_scroll_x = 0
+        flat_view_target_x = 0
+    end
+
+    rebuild_mixed_category_visibility_tables()
+    normalize_current_category(1)
+    check_for_out_of_bounds()
+    GetNameAndAppTypeSelected()
+end
+
+load_hidden_categories()
+load_hidden_collections()
+
 -- Legacy fix - Languages got added bit by bit and were out of logical order.
     --These two lookups allow the menu to be reordered without affecting people's config files
 
@@ -3499,7 +3994,7 @@ if #collection_files > 0 then
 else
 end
 
-if collection_files_start_match > 0 then
+if collection_files_start_match > 0 and is_collection_visible(collection_files_start_match) == true then
     showCat = 49 + collection_files_start_match
     startCategory = syscount + collection_files_start_match
 else
@@ -3685,8 +4180,9 @@ local lang_default =
 ["Shuffle_music_colon"] = "Shuffle music: ",
 ["Skip_track"] = "Skip track",
 
--- Startup Categories
-["Startup_Category_colon"] = "Startup Category: ",
+-- Categories
+["Edit_category_visibility"] = "Edit category visibility",
+["Startup_Category_colon"] = "Startup category: ",
 ["Last_played_game"] = "Last played game",
 ["Favorites"] = "Favorites",
 ["Recently_Played"] = "Recently Played",
@@ -3933,6 +4429,9 @@ local lang_default =
 ["Edit_collections"] = "Edit collections",
 ["Show_collections_colon"] = "Show collections:",
 ["Customise_game_order"] = "Customise game order",
+["Edit_collection_visibility"] = "Edit collection visibility",
+["Show_all"] = "Show all",
+["Hide_all"] = "Hide all",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Installing RetroFlow Adrenaline Launcher vpk...",
@@ -4723,6 +5222,11 @@ function FreeMemory()
         Graphics.freeImage(file_browser_folder_closed)
         Graphics.freeImage(file_browser_file)
     end
+    
+    if category_visibility_icons_loaded == true then
+        Graphics.freeImage(category_visibility_checked)
+        Graphics.freeImage(category_visibility_unchecked)
+    end
     Graphics.freeImage(footer_gradient)
 end
 
@@ -4804,93 +5308,28 @@ end
 
 -- STARTUP CATEGORY - Keep the settings label in one place for both drawing and left/right changes.
 function startup_category_label(def_category)
-    local startup_category_labels = {
-        [0] = lang_lines.All,
-        [1] = lang_lines.PS_Vita,
-        [2] = lang_lines.Homebrews,
-        [3] = lang_lines.PSP,
-        [4] = lang_lines.PlayStation,
-        [5] = lang_lines.Playstation_Mobile,
-        [6] = lang_lines.Nintendo_64,
-        [7] = lang_lines.Super_Nintendo,
-        [8] = lang_lines.Nintendo_Entertainment_System,
-        [9] = lang_lines.Nintendo_DS,
-        [10] = lang_lines.Game_Boy_Advance,
-        [11] = lang_lines.Game_Boy_Color,
-        [12] = lang_lines.Game_Boy,
-        [13] = lang_lines.Sega_Dreamcast,
-        [14] = lang_lines.Sega_CD,
-        [15] = lang_lines.Sega_32X,
-        [16] = lang_lines.Sega_Mega_Drive,
-        [17] = lang_lines.Sega_Master_System,
-        [18] = lang_lines.Sega_Game_Gear,
-        [19] = lang_lines.TurboGrafx_16,
-        [20] = lang_lines.TurboGrafx_CD,
-        [21] = lang_lines.PC_Engine,
-        [22] = lang_lines.PC_Engine_CD,
-        [23] = lang_lines.Amiga,
-        [24] = lang_lines.ScummVM,
-        [25] = lang_lines.EasyRPG,
-        [26] = lang_lines.MS_DOS,
-        [27] = lang_lines.Commodore_64,
-        [28] = lang_lines.WonderSwan_Color,
-        [29] = lang_lines.WonderSwan,
-        [30] = lang_lines.PICO8,
-        [31] = lang_lines.MSX2,
-        [32] = lang_lines.MSX,
-        [33] = lang_lines.ZX_Spectrum,
-        [34] = lang_lines.Atari_ST,
-        [35] = lang_lines.Atari_7800,
-        [36] = lang_lines.Atari_5200,
-        [37] = lang_lines.Atari_2600,
-        [38] = lang_lines.Atari_Lynx,
-        [39] = lang_lines.ColecoVision,
-        [40] = lang_lines.Vectrex,
-        [41] = lang_lines.FBA_2012,
-        [42] = lang_lines.MAME_2003Plus,
-        [43] = lang_lines.MAME_2000,
-        [44] = lang_lines.Neo_Geo,
-        [45] = lang_lines.Neo_Geo_Pocket_Color,
-        [46] = lang_lines.System_Apps,
-        [47] = lang_lines.Favorites,
-        [48] = lang_lines.Recently_Played,
-        [START_CATEGORY_LAST_PLAYED] = lang_lines.Last_played_game,
-    }
-
     if def_category >= 50 then
         local Collection_CatNum = def_category - 49
         if collection_files[Collection_CatNum] then
             return collection_files[Collection_CatNum].display_name
         end
+    elseif def_category == START_CATEGORY_LAST_PLAYED then
+        return lang_lines.Last_played_game
     end
 
-    return startup_category_labels[def_category] or lang_lines.PS_Vita
+    return get_category_label(def_category)
 end
 
 -- STARTUP CATEGORY - Build selectable startup categories, respecting category visibility settings.
 function startup_category_options()
     local options = {}
 
-    if showAll == 1 then
+    if is_category_visible(0) == true then
         table.insert(options, 0)
     end
 
     for cat_num = 1, count_of_start_categories do
-        if cat_num == 2 then
-            if showHomebrews == 1 then
-                table.insert(options, cat_num)
-            end
-        elseif cat_num == 46 then
-            if showSysApps == 1 then
-                table.insert(options, cat_num)
-            end
-        elseif cat_num == 47 then
-            table.insert(options, cat_num)
-        elseif cat_num == 48 then
-            if showRecentlyPlayed == 1 then
-                table.insert(options, cat_num)
-            end
-        else
+        if is_category_visible(cat_num) == true then
             table.insert(options, cat_num)
         end
     end
@@ -4901,9 +5340,11 @@ function startup_category_options()
 
     table.insert(options, START_CATEGORY_LAST_PLAYED)
 
-    if showCollections == 1 then
+    if collection_files then
         for Collection_CatNum = 1, #collection_files do
+            if is_collection_visible(Collection_CatNum) == true then
             table.insert(options, 49 + Collection_CatNum)
+            end
         end
     end
 
@@ -4912,18 +5353,12 @@ end
 
 -- STARTUP CATEGORY - Fall back to PS Vita only if the saved category is disabled by settings.
 function normalize_startup_category()
-    if startCategory == 0 and showAll == 0 then
-        startCategory = 1
-    elseif startCategory == 2 and showHomebrews == 0 then
-        startCategory = 1
-    elseif startCategory == 46 and showSysApps == 0 then
-        startCategory = 1
-    elseif startCategory == 48 and showRecentlyPlayed == 0 then
-        startCategory = 1
-    elseif startCategory >= 50 and (showCollections == 0 or collection_files[startCategory - 49] == nil) then
-        startCategory = 1
+    if startCategory ~= START_CATEGORY_LAST_PLAYED and is_category_visible(startCategory) ~= true then
+        local options = startup_category_options()
+        startCategory = options[1] or 1
     elseif startCategory ~= START_CATEGORY_LAST_PLAYED and startCategory > collection_syscount then
-        startCategory = 1
+        local options = startup_category_options()
+        startCategory = options[1] or 1
     end
 
     return startCategory
@@ -5001,21 +5436,7 @@ function last_played_showcat_is_visible(def_showcat, recent_game)
         return false
     end
 
-    if def_showcat == nil then
-        return false
-    elseif def_showcat == 0 then
-        return showAll == 1
-    elseif def_showcat == 2 then
-        return showHomebrews == 1
-    elseif def_showcat == 46 then
-        return showSysApps == 1
-    elseif def_showcat == 48 then
-        return showRecentlyPlayed == 1
-    elseif def_showcat >= 50 then
-        return showCollections == 1
-    end
-
-    return true
+    return is_category_visible(def_showcat) == true
 end
 
 -- LAST PLAYED GAME - Prefer the original launch category, but fall back to app type when that category is hidden.
@@ -5127,6 +5548,20 @@ end
     function xCollectionTableLookup(def_num)
         Collection_CatNum = (def_num)
         return _G[collection_files[Collection_CatNum].table_name]
+    end
+
+    function load_collection_edit_table(def_num)
+        collection_edit_table = {}
+
+        if collection_files and collection_files[def_num] then
+            importLuaFile(collections_dir .. collection_files[def_num].filename, collection_edit_table)
+        end
+
+        return collection_edit_table
+    end
+
+    function xCollectionEditTableLookup()
+        return collection_edit_table or {}
     end
 
     function check_if_game_is_in_collection_table(def_collection_number, def_name)
@@ -6584,6 +7019,40 @@ fav_count_dirty = true
 
 
 
+function is_game_system_visible(def_game)
+    if def_game == nil then
+        return false
+    end
+
+    local showcat = AppTypeToShowCat[def_game.app_type]
+    if showcat == nil then
+        return true
+    end
+
+    return is_category_visible(showcat) == true
+end
+
+function include_game_in_search_results(def_game)
+    if def_game == nil or def_game.apptitle == nil then
+        return false
+    elseif def_game.hidden == true and showHidden == 0 then
+        return false
+    end
+
+    return is_game_system_visible(def_game) == true
+end
+
+function game_matches_search(def_game, def_search, def_search_lc, def_search_uc, def_search_pc)
+    if include_game_in_search_results(def_game) ~= true then
+        return false
+    end
+
+    return string.match(def_game.apptitle, escape_pattern(def_search))
+        or string.match(def_game.apptitle, escape_pattern(def_search_lc))
+        or string.match(def_game.apptitle, escape_pattern(def_search_uc))
+        or string.match(def_game.apptitle, escape_pattern(def_search_pc))
+end
+
 function create_fav_count_table(def_table_input)
     -- Note: showHomebrews = 1 -- On
     -- Note: showHidden = 0 -- 0 Off
@@ -6592,44 +7061,15 @@ function create_fav_count_table(def_table_input)
     for l, file in pairs((def_table_input)) do
 
         -- Fav, not hidden
-        if file.favourite==true and file.hidden==false then
-
-            -- Exlude Homebrews or SysApps if off
-            if showHomebrews == 0 or showSysApps == 0 then
-                -- ignore homebrew apps
-                if file.app_type ~= nil then
-                    if file.favourite==true then
-                        table.insert(fav_count, file)
-                    end
-                else
-                end
-
-            else
-                if file.favourite==true then
-                    table.insert(fav_count, file)
-                end
-            end
+        if file.favourite==true and file.hidden==false and is_game_system_visible(file) == true then
+            table.insert(fav_count, file)
 
         -- Fav hidden
-        elseif file.favourite==true and file.hidden==true then
+        elseif file.favourite==true and file.hidden==true and is_game_system_visible(file) == true then
 
             -- Show hidden is on
             if showHidden==1 then
-
-                -- Exlude Homebrews or SysApps if off
-                if showHomebrews == 0 or showSysApps == 0 then
-                    -- ignore homebrew apps
-                    if file.app_type ~= nil then
-                        if file.favourite==true then
-                            table.insert(fav_count, file)
-                        end
-                    else
-                    end
-                else
-                    if file.favourite==true then
-                        table.insert(fav_count, file)
-                    end
-                end
+                table.insert(fav_count, file)
             else
             end
         else
@@ -6701,7 +7141,13 @@ function include_game_in_recent(def_app_type, def_game_path, def_name)
 end
 
 function include_game_in_visible_recent(def_recent_game)
-    return true
+    if def_recent_game == nil then
+        return false
+    elseif def_recent_game.hidden == true and showHidden == 0 then
+        return false
+    end
+
+    return is_game_system_visible(def_recent_game) == true
 end
 
 function rebuild_visible_recently_played_table()
@@ -6720,14 +7166,36 @@ function rebuild_visible_recently_played_table()
         end
     end
 
-    -- Remove hidden games from visible recent if necessary, but keep them in the saved history.
-    if showHidden == 0 and #recently_played_table ~= nil then
-        for l = #recently_played_table, 1, -1 do
-            if recently_played_table[l].hidden == true then
-                table.remove(recently_played_table, l)
+end
+
+function rebuild_visible_all_category_table()
+    FileLoad = FileLoad or {}
+    files_table_no_sysapps = {}
+    return_table = {}
+
+    for k, v in ipairs(folders_table or {}) do
+        if type(v) == "table" then
+            table.insert(return_table, v)
+        end
+
+        if type(v) == "table" and v.app_type ~= 42 and is_game_system_visible(v) == true then
+            if v.ricon == nil then
+                FileLoad[v] = nil
             end
+            table.insert(files_table_no_sysapps, v)
+        else
         end
     end
+
+    files_table = return_table
+end
+
+function rebuild_mixed_category_visibility_tables()
+    rebuild_visible_all_category_table()
+    rebuild_visible_recently_played_table()
+    fav_count_dirty = true
+    refresh_fav_count_table()
+    import_collections()
 end
 
 function sync_recently_played_full_from_visible()
@@ -7026,7 +7494,7 @@ end
 
                             for l, file in ipairs(db_import) do -- or xapptype lookup
                                 local matched_file = files_lookup[file.name] and files_lookup[file.name][file.app_type]
-                                if matched_file ~= nil then
+                                if matched_file ~= nil and is_game_system_visible(matched_file) == true then
                                         local collection_entry = {}
                                         for entry_key, entry_value in pairs(matched_file) do
                                             if entry_key ~= "ricon" then
@@ -10700,7 +11168,7 @@ function Full_Game_Scan()
             Scan_Rom_Simple         (30, QuickGameList.atari_2600_table,            atari_2600_table)
             Scan_Rom_Simple         (31, QuickGameList.atari_lynx_table,            atari_lynx_table)
             Scan_Rom_Simple         (32, QuickGameList.colecovision_table,          colecovision_table)
-            Scan_Rom_Simple         (33, QuickGameList.vectrex_table,               sms_table)
+            Scan_Rom_Simple         (33, QuickGameList.vectrex_table,               vectrex_table)
             Scan_Rom_DB_Lookup      (34, QuickGameList.fba_table,                   fba_table, "fba_2012.lua", "fba_2012.db")
             Scan_Rom_DB_Lookup      (35, QuickGameList.mame_2003_plus_table,        mame_2003_plus_table, "mame_2003_plus.lua", "mame_2003_plus.db")
             Scan_Rom_DB_Lookup      (36, QuickGameList.mame_2000_table,             mame_2000_table, "mame_2000.lua", "mame_2000.db")
@@ -10770,6 +11238,7 @@ function Full_Game_Scan()
     table.sort(sysapps_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
     table.sort(recently_played_table, function(a, b) return (tonumber(a.date_played) > tonumber(b.date_played)) end)
+    rebuild_visible_all_category_table()
     
     update_loading_screen_complete()
 
@@ -11314,15 +11783,7 @@ function import_cached_DB()
 
     table.sort(recently_played_table, function(a, b) return (tonumber(a.date_played) > tonumber(b.date_played)) end)
 
-    return_table = TableConcat(folders_table, files_table)
-
-    -- Hide sys apps from all list
-    for k, v in ipairs(return_table) do
-        if v.app_type ~= 42 then
-            table.insert(files_table_no_sysapps, v)
-        else
-        end
-    end
+    rebuild_visible_all_category_table()
 
     total_all = #files_table
     total_games = #games_table
@@ -11367,6 +11828,31 @@ local function is_loadable_image(img_path)
     end
 
     image_loadable_cache[img_path] = false
+    return false
+end
+
+function LoadBackgroundTextureFromPath(def_pic_path)
+    if def_pic_path == nil or def_pic_path == "" or not System.doesFileExist(def_pic_path) then
+        Render.useTexture(modBackground, imgCustomBack)
+        return false
+    end
+
+    -- Detach the old game background before freeing/replacing it to avoid Vita GPU texture crashes.
+    Render.useTexture(modBackground, imgCustomBack)
+    if backTmp ~= nil then
+        Graphics.freeImage(backTmp)
+        backTmp = nil
+    end
+
+    local success, loadedImage = pcall(Graphics.loadImage, def_pic_path)
+    if success and loadedImage then
+        backTmp = loadedImage
+        Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
+        Render.useTexture(modBackground, backTmp)
+        return true
+    end
+
+    Render.useTexture(modBackground, imgCustomBack)
     return false
 end
 
@@ -11542,8 +12028,8 @@ function GetPicPath(def_table_name)
         end 
 
 
-    -- Other systems
-    else
+    -- Vita apps and system apps
+    elseif (def_table_name)[p].app_type == 1 or (def_table_name)[p].app_type == 42 then
         -- Check backgrounds folder
         if System.doesFileExist((def_table_name)[p].snap_path_local .. (def_table_name)[p].title .. ".png") then
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].title .. ".png"
@@ -11551,15 +12037,25 @@ function GetPicPath(def_table_name)
         elseif System.doesFileExist((def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png") then
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png"
 
-        -- Not found? Then check ur0 pic
+        -- Not found? Then check installed app pic0 locations
         elseif is_loadable_image("ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png") then
             pic_path = "ur0:/appmeta/" .. (def_table_name)[p].name .. "/pic0.png"
 
-        -- Not found? Then check vs0 pic
-        elseif System.doesFileExist("vs0:/app/" .. (def_table_name)[p].name .. "/sce_sys/pic0.png") then
+        elseif is_loadable_image("vs0:/app/" .. (def_table_name)[p].name .. "/sce_sys/pic0.png") then
             pic_path = "vs0:/app/" .. (def_table_name)[p].name .. "/sce_sys/pic0.png"
 
-         -- Not found? Check snap folder
+        else
+            pic_path = ""
+
+        end
+
+
+    -- Other systems
+    else
+        -- Check backgrounds folder
+        if System.doesFileExist((def_table_name)[p].snap_path_local .. (def_table_name)[p].title .. ".png") then
+            pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].title .. ".png"
+
         elseif System.doesFileExist((def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png") then
             pic_path = (def_table_name)[p].snap_path_local .. (def_table_name)[p].name .. ".png"
         else
@@ -11879,11 +12375,10 @@ function temp_import_hidden_cats(def_showHiddenCat, def_table_name, def_user_db_
 
         if #temp_hb_collection ~= nil then
             for k, v in pairs(temp_table) do
-
                 for key, data in pairs(temp_hb_collection) do
                     if data.name == v.name then
-                    else
-                        table.insert((def_table_name),k)
+                        table.insert((def_table_name),v)
+                        break
                     end
                 end
             end
@@ -11901,7 +12396,7 @@ function temp_import_hidden_cats_cleanup(def_showHiddenCat, def_table_name, def_
     -- Remove hidden games from homebrew and SysApps
     if (def_showHiddenCat) == 0 and #(def_table_name) ~= nil then
         for l, file in pairs((def_table_name)) do
-            if file.hidden == true then
+            if type(file) == "table" and file.hidden == true then
                 table.remove((def_table_name),l)
             else
             end
@@ -12724,131 +13219,106 @@ function DownloadArtwork(missing_artwork_table)
                 end
 
                 local artwork_found = false
-                artwork_file_url = ""
-
-                if file[crc_download_mode_path_online()]:find("libretro") then
-
-                    name_after_libretro_gsub = {}
-
-                    -- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
-                    if file.app_type == 21 then
-                        -- Amiga fix
-                        name_after_libretro_gsub = file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")
-                        artwork_file_url = file[crc_download_mode_path_online()] .. urlencode(file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")) .. ".png"
-                    else
-                        name_after_libretro_gsub = game_name_online:gsub("[&*/:`<>?\\|\"]+", "_")
-                        artwork_file_url = file[crc_download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png"
-                    end
-
-                else
-                    -- Not libretro
-                    if file.app_type == 21 then
-                       artwork_file_url = tostring(file[crc_download_mode_path_online()] .. urlencode(file.name_title_search) .. ".png")
-                    else
-                        artwork_file_url = tostring(file[crc_download_mode_path_online()] .. urlencode(game_name_online) .. ".png")
-                    end
-                    
-                end
-                
-                local artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. game_name_online .. ".png")
+                local artwork_name_candidates = {}
+                local artwork_name_lookup = {}
+                local online_artwork_path = file[crc_download_mode_path_online()] or ""
                 artwork_file_dest_path = tostring(file[crc_download_mode_path_local()] .. file.name .. ".png")
 
-                Network.downloadFile(artwork_file_url, artwork_file_tmp)
+                local function add_artwork_name_candidate(def_name)
+                    local candidate = tostring(def_name or ""):gsub("\n", "")
+                    if candidate ~= "" and artwork_name_lookup[candidate] ~= true then
+                        table.insert(artwork_name_candidates, candidate)
+                        artwork_name_lookup[candidate] = true
+                    end
+                end
 
-                -- Check filesize of download, if large enough, move to artwork dir, if not then delete
-                    if System.doesFileExist(artwork_file_tmp) then
+                add_artwork_name_candidate(game_name_online)
+                -- Background repos often use display/no-intro titles. When CRC is off,
+                -- also try the title fields instead of only the ROM filename.
+                if download_mode_snaps == true then
+                    add_artwork_name_candidate(file.title)
+                    add_artwork_name_candidate(file.apptitle)
+                    add_artwork_name_candidate(file.name_title_search)
+                else
+                    add_artwork_name_candidate(file.name)
+                end
 
-                        tmpfile = System.openFile(artwork_file_tmp, FREAD)
-                        size = System.sizeFile(tmpfile)
-                        if tmpfile then
-                            System.closeFile(tmpfile)
-                        end
-                        if size < 1024 then
-                            System.deleteFile(artwork_file_tmp)
-                        else
-                            -- artwork sucessfully downloaded
-                            artwork_found = true
-                            System.rename(artwork_file_tmp, artwork_file_dest_path)
-                            artwork_found_count = artwork_found_count + 1
+                if online_artwork_path ~= "" then
+                    for _, artwork_name_candidate in ipairs(artwork_name_candidates) do
+                        if artwork_found == false then
+                            artwork_file_url = ""
 
-                            -- If artwork not found, try using filename instead
-                            if artwork_found == false then
+                            if online_artwork_path:find("libretro") then
 
-                                artwork_file_url = ""
-
-                                if file[crc_download_mode_path_online()]:find("libretro") then
-
-                                    -- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
-                                    name_after_libretro_gsub = {}
-                                    name_after_libretro_gsub = file.name:gsub("[&*/:`<>?\\|\"]+", "_")
-
-                                    if file.app_type == 21 then
-                                        -- Amiga fix
-                                        name_after_libretro_gsub = file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")
-                                        artwork_file_url = file[crc_download_mode_path_online()] .. urlencode(file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")) .. ".png"
-                                    else
-                                        name_after_libretro_gsub = game_name_online:gsub("[&*/:`<>?\\|\"]+", "_")
-                                        artwork_file_url = file[crc_download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png"
-                                    end
-
-                                    artwork_file_url = tostring(file[crc_download_mode_path_online()] .. urlencode(name_after_libretro_gsub) .. ".png")
+                                -- Libretro - Replace these characters &*/:`<>?\|" with an underscore _ to match libretro naming convention
+                                if file.app_type == 21 and file.name_title_search ~= nil then
+                                    name_after_libretro_gsub = file.name_title_search:gsub("[&*/:`<>?\\|\"]+", "_")
                                 else
-
-                                    -- Not libretro
-                                    artwork_file_url = tostring(file[crc_download_mode_path_online()] .. urlencode(game_name_online) .. ".png")
-                                end
-                                    
-                                local artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. game_name_online .. ".png")
-                                artwork_file_dest_path = tostring(file[crc_download_mode_path_local()] .. file.name .. ".png")
-
-                                Network.downloadFile(artwork_file_url, artwork_file_tmp)
-
-                                if System.doesFileExist(artwork_file_tmp) then
-
-                                    tmpfile = System.openFile(artwork_file_tmp, FREAD)
-                                    size = System.sizeFile(tmpfile)
-                                    if tmpfile then
-                                        System.closeFile(tmpfile)
-                                    end
-                                    if size < 1024 then
-                                        System.deleteFile(artwork_file_tmp)
-                                    else
-                                        -- artwork sucessfully downloaded
-                                        artwork_found = true
-                                        System.rename(artwork_file_tmp, artwork_file_dest_path)
-                                        artwork_found_count = artwork_found_count + 1
-                                    end
-
+                                    name_after_libretro_gsub = artwork_name_candidate:gsub("[&*/:`<>?\\|\"]+", "_")
                                 end
 
-                            end
+                                artwork_file_url = tostring(online_artwork_path .. urlencode(name_after_libretro_gsub) .. ".png")
 
-                            if artwork_found == true then
+                            else
+                                -- Not libretro
+                                if file.app_type == 21 and file.name_title_search ~= nil then
+                                   artwork_file_url = tostring(online_artwork_path .. urlencode(file.name_title_search) .. ".png")
+                                else
+                                    artwork_file_url = tostring(online_artwork_path .. urlencode(artwork_name_candidate) .. ".png")
+                                end
                                 
-                                -- Update table with cover
-                                    if download_mode_covers == true then
-                                        file.icon_path=artwork_file_dest_path
-                                        file.cover = true
-                                    end
-
-                                -- Check if in recently played and update recently played cover if found
-                                    if download_mode_covers == true then
-                                        if #recently_played_table ~= nil then
-                                            key = find_game_table_pos_key(recently_played_table, file.filename)
-                                            if key ~= nil then
-                                                recently_played_table[key].icon_path=artwork_file_dest_path
-                                                recently_played_table[key].cover = true
-                                            end
-                                        end
-                                    end
                             end
+                            
+                            local artwork_tmp_name = artwork_name_candidate:gsub("[/:\\]+", "_")
+                            artwork_file_tmp = tostring("ux0:/data/RetroFlow/" .. artwork_tmp_name .. ".png")
 
-                        end
-                        -- Delete image if not in artwork folder
-                        if System.doesFileExist(artwork_file_tmp) then
-                            System.deleteFile(artwork_file_tmp) 
+                            Network.downloadFile(artwork_file_url, artwork_file_tmp)
+
+                            -- Check filesize of download, if large enough, move to artwork dir, if not then delete
+                            if System.doesFileExist(artwork_file_tmp) then
+
+                                tmpfile = System.openFile(artwork_file_tmp, FREAD)
+                                size = System.sizeFile(tmpfile)
+                                if tmpfile then
+                                    System.closeFile(tmpfile)
+                                end
+                                if size < 1024 then
+                                    System.deleteFile(artwork_file_tmp)
+                                else
+                                    -- artwork sucessfully downloaded
+                                    artwork_found = true
+                                    System.rename(artwork_file_tmp, artwork_file_dest_path)
+                                    artwork_found_count = artwork_found_count + 1
+                                end
+
+                                -- Delete image if not in artwork folder
+                                if System.doesFileExist(artwork_file_tmp) then
+                                    System.deleteFile(artwork_file_tmp) 
+                                end
+                            end
                         end
                     end
+                end
+
+                if artwork_found == true then
+                    
+                    -- Update table with cover
+                        if download_mode_covers == true then
+                            file.icon_path=artwork_file_dest_path
+                            file.cover = true
+                        end
+
+                    -- Check if in recently played and update recently played cover if found
+                        if download_mode_covers == true then
+                            if #recently_played_table ~= nil then
+                                key = find_game_table_pos_key(recently_played_table, file.filename)
+                                if key ~= nil then
+                                    recently_played_table[key].icon_path=artwork_file_dest_path
+                                    recently_played_table[key].cover = true
+                                end
+                            end
+                        end
+                end
 
 
                 -- Print result
@@ -12965,6 +13435,9 @@ function DownloadArtwork(missing_artwork_table)
         -- Turn on the vita display once the scan is complete
         -- Extended.DisplayPower(1)
 
+        gettingCovers = false
+        gettingBackgrounds = false
+
     else
         -- There aren't any missing covers/snaps
         Graphics.initBlend()
@@ -12972,6 +13445,9 @@ function DownloadArtwork(missing_artwork_table)
         Font.print(fnt22, 10, 10, tostring(lang_lines.No_missing_artwork), white)
         Graphics.termBlend()
         Screen.flip()
+
+        gettingCovers = false
+        gettingBackgrounds = false
     end
 end
 
@@ -13681,10 +14157,30 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
     end
 end
 
-local FileLoad = {}
+FileLoad = FileLoad or {}
 flat_cleanup_table = nil
 flat_cleanup_start = nil
 flat_cleanup_end = nil
+deferred_free_images = {}
+deferred_free_image_lookup = {}
+
+function queue_deferred_free_image(image)
+    if image and deferred_free_image_lookup[image] ~= true then
+        table.insert(deferred_free_images, image)
+        deferred_free_image_lookup[image] = true
+    end
+end
+
+-- Frees cover textures one frame after Lua tables stop referencing them, giving
+-- pending GXM draw work and cancelled async image loads time to finish cleanly.
+function process_deferred_free_images()
+    for k, image in ipairs(deferred_free_images) do
+        Graphics.freeImage(image)
+    end
+
+    deferred_free_images = {}
+    deferred_free_image_lookup = {}
+end
 
 function free_loaded_icon(file)
     if file then
@@ -13693,7 +14189,7 @@ function free_loaded_icon(file)
             Threads.remove(file)
         end
         if file.ricon then
-            Graphics.freeImage(file.ricon)
+            queue_deferred_free_image(file.ricon)
             file.ricon = nil
         end
     end
@@ -13745,60 +14241,30 @@ function FreeIcons()
     flat_cleanup_start = nil
     flat_cleanup_end = nil
 
-    for k, v in pairs(files_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(games_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(psp_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(psx_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(psm_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(n64_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(snes_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(nes_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(nds_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(gba_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(gbc_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(gb_table)                 do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end 
-    for k, v in pairs(dreamcast_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end 
-    for k, v in pairs(sega_cd_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end 
-    for k, v in pairs(s32x_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end 
-    for k, v in pairs(md_table)                 do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(sms_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(gg_table)                 do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(tg16_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(tgcd_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(pce_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(pcecd_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(amiga_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(scummvm_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(pico8_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(c64_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(wswan_col_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(wswan_table)              do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(msx2_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(msx1_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(zxs_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(atari_7800_table)         do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(atari_5200_table)         do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(atari_2600_table)         do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(atari_lynx_table)         do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(colecovision_table)       do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(vectrex_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(fba_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(mame_2003_plus_table)     do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(mame_2000_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(neogeo_table)             do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(ngpc_table)               do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(atari_st_table)           do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(dos_table)                do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(easyrpg_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(sysapps_table)            do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+    local icon_tables = {
+        files_table, games_table, psp_table, psx_table, psm_table, n64_table,
+        snes_table, nes_table, nds_table, gba_table, gbc_table, gb_table,
+        dreamcast_table, sega_cd_table, s32x_table, md_table, sms_table,
+        gg_table, tg16_table, tgcd_table, pce_table, pcecd_table, amiga_table,
+        scummvm_table, pico8_table, c64_table, wswan_col_table, wswan_table,
+        msx2_table, msx1_table, zxs_table, atari_7800_table, atari_5200_table,
+        atari_2600_table, atari_lynx_table, colecovision_table, vectrex_table,
+        fba_table, mame_2003_plus_table, mame_2000_table, neogeo_table,
+        ngpc_table, atari_st_table, dos_table, easyrpg_table, sysapps_table,
+        recently_played_table, homebrews_table, search_results_table
+    }
 
-    for k, v in pairs(recently_played_table)    do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(homebrews_table)          do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
-    for k, v in pairs(search_results_table)     do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+    for k, icon_table in ipairs(icon_tables) do
+        for l, v in pairs(icon_table or {}) do
+            free_loaded_icon(v)
+        end
+    end
 
     if collection_count > 0 then
         for collection_showcat = 50, collection_syscount do
-            for k, v in pairs(xCatLookup(collection_showcat)) do FileLoad[v] = nil Threads.remove(v) if v.ricon then Graphics.freeImage(v.ricon) v.ricon = nil end end
+            for k, v in pairs(xCatLookup(collection_showcat) or {}) do
+                free_loaded_icon(v)
+            end
         end
     end
 
@@ -14136,26 +14602,11 @@ function DownloadSingleSnap()
 
         if bgfound==1 then
 
-            if showCat == 2 then
-                -- Homebrew do nothing
-            else
-                -- Normal systems
-                pic_path = xCatLookup(showCat)[p].snap_path_local .. xCatLookup(showCat)[p].name .. ".png"
-            end
-
-            if System.doesFileExist(pic_path) and Game_Backgrounds >= 1 then
-                local success, loadedImage = pcall(Graphics.loadImage, pic_path)
-                if success and loadedImage then
-                    Graphics.freeImage(backTmp)
-                    backTmp = loadedImage
-                    Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
-                    Render.useTexture(modBackground, backTmp)
-                else
-                    Render.useTexture(modBackground, imgCustomBack)
-                end
-            else
-                Render.useTexture(modBackground, imgCustomBack)
-            end
+            -- Avoid loading the downloaded PNG into a GPU texture in the same frame as the HTTP write/rename.
+            -- The info screen will rebuild pic_path and load it through the normal background path on the next frame.
+            Render.useTexture(modBackground, imgCustomBack)
+            inPreview = false
+            GetInfoSelected()
 
             -- Update recently played background if found
             -- if #recently_played_table ~= nil then
@@ -14917,6 +15368,7 @@ while true do
 
     -- Threads update
     Threads.update()
+    process_deferred_free_images()
     
     -- Reading input
     pad = Controls.read()
@@ -15059,7 +15511,7 @@ while true do
                     ret_search_pc = string.gsub(" "..ret_search, "%W%l", string.upper):sub(2)
 
                     for l, file in pairs(files_table) do
-                        if string.match(file.apptitle, escape_pattern(ret_search)) or string.match(file.apptitle, escape_pattern(ret_search_lc)) or string.match(file.apptitle, escape_pattern(ret_search_uc)) or string.match(file.apptitle, escape_pattern(ret_search_pc)) then
+                        if game_matches_search(file, ret_search, ret_search_lc, ret_search_uc, ret_search_pc) then
                             table.insert(search_results_table, file)
                             local app_title = search_results_table[1].app_title
                         else
@@ -15451,6 +15903,9 @@ while true do
                         end
 
                         if new_collection_number > 0 then
+                            showCollections = 1
+                            set_collection_visible(new_collection_number, true)
+                            save_visible_collection_settings()
                             showCat = 49 + new_collection_number -- Collection showCat values start at 50
                             p = 1
                             master_index = p
@@ -15486,6 +15941,9 @@ while true do
                         local new_collection_number = add_new_collection_to_memory(ret_collection_filename, new_collection)
 
                         if new_collection_number > 0 then
+                            showCollections = 1
+                            set_collection_visible(new_collection_number, true)
+                            save_visible_collection_settings()
                             showCat = 49 + new_collection_number -- Collection showCat values start at 50
                             p = 1
                             master_index = p
@@ -15548,8 +16006,15 @@ while true do
                     else
                     end
 
+                    local new_collection_table_name = ret_rename_collection_new_filename:gsub(".lua", "")
+                    if HiddenCollections[keyboard_collection_rename_table_name] == true then
+                        HiddenCollections[new_collection_table_name] = true
+                    end
+                    HiddenCollections[keyboard_collection_rename_table_name] = nil
+                    save_hidden_collections()
+
                     if string.match(startCategory_collection, keyboard_collection_rename_table_name) then
-                        startCategory_collection_renamed = "Collection_" .. ret_rename_collection:gsub(" ", "_")
+                        startCategory_collection_renamed = new_collection_table_name
                         SaveSettings()
                     else
                         startCategory_collection_renamed = {}
@@ -15980,15 +16445,7 @@ while true do
 
                 -- set pic0 as background
                 if System.doesFileExist(pic_path) then
-                    local success, loadedImage = pcall(Graphics.loadImage, pic_path)
-                    if success and loadedImage then
-                        Graphics.freeImage(backTmp)
-                        backTmp = loadedImage
-                        Graphics.setImageFilters(backTmp, FILTER_LINEAR, FILTER_LINEAR)
-                        Render.useTexture(modBackground, backTmp)
-                    else
-                        Render.useTexture(modBackground, imgCustomBack)
-                    end
+                    LoadBackgroundTextureFromPath(pic_path)
 
                 elseif apptype == 41 then
                     -- Pico8 - try to crop the game cart to create a tenporary background image
@@ -16917,7 +17374,7 @@ while true do
 
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
-        menuItems = 7
+        menuItems = 5
 
         -- MENU 3 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -16926,52 +17383,21 @@ while true do
         Font.print(fnt22, setting_x, setting_y1, lang_lines.Startup_Category_colon, white)--Startup Category
         Font.print(fnt22, setting_x_offset, setting_y1, "<  " .. startup_category_label(startCategory) .. "  >", white)
 
-        -- MENU 3 / #2 Show Homebews
-        Font.print(fnt22, setting_x, setting_y2, lang_lines.Homebrews_Category_colon, white)--Show Homebrews
-        if showHomebrews == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.On, white)--ON
-        else
-            Font.print(fnt22, setting_x_offset, setting_y2, lang_lines.Off, white)--OFF
-        end
+        -- MENU 3 / #2 Visible categories
+        Font.print(fnt22, setting_x, setting_y2, lang_lines.Edit_category_visibility, white)
 
-        -- MENU 3 / #3 Show System Apps
-        Font.print(fnt22, setting_x, setting_y3, lang_lines.System_Apps_colon, white)--Show System Apps
-        if showSysApps == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.On, white)--ON
-        else
-            Font.print(fnt22, setting_x_offset, setting_y3, lang_lines.Off, white)--OFF
-        end
+        -- MENU 3 / #3 Visible collections
+        Font.print(fnt22, setting_x, setting_y3, lang_lines.Edit_collection_visibility, white)
 
-        -- MENU 3 / #4 Recently Played
-        Font.print(fnt22, setting_x, setting_y4, lang_lines.Recently_Played_colon, white)--Recently Played
-        if showRecentlyPlayed == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y4, lang_lines.On, white)--ON
-        else
-            Font.print(fnt22, setting_x_offset, setting_y4, lang_lines.Off, white)--OFF
-        end
+        -- MENU 3 / #4 Edit collections
+        Font.print(fnt22, setting_x, setting_y4, lang_lines.Edit_collections, white)--Edit collections
 
-        -- MENU 3 / #5 All Category
-        Font.print(fnt22, setting_x, setting_y5, lang_lines.All_Category, white)--All Category
-        if showAll == 1 then
+        -- MENU 3 / #5 Show hidden games
+        Font.print(fnt22, setting_x, setting_y5, lang_lines.Show_hidden_games_colon, white)--Show hidden games
+        if showHidden == 1 then
             Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.On, white)--ON
         else
             Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.Off, white)--OFF
-        end
-
-        -- MENU 4 / #6 Show hidden games
-        Font.print(fnt22, setting_x, setting_y6, lang_lines.Show_hidden_games_colon, white)--Show hidden games
-        if showHidden == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y6, lang_lines.On, white)--ON
-        else
-            Font.print(fnt22, setting_x_offset, setting_y6, lang_lines.Off, white)--OFF
-        end
-
-        -- MENU 4 / #7 Show collections
-        Font.print(fnt22, setting_x, setting_y7, lang_lines.Show_collections_colon, white)--Show collections
-        if showCollections == 1 then
-            Font.print(fnt22, setting_x_offset, setting_y7, lang_lines.On, white)--ON
-        else
-            Font.print(fnt22, setting_x_offset, setting_y7, lang_lines.Off, white)--OFF
         end
 
         -- MENU 3 - FUNCTIONS
@@ -16987,94 +17413,25 @@ while true do
                     showMenu = 2
                     menuY = 1 -- Categories
 
-                elseif menuY == 2 then -- #2 Show Homebrews
-                    if showHomebrews == 1 then
-                        showHomebrews = 0
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        
-                        -- If currently on homebrew category view, move to Vita category to hide empty homebrew category
-                        if showCat == 2 then
-                            showCat = 1
-                            p = 1
-                            master_index = p
-                            GetInfoSelected()
-                        else
-                            check_for_out_of_bounds()
-                            GetInfoSelected()
-                        end
-                    else
-                        showHomebrews = 1
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        GetInfoSelected()
-                    end
-                elseif menuY == 3 then -- #3 Show System Apps
-                    if showSysApps == 1 then
-                        showSysApps = 0
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        
-                        -- If currently on system apps category view, move to Vita category to hide empty homebrew category
-                        if showCat == 46 then
-                            showCat = 1
-                            p = 1
-                            master_index = p
-                            GetInfoSelected()
-                        else
-                            check_for_out_of_bounds()
-                            GetInfoSelected()
-                        end
-                    else
-                        showSysApps = 1
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        GetInfoSelected()
-                    end
-                elseif menuY == 4 then -- #4 Recently Played
-                    if showRecentlyPlayed == 1 then -- 0 Off, 1 On
-                        showRecentlyPlayed = 0
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        -- If currently on recent category view, move to Vita category to hide empty recent category
-                        if showCat == 48 then
-                            curTotal = #recently_played_table
-                            if #recently_played_table == 0 then
-                                showCat = 1
-                                p = 1
-                                master_index = p
-                                GetNameAndAppTypeSelected()
-                            end
-                        end
-                    else
-                        showRecentlyPlayed = 1
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                    end
-                elseif menuY == 5 then -- #5 All Category
-                    if showAll == 1 then -- 0 Off, 1 On
-                        showAll = 0
-                        -- Import cache to update All games category
-                        FreeIcons()
-                        count_cache_and_reload()
-                        -- If currently on recent category view, move to Vita category to hide empty recent category
-                        if showCat == 0 then
-                            showCat = 1
-                            p = 1
-                            master_index = p
-                            GetNameAndAppTypeSelected()
-                        end
-                    else
-                        showAll = 1
-                    end
+                elseif menuY == 2 then -- #2 Visible categories
+                    build_visible_category_options()
+                    showMenu = 29
+                    visible_category_selected = visible_category_selected or 1
+                    visible_category_scrollPosition = visible_category_scrollPosition or 0
+                    menuY = 0
 
-                elseif menuY == 6 then -- #6 Show hidden
+                elseif menuY == 3 then -- #3 Visible collections
+                    build_visible_collection_options()
+                    showMenu = 30
+                    visible_collection_selected = visible_collection_selected or 1
+                    visible_collection_scrollPosition = visible_collection_scrollPosition or 0
+                    menuY = 0
+
+                elseif menuY == 4 then -- #4 Edit collections
+                    showMenu = 24
+                    menuY = 0
+
+                elseif menuY == 5 then -- #5 Show hidden
                     if showHidden == 1 then
                         showHidden = 0
 
@@ -17133,28 +17490,6 @@ while true do
                         GetNameAndAppTypeSelected()
                     end
 
-                elseif menuY == 7 then -- #7 Show collections
-                    if showCollections == 1 then
-                        showCollections = 0
-                        
-                        if showCat >= 50 and showCat <= collection_syscount then
-                            if showAll==0 then
-                                showCat = 1
-                                p = 1
-                                master_index = p
-                            else
-                                showCat = 0
-                                p = 1
-                                master_index = p
-                            end
-                            check_for_out_of_bounds()
-                            GetNameAndAppTypeSelected()
-                        else
-                        end
-
-                    else
-                        showCollections = 1
-                    end
                 end
 
                 normalize_startup_category()
@@ -19185,7 +19520,7 @@ while true do
         Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)-- selection
 
 
-        menuItems = 7
+        menuItems = 6
 
         -- MENU 19 / #0 Back
         Font.print(fnt22, setting_x, setting_y0, lang_lines.Back_Chevron, white)--Back
@@ -19232,12 +19567,8 @@ while true do
             Font.print(fnt22, setting_x_offset, setting_y5, lang_lines.Time_24hr, white)--12-Hour Clock
         end
 
-        -- MENU 19 / #6 Edit collections
-        Font.print(fnt22, setting_x, setting_y6, lang_lines.Edit_collections, white)--Edit collections
-
-        
-        -- MENU 19 / #7 Global core settings
-        Font.print(fnt22, setting_x, setting_y7, lang_lines.Global_core_settings, white)--Global core settings
+        -- MENU 19 / #6 Global core settings
+        Font.print(fnt22, setting_x, setting_y6, lang_lines.Global_core_settings, white)--Global core settings
 
         -- MENU 19 - FUNCTIONS
         status = System.getMessageState()
@@ -19318,11 +19649,7 @@ while true do
                         setTime = 1
                         time24_offset = 25 -- Updates positioning of clock in UI
                     end
-                elseif menuY == 6 then -- #6 Edit collections
-                    showMenu = 24 
-                    menuY = 0
-                
-                elseif menuY == 7 then -- #7 Change emulator cores
+                elseif menuY == 6 then -- #6 Change emulator cores
                     showMenu = 28 
                     menuY = 0
                 end
@@ -19759,11 +20086,7 @@ while true do
                             -- Clear and rebuild search results
                             search_results_table = {}
                             for l, file in pairs(files_table) do
-                                if string.match(file.apptitle, escape_pattern(current_search_text)) or 
-                                    string.match(file.apptitle, escape_pattern(current_search_lc)) or 
-                                    string.match(file.apptitle, escape_pattern(current_search_uc)) or 
-                                    string.match(file.apptitle, escape_pattern(current_search_pc)) and
-                                    file.hidden == false then
+                                if game_matches_search(file, current_search_text, current_search_lc, current_search_uc, current_search_pc) then
                                     table.insert(search_results_table, file)
                                 end
                             end
@@ -19793,7 +20116,7 @@ while true do
                                 if random_game then
                                     -- Find and add the random game to the results
                                     for _, file in pairs(files_table) do
-                                        if file.name == random_game then
+                                        if file.name == random_game and include_game_in_search_results(file) == true then
                                             table.insert(search_results_table, file)
                                             break
                                         end
@@ -19809,10 +20132,7 @@ while true do
                                 -- Clear and rebuild search results
                                 search_results_table = {}
                                 for _, file in pairs(files_table) do
-                                    if string.match(file.apptitle, escape_pattern(current_search_text)) or 
-                                       string.match(file.apptitle, escape_pattern(current_search_lc)) or 
-                                       string.match(file.apptitle, escape_pattern(current_search_uc)) or 
-                                       string.match(file.apptitle, escape_pattern(current_search_pc)) then
+                                    if game_matches_search(file, current_search_text, current_search_lc, current_search_uc, current_search_pc) then
                                         table.insert(search_results_table, file)
                                     end
                                 end
@@ -20557,6 +20877,9 @@ while true do
                         import_collections()
 
                         oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
+                        showCollections = 1
+                        set_collection_visible(collection_number, true)
+                        save_visible_collection_settings()
                         showCat = 49 + collection_number -- this number should correspond to the showcat number for the category the games were just added to
                         p = 1
                         master_index = p
@@ -20959,13 +21282,14 @@ while true do
 
                 -- MENU 2
                 if menuY == 0 then -- #0 Back
-                    showMenu = 19  -- Other settings
-                    menuY = 7
+                    showMenu = 3  -- Categories
+                    menuY = 4
 
                 elseif menuY == 2 then -- #2 Custom sort order
 
                     -- If collections exist
                     if collections_flag == true then
+                        load_collection_edit_table(xcollection_number)
                         showMenu = 26  -- Collection custom sort order
                         menuY = 0
                     else
@@ -20998,6 +21322,8 @@ while true do
                     -- If collections exist
                     if collections_flag == true then
                         if System.doesFileExist(collections_dir .. collection_files[xcollection_number].filename) then
+                            HiddenCollections[collection_files[xcollection_number].table_name] = nil
+                            save_hidden_collections()
                             System.deleteFile(collections_dir .. collection_files[xcollection_number].filename)
 
 
@@ -21188,7 +21514,7 @@ while true do
                         local valid_games = {}
                         for i = 1, #files_table do
                             local app = files_table[i]
-                            if app.app_type ~= 0 and app.app_type ~= 42 then
+                            if app.app_type ~= 0 and app.app_type ~= 42 and include_game_in_search_results(app) == true then
                                 table.insert(valid_games, app)
                             end
                         end
@@ -21285,7 +21611,7 @@ while true do
 
                     if filterGames == 1 then
                         if collection_count ~= 0 then   
-                            showCat = 50
+                            showCat = find_next_selectable_category(1, 50)
                             p = 1
                             master_index = p
                             showMenu = 0
@@ -21348,6 +21674,220 @@ while true do
         end
 
 
+-- MENU 29 - VISIBLE CATEGORIES
+    elseif showMenu == 29 then
+
+        load_category_visibility_icons_if_needed()
+        build_visible_category_options()
+
+        label1 = Font.getTextWidth(fnt20, lang_lines.Back)--Back
+        label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
+
+        Graphics.drawImage(900-label1, 510, btnO)
+        Font.print(fnt20, 900+28-label1, 508, lang_lines.Back, white)--Back
+
+        Graphics.drawImage(900-(btnMargin * 2)-label1-label2, 510, btnX)
+        Font.print(fnt20, 900+28-(btnMargin * 2)-label1-label2, 508, lang_lines.Select, white)--Select
+
+        Graphics.fillRect(60, 900, 34, 460, darkalpha)
+
+        Font.print(fnt22, setting_x, setting_yh, lang_lines.Edit_category_visibility, white)
+        Graphics.fillRect(60, 900, 78, 81, white)
+
+        if #visible_category_options == 0 then
+            visible_category_selected = 1
+            visible_category_scrollPosition = 0
+        else
+            if visible_category_selected < 1 then
+                visible_category_selected = 1
+            elseif visible_category_selected > #visible_category_options then
+                visible_category_selected = #visible_category_options
+            end
+
+            if visible_category_scrollPosition < 0 then
+                visible_category_scrollPosition = 0
+            elseif visible_category_selected <= visible_category_scrollPosition then
+                visible_category_scrollPosition = visible_category_selected - 1
+            elseif visible_category_selected > visible_category_scrollPosition + visible_category_maxVisibleItems then
+                visible_category_scrollPosition = visible_category_selected - visible_category_maxVisibleItems
+            end
+        end
+
+        menuY = visible_category_selected - visible_category_scrollPosition - 1
+        if menuY < 0 then
+            menuY = 0
+        elseif menuY > visible_category_maxVisibleItems - 1 then
+            menuY = visible_category_maxVisibleItems - 1
+        end
+        Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)
+
+        local visible_category_y = setting_y0
+        for list_index = visible_category_scrollPosition + 1, #visible_category_options do
+            if visible_category_y < 450 then
+                local category = visible_category_options[list_index]
+                local icon = category_visibility_unchecked
+                local color = white_opaque
+                if is_category_visible(category.showcat) == true then
+                    icon = category_visibility_checked
+                    color = white
+                end
+                Graphics.drawImage(setting_x, visible_category_y, icon, color)
+                Font.print(fnt22, setting_x_icon_offset, visible_category_y, category.display_name, color)
+                visible_category_y = visible_category_y + 47
+            end
+        end
+
+        menuItems = 0
+
+        status = System.getMessageState()
+        if status ~= RUNNING then
+
+            if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
+                oldpad = pad
+                local category = visible_category_options[visible_category_selected]
+                if category then
+                    set_category_visible(category.showcat, not is_category_visible(category.showcat))
+                    ensure_at_least_one_visible_category()
+                    if category.showcat == 2 or category.showcat == 46 then
+                        visible_categories_requires_reload = true
+                    end
+                    visible_categories_dirty = true
+                end
+            elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
+                oldpad = pad
+                if visible_categories_requires_reload == true then
+                    FreeIcons()
+                    count_cache_and_reload()
+                end
+                save_visible_category_settings()
+                visible_categories_dirty = false
+                visible_categories_requires_reload = false
+                visible_category_selected = 1
+                visible_category_scrollPosition = 0
+                showMenu = 3
+                menuY = 2
+            elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+                move_visible_category_selection(-1)
+            elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
+                move_visible_category_selection(1)
+            end
+        end
+
+
+-- MENU 30 - VISIBLE COLLECTIONS
+    elseif showMenu == 30 then
+
+        load_category_visibility_icons_if_needed()
+        build_visible_collection_options()
+
+        label1 = Font.getTextWidth(fnt20, lang_lines.Back)--Back
+        label2 = Font.getTextWidth(fnt20, lang_lines.Select)--Select
+
+        Graphics.drawImage(900-label1, 510, btnO)
+        Font.print(fnt20, 900+28-label1, 508, lang_lines.Back, white)--Back
+
+        Graphics.drawImage(900-(btnMargin * 2)-label1-label2, 510, btnX)
+        Font.print(fnt20, 900+28-(btnMargin * 2)-label1-label2, 508, lang_lines.Select, white)--Select
+
+        Graphics.fillRect(60, 900, 34, 460, darkalpha)
+
+        Font.print(fnt22, setting_x, setting_yh, lang_lines.Edit_collection_visibility, white)
+        Graphics.fillRect(60, 900, 78, 81, white)
+
+        if #visible_collection_options == 0 then
+            visible_collection_selected = 1
+            visible_collection_scrollPosition = 0
+        else
+            if visible_collection_selected < 1 then
+                visible_collection_selected = 1
+            elseif visible_collection_selected > #visible_collection_options then
+                visible_collection_selected = #visible_collection_options
+            end
+
+            if visible_collection_scrollPosition < 0 then
+                visible_collection_scrollPosition = 0
+            elseif visible_collection_selected <= visible_collection_scrollPosition then
+                visible_collection_scrollPosition = visible_collection_selected - 1
+            elseif visible_collection_selected > visible_collection_scrollPosition + visible_collection_maxVisibleItems then
+                visible_collection_scrollPosition = visible_collection_selected - visible_collection_maxVisibleItems
+            end
+        end
+
+        menuY = visible_collection_selected - visible_collection_scrollPosition - 1
+        if menuY < 0 then
+            menuY = 0
+        elseif menuY > visible_collection_maxVisibleItems - 1 then
+            menuY = visible_collection_maxVisibleItems - 1
+        end
+        Graphics.fillRect(60, 900, 82 + (menuY * 47), 129 + (menuY * 47), themeCol)
+
+        if #visible_collection_options == 0 then
+            Font.print(fnt22, setting_x, setting_y0, lang_lines.No_collections, white_opaque)
+        else
+            local visible_collection_y = setting_y0
+            for list_index = visible_collection_scrollPosition + 1, #visible_collection_options do
+                if visible_collection_y < 450 then
+                    local collection_option = visible_collection_options[list_index]
+                    if collection_option.action ~= nil then
+                        Font.print(fnt22, setting_x, visible_collection_y, collection_option.display_name, white)
+                    else
+                        local icon = category_visibility_unchecked
+                        local color = white_opaque
+                        if is_collection_visible(collection_option.collection_num) == true then
+                            icon = category_visibility_checked
+                            color = white
+                        end
+                        Graphics.drawImage(setting_x, visible_collection_y, icon, color)
+                        Font.print(fnt22, setting_x_icon_offset, visible_collection_y, collection_option.display_name, color)
+                    end
+                    visible_collection_y = visible_collection_y + 47
+                end
+            end
+        end
+
+        menuItems = 0
+
+        status = System.getMessageState()
+        if status ~= RUNNING then
+
+            if (Controls.check(pad, SCE_CTRL_CROSS_MAP) and not Controls.check(oldpad, SCE_CTRL_CROSS_MAP)) then
+                oldpad = pad
+                local collection_option = visible_collection_options[visible_collection_selected]
+                if collection_option then
+                    if collection_option.action == "show_all" then
+                        set_all_collections_visible(true)
+                    elseif collection_option.action == "hide_all" then
+                        set_all_collections_visible(false)
+                    elseif collection_option.collection_num ~= nil then
+                        if is_collection_visible(collection_option.collection_num) == true then
+                            set_collection_visible(collection_option.collection_num, false)
+                        else
+                            showCollections = 1
+                            set_collection_visible(collection_option.collection_num, true)
+                        end
+                    end
+                    visible_collections_dirty = true
+                    save_visible_collection_settings()
+                    visible_collections_dirty = false
+                end
+            elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
+                oldpad = pad
+                if visible_collections_dirty == true then
+                    save_visible_collection_settings()
+                end
+                visible_collections_dirty = false
+                visible_collection_selected = 1
+                visible_collection_scrollPosition = 0
+                showMenu = 3
+                menuY = 3
+            elseif (Controls.check(pad, SCE_CTRL_UP)) and not (Controls.check(oldpad, SCE_CTRL_UP)) then
+                move_visible_collection_selection(-1)
+            elseif (Controls.check(pad, SCE_CTRL_DOWN)) and not (Controls.check(oldpad, SCE_CTRL_DOWN)) then
+                move_visible_collection_selection(1)
+            end
+        end
+
+
 -- MENU 26 - COLLECTION CUSTOM SORT ORDER
     elseif showMenu == 26 then
         
@@ -21379,10 +21919,11 @@ while true do
                 
                 -- Calculate the start and end indices for the visible items
                 local startIdx = math.max(1, cc_scrollPosition + 1)
-                local endIdx = math.min(#xCollectionTableLookup(xcollection_number), cc_scrollPosition + cc_maxVisibleItems)
+                local endIdx = math.min(#xCollectionEditTableLookup(), cc_scrollPosition + cc_maxVisibleItems)
 
                 -- Draw the visible items
                 for i = startIdx, endIdx do
+                    local collection_item = xCollectionEditTableLookup()[i]
                     local yPosition = setting_y0 + ((i - startIdx) * 47)
                     if cc_edit_mode == true then
                         color = white_opaque
@@ -21393,17 +21934,19 @@ while true do
                         Graphics.fillRect(60, 900, yPosition - 10, yPosition + 38, themeCol)-- selection
                         color = white  -- Highlight selected item in white
                     end
-                    if cc_edit_mode == true and i == cc_selected and i < #xCollectionTableLookup(xcollection_number) and i > 1 then
+                    if cc_edit_mode == true and i == cc_selected and i < #xCollectionEditTableLookup() and i > 1 then
                         Graphics.drawImage(13, yPosition, setting_icon_sort)
                     end
-                    if cc_edit_mode == true and i == cc_selected and i == #xCollectionTableLookup(xcollection_number) then
+                    if cc_edit_mode == true and i == cc_selected and i == #xCollectionEditTableLookup() then
                         Graphics.drawImage(13, yPosition, setting_icon_sort_up)
                     end
                     if cc_edit_mode == true and i == cc_selected and i == 1 then
                         Graphics.drawImage(13, yPosition, setting_icon_sort_down)
                     end
 
-                    Font.print(fnt22, setting_x, yPosition, xCollectionTableLookup(xcollection_number)[i].apptitle, color)
+                    if collection_item then
+                        Font.print(fnt22, setting_x, yPosition, collection_item.apptitle or collection_item.name or "", color)
+                    end
                 end
                 Screen.flip()
             end
@@ -21443,9 +21986,9 @@ while true do
 
                     -- Move selected item Up
                     if cc_selected > 1 and cc_edit_mode == true then
-                        local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
-                        xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected - 1]
-                        xCollectionTableLookup(xcollection_number)[cc_selected - 1] = temp
+                        local temp = xCollectionEditTableLookup()[cc_selected]
+                        xCollectionEditTableLookup()[cc_selected] = xCollectionEditTableLookup()[cc_selected - 1]
+                        xCollectionEditTableLookup()[cc_selected - 1] = temp
 
                         cc_selected = cc_selected - 1
                         if cc_selected <= cc_scrollPosition then
@@ -21481,9 +22024,9 @@ while true do
                     if cc_edit_mode == true then
                         -- Move selected item Up
                         if cc_selected > 1 and cc_edit_mode == true then
-                            local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
-                            xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected - 1]
-                            xCollectionTableLookup(xcollection_number)[cc_selected - 1] = temp
+                            local temp = xCollectionEditTableLookup()[cc_selected]
+                            xCollectionEditTableLookup()[cc_selected] = xCollectionEditTableLookup()[cc_selected - 1]
+                            xCollectionEditTableLookup()[cc_selected - 1] = temp
 
                             cc_selected = cc_selected - 1
                             if cc_selected <= cc_scrollPosition then
@@ -21509,10 +22052,10 @@ while true do
                 if cc_edit_mode == true then
 
                     -- Move selected item down
-                    if cc_selected < #xCollectionTableLookup(xcollection_number) then
-                        local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
-                        xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected + 1]
-                        xCollectionTableLookup(xcollection_number)[cc_selected + 1] = temp
+                    if cc_selected < #xCollectionEditTableLookup() then
+                        local temp = xCollectionEditTableLookup()[cc_selected]
+                        xCollectionEditTableLookup()[cc_selected] = xCollectionEditTableLookup()[cc_selected + 1]
+                        xCollectionEditTableLookup()[cc_selected + 1] = temp
 
                         cc_selected = cc_selected + 1
                         if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
@@ -21526,7 +22069,7 @@ while true do
                 else
 
                     -- Scroll down
-                    if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                    if cc_selected < #xCollectionEditTableLookup() then
                         cc_selected = cc_selected + 1
                         if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
                             cc_scrollPosition = cc_scrollPosition + 1
@@ -21549,10 +22092,10 @@ while true do
                     
                     if cc_edit_mode == true then
                         -- Move selected item down
-                        if cc_selected < #xCollectionTableLookup(xcollection_number) then
-                            local temp = xCollectionTableLookup(xcollection_number)[cc_selected]
-                            xCollectionTableLookup(xcollection_number)[cc_selected] = xCollectionTableLookup(xcollection_number)[cc_selected + 1]
-                            xCollectionTableLookup(xcollection_number)[cc_selected + 1] = temp
+                        if cc_selected < #xCollectionEditTableLookup() then
+                            local temp = xCollectionEditTableLookup()[cc_selected]
+                            xCollectionEditTableLookup()[cc_selected] = xCollectionEditTableLookup()[cc_selected + 1]
+                            xCollectionEditTableLookup()[cc_selected + 1] = temp
 
                             cc_selected = cc_selected + 1
                             if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
@@ -21563,7 +22106,7 @@ while true do
                         cc_reset = false
                     else
                         -- Scroll down
-                        if cc_selected < #xCollectionTableLookup(xcollection_number) then
+                        if cc_selected < #xCollectionEditTableLookup() then
                             cc_selected = cc_selected + 1
                             if cc_selected > cc_scrollPosition + cc_maxVisibleItems then
                                 cc_scrollPosition = cc_scrollPosition + 1
@@ -21579,7 +22122,7 @@ while true do
                     cc_edit_mode = false
 
                     -- Reset to alphabetical order
-                    table.sort(xCollectionTableLookup(xcollection_number), function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+                    table.sort(xCollectionEditTableLookup(), function(a, b) return ((a.apptitle or a.name or ""):lower() < (b.apptitle or b.name or ""):lower()) end)
                     
                     cc_reset = true
                     cc_updated = false
@@ -21610,11 +22153,11 @@ while true do
 
                             -- Custom sort has been used
                                 if cc_updated == true then
-                                    for k, v in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                    for k, v in ipairs(xCollectionEditTableLookup()) do
                                         v.custom_sort_order = k
                                     end
 
-                                    for i, item in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                    for i, item in ipairs(xCollectionEditTableLookup()) do
                                         -- Add a new entry to selected_fields_collection with only the desired fields
                                         cc_table_to_print[i] = {
                                             ["app_type"] = item["app_type"],
@@ -21628,7 +22171,7 @@ while true do
 
                             -- Has been reset, remove custom sort
                                 if cc_reset == true then
-                                    for i, item in ipairs(xCollectionTableLookup(xcollection_number)) do
+                                    for i, item in ipairs(xCollectionEditTableLookup()) do
                                         -- Add a new entry to selected_fields_collection with only the desired fields
                                         cc_table_to_print[i] = {
                                             ["app_type"] = item["app_type"],
@@ -21644,6 +22187,8 @@ while true do
                         cc_edit_mode = false
                         cc_scrollPosition = 0
                         cc_selected = 1
+                        collection_edit_table = {}
+                        import_collections()
 
                         oldpad = pad
                         showMenu = 24
@@ -22033,7 +22578,7 @@ while true do
             elseif Controls.check(pad, SCE_CTRL_CIRCLE_MAP) and not Controls.check(oldpad, SCE_CTRL_CIRCLE_MAP) then
                 oldpad = pad
                 showMenu = 19
-                menuY = 7
+                menuY = 6
             end
             
         end
@@ -22074,8 +22619,76 @@ while true do
         end
     end
 
+    if showMenu == 29 then
+        --Scroll through Visible Categories
+        if my < 64 then
+            if delayButton < 0.5 then
+                delayButton = 1
+                move_visible_category_selection(-1)
+            end
+        elseif my > 180 then
+            if delayButton < 0.5 then
+                delayButton = 1
+                move_visible_category_selection(1)
+            end
+        end
+
+        if Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP) then
+            dpadHeldUp = 0
+        elseif Controls.check(pad, SCE_CTRL_UP) then
+            dpadHeldUp = (dpadHeldUp or 0) + 0.05
+            if dpadHeldUp > 1 and delayButton < 0.05 then
+                delayButton = 0.7
+                move_visible_category_selection(-1)
+            end
+        elseif Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN) then
+            dpadHeldDown = 0
+        elseif Controls.check(pad, SCE_CTRL_DOWN) then
+            dpadHeldDown = (dpadHeldDown or 0) + 0.05
+            if dpadHeldDown > 1 and delayButton < 0.05 then
+                delayButton = 0.7
+                move_visible_category_selection(1)
+            end
+        end
+    end
+
+    if showMenu == 30 then
+        --Scroll through Visible Collections
+        if my < 64 then
+            if delayButton < 0.5 then
+                delayButton = 1
+                move_visible_collection_selection(-1)
+            end
+        elseif my > 180 then
+            if delayButton < 0.5 then
+                delayButton = 1
+                move_visible_collection_selection(1)
+            end
+        end
+
+        if Controls.check(pad, SCE_CTRL_UP) and not Controls.check(oldpad, SCE_CTRL_UP) then
+            dpadHeldUp = 0
+        elseif Controls.check(pad, SCE_CTRL_UP) then
+            dpadHeldUp = (dpadHeldUp or 0) + 0.05
+            if dpadHeldUp > 1 and delayButton < 0.05 then
+                delayButton = 0.7
+                move_visible_collection_selection(-1)
+            end
+        elseif Controls.check(pad, SCE_CTRL_DOWN) and not Controls.check(oldpad, SCE_CTRL_DOWN) then
+            dpadHeldDown = 0
+        elseif Controls.check(pad, SCE_CTRL_DOWN) then
+            dpadHeldDown = (dpadHeldDown or 0) + 0.05
+            if dpadHeldDown > 1 and delayButton < 0.05 then
+                delayButton = 0.7
+                move_visible_collection_selection(1)
+            end
+        end
+    end
+
     if showMenu > 1 
         and showMenu ~= 11 -- ROM Browser
+        and showMenu ~= 29 -- Visible Categories
+        and showMenu ~= 30 -- Visible Collections
         and showMenu ~= 13 -- Guide 1
         and showMenu ~= 14 -- Guide 2
         and showMenu ~= 15 -- Guide 3
@@ -22466,332 +23079,10 @@ while true do
                 else
                 end
                 
-                if (Controls.check(pad, SCE_CTRL_DOWN)) then
-
-                   -- CATEGORY - Move Backwards
-
-                    -- empty the search results
-                    curTotal = #search_results_table   
-                    if #search_results_table ~= nil then 
-                        search_results_table = {}
-                    end
-
-                    if filterGames == 1 then
-
-                        -- Only Collections
-                        if collection_count ~= 0 then   
-                            -- if showCat < collection_syscount and showCat >= 47 then
-                            if showCat >= 50 then
-                                showCat = showCat - 1
-                            else
-                                showCat = collection_syscount
-                            end
-                        end
-
-                    else
-
-                        -- All categories including collections
-                        if showCat > 1 then
-                            showCat = showCat - 1
-                        elseif showCat == 1 then
-                            if showAll==0 then -- All is off
-                                if showCollections == 0 then
-                                    showCat = count_of_categories
-                                else
-                                    showCat = collection_syscount
-                                end
-                            else
-                                showCat = 0
-                            end
-                        elseif showCat == 0 then
-                            if showCollections == 0 then
-                                showCat = count_of_categories
-                            else
-                                showCat = collection_syscount
-                            end
-                        end
-
-                    end
-
-
-
-                    skip_empty_collection_categories(-1)
-
-                    if showCat == 49 then
-                        curTotal = #search_results_table   
-                        if #search_results_table == 0 then 
-                            showCat = 48
-                        end
-                    end
-
-                    if showCat == 48 then 
-                        curTotal = #recently_played_table
-                        if #recently_played_table == 0 then 
-                            showCat = 47
-                        end
-                    end
-
-                    if showCat == 47 then
-                        -- count favorites
-                        refresh_fav_count_table()
-
-                        curTotal = #fav_count
-                        if #fav_count == 0 then 
-
-                            if showSysApps == 1 then
-                                showCat = 46
-                            else
-                                showCat = 45
-                            end
-                        end
-                    end
-
-                    if showCat == 46 then
-                        if showSysApps == 0 then
-                            showCat = 45
-                        end
-                    end
-                    
-                    if showCat >= 3 and showCat <= 45 then
-                        showCatTemp = showCat - 1
-                        curTotal = #xCatLookup(showCat)
-
-                        if #xCatLookup(showCat) == 0 then         
-                            showCat = showCatTemp
-                        end
-                    end
-
-                    -- if showCat == 46 then curTotal =    #sysapps_table          if      #sysapps_table == 0 then        showCat = 45 end end
-                    if showCat == 45 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 44 end end
-                    if showCat == 44 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 43 end end
-                    if showCat == 43 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 42 end end
-                    if showCat == 42 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 41 end end
-                    if showCat == 41 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 40 end end
-                    if showCat == 40 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 39 end end
-                    if showCat == 39 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 38 end end
-                    if showCat == 38 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 37 end end
-                    if showCat == 37 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 36 end end
-                    if showCat == 36 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 35 end end
-                    if showCat == 35 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 34 end end
-                    if showCat == 34 then curTotal =    #atari_st_table         if      #atari_st_table == 0 then       showCat = 33 end end
-                    if showCat == 33 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 32 end end
-                    if showCat == 32 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 31 end end
-                    if showCat == 31 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 30 end end
-                    if showCat == 30 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 29 end end
-                    if showCat == 29 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 28 end end
-                    if showCat == 28 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 27 end end
-                    if showCat == 27 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 25 end end
-                    if showCat == 26 then curTotal =    #dos_table              if      #dos_table == 0 then            showCat = 25 end end
-                    if showCat == 25 then curTotal =    #easyrpg_table          if      #easyrpg_table == 0 then        showCat = 24 end end
-                    if showCat == 24 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 23 end end
-                    if showCat == 23 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 22 end end
-                    if showCat == 22 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 21 end end
-                    if showCat == 21 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 20 end end
-                    if showCat == 20 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 19 end end
-                    if showCat == 19 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 18 end end
-                    if showCat == 18 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 17 end end
-                    if showCat == 17 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 16 end end
-                    if showCat == 16 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 15 end end
-                    if showCat == 15 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 14 end end
-                    if showCat == 14 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 13 end end
-                    if showCat == 13 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 12 end end
-                    if showCat == 12 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 11 end end
-                    if showCat == 11 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 10 end end
-                    if showCat == 10 then curTotal =    #gba_table              if      #gba_table == 0 then            showCat = 9 end end
-                    if showCat == 9 then curTotal =     #nds_table              if      #nds_table == 0 then            showCat = 8 end end
-                    if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 7 end end
-                    if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 6 end end
-                    if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 5 end end
-                    if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 4 end end
-                    if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 3 end end
-                    if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 2 end end
-                    
-                    -- Skip Homebrew category if disabled
-                    if showCat == 2 and showHomebrews==0 then -- HB is off
-                        showCat = 1
-                    end
-
-                    -- -- Skip Homebrew category if disabled
-                    -- if showCat == 41 and showSysApps==0 then -- HB is off
-                    --     showCat = 1
-                    -- end
-                    
-
-                    hideBoxes = 0.8 -- used to be 8
-                    p = 1
-                    master_index = p
-                    startCovers = false
-                    -- Reset smooth scrolling factors to prevent position offset
-                    quick_scrolling_factor = 0
-                    quick_scrolling_factor_goal = 0
-                    -- Reset flat view scrolling variables for showView 5
-                    flat_view_scroll_x = 0
-                    flat_view_target_x = 0
-                    GetInfoSelected()
-                    FreeIcons()
-
-
+                if Controls.check(pad, SCE_CTRL_DOWN) then
+                    change_category(-1)
                 else
-
-                    -- CATEGORY - Move Forwards
-
-                    -- empty the search results
-                    curTotal = #search_results_table   
-                    if #search_results_table ~= nil then 
-                        search_results_table = {}
-                    end
-
-                    if showCat == 47 then
-                        -- count favorites
-                        refresh_fav_count_table()
-                    end
-
-                    if filterGames == 1 then
-
-                        -- Only Collections
-                        if collection_count ~= 0 then   
-                            if showCat < collection_syscount and showCat >= 47 then
-
-                                if showCat == 47 or showCat == 48 then -- Recent and Fav
-                                    showCat = 50
-                                else
-                                    showCat = showCat + 1
-                                end
-                            
-                            else
-                                showCat = 50
-                            end
-                        end
-
-                    else
-
-                        -- All categories including collections
-                        if showCat < collection_syscount then
-                            -- Skip All category if disabled
-                            if showCat==0 and showAll==0 then 
-                                showCat = 1
-                            -- Skip Homebrews category if disabled
-                            elseif showCat==1 and showHomebrews==0 then
-                                showCat = 3
-                            elseif showCat==49 then
-                                if showAll==0 then
-                                    showCat = 1
-                                else
-                                    showCat = 0
-                                end
-                            else
-                                showCat = showCat + 1
-                            end
-                        elseif showCat == collection_syscount then
-                            if showAll==0 then
-                                showCat = 1
-                            else
-                                showCat = 0
-                            end
-                        else
-                            showCat = 0
-                        end
-
-
-                    end
-
-                    
-                    -- Start skip empty categories
-                    if showCat == 3 then curTotal =     #psp_table              if      #psp_table == 0 then            showCat = 4 end end
-                    if showCat == 4 then curTotal =     #psx_table              if      #psx_table == 0 then            showCat = 5 end end
-                    if showCat == 5 then curTotal =     #psm_table              if      #psm_table == 0 then            showCat = 6 end end
-                    if showCat == 6 then curTotal =     #n64_table              if      #n64_table == 0 then            showCat = 7 end end
-                    if showCat == 7 then curTotal =     #snes_table             if      #snes_table == 0 then           showCat = 8 end end
-                    if showCat == 8 then curTotal =     #nes_table              if      #nes_table == 0 then            showCat = 9 end end
-                    if showCat == 9 then curTotal =     #nds_table              if      #nds_table == 0 then            showCat = 10 end end
-                    if showCat == 10 then curTotal =    #gba_table              if      #gba_table == 0 then            showCat = 11 end end
-                    if showCat == 11 then curTotal =    #gbc_table              if      #gbc_table == 0 then            showCat = 12 end end
-                    if showCat == 12 then curTotal =    #gb_table               if      #gb_table == 0 then             showCat = 13 end end
-                    if showCat == 13 then curTotal =    #dreamcast_table        if      #dreamcast_table == 0 then      showCat = 14 end end
-                    if showCat == 14 then curTotal =    #sega_cd_table          if      #sega_cd_table == 0 then        showCat = 15 end end
-                    if showCat == 15 then curTotal =    #s32x_table             if      #s32x_table == 0 then           showCat = 16 end end
-                    if showCat == 16 then curTotal =    #md_table               if      #md_table == 0 then             showCat = 17 end end
-                    if showCat == 17 then curTotal =    #sms_table              if      #sms_table == 0 then            showCat = 18 end end
-                    if showCat == 18 then curTotal =    #gg_table               if      #gg_table == 0 then             showCat = 19 end end
-                    if showCat == 19 then curTotal =    #tg16_table             if      #tg16_table == 0 then           showCat = 20 end end
-                    if showCat == 20 then curTotal =    #tgcd_table             if      #tgcd_table == 0 then           showCat = 21 end end
-                    if showCat == 21 then curTotal =    #pce_table              if      #pce_table == 0 then            showCat = 22 end end
-                    if showCat == 22 then curTotal =    #pcecd_table            if      #pcecd_table == 0 then          showCat = 23 end end
-                    if showCat == 23 then curTotal =    #amiga_table            if      #amiga_table == 0 then          showCat = 24 end end
-                    if showCat == 24 then curTotal =    #scummvm_table          if      #scummvm_table == 0 then        showCat = 25 end end
-                    if showCat == 25 then curTotal =    #easyrpg_table          if      #easyrpg_table == 0 then        showCat = 26 end end
-                    if showCat == 26 then curTotal =    #dos_table              if      #dos_table == 0 then            showCat = 27 end end
-                    if showCat == 27 then curTotal =    #c64_table              if      #c64_table == 0 then            showCat = 28 end end
-                    if showCat == 28 then curTotal =    #wswan_col_table        if      #wswan_col_table == 0 then      showCat = 29 end end
-                    if showCat == 29 then curTotal =    #wswan_table            if      #wswan_table == 0 then          showCat = 30 end end
-                    if showCat == 30 then curTotal =    #pico8_table            if      #pico8_table == 0 then          showCat = 31 end end
-                    if showCat == 31 then curTotal =    #msx2_table             if      #msx2_table == 0 then           showCat = 32 end end
-                    if showCat == 32 then curTotal =    #msx1_table             if      #msx1_table == 0 then           showCat = 33 end end
-                    if showCat == 33 then curTotal =    #zxs_table              if      #zxs_table == 0 then            showCat = 34 end end
-                    if showCat == 34 then curTotal =    #atari_st_table         if      #atari_st_table == 0 then       showCat = 35 end end
-                    if showCat == 35 then curTotal =    #atari_7800_table       if      #atari_7800_table == 0 then     showCat = 36 end end
-                    if showCat == 36 then curTotal =    #atari_5200_table       if      #atari_5200_table == 0 then     showCat = 37 end end
-                    if showCat == 37 then curTotal =    #atari_2600_table       if      #atari_2600_table == 0 then     showCat = 38 end end
-                    if showCat == 38 then curTotal =    #atari_lynx_table       if      #atari_lynx_table == 0 then     showCat = 39 end end
-                    if showCat == 39 then curTotal =    #colecovision_table     if      #colecovision_table == 0 then   showCat = 40 end end
-                    if showCat == 40 then curTotal =    #vectrex_table          if      #vectrex_table == 0 then        showCat = 41 end end
-                    if showCat == 41 then curTotal =    #fba_table              if      #fba_table == 0 then            showCat = 42 end end
-                    if showCat == 42 then curTotal =    #mame_2003_plus_table   if      #mame_2003_plus_table == 0 then showCat = 43 end end
-                    if showCat == 43 then curTotal =    #mame_2000_table        if      #mame_2000_table == 0 then      showCat = 44 end end
-                    if showCat == 44 then curTotal =    #neogeo_table           if      #neogeo_table == 0 then         showCat = 45 end end
-                    if showCat == 45 then curTotal =    #ngpc_table             if      #ngpc_table == 0 then           showCat = 46 end end
-                    if showCat == 46 then curTotal =    #sysapps_table          if      #sysapps_table == 0 then        showCat = 47 end end
-                    if showCat == 47 then
-                        -- count favorites
-                        refresh_fav_count_table()
-
-                        curTotal = #fav_count
-                        if #fav_count == 0 then showCat = 48
-                        end
-                    end
-                    if showCat == 48 then 
-                        curTotal = #recently_played_table
-                        if #recently_played_table == 0 then showCat = 49
-                        end
-                    end
-                    
-                        if showCat == 49 then
-                            curTotal = #search_results_table
-                            if #search_results_table == 0 then
-                                if collection_count ~= 0 then
-                                    if showCollections == 0 then
-                                        if showAll==0 then
-                                            showCat = 1
-                                        else
-                                            showCat = 0
-                                        end
-                                    else
-                                        showCat = 50
-                                    end
-                                else
-                                    if showAll==0 then
-                                        showCat = 1
-                                    else
-                                        showCat = 0
-                                    end
-                                end
-                            end
-                        end
-
-                        skip_empty_collection_categories(1)
-
-                        hideBoxes = 0.8 -- used to be 8
-                    p = 1
-                    master_index = p
-                    startCovers = false
-                    -- Reset smooth scrolling factors to prevent position offset
-                    quick_scrolling_factor = 0
-                    quick_scrolling_factor_goal = 0
-                    -- Reset flat view scrolling variables for showView 5
-                    flat_view_scroll_x = 0
-                    flat_view_target_x = 0
-                    GetInfoSelected()
-                    FreeIcons()
+                    change_category(1)
                 end
 
 
@@ -23250,8 +23541,29 @@ while true do
                     showMenu = 20
                     menuY=0
                 elseif showMenu == 24 then -- Edit collections
-                    showMenu = 19
-                    menuY=5
+                    showMenu = 3
+                    menuY=4
+                elseif showMenu == 29 then -- Visible Categories
+                    if visible_categories_requires_reload == true then
+                        FreeIcons()
+                        count_cache_and_reload()
+                    end
+                    save_visible_category_settings()
+                    visible_categories_dirty = false
+                    visible_categories_requires_reload = false
+                    visible_category_selected = 1
+                    visible_category_scrollPosition = 0
+                    showMenu = 3
+                    menuY=2
+                elseif showMenu == 30 then -- Visible Collections
+                    if visible_collections_dirty == true then
+                        save_visible_collection_settings()
+                    end
+                    visible_collections_dirty = false
+                    visible_collection_selected = 1
+                    visible_collection_scrollPosition = 0
+                    showMenu = 3
+                    menuY=3
                 elseif showMenu == 26 then -- Collection Custom sort order
                     -- showMenu = 24
                     -- menuY=4

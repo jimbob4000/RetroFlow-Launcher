@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "随机播放音乐 : ",
 ["Skip_track"] = "跳过曲目",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "编辑类别可见性",
 ["Startup_Category_colon"] = "启动类别 : ",
 ["Last_played_game"] = "上次游玩的游戏",
 ["Favorites"] = "收藏夹",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "添加游戏",
 ["guide_1_content"] = "游戏目录：\n将您的游戏放在“ux0:/data/RetroFlow/ROMS/”中，\n或使用您自己的文件目录，转到“扫描设置”，然后“编辑游戏目录”。 \n\n添加游戏后，选择“重新扫描”将它们添加到 RetroFlow。 \n\n文件名：\n请务必使用“no-intro”文件命名约定命名您的游戏，例如 “Sonic (USA)”，\n否则不会下载图像。",
 
-["guide_2_heading"] = "为什么 PSP 和 PS1 游戏没有显示？",
-["guide_2_content"] = "请安装 TheOfficialFloW 的 Adrenaline v7 以启用 PSP 和 PS1 游戏。",
+["guide_2_heading"] = "为什么会收到 Adrenaline 警告？",
+["guide_2_content"] = "RetroFlow 无法识别您已安装的 Adrenaline 模块组合。\nPSP 和 PS1 游戏仍会显示，但可能无法正常启动。\n\n如果游戏无法启动，请在有更新版本可用时更新 RetroFlow。",
 
 ["guide_3_heading"] = "自定义游戏封面和背景",
 ["guide_3_content"] = "封面：\n自定义封面可以保存在此处的游戏文件夹中：“ux0:/data/RetroFlow/COVERS/”。 \n\n背景：\n自定义游戏背景可以保存在此处的游戏文件夹中：\n“ux0:/data/RetroFlow/BACKGROUNDS/”。 \n\n文件名：\n文件名必须与应用 ID 匹配，或者应用名称图像必须为 .png 格式。",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "编辑集合",
 ["Show_collections_colon"] = "显示集合：",
 ["Customise_game_order"] = "自定义游戏顺序",
+["Edit_collection_visibility"] = "编辑合集可见性",
+["Show_all"] = "全部显示",
+["Hide_all"] = "全部隐藏",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "正在安装 RetroFlow Adrenaline Launcher vpk...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "立即重启",
 ["Restart_Later"] = "稍后重启",
 ["Install_Official_Adrenaline"] = "请安装 TheOfficialFloW 的 Adrenaline v7 以启用 PSP 和 PS1 游戏。",
+["Adrenaline_Unsupported"] = "无法识别您的 Adrenaline 模块组合。PSP 和 PS1 游戏可能无法启动。",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "你需要安装 Adrenaline 才能玩这个游戏。",

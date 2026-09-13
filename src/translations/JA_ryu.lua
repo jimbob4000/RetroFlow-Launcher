@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "音楽シャッフルすん：",
 ["Skip_track"] = "トラックスキップ",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "カテゴリーぬ表示設定を編集",
 ["Startup_Category_colon"] = "起動時ぬカテゴリー：",
 ["Last_played_game"] = "最後んかい遊だるゲーム",
 ["Favorites"] = "う気に入り",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "ゲームぬ追加方法",
 ["guide_1_content"] = "ゲームディレクトリ: \nゲーム「ux0:/data/RetroFlow/ROMS/」 んかい配置すが、\n独自ぬファイルディレクトリ使用すんがー、\n「スキャン設定」 んかい移動しから 「ゲームディレクトリぬ編集」 んかい移動さびーん。 \n\nゲームいりしーいねー、「再スキャン」選択し RetroFlow んかいいりしーいびーん。 \n\nファイル名: \n「no-intro」ファイル命名規則使用しゲームんかいなめーちきーるくとぅが重要やいびーん。 \n「Sonic (USA)」、そうでぃねーんばー、画像ーダウンロードさりやびらん。",
 
-["guide_2_heading"] = "なぜ PSP と PS1 のゲームが表示されないのですか？",
-["guide_2_content"] = "PSP と PS1 ゲームを有効にするには、TheOfficialFloW の Adrenaline v7 をインストールしてください。",
+["guide_2_heading"] = "ぬーがAdrenalineぬ警告が出たが？",
+["guide_2_content"] = "RetroFlowや、インストールさっとーる\nAdrenalineぬモジュールセットを\n認識さびらんたん。\n\nPSPとPS1ぬゲームや、うぬまま表示さりーんが、\n正しく起動しーらん可能性があいびーん。\n\nゲームが起動さん場合や、\n新しいバージョンが利用できるようになったら\nRetroFlowを更新しみそーれー。",
 
 ["guide_3_heading"] = "ゲームぬカバーとぅ背景ぬカスタマイズ方法",
 ["guide_3_content"] = "カバー: \nカスタム カバーや次ぬゲーム フォルダんかい保存なやびーん: \n「ux0:/data/RetroFlow/COVERS/」。 \n\n背景: \nカスタム ゲームぬ背景ー、「ux0:/data/RetroFlow/BACKGROUNDS/」\nぬゲーム フォルダんかい保存なやびーん。 \n\nファイル名:\nファイル名ーアプリ ID あらんでぃアプリ名とぅ一致するいりゆーぬあいびーん。\n画像ー .png 形式やんいりゆーぬあいびーん。",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "コレクションを編集する",
 ["Show_collections_colon"] = "コレクションを表示：",
 ["Customise_game_order"] = "グムヌ順番ィカスタマイズシェー",
+["Edit_collection_visibility"] = "コレクションぬ表示設定を編集",
+["Show_all"] = "全部表示",
+["Hide_all"] = "全部隠す",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk をインストールしています...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "今ちゅら再起動",
 ["Restart_Later"] = "後ちゅら再起動",
 ["Install_Official_Adrenaline"] = "PSP と PS1 ゲームを有効にするには、TheOfficialFloW の Adrenaline v7 をインストールしてください。",
+["Adrenaline_Unsupported"] = "使ちょーるAdrenalineモジュールセットや認識さってーびらん。PSPとPS1ぬゲームや起動さん可能性があいびーん。",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Adrenalineぬ、インストールせんと、このゲームんかい遊ばりん。",

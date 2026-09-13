@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Musique aléatoire :",
 ["Skip_track"] = "Sauter la piste",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Modifier la visibilité des catégories",
 ["Startup_Category_colon"] = "Catégorie par défaut :",
 ["Last_played_game"] = "Dernier jeu joué",
 ["Favorites"] = "Favoris",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Ajout de jeux",
 ["guide_1_content"] = "Répertoires de jeux : \nPlacez vos jeux dans 'ux0:/data/RetroFlow/ROMS/', ou pour utiliser vos propres répertoires de fichiers, allez dans 'Paramètres d'analyse' puis 'Modifier les répertoires de jeux'. \n\nUne fois que vous avez ajouté vos jeux, sélectionnez 'Rafraîchir' pour les ajouter à RetroFlow. \n\nNoms de fichiers : \nIl est important que vos jeux soient nommés en utilisant la convention de nommage des fichiers 'no-intro', par ex. 'Sonic (USA)', sinon les images ne seront pas téléchargées.",
 
-["guide_2_heading"] = "Pourquoi les jeux PSP et PS1 ne s'affichent-ils pas ?",
-["guide_2_content"] = "Installez Adrenaline v7 par TheOfficialFloW pour activer les jeux PSP et PS1.",
+["guide_2_heading"] = "Pourquoi ai-je reçu un avertissement concernant Adrenaline ?",
+["guide_2_content"] = "RetroFlow n’a pas reconnu votre ensemble de modules Adrenaline installé. Les jeux PSP et PS1 seront toujours affichés, mais ils pourraient ne pas se lancer correctement.\n\nSi les jeux ne se lancent pas, mettez à jour RetroFlow lorsqu’une nouvelle version est disponible.",
 
 ["guide_3_heading"] = "Jaquettes et arrière-plans de jeu personnalisés",
 ["guide_3_content"] = "Jaquettes : \nLes jaquettes personnalisées peuvent être enregistrées dans les dossiers des jeux ici: 'ux0:/data/RetroFlow/COVERS/'. \n\nArrière-plans : \nLes arrière-plans de jeu personnalisés peuvent être enregistrés dans les dossiers des jeux ici : 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nNoms de fichiers :\nLe nom de fichier doit correspondre à l'ID ou au nom de l'application. Les images doivent être au format .png.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Modifier les collections",
 ["Show_collections_colon"] = "Afficher les collections :",
 ["Customise_game_order"] = "Personnaliser l'ordre des jeux",
+["Edit_collection_visibility"] = "Modifier la visibilité des collections",
+["Show_all"] = "Tout afficher",
+["Hide_all"] = "Tout masquer",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "Installation du vpk RetroFlow Adrenaline Launcher...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Redémarrer maintenant",
 ["Restart_Later"] = "Redémarrer plus tard",
 ["Install_Official_Adrenaline"] = "Installez Adrenaline v7 par TheOfficialFloW pour activer les jeux PSP et PS1.",
+["Adrenaline_Unsupported"] = "Votre ensemble de modules Adrenaline n’est pas reconnu. Les jeux PSP et PS1 pourraient ne pas se lancer.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Vous devez installer Adrenaline pour jouer à ce jeu.",

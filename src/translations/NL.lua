@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Willekeurige muziek: ",
 ["Skip_track"] = "Nummer overslaan",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Zichtbaarheid van categorieën bewerken",
 ["Startup_Category_colon"] = "Opstartcategorie: ",
 ["Last_played_game"] = "Laatst gespeelde game",
 ["Favorites"] = "Favorieten",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Spelletjes toevoegen",
 ["guide_1_content"] = "Speldirectory's: \nPlaats je games in 'ux0:/data/RetroFlow/ROMS/', of om je eigen bestandsdirectories te gebruiken, ga naar 'Scaninstellingen' en vervolgens 'Speldirectory's bewerken'. \n\nZodra je je games hebt toegevoegd, selecteer je 'Opnieuw scannen' om ze toe te voegen aan RetroFlow. \n\nBestandsnamen: \nHet is belangrijk dat je games een naam krijgen volgens de 'no-intro' bestandsnaamgevingsconventie, b.v. 'Sonic (USA)', anders worden afbeeldingen niet gedownload.",
 
-["guide_2_heading"] = "Waarom worden PSP- en PS1-games niet weergegeven?",
-["guide_2_content"] = "Installeer Adrenaline v7 van TheOfficialFloW om PSP- en PS1-games te activeren.",
+["guide_2_heading"] = "Waarom kreeg ik een Adrenaline-waarschuwing?",
+["guide_2_content"] = "RetroFlow heeft je geïnstalleerde Adrenaline-moduleset niet herkend. PSP- en PS1-games worden nog steeds weergegeven, maar worden mogelijk niet correct gestart.\n\nAls games niet starten, werk RetroFlow dan bij zodra er een nieuwere versie beschikbaar is.",
 
 ["guide_3_heading"] = "Pas spelomslagen en achtergronden aan",
 ["guide_3_content"] = "Hoezen: \nAangepaste hoezen kunnen hier in de spelmappen worden opgeslagen: 'ux0:/data/RetroFlow/COVERS/'. \n\nAchtergronden: \nAangepaste game-achtergronden kunnen hier worden opgeslagen in de gamemappen: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nBestandsnamen:\nDe bestandsnaam moet overeenkomen met de app-ID of de app-naamafbeeldingen moeten de .png-indeling hebben.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Collecties bewerken",
 ["Show_collections_colon"] = "Toon collecties:",
 ["Customise_game_order"] = "Pas de spelvolgorde aan",
+["Edit_collection_visibility"] = "Zichtbaarheid van collecties bewerken",
+["Show_all"] = "Alles tonen",
+["Hide_all"] = "Alles verbergen",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk installeren...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Nu opnieuw opstarten",
 ["Restart_Later"] = "Later opnieuw opstarten",
 ["Install_Official_Adrenaline"] = "Installeer Adrenaline v7 van TheOfficialFloW om PSP- en PS1-games te activeren.",
+["Adrenaline_Unsupported"] = "Je Adrenaline-moduleset wordt niet herkend. PSP- en PS1-games worden mogelijk niet gestart.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Je moet Adrenaline installeren om dit spel te spelen.",

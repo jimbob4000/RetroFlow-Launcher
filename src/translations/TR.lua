@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Müziği karıştır: ",
 ["Skip_track"] = "Şarkıyı atla",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Kategori görünürlüğünü düzenle",
 ["Startup_Category_colon"] = "Başlangıç Kategori: ",
 ["Last_played_game"] = "Son oynanan oyun",
 ["Favorites"] = "Favoriler",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Oyunlar nasıl eklenir",
 ["guide_1_content"] = "Oyun dizinleri: \nOyunlarınızı 'ux0:/data/RetroFlow/ROMS/' içine yerleştirin veya kendi dosya dizinlerinizi kullanmak için 'Tarama Ayarları' ve ardından 'Oyun dizinlerini düzenle' e gidin. \n\nOyunlarınızı ekledikten sonra RetroFlow'a eklemek için 'Yeniden tara' öğesini seçin. \n\nDosya adları: \nOyunlarınızın 'no-intro' dosya adlandırma kuralı kullanılarak adlandırılması önemlidir, örn. 'Sonic (USA)', aksi halde resimler indirilmeyecektir.",
 
-["guide_2_heading"] = "PSP ve PS1 oyunları neden görünmüyor?",
-["guide_2_content"] = "PSP ve PS1 oyunlarını etkinleştirmek için TheOfficialFloW tarafından geliştirilen Adrenaline v7'yi yükleyin.",
+["guide_2_heading"] = "Neden bir Adrenaline uyarısı aldım?",
+["guide_2_content"] = "RetroFlow, yüklü Adrenaline modül setinizi tanımadı. PSP ve PS1 oyunları yine gösterilecek, ancak düzgün şekilde başlatılamayabilir.\n\nOyunlar başlamıyorsa, daha yeni bir sürüm kullanılabilir olduğunda RetroFlow'u güncelleyin.",
 
 ["guide_3_heading"] = "Oyun kapaklarını ve arka planlarını özelleştirin",
 ["guide_3_content"] = "Kapaklar: \nÖzel kapaklar şuradaki oyun klasörlerine kaydedilebilir: 'ux0:/data/RetroFlow/COVERS/'. \n\nArka Planlar: \nÖzel oyun arka planları şuradaki oyun klasörlerine kaydedilebilir: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nDosya adları:\nDosya adı, Uygulama Kimliği ile eşleşmeli veya Uygulama Adı Görüntüleri .png biçiminde olmalıdır.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Koleksiyonları düzenle",
 ["Show_collections_colon"] = "Koleksiyonları göster:",
 ["Customise_game_order"] = "Oyun sırasını özelleştir",
+["Edit_collection_visibility"] = "Koleksiyon görünürlüğünü düzenle",
+["Show_all"] = "Tümünü göster",
+["Hide_all"] = "Tümünü gizle",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "RetroFlow Adrenaline Launcher vpk yükleniyor...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Şimdi yeniden başlat",
 ["Restart_Later"] = "Daha sonra yeniden başlat",
 ["Install_Official_Adrenaline"] = "PSP ve PS1 oyunlarını etkinleştirmek için TheOfficialFloW tarafından geliştirilen Adrenaline v7'yi yükleyin.",
+["Adrenaline_Unsupported"] = "Adrenaline modül setiniz tanınmıyor. PSP ve PS1 oyunları başlatılamayabilir.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Bu oyunu oynamak için Adrenaline'i kurmanız gerekiyor.",

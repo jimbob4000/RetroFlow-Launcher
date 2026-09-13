@@ -44,7 +44,8 @@ return {
 ["Shuffle_music_colon"] = "Zene keverés: ",
 ["Skip_track"] = "Szám átugrása",
 
--- Startup Categories
+-- Categories
+["Edit_category_visibility"] = "Kategóriák láthatóságának szerkesztése",
 ["Startup_Category_colon"] = "Indítási Kategória: ",
 ["Last_played_game"] = "Utoljára játszott játék",
 ["Favorites"] = "Kedvencek",
@@ -223,8 +224,8 @@ return {
 ["guide_1_heading"] = "Játék hozzáadás",
 ["guide_1_content"] = "Játék mappák: \nHelyezd el a játékaidat a 'ux0:/data/RetroFlow/ROMS/' mappába, vagy használd a saját mappádat, menj a 'Keresési beállítások'-ba, majd 'Játék mappák szerkesztése...'. \n\nMiután hozzáadtad a játékaidat, nyomj az 'Újra keresés'-re, hogy hozzáadd a RetroFlow-hoz. \n\nFájlnevek: \nFontos, hogy a játékaid a 'no-intro' elnevezést kövessék, mint pl.: 'Sonic (USA)', különben a képek nem töltődnek le.",
 
-["guide_2_heading"] = "Miért nem jelennek meg a PSP és PS1 játékok?",
-["guide_2_content"] = "A PSP és PS1 játékok engedélyezéséhez telepítsd a TheOfficialFloW által készített Adrenaline v7-et.",
+["guide_2_heading"] = "Miért kaptam Adrenaline-figyelmeztetést?",
+["guide_2_content"] = "A RetroFlow nem ismerte fel a telepített Adrenaline modulcsomagot. A PSP- és PS1-játékok továbbra is megjelennek, de előfordulhat, hogy nem indulnak el megfelelően.\n\nHa a játékok nem indulnak el, frissítsd a RetroFlow-t, amikor újabb verzió érhető el.",
 
 ["guide_3_heading"] = "Saját játék borítók és hátterek",
 ["guide_3_content"] = "Borítók: \nSaját játék borítókat ebbe a mappába rakhatsz: 'ux0:/data/RetroFlow/COVERS/'. \n\nHátterek: \nSaját háttereket ebbe a mappába rakhatsz: 'ux0:/data/RetroFlow/BACKGROUNDS/'. \n\nFájlnevek:\nA fájlnévnek egyeznie kell az App ID-vel vagy az App Name képeknek .png formátumban kell lennie.",
@@ -288,6 +289,9 @@ return {
 ["Edit_collections"] = "Gyűjtemények szerkesztése",
 ["Show_collections_colon"] = "Gyűjtemények mutatása:",
 ["Customise_game_order"] = "Játéksorrend testreszabása",
+["Edit_collection_visibility"] = "Gyűjtemények láthatóságának szerkesztése",
+["Show_all"] = "Összes megjelenítése",
+["Hide_all"] = "Összes elrejtése",
 
 -- Adrenaline install assets
 ["RETROLNCR_Install"] = "A RetroFlow Adrenaline Launcher vpk telepítése...",
@@ -298,6 +302,7 @@ return {
 ["Restart_Now"] = "Újraindítás most",
 ["Restart_Later"] = "Újraindítás később",
 ["Install_Official_Adrenaline"] = "A PSP és PS1 játékok engedélyezéséhez telepítsd a TheOfficialFloW által készített Adrenaline v7-et.",
+["Adrenaline_Unsupported"] = "Az Adrenaline modulcsomagja nem ismerhető fel. Előfordulhat, hogy a PSP- és PS1-játékok nem indulnak el.",
 
 -- Launch messages
 ["Emulator_not_installed_Adrenaline"] = "Az Adrenaline telepítése szükséges a játékhoz.",
