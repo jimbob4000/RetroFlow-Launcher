@@ -27,7 +27,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.4.0"
+local appversion = "8.4.1"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -13417,19 +13417,17 @@ function DownloadArtwork(missing_artwork_table)
         cache_all_tables()
         update_cached_table_recently_played()
         
-        -- Redraw covers for current showCat game category 
-        for k in pairs (xCatLookup(showCat)) do
-            Threads.addTask(xCatLookup(showCat)[k], {
-            Type = "ImageLoad",
-            Path = xCatLookup(showCat)[k].icon_path,
-            Table = xCatLookup(showCat)[k],
-            Index = "ricon"
-            })
-        end
-        
-        -- Refresh cover widths for current category after downloading covers (only needed for flat view)
-        if showView == 5 then
-            refresh_current_category_cover_widths()
+        if download_mode_covers == true and artwork_found_count > 0 then
+            -- Downloaded covers change icon_path while old placeholder textures may still be cached.
+            -- Clear loaded cover textures so the games screen reloads from the updated paths.
+            FreeIcons()
+            startCovers = false
+            startup_cover_prewarm_pending = true
+
+            -- Refresh cover widths for current category after downloading covers (only needed for flat view)
+            if showView == 5 then
+                refresh_current_category_cover_widths()
+            end
         end
 
         -- Turn on the vita display once the scan is complete
@@ -13445,6 +13443,7 @@ function DownloadArtwork(missing_artwork_table)
         Font.print(fnt22, 10, 10, tostring(lang_lines.No_missing_artwork), white)
         Graphics.termBlend()
         Screen.flip()
+        System.wait(2000000)
 
         gettingCovers = false
         gettingBackgrounds = false
