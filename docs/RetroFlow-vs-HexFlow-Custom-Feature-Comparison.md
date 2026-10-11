@@ -20,15 +20,16 @@ The comparison may be biased towards RetroFlow, if in doubt, try them both.
 | **🕹️ Emulator Support** |
 | Adrenaline 7 by TheOfficialFloW | ✅ | ✅ |
 | Adrenaline 8.0.2 by Isage | ✅ | ❌ |
-| RetroArch   | ✅ | ✅ |
-| Emu4Vita++   | ✅ | ❌ |
+| Azahar | ✅ | ❌ |
 | DaedalusX64  | ✅ | ✅ |
-| Flycast | ✅ | ✅ |
-| FAKE-08 | ✅ | ✅ |
-| ScummVM | ✅ | ✅ |
 | DSVita | ✅ | ✅ |
 | EasyRPG | ✅ | ❌ |
+| Emu4Vita++   | ✅ | ❌ |
+| FAKE-08 | ✅ | ✅ |
+| Flycast | ✅ | ✅ |
 | mGBA | ❌ | ❌ |
+| RetroArch   | ✅ | ✅ |
+| ScummVM | ✅ | ✅ |
 | **🎮 Game Categories** |
 | Atari ST | ✅ | ❌|
 | MAME | ✅ | ❌|

@@ -13,7 +13,7 @@ RetroFlow lets you integrate retro games into a single launcher without the need
 **Supported systems:**
 
 * **Sony**: PS Vita, PSP, PlayStation, PlayStation Mobile.
-* **Nintendo**: Nintendo 64, Nintendo DS, Super Nintendo (SNES), Nintendo Entertainment System (NES), Game Boy, Game Boy Color, Game Boy Advance.
+* **Nintendo**: Nintendo 64, Nintendo 3DS, Nintendo DS, Super Nintendo (SNES), Nintendo Entertainment System (NES), Game Boy, Game Boy Color, Game Boy Advance.
 * **Sega**: Sega Dreamcast, Sega Mega Drive / Genesis, Sega CD, Sega 32X, Sega Master System, Sega Game Gear.
 * **NEC**: PC Engine, PC Engine CD, TurboGrafx-16, TurboGrafx-CD.
 * **SNK**: Neo Geo (FBA 2012), Neo Geo Pocket Color.
@@ -80,7 +80,8 @@ For full setup instructions, see the Installation & Setup section below.
 * [Flycast](https://www.psx-place.com/threads/release-flycast-vita-v-1-0-3-sega-dreamcast-emulator-for-psvita-pstv.38180/) is required to play Dreamcast games. Also see the [compatibility list](https://newflycast.rinnegatamante.it/)  as not all games are playable yet.
 * [FAKE-08](https://github.com/jtothebell/fake-08/releases) is required for PICO-8 games.
 * [ScummVM](https://www.scummvm.org/downloads/) is required for ScummVM games.  Recommended version: [2.6.1](https://github.com/jimbob4000/RetroFlow-Launcher/blob/main/docs/Recommended-emulator-versions.md).
-* [DSVita](https://github.com/Grarak/DSVita) is required for NDS games.
+* [DSVita](https://github.com/Grarak/DSVita) is required for Nintnedo DS games.
+* [Azahar](https://github.com/Grarak/azahar) is required for Nintnedo 3DS games.
 * [EasyRPG Player](https://www.rinnegatamante.eu/vitadb/#/info/5) is required for EasyRPG games.
 
 
@@ -115,8 +116,8 @@ For best results it's recommended that your games are named using the **no-intro
  * Dreamcast:  '.gdi' and '.cdi' games are supported.
  * PS1 using RetroArch - They will use the 'PCSX ReARMed' core, more information on supported extensions here: [https://docs.libretro.com/library/pcsx_rearmed/](https://docs.libretro.com/library/pcsx_rearmed/)
 
-#### DSVita
-* The default and recommended ROM directory is `ux0:data/dsvita`. If you use a different directory you may not be able to fully configure the game settings in DSVita.
+#### DSVita & Azahar
+* The default and recommended ROM directories are `ux0:data/dsvita` and `ux0:/data/azahar/roms`. If you use a different directory you may not be able to fully configure the game settings in DSVita.
 
 
 ## 5. Rescan to find your games
