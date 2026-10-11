@@ -1,4 +1,7 @@
--- RetroFlow Launcher - HexFlow Mod version by jimbob4000: https://github.com/jimbob4000/RetroFlow-Launcher. Based on HexFlow Launcher version 0.5 by VitaHEX: https://www.patreon.com/vitahex
+-- vim: set filetype=lua:
+-- RetroFlow Launcher - HexFlow Mod version by jimbob4000
+-- Based on HexFlow Launcher  version 0.5 by VitaHEX
+-- https://www.patreon.com/vitahex
 
 local oneLoopTimer = Timer.new()
 
