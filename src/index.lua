@@ -1,6 +1,4 @@
--- RetroFlow Launcher - HexFlow Mod version by jimbob4000
--- Based on HexFlow Launcher  version 0.5 by VitaHEX
--- https://www.patreon.com/vitahex
+-- RetroFlow Launcher - HexFlow Mod version by jimbob4000: https://github.com/jimbob4000/RetroFlow-Launcher. Based on HexFlow Launcher version 0.5 by VitaHEX: https://www.patreon.com/vitahex
 
 local oneLoopTimer = Timer.new()
 
@@ -27,7 +25,7 @@ System.setCpuSpeed(cpu_speed)
 Sound.init()
 
 local working_dir = "ux0:/app"
-local appversion = "8.4.1"
+local appversion = "8.5.0"
 function System.currentDirectory(dir)
     if dir == nil then
         return working_dir
@@ -180,6 +178,11 @@ if System.doesFileExist("ux0:/data/RetroFlow/rom_directories.lua") then
         if romUserDir.Nintendo_DS == nil then
             -- Set to DSVita folder rather than RetroFlow folder as DSVita doesn't support custom directories yet.
             romUserDir.Nintendo_DS = "ux0:/data/dsvita"
+        end
+
+        if romUserDir.Nintendo_3DS == nil then
+            -- Set to Azahar folder rather than RetroFlow folder as Azahar doesn't support custom directories yet.
+            romUserDir.Nintendo_3DS = "ux0:/data/azahar/roms"
         end
 
         if romUserDir.Pico8 == nil then
@@ -860,18 +863,22 @@ SystemsToScan =
     },
     [47] = 
     {
-        -- ["apptype"] = 47,
-        ["table"] = "fav_count",
-        -- ["user_db_file"] = "",
-        -- ["romFolder"] = "",
-        -- ["localCoverPath"] = "",
-        -- ["onlineCoverPathSystem"] = "",
-        -- ["Missing_Cover"] = "",
+        ["apptype"] = 47,
+        ["table"] = "n3ds_table",
+        ["user_db_file"] = "db_n3ds.lua",
+        ["romFolder"] = romUserDir.Nintendo_3DS,
+        ["localCoverPath"] = covDir .. "Nintendo - Nintendo 3DS" .. "/",
+        ["localSnapPath"] = snapDir .. "Nintendo - Nintendo 3DS" .. "/",
+        ["localIconPath"] = iconDir .. "Nintendo - Nintendo 3DS" .. "/",
+        ["onlineCoverPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/3DS/Covers/",
+        ["onlineSnapPathSystem"] = "https://raw.githubusercontent.com/jimbob4000/hexflow-covers/main/Covers/Retro/3DS/Named_Snaps/",
+        ["Missing_Cover"] = "missing_cover_3ds.png",
+        ["icon"] = "icon_3ds.png",
     },
     [48] = 
     {
         -- ["apptype"] = 48,
-        ["table"] = "recently_played_table",
+        ["table"] = "fav_count",
         -- ["user_db_file"] = "",
         -- ["romFolder"] = "",
         -- ["localCoverPath"] = "",
@@ -881,6 +888,16 @@ SystemsToScan =
     [49] = 
     {
         -- ["apptype"] = 49,
+        ["table"] = "recently_played_table",
+        -- ["user_db_file"] = "",
+        -- ["romFolder"] = "",
+        -- ["localCoverPath"] = "",
+        -- ["onlineCoverPathSystem"] = "",
+        -- ["Missing_Cover"] = "",
+    },
+    [50] = 
+    {
+        -- ["apptype"] = 50,
         ["table"] = "search_results_table",
         -- ["user_db_file"] = "",
         -- ["romFolder"] = "",
@@ -1009,6 +1026,7 @@ count_of_get_snaps = syscount - 6 -- Minus psm and vita too
             n64_table = {},
             snes_table = {},
             nes_table = {},
+            n3ds_table = {},
             nds_table = {},
             gba_table = {},
             gbc_table = {},
@@ -2692,6 +2710,7 @@ cover_models_psx_loaded = false
 cover_models_n64_loaded = false
 cover_models_nes_loaded = false
 cover_models_gb_loaded = false
+cover_models_nds_loaded = false
 cover_models_md_loaded = false
 cover_models_tape_loaded = false
 cover_models_atari_loaded = false
@@ -2754,6 +2773,14 @@ function load_gb_cover_models_if_needed()
         modCoverGB = Render.loadObject("app0:/DATA/covergb.obj", imgCoverTmp)
         modCoverGBNoref = Render.loadObject("app0:/DATA/covergb_noreflx.obj", imgCoverTmp)
         cover_models_gb_loaded = true
+    end
+end
+
+function load_nds_cover_models_if_needed()
+    if cover_models_nds_loaded == false then
+        modCoverNDS = Render.loadObject("app0:/DATA/covernds.obj", imgCoverTmp)
+        modCoverNDSNoref = Render.loadObject("app0:/DATA/covernds_noreflx.obj", imgCoverTmp)
+        cover_models_nds_loaded = true
     end
 end
 
@@ -2821,6 +2848,7 @@ function load_variable_cover_models_if_needed()
     load_lynx_cover_models_if_needed()
     load_middle_cover_models_if_needed()
     load_gb_cover_models_if_needed()
+    load_nds_cover_models_if_needed()
     load_n64_cover_models_if_needed()
 end
 
@@ -2833,7 +2861,7 @@ function load_cover_models_for_app_type(def_apptype)
         load_psx_cover_models_if_needed()
     elseif def_apptype == 11 then
         load_gb_cover_models_if_needed()
-    elseif def_apptype == 5 or def_apptype == 6 or def_apptype == 7 or def_apptype == 8 or def_apptype == 9 or def_apptype == 10 or def_apptype == 12 or def_apptype == 17 or def_apptype == 18 or def_apptype == 19 or def_apptype == 20 or def_apptype == 21 or def_apptype == 34 or def_apptype == 35 or def_apptype == 36 or def_apptype == 38 or def_apptype == 43 or def_apptype == 44 or def_apptype == 45 or def_apptype == 46 then
+    elseif def_apptype == 5 or def_apptype == 6 or def_apptype == 7 or def_apptype == 8 or def_apptype == 9 or def_apptype == 10 or def_apptype == 12 or def_apptype == 17 or def_apptype == 18 or def_apptype == 19 or def_apptype == 20 or def_apptype == 21 or def_apptype == 34 or def_apptype == 35 or def_apptype == 36 or def_apptype == 38 or def_apptype == 43 or def_apptype == 44 or def_apptype == 45 or def_apptype == 46 or def_apptype == 47 then
         load_variable_cover_models_if_needed()
     elseif def_apptype == 13 or def_apptype == 14 or def_apptype == 15 or def_apptype == 16 then
         load_md_cover_models_if_needed()
@@ -3287,8 +3315,8 @@ function SaveSettings()
     if file_config ~= nil then
         settings = {} 
 
-        if startCategory >= 50 then
-            Collection_CatNum = startCategory - 49
+        if startCategory >= 51 then
+            Collection_CatNum = startCategory - 50
             if startCategory_collection_renamed ~= nil then
                 startCategory_collection = startCategory_collection_renamed
             else
@@ -3370,9 +3398,9 @@ if System.doesFileExist(cur_dir .. "/config.dat") then
 
     -- Error handling: validate startCategory against ShowCat count
     -- If getCategory is higher than available categories, default to 0
-    if startCategory >= 50 then
+    if startCategory >= 51 then
         -- For collection categories, validate the collection exists
-        local Collection_CatNum = startCategory - 49
+        local Collection_CatNum = startCategory - 50
         if collection_files == nil or collection_files[Collection_CatNum] == nil then
             startCategory = 0
         end
@@ -3459,46 +3487,47 @@ CategoryVisibilityDefinitions = {
     { showcat = 6, key = "Nintendo_64", label_key = "Nintendo_64", app_type = 5 },
     { showcat = 7, key = "Super_Nintendo", label_key = "Super_Nintendo", app_type = 6 },
     { showcat = 8, key = "Nintendo_Entertainment_System", label_key = "Nintendo_Entertainment_System", app_type = 7 },
-    { showcat = 9, key = "Nintendo_DS", label_key = "Nintendo_DS", app_type = 43 },
-    { showcat = 10, key = "Game_Boy_Advance", label_key = "Game_Boy_Advance", app_type = 8 },
-    { showcat = 11, key = "Game_Boy_Color", label_key = "Game_Boy_Color", app_type = 9 },
-    { showcat = 12, key = "Game_Boy", label_key = "Game_Boy", app_type = 10 },
-    { showcat = 13, key = "Sega_Dreamcast", label_key = "Sega_Dreamcast", app_type = 11 },
-    { showcat = 14, key = "Sega_CD", label_key = "Sega_CD", app_type = 12 },
-    { showcat = 15, key = "Sega_32X", label_key = "Sega_32X", app_type = 13 },
-    { showcat = 16, key = "Sega_Mega_Drive", label_key = "Sega_Mega_Drive", app_type = 14 },
-    { showcat = 17, key = "Sega_Master_System", label_key = "Sega_Master_System", app_type = 15 },
-    { showcat = 18, key = "Sega_Game_Gear", label_key = "Sega_Game_Gear", app_type = 16 },
-    { showcat = 19, key = "TurboGrafx_16", label_key = "TurboGrafx_16", app_type = 17 },
-    { showcat = 20, key = "TurboGrafx_CD", label_key = "TurboGrafx_CD", app_type = 18 },
-    { showcat = 21, key = "PC_Engine", label_key = "PC_Engine", app_type = 19 },
-    { showcat = 22, key = "PC_Engine_CD", label_key = "PC_Engine_CD", app_type = 20 },
-    { showcat = 23, key = "Amiga", label_key = "Amiga", app_type = 21 },
-    { showcat = 24, key = "ScummVM", label_key = "ScummVM", app_type = 40 },
-    { showcat = 25, key = "EasyRPG", label_key = "EasyRPG", app_type = 46 },
-    { showcat = 26, key = "MS_DOS", label_key = "MS_DOS", app_type = 45 },
-    { showcat = 27, key = "Commodore_64", label_key = "Commodore_64", app_type = 22 },
-    { showcat = 28, key = "WonderSwan_Color", label_key = "WonderSwan_Color", app_type = 23 },
-    { showcat = 29, key = "WonderSwan", label_key = "WonderSwan", app_type = 24 },
-    { showcat = 30, key = "PICO8", label_key = "PICO8", app_type = 41 },
-    { showcat = 31, key = "MSX2", label_key = "MSX2", app_type = 25 },
-    { showcat = 32, key = "MSX", label_key = "MSX", app_type = 26 },
-    { showcat = 33, key = "ZX_Spectrum", label_key = "ZX_Spectrum", app_type = 27 },
-    { showcat = 34, key = "Atari_ST", label_key = "Atari_ST", app_type = 44 },
-    { showcat = 35, key = "Atari_7800", label_key = "Atari_7800", app_type = 28 },
-    { showcat = 36, key = "Atari_5200", label_key = "Atari_5200", app_type = 29 },
-    { showcat = 37, key = "Atari_2600", label_key = "Atari_2600", app_type = 30 },
-    { showcat = 38, key = "Atari_Lynx", label_key = "Atari_Lynx", app_type = 31 },
-    { showcat = 39, key = "ColecoVision", label_key = "ColecoVision", app_type = 32 },
-    { showcat = 40, key = "Vectrex", label_key = "Vectrex", app_type = 33 },
-    { showcat = 41, key = "FBA_2012", label_key = "FBA_2012", app_type = 34 },
-    { showcat = 42, key = "MAME_2003Plus", label_key = "MAME_2003Plus", app_type = 35 },
-    { showcat = 43, key = "MAME_2000", label_key = "MAME_2000", app_type = 36 },
-    { showcat = 44, key = "Neo_Geo", label_key = "Neo_Geo", app_type = 37 },
-    { showcat = 45, key = "Neo_Geo_Pocket_Color", label_key = "Neo_Geo_Pocket_Color", app_type = 38 },
-    { showcat = 46, key = "System_Apps", label_key = "System_Apps", app_type = 42 },
-    { showcat = 47, key = "Favorites", label_key = "Favorites" },
-    { showcat = 48, key = "Recently_Played", label_key = "Recently_Played" },
+    { showcat = 9, key = "Nintendo_3DS", label_key = "Nintendo_3DS", app_type = 47 },
+    { showcat = 10, key = "Nintendo_DS", label_key = "Nintendo_DS", app_type = 43 },
+    { showcat = 11, key = "Game_Boy_Advance", label_key = "Game_Boy_Advance", app_type = 8 },
+    { showcat = 12, key = "Game_Boy_Color", label_key = "Game_Boy_Color", app_type = 9 },
+    { showcat = 13, key = "Game_Boy", label_key = "Game_Boy", app_type = 10 },
+    { showcat = 14, key = "Sega_Dreamcast", label_key = "Sega_Dreamcast", app_type = 11 },
+    { showcat = 15, key = "Sega_CD", label_key = "Sega_CD", app_type = 12 },
+    { showcat = 16, key = "Sega_32X", label_key = "Sega_32X", app_type = 13 },
+    { showcat = 17, key = "Sega_Mega_Drive", label_key = "Sega_Mega_Drive", app_type = 14 },
+    { showcat = 18, key = "Sega_Master_System", label_key = "Sega_Master_System", app_type = 15 },
+    { showcat = 19, key = "Sega_Game_Gear", label_key = "Sega_Game_Gear", app_type = 16 },
+    { showcat = 20, key = "TurboGrafx_16", label_key = "TurboGrafx_16", app_type = 17 },
+    { showcat = 21, key = "TurboGrafx_CD", label_key = "TurboGrafx_CD", app_type = 18 },
+    { showcat = 22, key = "PC_Engine", label_key = "PC_Engine", app_type = 19 },
+    { showcat = 23, key = "PC_Engine_CD", label_key = "PC_Engine_CD", app_type = 20 },
+    { showcat = 24, key = "Amiga", label_key = "Amiga", app_type = 21 },
+    { showcat = 25, key = "ScummVM", label_key = "ScummVM", app_type = 40 },
+    { showcat = 26, key = "EasyRPG", label_key = "EasyRPG", app_type = 46 },
+    { showcat = 27, key = "MS_DOS", label_key = "MS_DOS", app_type = 45 },
+    { showcat = 28, key = "Commodore_64", label_key = "Commodore_64", app_type = 22 },
+    { showcat = 29, key = "WonderSwan_Color", label_key = "WonderSwan_Color", app_type = 23 },
+    { showcat = 30, key = "WonderSwan", label_key = "WonderSwan", app_type = 24 },
+    { showcat = 31, key = "PICO8", label_key = "PICO8", app_type = 41 },
+    { showcat = 32, key = "MSX2", label_key = "MSX2", app_type = 25 },
+    { showcat = 33, key = "MSX", label_key = "MSX", app_type = 26 },
+    { showcat = 34, key = "ZX_Spectrum", label_key = "ZX_Spectrum", app_type = 27 },
+    { showcat = 35, key = "Atari_ST", label_key = "Atari_ST", app_type = 44 },
+    { showcat = 36, key = "Atari_7800", label_key = "Atari_7800", app_type = 28 },
+    { showcat = 37, key = "Atari_5200", label_key = "Atari_5200", app_type = 29 },
+    { showcat = 38, key = "Atari_2600", label_key = "Atari_2600", app_type = 30 },
+    { showcat = 39, key = "Atari_Lynx", label_key = "Atari_Lynx", app_type = 31 },
+    { showcat = 40, key = "ColecoVision", label_key = "ColecoVision", app_type = 32 },
+    { showcat = 41, key = "Vectrex", label_key = "Vectrex", app_type = 33 },
+    { showcat = 42, key = "FBA_2012", label_key = "FBA_2012", app_type = 34 },
+    { showcat = 43, key = "MAME_2003Plus", label_key = "MAME_2003Plus", app_type = 35 },
+    { showcat = 44, key = "MAME_2000", label_key = "MAME_2000", app_type = 36 },
+    { showcat = 45, key = "Neo_Geo", label_key = "Neo_Geo", app_type = 37 },
+    { showcat = 46, key = "Neo_Geo_Pocket_Color", label_key = "Neo_Geo_Pocket_Color", app_type = 38 },
+    { showcat = 47, key = "System_Apps", label_key = "System_Apps", app_type = 42 },
+    { showcat = 48, key = "Favorites", label_key = "Favorites" },
+    { showcat = 49, key = "Recently_Played", label_key = "Recently_Played" },
 }
 
 CategoryVisibilityByShowCat = {}
@@ -3673,18 +3702,18 @@ end
 function is_category_visible(def_showcat)
     if def_showcat == nil then
         return false
-    elseif def_showcat == 49 then
+    elseif def_showcat == 50 then
         return false
     elseif def_showcat == 0 then
         return showAll == 1
     elseif def_showcat == 2 then
         return showHomebrews == 1
-    elseif def_showcat == 46 then
+    elseif def_showcat == 47 then
         return showSysApps == 1
-    elseif def_showcat == 48 then
+    elseif def_showcat == 49 then
         return showRecentlyPlayed == 1
-    elseif def_showcat >= 50 then
-        return is_collection_visible(def_showcat - 49)
+    elseif def_showcat >= 51 then
+        return is_collection_visible(def_showcat - 50)
     end
 
     local key = category_visibility_key(def_showcat)
@@ -3696,9 +3725,9 @@ function set_category_visible(def_showcat, def_visible)
         showAll = def_visible and 1 or 0
     elseif def_showcat == 2 then
         showHomebrews = def_visible and 1 or 0
-    elseif def_showcat == 46 then
+    elseif def_showcat == 47 then
         showSysApps = def_visible and 1 or 0
-    elseif def_showcat == 48 then
+    elseif def_showcat == 49 then
         showRecentlyPlayed = def_visible and 1 or 0
     else
         local key = category_visibility_key(def_showcat)
@@ -3734,11 +3763,11 @@ function build_visible_category_options()
                 return 1
             elseif category.showcat == 2 then
                 return 2
-            elseif category.showcat == 46 then
-                return 3
             elseif category.showcat == 47 then
-                return 4
+                return 3
             elseif category.showcat == 48 then
+                return 4
+            elseif category.showcat == 49 then
                 return 5
             end
             return 6
@@ -3774,7 +3803,7 @@ end
 function count_visible_base_categories()
     local total = 0
     for _, category in pairs(CategoryVisibilityDefinitions) do
-        if category.showcat ~= 0 and category.showcat ~= 47 and category.showcat ~= 48 and is_category_visible(category.showcat) == true then
+        if category.showcat ~= 0 and category.showcat ~= 48 and category.showcat ~= 49 and is_category_visible(category.showcat) == true then
             total = total + 1
         end
     end
@@ -3788,7 +3817,7 @@ function ensure_at_least_one_visible_category()
 end
 
 function category_has_items(def_showcat)
-    if def_showcat == 47 then
+    if def_showcat == 48 then
         refresh_fav_count_table()
     end
 
@@ -3801,7 +3830,7 @@ function is_category_selectable(def_showcat)
         return false
     elseif def_showcat == 0 then
         return true
-    elseif def_showcat >= 50 then
+    elseif def_showcat >= 51 then
         return category_has_items(def_showcat)
     end
     return category_has_items(def_showcat)
@@ -3814,12 +3843,12 @@ function step_category(def_showcat, def_direction)
         if collection_count == 0 then
             return def_showcat
         elseif def_direction > 0 then
-            if def_showcat >= 50 and def_showcat < max_category then
+            if def_showcat >= 51 and def_showcat < max_category then
                 return def_showcat + 1
             end
-            return 50
+            return 51
         else
-            if def_showcat > 50 and def_showcat <= max_category then
+            if def_showcat > 51 and def_showcat <= max_category then
                 return def_showcat - 1
             end
             return max_category
@@ -3995,7 +4024,7 @@ else
 end
 
 if collection_files_start_match > 0 and is_collection_visible(collection_files_start_match) == true then
-    showCat = 49 + collection_files_start_match
+    showCat = 50 + collection_files_start_match
     startCategory = syscount + collection_files_start_match
 else
     showCat = startCategory
@@ -4193,6 +4222,7 @@ local lang_default =
 ["Nintendo_64"] = "Nintendo 64",
 ["Super_Nintendo"] = "Super Nintendo",
 ["Nintendo_Entertainment_System"] = "Nintendo Entertainment System",
+["Nintendo_3DS"] = "Nintendo 3DS",
 ["Nintendo_DS"] = "Nintendo DS",
 ["Game_Boy_Advance"] = "Game Boy Advance",
 ["Game_Boy_Color"] = "Game Boy Color",
@@ -4281,6 +4311,7 @@ local lang_default =
 ["N64_Game"] = "Nintendo 64 Game",
 ["SNES_Game"] = "Super Nintendo Game",
 ["NES_Game"] = "Nintendo Entertainment System Game",
+["N3DS_Game"] = "Nintendo 3DS Game",
 ["NDS_Game"] = "Nintendo DS Game",
 ["GBA_Game"] = "Game Boy Advance Game",
 ["GBC_Game"] = "Game Boy Color Game",
@@ -4451,6 +4482,7 @@ local lang_default =
 ["Emulator_not_installed_Retroarch"] = "You need to install RetroArch to play this game.",
 ["Emulator_not_installed_DaedalusX64"] = "You need to install DaedalusX64 to play this game.",
 ["Emulator_not_installed_Flycast"] = "You need to install Flycast to play this game.",
+["Emulator_not_installed_Azahar"] = "You need to install Azahar to play this game.",
 ["Emulator_not_installed_DSVita"] = "You need to install DSVita to play this game.",
 ["Emulator_not_installed_EasyRPG"] = "You need to install EasyRPG to play this game.",
 ["Emulator_not_installed_Emu4Vita"] = "You need to install Emu4Vita++ to play this game.",
@@ -5240,51 +5272,52 @@ function xCatLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showcat
     elseif CatNum == 6 then     return  n64_table
     elseif CatNum == 7 then     return  snes_table
     elseif CatNum == 8 then     return  nes_table
-    elseif CatNum == 9 then     return  nds_table
-    elseif CatNum == 10 then    return  gba_table
-    elseif CatNum == 11 then    return  gbc_table
-    elseif CatNum == 12 then    return  gb_table
-    elseif CatNum == 13 then    return  dreamcast_table
-    elseif CatNum == 14 then    return  sega_cd_table
-    elseif CatNum == 15 then    return  s32x_table
-    elseif CatNum == 16 then    return  md_table
-    elseif CatNum == 17 then    return  sms_table
-    elseif CatNum == 18 then    return  gg_table
-    elseif CatNum == 19 then    return  tg16_table
-    elseif CatNum == 20 then    return  tgcd_table
-    elseif CatNum == 21 then    return  pce_table
-    elseif CatNum == 22 then    return  pcecd_table
-    elseif CatNum == 23 then    return  amiga_table
-    elseif CatNum == 24 then    return  scummvm_table
-    elseif CatNum == 25 then    return  easyrpg_table
-    elseif CatNum == 26 then    return  dos_table
-    elseif CatNum == 27 then    return  c64_table
-    elseif CatNum == 28 then    return  wswan_col_table
-    elseif CatNum == 29 then    return  wswan_table
-    elseif CatNum == 30 then    return  pico8_table
-    elseif CatNum == 31 then    return  msx2_table
-    elseif CatNum == 32 then    return  msx1_table
-    elseif CatNum == 33 then    return  zxs_table
-    elseif CatNum == 34 then    return  atari_st_table  
-    elseif CatNum == 35 then    return  atari_7800_table
-    elseif CatNum == 36 then    return  atari_5200_table
-    elseif CatNum == 37 then    return  atari_2600_table
-    elseif CatNum == 38 then    return  atari_lynx_table
-    elseif CatNum == 39 then    return  colecovision_table
-    elseif CatNum == 40 then    return  vectrex_table
-    elseif CatNum == 41 then    return  fba_table
-    elseif CatNum == 42 then    return  mame_2003_plus_table
-    elseif CatNum == 43 then    return  mame_2000_table
-    elseif CatNum == 44 then    return  neogeo_table
-    elseif CatNum == 45 then    return  ngpc_table
-    elseif CatNum == 46 then    return  sysapps_table
-    elseif CatNum == 47 then    return  fav_count
-    elseif CatNum == 48 then    return  recently_played_table
-    elseif CatNum == 49 then    return  search_results_table -- Table also used for random game selection
+    elseif CatNum == 9 then     return  n3ds_table
+    elseif CatNum == 10 then    return  nds_table
+    elseif CatNum == 11 then    return  gba_table
+    elseif CatNum == 12 then    return  gbc_table
+    elseif CatNum == 13 then    return  gb_table
+    elseif CatNum == 14 then    return  dreamcast_table
+    elseif CatNum == 15 then    return  sega_cd_table
+    elseif CatNum == 16 then    return  s32x_table
+    elseif CatNum == 17 then    return  md_table
+    elseif CatNum == 18 then    return  sms_table
+    elseif CatNum == 19 then    return  gg_table
+    elseif CatNum == 20 then    return  tg16_table
+    elseif CatNum == 21 then    return  tgcd_table
+    elseif CatNum == 22 then    return  pce_table
+    elseif CatNum == 23 then    return  pcecd_table
+    elseif CatNum == 24 then    return  amiga_table
+    elseif CatNum == 25 then    return  scummvm_table
+    elseif CatNum == 26 then    return  easyrpg_table
+    elseif CatNum == 27 then    return  dos_table
+    elseif CatNum == 28 then    return  c64_table
+    elseif CatNum == 29 then    return  wswan_col_table
+    elseif CatNum == 30 then    return  wswan_table
+    elseif CatNum == 31 then    return  pico8_table
+    elseif CatNum == 32 then    return  msx2_table
+    elseif CatNum == 33 then    return  msx1_table
+    elseif CatNum == 34 then    return  zxs_table
+    elseif CatNum == 35 then    return  atari_st_table  
+    elseif CatNum == 36 then    return  atari_7800_table
+    elseif CatNum == 37 then    return  atari_5200_table
+    elseif CatNum == 38 then    return  atari_2600_table
+    elseif CatNum == 39 then    return  atari_lynx_table
+    elseif CatNum == 40 then    return  colecovision_table
+    elseif CatNum == 41 then    return  vectrex_table
+    elseif CatNum == 42 then    return  fba_table
+    elseif CatNum == 43 then    return  mame_2003_plus_table
+    elseif CatNum == 44 then    return  mame_2000_table
+    elseif CatNum == 45 then    return  neogeo_table
+    elseif CatNum == 46 then    return  ngpc_table
+    elseif CatNum == 47 then    return  sysapps_table
+    elseif CatNum == 48 then    return  fav_count
+    elseif CatNum == 49 then    return  recently_played_table
+    elseif CatNum == 50 then    return  search_results_table -- Table also used for random game selection
 
     -- COLLECTIONS
-    elseif CatNum >= 50 and CatNum <= collection_syscount then
-        Collection_CatNum = CatNum - 49
+    elseif CatNum >= 51 and CatNum <= collection_syscount then
+        Collection_CatNum = CatNum - 50
         return _G[collection_files[Collection_CatNum].table_name]
 
     else             return files_table_no_sysapps -- Hide sys apps from all list
@@ -5294,8 +5327,8 @@ end
 function xCatTableNameLookup(CatNum)
     if CatNum == 0 then
         return "files_table_no_sysapps"
-    elseif CatNum >= 50 and CatNum <= collection_syscount then
-        local Collection_CatNum = CatNum - 49
+    elseif CatNum >= 51 and CatNum <= collection_syscount then
+        local Collection_CatNum = CatNum - 50
         if collection_files[Collection_CatNum] then
             return collection_files[Collection_CatNum].table_name
         end
@@ -5308,8 +5341,8 @@ end
 
 -- STARTUP CATEGORY - Keep the settings label in one place for both drawing and left/right changes.
 function startup_category_label(def_category)
-    if def_category >= 50 then
-        local Collection_CatNum = def_category - 49
+    if def_category >= 51 then
+        local Collection_CatNum = def_category - 50
         if collection_files[Collection_CatNum] then
             return collection_files[Collection_CatNum].display_name
         end
@@ -5343,7 +5376,7 @@ function startup_category_options()
     if collection_files then
         for Collection_CatNum = 1, #collection_files do
             if is_collection_visible(Collection_CatNum) == true then
-            table.insert(options, 49 + Collection_CatNum)
+            table.insert(options, 50 + Collection_CatNum)
             end
         end
     end
@@ -5401,8 +5434,8 @@ function xCatNumFromTableName(def_table_name)
     end
 
     if collection_files and collection_syscount then
-        for collection_showcat = 50, collection_syscount do
-            local Collection_CatNum = collection_showcat - 49
+        for collection_showcat = 51, collection_syscount do
+            local Collection_CatNum = collection_showcat - 50
             if collection_files[Collection_CatNum] and collection_files[Collection_CatNum].table_name == def_table_name then
                 return collection_showcat
             end
@@ -5520,7 +5553,7 @@ function apply_last_played_startup_category()
     local last_played = recently_played_table and recently_played_table[1]
     local launch_showcat = resolve_last_played_showcat(last_played)
 
-    if launch_showcat == 47 then
+    if launch_showcat == 48 then
         refresh_fav_count_table()
     end
 
@@ -5583,53 +5616,54 @@ function xCatDbFileLookup(CatNum)  -- Credit to BlackSheepBoy69 - CatNum = Showc
     elseif CatNum == 6 then     return  "db_n64.lua"
     elseif CatNum == 7 then     return  "db_snes.lua"
     elseif CatNum == 8 then     return  "db_nes.lua"
-    elseif CatNum == 9 then     return  "db_nds.lua"
-    elseif CatNum == 10 then    return  "db_gba.lua"
-    elseif CatNum == 11 then    return  "db_gbc.lua"
-    elseif CatNum == 12 then    return  "db_gb.lua"
-    elseif CatNum == 13 then    return  "db_dreamcast.lua"
-    elseif CatNum == 14 then    return  "db_sega_cd.lua"
-    elseif CatNum == 15 then    return  "db_32x.lua"
-    elseif CatNum == 16 then    return  "db_md.lua"
-    elseif CatNum == 17 then    return  "db_sms.lua"
-    elseif CatNum == 18 then    return  "db_gg.lua"
-    elseif CatNum == 19 then    return  "db_tg16.lua"
-    elseif CatNum == 20 then    return  "db_tgcd.lua"
-    elseif CatNum == 21 then    return  "db_pce.lua"
-    elseif CatNum == 22 then    return  "db_pcecd.lua"
-    elseif CatNum == 23 then    return  "db_amiga.lua"
-    elseif CatNum == 24 then    return  "db_scummvm.lua"
-    elseif CatNum == 25 then    return  "db_easyrpg.lua"
-    elseif CatNum == 26 then    return  "db_dos.lua"
-    elseif CatNum == 27 then    return  "db_c64.lua"
-    elseif CatNum == 28 then    return  "db_wswan_col.lua"
-    elseif CatNum == 29 then    return  "db_wswan.lua"
-    elseif CatNum == 30 then    return  "db_pico8.lua"
-    elseif CatNum == 31 then    return  "db_msx2.lua"
-    elseif CatNum == 32 then    return  "db_msx1.lua"
-    elseif CatNum == 33 then    return  "db_zxs.lua"
-    elseif CatNum == 34 then    return  "db_atari_st.lua"
-    elseif CatNum == 35 then    return  "db_atari_7800.lua"
-    elseif CatNum == 36 then    return  "db_atari_5200.lua"
-    elseif CatNum == 37 then    return  "db_atari_2600.lua"
-    elseif CatNum == 38 then    return  "db_atari_lynx.lua"
-    elseif CatNum == 39 then    return  "db_colecovision.lua"
-    elseif CatNum == 40 then    return  "db_vectrex.lua"
-    elseif CatNum == 41 then    return  "db_fba.lua"
-    elseif CatNum == 42 then    return  "db_mame_2003_plus.lua"
-    elseif CatNum == 43 then    return  "db_mame_2000.lua"
-    elseif CatNum == 44 then    return  "db_neogeo.lua"
-    elseif CatNum == 45 then    return  "db_ngpc.lua"
-    elseif CatNum == 46 then    return  "db_sysapps.lua"
+    elseif CatNum == 9 then     return  "db_n3ds.lua"  
+    elseif CatNum == 10 then    return  "db_nds.lua"
+    elseif CatNum == 11 then    return  "db_gba.lua"
+    elseif CatNum == 12 then    return  "db_gbc.lua"
+    elseif CatNum == 13 then    return  "db_gb.lua"
+    elseif CatNum == 14 then    return  "db_dreamcast.lua"
+    elseif CatNum == 15 then    return  "db_sega_cd.lua"
+    elseif CatNum == 16 then    return  "db_32x.lua"
+    elseif CatNum == 17 then    return  "db_md.lua"
+    elseif CatNum == 18 then    return  "db_sms.lua"
+    elseif CatNum == 19 then    return  "db_gg.lua"
+    elseif CatNum == 20 then    return  "db_tg16.lua"
+    elseif CatNum == 21 then    return  "db_tgcd.lua"
+    elseif CatNum == 22 then    return  "db_pce.lua"
+    elseif CatNum == 23 then    return  "db_pcecd.lua"
+    elseif CatNum == 24 then    return  "db_amiga.lua"
+    elseif CatNum == 25 then    return  "db_scummvm.lua"
+    elseif CatNum == 26 then    return  "db_easyrpg.lua"
+    elseif CatNum == 27 then    return  "db_dos.lua"
+    elseif CatNum == 28 then    return  "db_c64.lua"
+    elseif CatNum == 29 then    return  "db_wswan_col.lua"
+    elseif CatNum == 30 then    return  "db_wswan.lua"
+    elseif CatNum == 31 then    return  "db_pico8.lua"
+    elseif CatNum == 32 then    return  "db_msx2.lua"
+    elseif CatNum == 33 then    return  "db_msx1.lua"
+    elseif CatNum == 34 then    return  "db_zxs.lua"
+    elseif CatNum == 35 then    return  "db_atari_st.lua"
+    elseif CatNum == 36 then    return  "db_atari_7800.lua"
+    elseif CatNum == 37 then    return  "db_atari_5200.lua"
+    elseif CatNum == 38 then    return  "db_atari_2600.lua"
+    elseif CatNum == 39 then    return  "db_atari_lynx.lua"
+    elseif CatNum == 40 then    return  "db_colecovision.lua"
+    elseif CatNum == 41 then    return  "db_vectrex.lua"
+    elseif CatNum == 42 then    return  "db_fba.lua"
+    elseif CatNum == 43 then    return  "db_mame_2003_plus.lua"
+    elseif CatNum == 44 then    return  "db_mame_2000.lua"
+    elseif CatNum == 45 then    return  "db_neogeo.lua"
+    elseif CatNum == 46 then    return  "db_ngpc.lua"
+    elseif CatNum == 47 then    return  "db_sysapps.lua"
     else
     end
-    -- elseif CatNum == 47 then    return fav_count
-    -- elseif CatNum == 48 then    return recently_played_table
-    -- elseif CatNum == 49 then    return search_results_table
+    -- elseif CatNum == 48 then    return fav_count
+    -- elseif CatNum == 49 then    return recently_played_table
+    -- elseif CatNum == 50 then    return search_results_table
 
     -- -- COLLECTIONS
-    -- elseif CatNum >= 50 and CatNum <= collection_syscount then
-    --     Collection_CatNum = CatNum - 49
+    -- elseif CatNum >= 51 and CatNum <= collection_syscount then
+    --     Collection_CatNum = CatNum - 50
     --     return _G[collection_files[Collection_CatNum].table_name]
 
     -- else             return files_table
@@ -5682,9 +5716,10 @@ function xAppNumTableLookup(AppTypeNum)
     elseif AppTypeNum == 44 then return atari_st_table
     elseif AppTypeNum == 45 then return dos_table
     elseif AppTypeNum == 46 then return easyrpg_table
-    elseif AppTypeNum == 47 then return fav_count
-    elseif AppTypeNum == 48 then return recently_played_table
-    elseif AppTypeNum == 49 then return search_results_table
+    elseif AppTypeNum == 47 then return n3ds_table
+    elseif AppTypeNum == 48 then return fav_count
+    elseif AppTypeNum == 49 then return recently_played_table
+    elseif AppTypeNum == 50 then return search_results_table
     else return homebrews_table
     end
 end
@@ -5735,6 +5770,7 @@ function xAppDbFileLookup(AppTypeNum)
     elseif AppTypeNum == 44 then return "db_atari_st.lua"
     elseif AppTypeNum == 45 then return "db_dos.lua"
     elseif AppTypeNum == 46 then return "db_easyrpg.lua"
+    elseif AppTypeNum == 47 then return "db_n3ds.lua"
     else return "db_homebrews.lua"
     end
 end
@@ -5789,6 +5825,7 @@ function xAppNumCRCLookupDB(AppTypeNum)
     -- elseif AppTypeNum == 44 then return "crc_db_atari_st.lua"        -- atari_st_table
     -- elseif AppTypeNum == 45 then return "crc_db_dos.lua"             -- dos_table
     -- elseif AppTypeNum == 46 then return "crc_db_easyrpg.lua"         -- easyrpg_table
+    -- elseif AppTypeNum == 47 then return "crc_db_n3ds.lua"             -- n3ds_table
     else
         return false
     end
@@ -5890,6 +5927,7 @@ function xAppNumTableLookup_Missing_Cover(AppTypeNum)
     elseif AppTypeNum == 44 then return "missing_cover_atari_st"
     elseif AppTypeNum == 45 then return "missing_cover_dos"
     elseif AppTypeNum == 46 then return "missing_cover_easyrpg"
+    elseif AppTypeNum == 47 then return "missing_cover_3ds"
     else return "missing_cover_homebrew"
     end
 end
@@ -6536,6 +6574,23 @@ function launch_DSVita()
     if launch_check_game_available == true then
         prepare_for_launch()
         System.executeUri("psgm:play?titleid=DSVITA000" .. "&param=" .. rom_location)
+        System.exit()
+    end
+    ::continue::
+end
+
+function launch_Azahar()
+    -- Launch preflight check
+    check_app_installed("AZAHARPSV", lang_lines.Emulator_not_installed_Azahar)
+    if launch_check_app_installed == false then
+        goto continue
+    end
+
+    check_game_available(rom_location)
+
+    if launch_check_game_available == true then
+        prepare_for_launch()
+        System.executeUri("psgm:play?titleid=AZAHARPSV" .. "&param=" .. rom_location)
         System.exit()
     end
     ::continue::
@@ -7702,6 +7757,7 @@ function count_loading_tasks()
                 QuickGameList.atari_st_table =          quickScanGames(SystemsToScan[44].romFolder, 0)
                 QuickGameList.dos_table =               quickScanGames(SystemsToScan[45].romFolder, 0, true, ".zip")
                 QuickGameList.easyrpg_table =           quickScanGames(SystemsToScan[46].romFolder, 0)
+                QuickGameList.n3ds_table =              quickScanGames(SystemsToScan[47].romFolder, 0)
                 -- QuickGameList.psm_table =               System.listDirectory("ux0:/psm")
 
             -- PSM
@@ -7865,6 +7921,7 @@ function Full_Game_Scan()
     n64_table = {}
     snes_table = {}
     nes_table = {}
+    n3ds_table = {}
     nds_table = {}
     gba_table = {}
     gbc_table = {}
@@ -10175,7 +10232,7 @@ function Full_Game_Scan()
                         local ds_file = io.open(file.game_path, "rb")
                         local titleid
                         if ds_file then
-                            ds_file:seek("set", 0x0C) -- move to game code
+                            ds_file:seek("set", 0x0C) -- move directly to 4-character game code
                             local game_code = ds_file:read(4)
                             ds_file:close()
 
@@ -10186,6 +10243,31 @@ function Full_Game_Scan()
                         end
                         file.titleid = titleid
                         file.name_online = titleid
+
+                    elseif (def) == 47 then
+
+                        -- 3DS game, try to extract product code for artwork matching
+
+                        local titleid = "UNK"
+
+                        if string.match(file.name, "%.3ds") or string.match(file.name, "%.cci") then
+                            local n3ds_file = io.open(file.game_path, "rb")
+
+                            if n3ds_file then
+                                n3ds_file:seek("set", 0x4156) -- move directly to 4-character game code 
+                                local id = n3ds_file:read(4)
+                                n3ds_file:close()
+
+                                titleid = (id ~= "") and id or "UNK"
+                            else
+                                titleid = "UNK"
+                            end
+
+                        end
+
+                        file.titleid = titleid
+                        file.name_online = titleid
+
                     else
                         file.name_online = romname_url_encoded
                     end
@@ -11182,6 +11264,7 @@ function Full_Game_Scan()
             Scan_Rom_Simple         (44, QuickGameList.atari_st_table,              atari_st_table)
             Scan_Rom_Simple         (45, QuickGameList.dos_table,                   dos_table)
             Scan_Rom_Simple         (46, QuickGameList.easyrpg_table,               easyrpg_table)
+            Scan_Rom_Simple         (47, QuickGameList.n3ds_table,                  n3ds_table)
   
     import_recently_played()
     update_md_regional_cover()
@@ -11197,6 +11280,7 @@ function Full_Game_Scan()
     table.sort(n64_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(snes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(nes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    table.sort(n3ds_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(nds_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(gba_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(gbc_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
@@ -11262,7 +11346,7 @@ function Full_Game_Scan()
             cleansed_table_count = cleansed_table_count +1
         end
 
-        while cleansed_table_count <= 48 do
+        while cleansed_table_count <= 49 do
             remove_uneccessary_keys_before_cache(xAppNumTableLookup(cleansed_table_count))
         end
 
@@ -11617,6 +11701,7 @@ function import_cached_DB()
     n64_table = {}
     snes_table = {}
     nes_table = {}
+    n3ds_table = {}
     nds_table = {}
     gba_table = {}
     gbc_table = {}
@@ -11685,6 +11770,7 @@ function import_cached_DB()
     import_cached_DB_tables("db_n64.lua", n64_table)
     import_cached_DB_tables("db_snes.lua", snes_table)
     import_cached_DB_tables("db_nes.lua", nes_table)
+    import_cached_DB_tables("db_n3ds.lua", n3ds_table)
     import_cached_DB_tables("db_nds.lua", nds_table)
     import_cached_DB_tables("db_gba.lua", gba_table)
     import_cached_DB_tables("db_gbc.lua", gbc_table)
@@ -11741,6 +11827,7 @@ function import_cached_DB()
     table.sort(n64_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(snes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(nes_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
+    table.sort(n3ds_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(nds_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(gba_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
     table.sort(gbc_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
@@ -12237,7 +12324,7 @@ function GetNameAndAppTypeSelected() -- Credit to BlackSheepBoy69 - This gives a
     end
 
 
-    if showCat == 49 and #search_results_table == 0 then
+    if showCat == 50 and #search_results_table == 0 then
         if random_game_selected == false then
             app_title = lang_lines.Search_No_Results
         else
@@ -12251,7 +12338,7 @@ end
 function GetInfoSelected()
 
     if next(xCatLookup(showCat)) ~= nil then
-        -- if showCat == 47 then
+        -- if showCat == 48 then
         --     create_fav_count_table(files_table)
         -- end
 
@@ -12451,25 +12538,25 @@ function AddOrRemoveFavorite()
 
         -- Update and cache tables
 
-        if showCat >= 1 and showCat <= 45 then
+        if showCat >= 1 and showCat <= 46 then
             -- Update live favorites for game category tables and cache
             update_favorites_table_system(xCatLookup(showCat))
             update_cached_table(xCatDbFileLookup(showCat), xCatLookup(showCat))
         
         -- Favourites
-        elseif showCat == 47 then
+        elseif showCat == 48 then
             -- Find game in other tables and update
             update_favorites_table_favorites(xAppNumTableLookup(apptype))
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Recent
-        elseif showCat == 48 then
+        elseif showCat == 49 then
             -- Find game in other tables and update
             update_favorites_table_recent(xAppNumTableLookup(apptype))
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Search results
-        elseif showCat == 49 then
+        elseif showCat == 50 then
             update_favorites_table_system(search_results_table)
 
             -- Find game in other tables and update
@@ -12477,7 +12564,7 @@ function AddOrRemoveFavorite()
             update_cached_table(xAppDbFileLookup(apptype), xAppNumTableLookup(apptype))
 
         -- Collections
-        elseif showCat >= 50 then
+        elseif showCat >= 51 then
             if xCatLookup(showCat)[p].favourite == true then 
                 xCatLookup(showCat)[p].favourite=false
             else
@@ -12521,7 +12608,7 @@ function AddOrRemoveHidden(def_hide_game_flag)
     fav_count_dirty = true
 
     -- Recent cat
-    if showCat == 48 then
+    if showCat == 49 then
 
         -- Update recent table
         if #recently_played_table ~= nil then
@@ -12621,7 +12708,7 @@ function refresh_after_hide_unhide(def_name, def_app_type, def_hide_game_flag)
     end
 
     fav_count_dirty = true
-    if showCat == 47 then
+    if showCat == 48 then
         refresh_fav_count_table()
     end
 
@@ -13210,8 +13297,8 @@ function DownloadArtwork(missing_artwork_table)
                 if crc_result then
                     game_name_online = crc_result:gsub("\n", "")
                 else
-                    if file.app_type == 43 then
-                        -- DS
+                    if file.app_type == 43 or file.app_type == 47 then
+                        -- 3DS and DS
                         game_name_online = file.titleid:gsub("\n", "")
                     else
                         game_name_online = file.name:gsub("\n", "")
@@ -13526,7 +13613,7 @@ function get_predicted_cover_width(app_type, icon_path)
     elseif app_type == 41 then -- pico8
         predicted_width = math.floor((160 / 205) * fv_cover_height + 0.5)
 
-    elseif app_type == 43 then -- nds
+    elseif app_type == 43 or app_type == 47 then -- 3ds, ds
         predicted_width = math.floor((278 / 250) * fv_cover_height + 0.5)
 
     else 
@@ -13992,6 +14079,10 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
     
     function closestBox()
 
+        if apptype == 43 or apptype == 47 then
+            return modCoverNDS
+        end
+
         local box_width = Graphics.getImageWidth(icon)
         local box_height = Graphics.getImageHeight(icon)
         local box_pixel_combined = box_height + box_width
@@ -14004,6 +14095,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 54     and box_height_dif < 55    then return modCoverLYNX        -- Average approx 54.51
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddle      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGB          -- Average approx 50.00
+        elseif  box_height_dif >= 47     and box_height_dif < 48    then return modCoverNDS         -- 278:250 = 47.35
         else
             if apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 then
                 return  modCoverN64 -- Average approx 42.31
@@ -14015,6 +14107,10 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
     end
 
     function closestBoxNoref()
+
+        if apptype == 43 or apptype == 47 then
+            return modCoverNDSNoref
+        end
 
         local box_width = Graphics.getImageWidth(icon)
         local box_height = Graphics.getImageHeight(icon)
@@ -14028,6 +14124,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
         elseif  box_height_dif >= 54     and box_height_dif < 55    then return modCoverLYNXNoref        -- Average approx 54.51
         elseif  box_height_dif >= 52     and box_height_dif < 54    then return modCoverMiddleNoref      -- Average approx 52
         elseif  box_height_dif >= 48     and box_height_dif < 52    then return modCoverGBNoref          -- Average approx 50.00
+        elseif  box_height_dif >= 47     and box_height_dif < 48    then return modCoverNDSNoref         -- 278:250 = 47.35
         else
             if apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 then
                 return  modCoverN64Noref -- Average approx 42.31
@@ -14072,7 +14169,7 @@ local function DrawCover(x, y, text, icon, sel, apptype, cur_p)
                 Render.drawModel(modCoverPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
                 Render.drawModel(modBoxPSXNoref, x + extrax, y + extray, -5 - extraz - zoom, 0, math.deg(rot), 0)
             end
-        elseif apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 or apptype==43 or apptype==44 or apptype==45 or apptype==46 then
+        elseif apptype==5 or apptype==6 or apptype==7 or apptype==8 or apptype==9 or apptype==10 or apptype==12 or apptype==17 or apptype==18 or apptype==19 or apptype==20 or apptype==21 or apptype==34 or apptype==35 or apptype==36 or apptype==38 or apptype==43 or apptype==44 or apptype==45 or apptype==46 or apptype==47 then
             -- Get closest cover: N64, Snes, Nes, GBA, GBC, GB, Sega CD, TG16, TG CD, PCE, PCE CD, Amiga, FBA, Mame 2003, Mame 2000, nds, atari st, dos, easyrpg
             if setReflections == 1 then
                 Render.useTexture(closestBox(), icon)
@@ -14242,7 +14339,7 @@ function FreeIcons()
 
     local icon_tables = {
         files_table, games_table, psp_table, psx_table, psm_table, n64_table,
-        snes_table, nes_table, nds_table, gba_table, gbc_table, gb_table,
+        snes_table, nes_table, n3ds_table, nds_table, gba_table, gbc_table, gb_table,
         dreamcast_table, sega_cd_table, s32x_table, md_table, sms_table,
         gg_table, tg16_table, tgcd_table, pce_table, pcecd_table, amiga_table,
         scummvm_table, pico8_table, c64_table, wswan_col_table, wswan_table,
@@ -14260,7 +14357,7 @@ function FreeIcons()
     end
 
     if collection_count > 0 then
-        for collection_showcat = 50, collection_syscount do
+        for collection_showcat = 51, collection_syscount do
             for k, v in pairs(xCatLookup(collection_showcat) or {}) do
                 free_loaded_icon(v)
             end
@@ -14287,7 +14384,7 @@ function DownloadSingleCover()
 
             if xAppNumCRCLookupDB(xCatLookup(showCat)[p].app_type) == false then
                 -- CRC unavailable for this system
-                if xCatLookup(showCat)[p].app_type == 43 then
+                if xCatLookup(showCat)[p].app_type == 43 or xCatLookup(showCat)[p].app_type == 47 then
                     -- NDS
                     name_title = xCatLookup(showCat)[p].titleid:gsub("\n","")
                 else
@@ -14305,7 +14402,7 @@ function DownloadSingleCover()
             end
 
         else
-            if xCatLookup(showCat)[p].app_type == 43 then
+            if xCatLookup(showCat)[p].app_type == 43 or xCatLookup(showCat)[p].app_type == 47 then
                 -- NDS
                 name_title = xCatLookup(showCat)[p].titleid:gsub("\n","")
             else
@@ -14461,23 +14558,23 @@ function DownloadSingleCover()
         if cvrfound==1 then
             if showCat == 2 then -- Homebrew do nothing
                 
-            elseif showCat >= 1 and showCat <= 45 then
+            elseif showCat >= 1 and showCat <= 46 then
                 -- Normal systems
                 update_cvrfound_showcats(xCatLookup(showCat), xCatDbFileLookup(showCat))
 
-            elseif showCat == 47 then 
+            elseif showCat == 48 then 
                 -- Favourites
                 update_cvrfound_showcats(fav_count, "db_files.lua")
 
-            elseif showCat == 48 then 
+            elseif showCat == 49 then 
                 -- Recent
                 update_cvrfound_showcats_recent()
 
-            elseif showCat == 49 then 
+            elseif showCat == 50 then 
                 -- Search results
                 update_cvrfound_showcats(search_results_table, "db_files.lua")
 
-            elseif showCat >= 50 then
+            elseif showCat >= 51 then
                 -- Collections
 
                 -- Update main game categories
@@ -14530,7 +14627,7 @@ function DownloadSingleSnap()
 
             if xAppNumCRCLookupDB(xCatLookup(showCat)[p].app_type) == false then
                 -- CRC unavailable for this system
-                if xCatLookup(showCat)[p].app_type == 43 then
+                if xCatLookup(showCat)[p].app_type == 43 or xCatLookup(showCat)[p].app_type == 47 then
                     -- NDS
                     name_title = xCatLookup(showCat)[p].titleid:gsub("\n","")
                 else
@@ -14548,7 +14645,7 @@ function DownloadSingleSnap()
             end
      
         else
-            if xCatLookup(showCat)[p].app_type == 43 then
+            if xCatLookup(showCat)[p].app_type == 43 or xCatLookup(showCat)[p].app_type == 47 then
                 -- NDS
                 name_title = xCatLookup(showCat)[p].titleid:gsub("\n","")
             else
@@ -15204,41 +15301,41 @@ function sync_cartridge_state(def_titleid, def_inserted)
     sync_cartridge_state_in_table(fav_count, def_titleid, def_inserted)
 
     if collection_files and collection_syscount then
-        for collection_showcat = 50, collection_syscount do
+        for collection_showcat = 51, collection_syscount do
             sync_cartridge_state_in_table(xCatLookup(collection_showcat), def_titleid, def_inserted)
         end
     end
 end
 
 function current_category_supports_cartridge_jump()
-    return showCat == 0 or showCat == 1 or showCat == 47 or showCat == 48 or (showCat >= 50 and showCat <= collection_syscount)
+    return showCat == 0 or showCat == 1 or showCat == 48 or showCat == 49 or (showCat >= 51 and showCat <= collection_syscount)
 end
 
 function skip_empty_collection_categories(def_direction)
-    if collection_count == 0 or showCat < 50 or showCat > collection_syscount then
+    if collection_count == 0 or showCat < 51 or showCat > collection_syscount then
         return
     end
 
     local checked_collections = 0
     local collection_table = xCatLookup(showCat)
-    while showCat >= 50 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) and checked_collections < collection_count do
+    while showCat >= 51 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) and checked_collections < collection_count do
         if def_direction > 0 then
             if showCat < collection_syscount then
                 showCat = showCat + 1
             elseif filterGames == 1 then
-                showCat = 50
+                showCat = 51
             elseif showAll == 0 then
                 showCat = 1
             else
                 showCat = 0
             end
         else
-            if showCat > 50 then
+            if showCat > 51 then
                 showCat = showCat - 1
             elseif filterGames == 1 then
                 showCat = collection_syscount
             else
-                showCat = 49
+                showCat = 50
             end
         end
 
@@ -15246,7 +15343,7 @@ function skip_empty_collection_categories(def_direction)
         collection_table = xCatLookup(showCat)
     end
 
-    if showCat >= 50 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) then
+    if showCat >= 51 and showCat <= collection_syscount and (collection_table == nil or next(collection_table) == nil) then
         if showAll == 0 then
             showCat = 1
         else
@@ -15304,7 +15401,7 @@ function poll_cartridge_state()
             local target_idx = nil
 
             if current_category_supports_cartridge_jump() then
-                if showCat == 47 then
+                if showCat == 48 then
                     refresh_fav_count_table()
                 end
 
@@ -15495,7 +15592,7 @@ while true do
 
                     search_results_table = {}
                     -- If already on search category, move away
-                    if showCat == 49 then
+                    if showCat == 50 then
                         random_game_selected = false -- Workaround, as random games and search use the same table
                         showCat = 0
                     end
@@ -15519,7 +15616,7 @@ while true do
                     end
                     table.sort(search_results_table, function(a, b) return (a.apptitle:lower() < b.apptitle:lower()) end)
 
-                    showCat = 49
+                    showCat = 50
                     p = 1
                     master_index = p
                     showMenu = 0
@@ -15905,7 +16002,7 @@ while true do
                             showCollections = 1
                             set_collection_visible(new_collection_number, true)
                             save_visible_collection_settings()
-                            showCat = 49 + new_collection_number -- Collection showCat values start at 50
+                            showCat = 50 + new_collection_number -- Collection showCat values start at 51
                             p = 1
                             master_index = p
                             GetNameAndAppTypeSelected()
@@ -15943,7 +16040,7 @@ while true do
                             showCollections = 1
                             set_collection_visible(new_collection_number, true)
                             save_visible_collection_settings()
-                            showCat = 49 + new_collection_number -- Collection showCat values start at 50
+                            showCat = 50 + new_collection_number -- Collection showCat values start at 51
                             p = 1
                             master_index = p
                             GetNameAndAppTypeSelected()
@@ -16158,53 +16255,54 @@ while true do
         elseif showCat == 6 then Font.print(fnt22, 32, 34,  lang_lines.Nintendo_64, white)
         elseif showCat == 7 then Font.print(fnt22, 32, 34,  lang_lines.Super_Nintendo, white)
         elseif showCat == 8 then Font.print(fnt22, 32, 34,  lang_lines.Nintendo_Entertainment_System, white)
-        elseif showCat == 9 then Font.print(fnt22, 32, 34,  lang_lines.Nintendo_DS, white)
-        elseif showCat == 10 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy_Advance, white)
-        elseif showCat == 11 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy_Color, white)
-        elseif showCat == 12 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy, white)
-        elseif showCat == 13 then Font.print(fnt22, 32, 34, lang_lines.Sega_Dreamcast, white)
-        elseif showCat == 14 then Font.print(fnt22, 32, 34, lang_lines.Sega_CD, white)
-        elseif showCat == 15 then Font.print(fnt22, 32, 34, lang_lines.Sega_32X, white)
-        elseif showCat == 16 then Font.print(fnt22, 32, 34, lang_lines.Sega_Mega_Drive, white)
-        elseif showCat == 17 then Font.print(fnt22, 32, 34, lang_lines.Sega_Master_System, white)
-        elseif showCat == 18 then Font.print(fnt22, 32, 34, lang_lines.Sega_Game_Gear, white)        
-        elseif showCat == 19 then Font.print(fnt22, 32, 34, lang_lines.TurboGrafx_16, white)
-        elseif showCat == 20 then Font.print(fnt22, 32, 34, lang_lines.TurboGrafx_CD, white)
-        elseif showCat == 21 then Font.print(fnt22, 32, 34, lang_lines.PC_Engine, white)
-        elseif showCat == 22 then Font.print(fnt22, 32, 34, lang_lines.PC_Engine_CD, white)
-        elseif showCat == 23 then Font.print(fnt22, 32, 34, lang_lines.Amiga, white)
-        elseif showCat == 24 then Font.print(fnt22, 32, 34, lang_lines.ScummVM, white)
-        elseif showCat == 25 then Font.print(fnt22, 32, 34, lang_lines.EasyRPG, white)
-        elseif showCat == 26 then Font.print(fnt22, 32, 34, lang_lines.MS_DOS, white)
-        elseif showCat == 27 then Font.print(fnt22, 32, 34, lang_lines.Commodore_64, white)
-        elseif showCat == 28 then Font.print(fnt22, 32, 34, lang_lines.WonderSwan_Color, white)
-        elseif showCat == 29 then Font.print(fnt22, 32, 34, lang_lines.WonderSwan, white)
-        elseif showCat == 30 then Font.print(fnt22, 32, 34, lang_lines.PICO8, white)
-        elseif showCat == 31 then Font.print(fnt22, 32, 34, lang_lines.MSX2, white)
-        elseif showCat == 32 then Font.print(fnt22, 32, 34, lang_lines.MSX, white)
-        elseif showCat == 33 then Font.print(fnt22, 32, 34, lang_lines.ZX_Spectrum, white)
-        elseif showCat == 34 then Font.print(fnt22, 32, 34, lang_lines.Atari_ST, white)
-        elseif showCat == 35 then Font.print(fnt22, 32, 34, lang_lines.Atari_7800, white)
-        elseif showCat == 36 then Font.print(fnt22, 32, 34, lang_lines.Atari_5200, white)
-        elseif showCat == 37 then Font.print(fnt22, 32, 34, lang_lines.Atari_2600, white)
-        elseif showCat == 38 then Font.print(fnt22, 32, 34, lang_lines.Atari_Lynx, white)
-        elseif showCat == 39 then Font.print(fnt22, 32, 34, lang_lines.ColecoVision, white)
-        elseif showCat == 40 then Font.print(fnt22, 32, 34, lang_lines.Vectrex, white)
-        elseif showCat == 41 then Font.print(fnt22, 32, 34, lang_lines.FBA_2012, white)
-        elseif showCat == 42 then Font.print(fnt22, 32, 34, lang_lines.MAME_2003Plus, white)
-        elseif showCat == 43 then Font.print(fnt22, 32, 34, lang_lines.MAME_2000, white)
-        elseif showCat == 44 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo, white)
-        elseif showCat == 45 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo_Pocket_Color, white)
-        elseif showCat == 46 then Font.print(fnt22, 32, 34, lang_lines.System_Apps, white)  
-        elseif showCat == 47 then Font.print(fnt22, 32, 34, lang_lines.Favorites, white)
-        elseif showCat == 48 then Font.print(fnt22, 32, 34, lang_lines.Recently_Played, white)
-        elseif showCat == 49 then
+        elseif showCat == 9 then Font.print(fnt22, 32, 34,  lang_lines.Nintendo_3DS, white)
+        elseif showCat == 10 then Font.print(fnt22, 32, 34, lang_lines.Nintendo_DS, white)
+        elseif showCat == 11 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy_Advance, white)
+        elseif showCat == 12 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy_Color, white)
+        elseif showCat == 13 then Font.print(fnt22, 32, 34, lang_lines.Game_Boy, white)
+        elseif showCat == 14 then Font.print(fnt22, 32, 34, lang_lines.Sega_Dreamcast, white)
+        elseif showCat == 15 then Font.print(fnt22, 32, 34, lang_lines.Sega_CD, white)
+        elseif showCat == 16 then Font.print(fnt22, 32, 34, lang_lines.Sega_32X, white)
+        elseif showCat == 17 then Font.print(fnt22, 32, 34, lang_lines.Sega_Mega_Drive, white)
+        elseif showCat == 18 then Font.print(fnt22, 32, 34, lang_lines.Sega_Master_System, white)
+        elseif showCat == 19 then Font.print(fnt22, 32, 34, lang_lines.Sega_Game_Gear, white)        
+        elseif showCat == 20 then Font.print(fnt22, 32, 34, lang_lines.TurboGrafx_16, white)
+        elseif showCat == 21 then Font.print(fnt22, 32, 34, lang_lines.TurboGrafx_CD, white)
+        elseif showCat == 22 then Font.print(fnt22, 32, 34, lang_lines.PC_Engine, white)
+        elseif showCat == 23 then Font.print(fnt22, 32, 34, lang_lines.PC_Engine_CD, white)
+        elseif showCat == 24 then Font.print(fnt22, 32, 34, lang_lines.Amiga, white)
+        elseif showCat == 25 then Font.print(fnt22, 32, 34, lang_lines.ScummVM, white)
+        elseif showCat == 26 then Font.print(fnt22, 32, 34, lang_lines.EasyRPG, white)
+        elseif showCat == 27 then Font.print(fnt22, 32, 34, lang_lines.MS_DOS, white)
+        elseif showCat == 28 then Font.print(fnt22, 32, 34, lang_lines.Commodore_64, white)
+        elseif showCat == 29 then Font.print(fnt22, 32, 34, lang_lines.WonderSwan_Color, white)
+        elseif showCat == 30 then Font.print(fnt22, 32, 34, lang_lines.WonderSwan, white)
+        elseif showCat == 31 then Font.print(fnt22, 32, 34, lang_lines.PICO8, white)
+        elseif showCat == 32 then Font.print(fnt22, 32, 34, lang_lines.MSX2, white)
+        elseif showCat == 33 then Font.print(fnt22, 32, 34, lang_lines.MSX, white)
+        elseif showCat == 34 then Font.print(fnt22, 32, 34, lang_lines.ZX_Spectrum, white)
+        elseif showCat == 35 then Font.print(fnt22, 32, 34, lang_lines.Atari_ST, white)
+        elseif showCat == 36 then Font.print(fnt22, 32, 34, lang_lines.Atari_7800, white)
+        elseif showCat == 37 then Font.print(fnt22, 32, 34, lang_lines.Atari_5200, white)
+        elseif showCat == 38 then Font.print(fnt22, 32, 34, lang_lines.Atari_2600, white)
+        elseif showCat == 39 then Font.print(fnt22, 32, 34, lang_lines.Atari_Lynx, white)
+        elseif showCat == 40 then Font.print(fnt22, 32, 34, lang_lines.ColecoVision, white)
+        elseif showCat == 41 then Font.print(fnt22, 32, 34, lang_lines.Vectrex, white)
+        elseif showCat == 42 then Font.print(fnt22, 32, 34, lang_lines.FBA_2012, white)
+        elseif showCat == 43 then Font.print(fnt22, 32, 34, lang_lines.MAME_2003Plus, white)
+        elseif showCat == 44 then Font.print(fnt22, 32, 34, lang_lines.MAME_2000, white)
+        elseif showCat == 45 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo, white)
+        elseif showCat == 46 then Font.print(fnt22, 32, 34, lang_lines.Neo_Geo_Pocket_Color, white)
+        elseif showCat == 47 then Font.print(fnt22, 32, 34, lang_lines.System_Apps, white)  
+        elseif showCat == 48 then Font.print(fnt22, 32, 34, lang_lines.Favorites, white)
+        elseif showCat == 49 then Font.print(fnt22, 32, 34, lang_lines.Recently_Played, white)
+        elseif showCat == 50 then
             if random_game_selected == false then
                 Font.print(fnt22, 32, 34, lang_lines.Search_Results, white)
             else
                 Font.print(fnt22, 32, 34, lang_lines.Random_Game, white)
             end            
-        elseif showCat >= 50 and showCat <= collection_syscount then Collection_CatNum = showCat - 49 Font.print(fnt22, 32, 34, collection_files[Collection_CatNum].display_name, white)
+        elseif showCat >= 51 and showCat <= collection_syscount then Collection_CatNum = showCat - 50 Font.print(fnt22, 32, 34, collection_files[Collection_CatNum].display_name, white)
 
         else Font.print(fnt22, 32, 34, lang_lines.All, white)
         end
@@ -16245,7 +16343,7 @@ while true do
         -- Draw Covers
         base_x = 0
         
-        if showCat == 47 then
+        if showCat == 48 then
             refresh_fav_count_table()
             
             drawCategory (fav_count)
@@ -16472,11 +16570,11 @@ while true do
                 if System.doesDirExist(appdir) then
                     game_size, _, app_size = getAppSize(appdir)
 
-                elseif xCatLookup(showCat)[p] and xCatLookup(showCat)[p].app_type == 2 and xCatLookup(showCat)[p].category == "MG" then
-                    -- Fix for psp homebrew eboots, get parent directory of EBOOT.PBP
-                    local mg_dir = appdir:lower():match("(.+)/eboot%.pbp$")
-                    if mg_dir and System.doesDirExist(mg_dir) then
-                        game_size, _, app_size = getAppSize(mg_dir)
+                elseif xCatLookup(showCat)[p] and xCatLookup(showCat)[p].app_type == 2 then
+                    -- PSP EBOOT entries can be marked as folders while game_path points to EBOOT.PBP.
+                    local eboot_dir = appdir:match("(.+)/[Ee][Bb][Oo][Oo][Tt]%.[Pp][Bb][Pp]$")
+                    if eboot_dir and System.doesDirExist(eboot_dir) then
+                        game_size, _, app_size = getAppSize(eboot_dir)
                     else
                         game_size = "0 B"
                         app_size = 0
@@ -16582,7 +16680,8 @@ while true do
                 Render.useTexture(modCoverN64Noref, (def_table_name)[p].ricon) -- n64_table
                 Render.useTexture(modCoverN64Noref, (def_table_name)[p].ricon) -- snes_table
                 Render.useTexture(modCoverNESNoref, (def_table_name)[p].ricon) -- nes_table
-                Render.useTexture(modCoverGBNoref, (def_table_name)[p].ricon) -- nds_table
+                Render.useTexture(modCoverNDSNoref, (def_table_name)[p].ricon) -- n3ds_table
+                Render.useTexture(modCoverNDSNoref, (def_table_name)[p].ricon) -- nds_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].ricon) -- gba_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].ricon) -- gbc_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].ricon) -- gb_table
@@ -16642,7 +16741,8 @@ while true do
                 Render.useTexture(modCoverN64Noref, (def_table_name)[p].icon) -- n64_table
                 Render.useTexture(modCoverN64Noref, (def_table_name)[p].icon) -- snes_table
                 Render.useTexture(modCoverNESNoref, (def_table_name)[p].icon) -- nes_table
-                Render.useTexture(modCoverGBNoref, (def_table_name)[p].icon) -- nds_table
+                Render.useTexture(modCoverNDSNoref, (def_table_name)[p].icon) -- n3ds_table
+                Render.useTexture(modCoverNDSNoref, (def_table_name)[p].icon) -- nds_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].icon) -- gba_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].icon) -- gbc_table
                 Render.useTexture(modCoverGBNoref, (def_table_name)[p].icon) -- gb_table
@@ -16697,6 +16797,10 @@ while true do
         set_cover_image (xCatLookup(showCat))
 
         function closestBoxNoref_getinfo()
+
+            if apptype == 43 or apptype == 47 then
+                return modCoverNDSNoref
+            end
 
             if      box_height_dif >= 59                                then return modCoverSNESJapanNoref   -- Average approx 62.83
             elseif  box_height_dif >= 58     and box_height_dif < 59    then return modCoverMDNoref          -- Average approx 58.5
@@ -16860,6 +16964,9 @@ while true do
         elseif apptype==46 then
             Render.drawModel(closestBoxNoref_getinfo(), prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.EasyRPG
+        elseif apptype==47 then
+            Render.drawModel(closestBoxNoref_getinfo(), prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
+            tmpapptype = lang_lines.N3DS_Game
         else
             Render.drawModel(modCoverHbrNoref, prevX, -1.0, -5 + prevZ, 0, math.deg(prevRot+prvRotY), 0)
             tmpapptype = lang_lines.Homebrew 
@@ -17453,7 +17560,7 @@ while true do
                             count_cache_and_reload()
                         end
 
-                        if showCat == 47 then 
+                        if showCat == 48 then 
                             fav_count_dirty = true
                             refresh_fav_count_table()
                         end
@@ -17481,7 +17588,7 @@ while true do
                             count_cache_and_reload()
                         end
 
-                        if showCat == 47 then 
+                        if showCat == 48 then 
                             fav_count_dirty = true
                             refresh_fav_count_table()
                         end
@@ -18338,82 +18445,86 @@ while true do
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Neo_Geo, white)
                 filebrowser_heading = lang_lines.Neo_Geo
             elseif getRomDir == 21 then
+                Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Nintendo_3DS .. "  >", white)
+                Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Nintendo_3DS, white)
+                filebrowser_heading = lang_lines.Nintendo_3DS
+            elseif getRomDir == 22 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Nintendo_64 .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Nintendo_64, white)
                 filebrowser_heading = lang_lines.Nintendo_64
-            elseif getRomDir == 22 then
+            elseif getRomDir == 23 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Nintendo_DS .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Nintendo_DS, white)
                 filebrowser_heading = lang_lines.Nintendo_DS
-            elseif getRomDir == 23 then
+            elseif getRomDir == 24 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Nintendo_Entertainment_System .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Nintendo_Entertainment_System, white)
                 filebrowser_heading = lang_lines.Nintendo_Entertainment_System
-            elseif getRomDir == 24 then
+            elseif getRomDir == 25 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.PC_Engine_CD .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.PC_Engine_CD, white)
                 filebrowser_heading = lang_lines.PC_Engine_CD
-            elseif getRomDir == 25 then
+            elseif getRomDir == 26 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.PC_Engine .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.PC_Engine, white)
                 filebrowser_heading = lang_lines.PC_Engine
-            elseif getRomDir == 26 then
+            elseif getRomDir == 27 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.PICO8 .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Pico8, white)
                 filebrowser_heading = lang_lines.PICO8   
-            elseif getRomDir == 27 then
+            elseif getRomDir == 28 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.PlayStation .. " (RetroArch)" ..  "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.PlayStation, white)
                 filebrowser_heading = lang_lines.PlayStation .. " (RetroArch)"
-            elseif getRomDir == 28 then
+            elseif getRomDir == 29 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_32X .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_32X, white)
                 filebrowser_heading = lang_lines.Sega_32X
-            elseif getRomDir == 29 then
+            elseif getRomDir == 30 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_CD .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_CD, white)
                 filebrowser_heading = lang_lines.Sega_CD
-            elseif getRomDir == 30 then
+            elseif getRomDir == 31 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_Dreamcast .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_Dreamcast, white)
                 filebrowser_heading = lang_lines.Sega_Dreamcast
-            elseif getRomDir == 31 then
+            elseif getRomDir == 32 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_Game_Gear .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_Game_Gear, white)
                 filebrowser_heading = lang_lines.Sega_Game_Gear
-            elseif getRomDir == 32 then
+            elseif getRomDir == 33 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_Master_System .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_Master_System, white)
                 filebrowser_heading = lang_lines.Sega_Master_System
-            elseif getRomDir == 33 then
+            elseif getRomDir == 34 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Sega_Mega_Drive .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Sega_Mega_Drive, white)
                 filebrowser_heading = lang_lines.Sega_Mega_Drive
-            elseif getRomDir == 34 then
+            elseif getRomDir == 35 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Super_Nintendo .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Super_Nintendo, white)
                 filebrowser_heading = lang_lines.Super_Nintendo
-            elseif getRomDir == 35 then
+            elseif getRomDir == 36 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.TurboGrafx_16 .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.TurboGrafx_16, white)
                 filebrowser_heading = lang_lines.TurboGrafx_16
-            elseif getRomDir == 36 then
+            elseif getRomDir == 37 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.TurboGrafx_CD .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.TurboGrafx_CD, white)
                 filebrowser_heading = lang_lines.TurboGrafx_CD
-            elseif getRomDir == 37 then
+            elseif getRomDir == 38 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.Vectrex .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.Vectrex, white)
                 filebrowser_heading = lang_lines.Vectrex
-            elseif getRomDir == 38 then
+            elseif getRomDir == 39 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.WonderSwan_Color .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.WonderSwan_Color, white)
                 filebrowser_heading = lang_lines.WonderSwan_Color
-            elseif getRomDir == 39 then
+            elseif getRomDir == 40 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.WonderSwan .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.WonderSwan, white)
                 filebrowser_heading = lang_lines.WonderSwan
-            elseif getRomDir == 40 then
+            elseif getRomDir == 41 then
                 Font.print(fnt22, setting_x, setting_y1, "<  " .. lang_lines.ZX_Spectrum .. "  >", white)
                 Font.print(fnt20, setting_x, setting_y2 + setting_y_smallfont_offset, romUserDir.ZX_Spectrum, white)
                 filebrowser_heading = lang_lines.ZX_Spectrum
@@ -18460,12 +18571,12 @@ while true do
                     if getRomDir > 1 then
                         getRomDir = getRomDir - 1
                     else
-                        getRomDir = 40 -- Update number if add more systems
+                        getRomDir = 41 -- Update number if add more systems
                     end
                 end
             elseif (Controls.check(pad, SCE_CTRL_RIGHT)) and not (Controls.check(oldpad, SCE_CTRL_RIGHT)) then
                 if menuY==1 then -- #1 category rom directory selection
-                    if getRomDir < 40 then -- Update number if add more systems
+                    if getRomDir < 41 then -- Update number if add more systems
                         getRomDir = getRomDir + 1
                     else
                         getRomDir=1
@@ -18891,26 +19002,27 @@ while true do
                                     elseif getRomDir == 18 then romUserDir.MSX2 = cur_dir_fm
                                     elseif getRomDir == 19 then romUserDir.Neo_Geo_Pocket_Color = cur_dir_fm
                                     elseif getRomDir == 20 then romUserDir.Neo_Geo = cur_dir_fm
-                                    elseif getRomDir == 21 then romUserDir.Nintendo_64 = cur_dir_fm
-                                    elseif getRomDir == 22 then romUserDir.Nintendo_DS = cur_dir_fm
-                                    elseif getRomDir == 23 then romUserDir.Nintendo_Entertainment_System = cur_dir_fm
-                                    elseif getRomDir == 24 then romUserDir.PC_Engine_CD = cur_dir_fm
-                                    elseif getRomDir == 25 then romUserDir.PC_Engine = cur_dir_fm
-                                    elseif getRomDir == 26 then romUserDir.Pico8 = cur_dir_fm
-                                    elseif getRomDir == 27 then romUserDir.PlayStation = cur_dir_fm
-                                    elseif getRomDir == 28 then romUserDir.Sega_32X = cur_dir_fm
-                                    elseif getRomDir == 29 then romUserDir.Sega_CD = cur_dir_fm
-                                    elseif getRomDir == 30 then romUserDir.Sega_Dreamcast = cur_dir_fm
-                                    elseif getRomDir == 31 then romUserDir.Sega_Game_Gear = cur_dir_fm
-                                    elseif getRomDir == 32 then romUserDir.Sega_Master_System = cur_dir_fm
-                                    elseif getRomDir == 33 then romUserDir.Sega_Mega_Drive = cur_dir_fm
-                                    elseif getRomDir == 34 then romUserDir.Super_Nintendo = cur_dir_fm
-                                    elseif getRomDir == 35 then romUserDir.TurboGrafx_16 = cur_dir_fm
-                                    elseif getRomDir == 36 then romUserDir.TurboGrafx_CD = cur_dir_fm
-                                    elseif getRomDir == 37 then romUserDir.Vectrex = cur_dir_fm
-                                    elseif getRomDir == 38 then romUserDir.WonderSwan_Color = cur_dir_fm
-                                    elseif getRomDir == 39 then romUserDir.WonderSwan = cur_dir_fm
-                                    elseif getRomDir == 40 then romUserDir.ZX_Spectrum = cur_dir_fm
+                                    elseif getRomDir == 21 then romUserDir.Nintendo_3DS = cur_dir_fm
+                                    elseif getRomDir == 22 then romUserDir.Nintendo_64 = cur_dir_fm
+                                    elseif getRomDir == 23 then romUserDir.Nintendo_DS = cur_dir_fm
+                                    elseif getRomDir == 24 then romUserDir.Nintendo_Entertainment_System = cur_dir_fm
+                                    elseif getRomDir == 25 then romUserDir.PC_Engine_CD = cur_dir_fm
+                                    elseif getRomDir == 26 then romUserDir.PC_Engine = cur_dir_fm
+                                    elseif getRomDir == 27 then romUserDir.Pico8 = cur_dir_fm
+                                    elseif getRomDir == 28 then romUserDir.PlayStation = cur_dir_fm
+                                    elseif getRomDir == 29 then romUserDir.Sega_32X = cur_dir_fm
+                                    elseif getRomDir == 30 then romUserDir.Sega_CD = cur_dir_fm
+                                    elseif getRomDir == 31 then romUserDir.Sega_Dreamcast = cur_dir_fm
+                                    elseif getRomDir == 32 then romUserDir.Sega_Game_Gear = cur_dir_fm
+                                    elseif getRomDir == 33 then romUserDir.Sega_Master_System = cur_dir_fm
+                                    elseif getRomDir == 34 then romUserDir.Sega_Mega_Drive = cur_dir_fm
+                                    elseif getRomDir == 35 then romUserDir.Super_Nintendo = cur_dir_fm
+                                    elseif getRomDir == 36 then romUserDir.TurboGrafx_16 = cur_dir_fm
+                                    elseif getRomDir == 37 then romUserDir.TurboGrafx_CD = cur_dir_fm
+                                    elseif getRomDir == 38 then romUserDir.Vectrex = cur_dir_fm
+                                    elseif getRomDir == 39 then romUserDir.WonderSwan_Color = cur_dir_fm
+                                    elseif getRomDir == 40 then romUserDir.WonderSwan = cur_dir_fm
+                                    elseif getRomDir == 41 then romUserDir.ZX_Spectrum = cur_dir_fm
                                     end
 
                                     print_table_rom_dirs(romUserDir)
@@ -19702,7 +19814,7 @@ while true do
 
             -- Add extra for remove from recent
             local recent_cat_flag = false
-            if showCat == 48 then
+            if showCat == 49 then
                 recent_cat_flag = true
                 menuItems = menuItems + 1
             else
@@ -19955,7 +20067,7 @@ while true do
                     function dynamic_menu_remove_from_recent()
                         -- remove recent
                         if #recently_played_table ~= nil then
-                            if showCat == 48 then
+                            if showCat == 49 then
                                 -- We are in the recent category, remove the game and save cache
                                 remove_recently_played_full_entry(app_titleid)
                                 table.remove(recently_played_table, p)
@@ -19994,7 +20106,7 @@ while true do
                         fav_count_dirty = true
 
                         -- If on favorite category, go to main screen, otherwise the next fav game is shown
-                    if showCat == 47 then
+                    if showCat == 48 then
                         check_for_out_of_bounds()
                         GetInfoSelected()
                         oldpad = pad -- Prevents it from launching next game accidentally. Credit BlackSheepBoy69
@@ -20075,7 +20187,7 @@ while true do
                     if showHidden == 0 then
 
                         -- Rebuild search results if we're in search category
-                        if showCat == 49 and ret_search and random_game_selected == false then
+                        if showCat == 50 and ret_search and random_game_selected == false then
                             -- Store current search results parameters
                             local current_search_text = ret_search
                             local current_search_lc = ret_search_lc
@@ -20102,13 +20214,13 @@ while true do
                     else
 
                         -- Rebuild favorites table if we're in favorites category
-                        if showCat == 47 then
+                        if showCat == 48 then
                             fav_count_dirty = true
                             refresh_fav_count_table()
                         end
 
-                        -- Handle both search results and random game in category 49
-                        if showCat == 49 then
+                        -- Handle both search results and random game in category 50
+                        if showCat == 50 then
                             if random_game_selected then
                                 -- Handle random game case
                                 search_results_table = {}
@@ -20141,7 +20253,7 @@ while true do
 
 
                         -- Handle hiding/unhiding for both search results and random game
-                        if showCat == 49 then
+                        if showCat == 50 then
                             if random_game_selected and #search_results_table > 0 then
                                 -- For random game, update its hidden status in the files_table
                                 local game = search_results_table[1]
@@ -20879,7 +20991,7 @@ while true do
                         showCollections = 1
                         set_collection_visible(collection_number, true)
                         save_visible_collection_settings()
-                        showCat = 49 + collection_number -- this number should correspond to the showcat number for the category the games were just added to
+                        showCat = 50 + collection_number -- this number should correspond to the showcat number for the category the games were just added to
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21540,7 +21652,7 @@ while true do
 
                     -- Proceed only if a game was found
                     if random_game_selected == true then
-                        showCat = 49
+                        showCat = 50
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21555,7 +21667,7 @@ while true do
                     -- Favourites found
                     if #fav_count > 0 then
                         -- Skip to favorites
-                        showCat = 47
+                        showCat = 48
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21568,7 +21680,7 @@ while true do
 
                     if #recently_played_table > 0 then
                         -- Skip to recent
-                        showCat = 48
+                        showCat = 49
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21588,7 +21700,7 @@ while true do
                         -- Import and jump to menu
                         FreeIcons()
                         count_cache_and_reload()
-                        showCat = 43
+                        showCat = 47
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21599,7 +21711,7 @@ while true do
 
                     else
                         -- Skip to system apps
-                        showCat = 43
+                        showCat = 47
                         p = 1
                         master_index = p
                         showMenu = 0
@@ -21610,7 +21722,7 @@ while true do
 
                     if filterGames == 1 then
                         if collection_count ~= 0 then   
-                            showCat = find_next_selectable_category(1, 50)
+                            showCat = find_next_selectable_category(1, 51)
                             p = 1
                             master_index = p
                             showMenu = 0
@@ -21747,7 +21859,7 @@ while true do
                 if category then
                     set_category_visible(category.showcat, not is_category_visible(category.showcat))
                     ensure_at_least_one_visible_category()
-                    if category.showcat == 2 or category.showcat == 46 then
+                    if category.showcat == 2 or category.showcat == 47 then
                         visible_categories_requires_reload = true
                     end
                     visible_categories_dirty = true
@@ -22904,46 +23016,47 @@ while true do
                     elseif showCat == 6 then rom_location = (n64_table[p].game_path) launch_DaedalusX64()
                     elseif showCat == 7 then rom_location = (snes_table[p].game_path) launch_retro_emulator(core.SNES)
                     elseif showCat == 8 then rom_location = (nes_table[p].game_path) launch_retro_emulator(core.NES)
-                    elseif showCat == 9 then rom_location = (nds_table[p].game_path) launch_DSVita()
-                    elseif showCat == 10 then rom_location = (gba_table[p].game_path) launch_retro_emulator(core.GBA)
-                    elseif showCat == 11 then rom_location = (gbc_table[p].game_path) launch_retro_emulator(core.GBC)
-                    elseif showCat == 12 then rom_location = (gb_table[p].game_path) launch_retro_emulator(core.GB)
-                    elseif showCat == 13 then rom_location = (dreamcast_table[p].game_path) launch_Flycast()
-                    elseif showCat == 14 then rom_location = (sega_cd_table[p].game_path) launch_retro_emulator(core.SEGA_CD) 
-                    elseif showCat == 15 then rom_location = (s32x_table[p].game_path) launch_retro_emulator(core.s32X) 
-                    elseif showCat == 16 then rom_location = (md_table[p].game_path) launch_retro_emulator(core.MD)
-                    elseif showCat == 17 then rom_location = (sms_table[p].game_path) launch_retro_emulator(core.SMS)
-                    elseif showCat == 18 then rom_location = (gg_table[p].game_path) launch_retro_emulator(core.GG)
-                    elseif showCat == 19 then rom_location = (tg16_table[p].game_path) launch_retro_emulator(core.TG16)
-                    elseif showCat == 20 then rom_location = (tgcd_table[p].game_path) launch_retro_emulator(core.TGCD)
-                    elseif showCat == 21 then rom_location = (pce_table[p].game_path) launch_retro_emulator(core.PCE)
-                    elseif showCat == 22 then rom_location = (pcecd_table[p].game_path) launch_retro_emulator(core.PCECD)
-                    elseif showCat == 23 then rom_location = (amiga_table[p].game_path) launch_retro_emulator(core.AMIGA)
-                    elseif showCat == 24 then rom_title_id = (scummvm_table[p].titleid) rom_location = (scummvm_table[p].game_path) launch_scummvm()
-                    elseif showCat == 25 then rom_location = (easyrpg_table[p].game_path) launch_EasyRPG()
-                    elseif showCat == 26 then rom_location = (dos_table[p].game_path) launch_retro_emulator(core.DOS)
-                    elseif showCat == 27 then rom_location = (c64_table[p].game_path) launch_retro_emulator(core.C64)
-                    elseif showCat == 28 then rom_location = (wswan_col_table[p].game_path) launch_retro_emulator(core.WSWAN_COL)
-                    elseif showCat == 29 then rom_location = (wswan_table[p].game_path) launch_retro_emulator(core.WSWAN)
-                    elseif showCat == 30 then rom_location = (pico8_table[p].game_path) launch_pico8()
-                    elseif showCat == 31 then rom_location = (msx2_table[p].game_path) launch_retro_emulator(core.MSX2)
-                    elseif showCat == 32 then rom_location = (msx1_table[p].game_path) launch_retro_emulator(core.MSX1)
-                    elseif showCat == 33 then rom_location = (zxs_table[p].game_path) launch_retro_emulator(core.ZXS)
-                    elseif showCat == 34 then rom_location = (atari_st_table[p].game_path) launch_retro_emulator(core.ATARI_ST)
-                    elseif showCat == 35 then rom_location = (atari_7800_table[p].game_path) launch_retro_emulator(core.ATARI_7800)
-                    elseif showCat == 36 then rom_location = (atari_5200_table[p].game_path) launch_retro_emulator(core.ATARI_5200)
-                    elseif showCat == 37 then rom_location = (atari_2600_table[p].game_path) launch_retro_emulator(core.ATARI_2600)
-                    elseif showCat == 38 then rom_location = (atari_lynx_table[p].game_path) launch_retro_emulator(core.ATARI_LYNX)
-                    elseif showCat == 39 then rom_location = (colecovision_table[p].game_path) launch_retro_emulator(core.COLECOVISION)
-                    elseif showCat == 40 then rom_location = (vectrex_table[p].game_path) launch_retro_emulator(core.VECTREX)
-                    elseif showCat == 41 then rom_location = (fba_table[p].game_path) launch_retro_emulator(core.FBA)
-                    elseif showCat == 42 then rom_location = (mame_2003_plus_table[p].game_path) launch_retro_emulator(core.MAME_2003_PLUS)
-                    elseif showCat == 43 then rom_location = (mame_2000_table[p].game_path) launch_retro_emulator(core.MAME_2000)
-                    elseif showCat == 44 then rom_location = (neogeo_table[p].game_path) launch_retro_emulator(core.NEOGEO)
-                    elseif showCat == 45 then rom_location = (ngpc_table[p].game_path) launch_retro_emulator(core.NGPC)
-                    elseif showCat == 46 then rom_location = launch_vita_sysapp(xCatLookup(showCat)[p].name)
+                    elseif showCat == 9 then rom_location = (n3ds_table[p].game_path) launch_Azahar()
+                    elseif showCat == 10 then rom_location = (nds_table[p].game_path) launch_DSVita()
+                    elseif showCat == 11 then rom_location = (gba_table[p].game_path) launch_retro_emulator(core.GBA)
+                    elseif showCat == 12 then rom_location = (gbc_table[p].game_path) launch_retro_emulator(core.GBC)
+                    elseif showCat == 13 then rom_location = (gb_table[p].game_path) launch_retro_emulator(core.GB)
+                    elseif showCat == 14 then rom_location = (dreamcast_table[p].game_path) launch_Flycast()
+                    elseif showCat == 15 then rom_location = (sega_cd_table[p].game_path) launch_retro_emulator(core.SEGA_CD) 
+                    elseif showCat == 16 then rom_location = (s32x_table[p].game_path) launch_retro_emulator(core.s32X) 
+                    elseif showCat == 17 then rom_location = (md_table[p].game_path) launch_retro_emulator(core.MD)
+                    elseif showCat == 18 then rom_location = (sms_table[p].game_path) launch_retro_emulator(core.SMS)
+                    elseif showCat == 19 then rom_location = (gg_table[p].game_path) launch_retro_emulator(core.GG)
+                    elseif showCat == 20 then rom_location = (tg16_table[p].game_path) launch_retro_emulator(core.TG16)
+                    elseif showCat == 21 then rom_location = (tgcd_table[p].game_path) launch_retro_emulator(core.TGCD)
+                    elseif showCat == 22 then rom_location = (pce_table[p].game_path) launch_retro_emulator(core.PCE)
+                    elseif showCat == 23 then rom_location = (pcecd_table[p].game_path) launch_retro_emulator(core.PCECD)
+                    elseif showCat == 24 then rom_location = (amiga_table[p].game_path) launch_retro_emulator(core.AMIGA)
+                    elseif showCat == 25 then rom_title_id = (scummvm_table[p].titleid) rom_location = (scummvm_table[p].game_path) launch_scummvm()
+                    elseif showCat == 26 then rom_location = (easyrpg_table[p].game_path) launch_EasyRPG()
+                    elseif showCat == 27 then rom_location = (dos_table[p].game_path) launch_retro_emulator(core.DOS)
+                    elseif showCat == 28 then rom_location = (c64_table[p].game_path) launch_retro_emulator(core.C64)
+                    elseif showCat == 29 then rom_location = (wswan_col_table[p].game_path) launch_retro_emulator(core.WSWAN_COL)
+                    elseif showCat == 30 then rom_location = (wswan_table[p].game_path) launch_retro_emulator(core.WSWAN)
+                    elseif showCat == 31 then rom_location = (pico8_table[p].game_path) launch_pico8()
+                    elseif showCat == 32 then rom_location = (msx2_table[p].game_path) launch_retro_emulator(core.MSX2)
+                    elseif showCat == 33 then rom_location = (msx1_table[p].game_path) launch_retro_emulator(core.MSX1)
+                    elseif showCat == 34 then rom_location = (zxs_table[p].game_path) launch_retro_emulator(core.ZXS)
+                    elseif showCat == 35 then rom_location = (atari_st_table[p].game_path) launch_retro_emulator(core.ATARI_ST)
+                    elseif showCat == 36 then rom_location = (atari_7800_table[p].game_path) launch_retro_emulator(core.ATARI_7800)
+                    elseif showCat == 37 then rom_location = (atari_5200_table[p].game_path) launch_retro_emulator(core.ATARI_5200)
+                    elseif showCat == 38 then rom_location = (atari_2600_table[p].game_path) launch_retro_emulator(core.ATARI_2600)
+                    elseif showCat == 39 then rom_location = (atari_lynx_table[p].game_path) launch_retro_emulator(core.ATARI_LYNX)
+                    elseif showCat == 40 then rom_location = (colecovision_table[p].game_path) launch_retro_emulator(core.COLECOVISION)
+                    elseif showCat == 41 then rom_location = (vectrex_table[p].game_path) launch_retro_emulator(core.VECTREX)
+                    elseif showCat == 42 then rom_location = (fba_table[p].game_path) launch_retro_emulator(core.FBA)
+                    elseif showCat == 43 then rom_location = (mame_2003_plus_table[p].game_path) launch_retro_emulator(core.MAME_2003_PLUS)
+                    elseif showCat == 44 then rom_location = (mame_2000_table[p].game_path) launch_retro_emulator(core.MAME_2000)
+                    elseif showCat == 45 then rom_location = (neogeo_table[p].game_path) launch_retro_emulator(core.NEOGEO)
+                    elseif showCat == 46 then rom_location = (ngpc_table[p].game_path) launch_retro_emulator(core.NGPC)
+                    elseif showCat == 47 then rom_location = launch_vita_sysapp(xCatLookup(showCat)[p].name)
 
-                    elseif showCat >= 47 or showCat == 0 then
+                    elseif showCat >= 48 or showCat == 0 then
                         if apptype == 1 or apptype == 2 or apptype == 3 or apptype == 4 then
                             if string.match (xCatLookup(showCat)[p].game_path, "pspemu") then
                                  -- Launch adrenaline
@@ -23007,6 +23120,7 @@ while true do
                         elseif apptype == 44 then rom_location = (xCatLookup(showCat)[p].game_path) launch_retro_emulator(core.ATARI_ST)
                         elseif apptype == 45 then rom_location = (xCatLookup(showCat)[p].game_path) launch_retro_emulator(core.DOS)
                         elseif apptype == 46 then rom_location = (xCatLookup(showCat)[p].game_path) launch_EasyRPG()
+                        elseif apptype == 47 then rom_location = (xCatLookup(showCat)[p].game_path) launch_Azahar()
 
                         else
                             -- Homebrew
@@ -23607,7 +23721,7 @@ while true do
     -- End Controls
 
 
-    if showCat == 47 then
+    if showCat == 48 then
         refresh_fav_count_table()
         
         curTotal = #fav_count
