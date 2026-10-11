@@ -1,4 +1,3 @@
--- vim: set filetype=lua:
 -- RetroFlow Launcher - HexFlow Mod version by jimbob4000
 -- Based on HexFlow Launcher  version 0.5 by VitaHEX
 -- https://www.patreon.com/vitahex
